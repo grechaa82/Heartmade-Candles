@@ -1,6 +1,8 @@
-﻿namespace HeartmadeCandles.BusinessLogic.Services
+﻿using HeartmadeCandles.Core.Interfaces.Services;
+
+namespace HeartmadeCandles.BusinessLogic.Services
 {
-    public class CandleConstructorService
+    public class CandleConstructorService : ICandleConstructorService
     {
     }
 }
