@@ -12,7 +12,7 @@ namespace HeartmadeCandles.Core.Models
         [BsonElement("isUsed")]
         public bool IsUsed { get; set; }
 
-        [BsonElement("Name")]
+        [BsonElement("name")]
         public string? Name { get; set; }
 
         [BsonElement("imageURL")]

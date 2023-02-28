@@ -1,12 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HeartmadeCandles.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class CandleConstructorController : Controller
     {
-        public IActionResult Index()
+        private readonly ICandleConstructorService _candleConstructorService;
+
+        public CandleConstructorController(ICandleConstructorService candleConstructorService)
         {
-            return View();
+            _candleConstructorService = candleConstructorService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var candles = await _candleConstructorService.GetAllAsync();
+            return Ok(candles);
         }
     }
 }

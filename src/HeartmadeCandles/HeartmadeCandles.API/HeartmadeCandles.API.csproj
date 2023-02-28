@@ -8,11 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.3" />
+    <PackageReference Include="MongoDB.Bson" Version="2.19.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HeartmadeCandles.BusinessLogic\HeartmadeCandles.BusinessLogic.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Core\HeartmadeCandles.Core.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.DataAccess.MongoDB\HeartmadeCandles.DataAccess.MongoDB.csproj" />
   </ItemGroup>
 
 </Project>
