@@ -13,7 +13,7 @@ namespace HeartmadeCandles.BusinessLogic.Services
             _candleConstructorRepository = candleConstructorRepository;
         }
 
-        public async Task<List<Decor>> GetAllAsync()
+        public async Task<List<Candle>> GetAllAsync()
         {
             return await _candleConstructorRepository.GetAllAsync();
         }

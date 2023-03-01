@@ -2,26 +2,41 @@
 using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Models;
 using HeartmadeCandles.DataAccess.MongoDB.Collections;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
 {
     public class CandleConstructorRepository : ICandleConstructorRepository
     {
-        private readonly IMongoCollection<DecorCollection> _decorCollection;
+        private readonly IMongoCollection<CandleCollection> _candleCollection;
         private readonly IMapper _mapper;
 
         public CandleConstructorRepository(IMongoDatabase mongoDatabase, IMapper mapper)
         {
-            _decorCollection = mongoDatabase.GetCollection<DecorCollection>("Decor");
+            _candleCollection = mongoDatabase.GetCollection<CandleCollection>("Candle");
             _mapper = mapper;
         }
 
-        public async Task<List<Decor>> GetAllAsync()
+        public async Task<List<Candle>> GetAllAsync()
         {
-            var derors = await _decorCollection.Find(_ => true).ToListAsync();
+            List<BsonDocument> BsonDocumentCandles = await _candleCollection.Aggregate()
+                .Lookup("LayerColor", "layerColors", "_id", "layerColors")
+                .Lookup("Smell", "smells", "_id", "smells")
+                .Lookup("Decor", "decors", "_id", "decors")
+                .ToListAsync();
 
-            return _mapper.Map<List<DecorCollection>, List<Decor>>(derors);
+            var candles = new List<CandleCollection>();
+
+            foreach (var item in BsonDocumentCandles)
+            {
+                var candle = BsonSerializer.Deserialize<CandleCollection>(item);
+
+                candles.Add(candle);
+            }
+
+            return _mapper.Map<List<CandleCollection>, List<Candle>>(candles); ;
         }
     }
 }

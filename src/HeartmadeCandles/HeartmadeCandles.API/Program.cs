@@ -8,6 +8,8 @@ using MongoDB.Driver;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddAutoMapper(typeof(DataAccessMappingProfile));
+
 builder.Services.AddScoped<ICandleConstructorService, CandleConstructorService>();
 
 // Add repositories to the container.
