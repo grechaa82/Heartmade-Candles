@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(DataAccessMappingProfile));
 
 builder.Services.AddScoped<ICandleConstructorService, CandleConstructorService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 // Add repositories to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
@@ -22,6 +23,7 @@ builder.Services.AddSingleton(options =>
     return mongoDbClient.GetDatabase(databaseSettings.DatabaseName);
 });
 builder.Services.AddScoped<ICandleConstructorRepository, CandleConstructorRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

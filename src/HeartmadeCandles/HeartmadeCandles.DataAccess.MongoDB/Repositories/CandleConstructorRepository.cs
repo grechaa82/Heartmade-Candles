@@ -36,7 +36,7 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
                 candles.Add(candle);
             }
 
-            return _mapper.Map<List<CandleCollection>, List<Candle>>(candles); ;
+            return _mapper.Map<List<CandleCollection>, List<Candle>>(candles);
         }
     }
 }
