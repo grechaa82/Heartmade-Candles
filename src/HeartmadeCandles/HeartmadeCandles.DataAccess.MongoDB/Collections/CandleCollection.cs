@@ -13,8 +13,8 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Collections
         [BsonElement("isUsed")]
         public bool IsUsed { get; set; }
 
-        [BsonElement("name")]
-        public string? Name { get; set; }
+        [BsonElement("title")]
+        public string? Title { get; set; }
 
         [BsonElement("imageURL")]
         public string? ImageURL { get; set; }
