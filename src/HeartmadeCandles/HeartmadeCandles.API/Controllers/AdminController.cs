@@ -45,5 +45,37 @@ namespace HeartmadeCandles.API.Controllers
         }
 
         #endregion
+
+        #region Smell
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Smell()
+        {
+            var smells = await _adminService.GetSmellAsync();
+            return Ok(smells);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> CreateSmell(Smell smell)
+        {
+            await _adminService.CreateSmellAsync(smell);
+            return Ok();
+        }
+
+        [HttpPut("[action]")]
+        public async Task<IActionResult> UpdateSmell(Smell smell)
+        {
+            await _adminService.UpdateSmellAsync(smell);
+            return Ok();
+        }
+
+        [HttpDelete("[action]/{id}")]
+        public async Task<IActionResult> DeleteSmell(string id)
+        {
+            await _adminService.DeleteSmellAsync(id);
+            return Ok();
+        }
+
+        #endregion
     }
 }

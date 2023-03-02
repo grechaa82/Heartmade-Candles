@@ -36,5 +36,29 @@ namespace HeartmadeCandles.BusinessLogic.Services
         }
 
         #endregion
+
+        #region Smell
+
+        public async Task<List<Smell>> GetSmellAsync()
+        {
+            return await _adminRepository.GetSmellAsync();
+        }
+
+        public async Task CreateSmellAsync(Smell smell)
+        {
+            await _adminRepository.CreateSmellAsync(smell);
+        }
+
+        public async Task UpdateSmellAsync(Smell smell)
+        {
+            await _adminRepository.UpdateSmellAsync(smell);
+        }
+
+        public async Task DeleteSmellAsync(string id)
+        {
+            await _adminRepository.DeleteSmellAsync(id);
+        }
+
+        #endregion
     }
 }
