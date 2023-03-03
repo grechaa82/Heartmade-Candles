@@ -1,9 +1,7 @@
 ﻿namespace HeartmadeCandles.Core.Models
 {
-    public class Decor
+    public class Decor : ModelBase
     {
-        public string? Id { get; set; }
-
         public bool IsUsed { get; set; }
 
         public string? Title { get; set; }

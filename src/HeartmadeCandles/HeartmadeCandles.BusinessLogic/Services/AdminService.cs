@@ -13,52 +13,30 @@ namespace HeartmadeCandles.BusinessLogic.Services
             _adminRepository = adminRepository;
         }
 
-        #region Decor
-
-        public async Task<List<Decor>> GetDecorAsync()
+        public async Task<List<T>> GetAllAsync<T>() where T : ModelBase
         {
-            return await _adminRepository.GetDecorAsync();
+            var result = new List<T>();
+            var items = await _adminRepository.GetAllAsync<T>();
+            foreach (var item in items)
+            {
+                result.Add(item);
+            }
+            return result;
         }
 
-        public async Task CreateDecorAsync(Decor decor)
+        public async Task CreateAsync<T>(T t) where T : ModelBase
         {
-            await _adminRepository.CreateDecorAsync(decor);
+            await _adminRepository.CreateAsync(t);
         }
 
-        public async Task UpdateDecorAsync(Decor decor)
+        public async Task UpdateAsync<T>(T t) where T : ModelBase
         {
-            await _adminRepository.UpdateDecorAsync(decor);
+            await _adminRepository.UpdateAsync(t);
         }
 
-        public async Task DeleteDecorAsync(string id)
+        public async Task DeleteAsync<T>(T t) where T : ModelBase
         {
-            await _adminRepository.DeleteDecorAsync(id);
+            await _adminRepository.DeleteAsync(t);
         }
-
-        #endregion
-
-        #region Smell
-
-        public async Task<List<Smell>> GetSmellAsync()
-        {
-            return await _adminRepository.GetSmellAsync();
-        }
-
-        public async Task CreateSmellAsync(Smell smell)
-        {
-            await _adminRepository.CreateSmellAsync(smell);
-        }
-
-        public async Task UpdateSmellAsync(Smell smell)
-        {
-            await _adminRepository.UpdateSmellAsync(smell);
-        }
-
-        public async Task DeleteSmellAsync(string id)
-        {
-            await _adminRepository.DeleteSmellAsync(id);
-        }
-
-        #endregion
     }
 }

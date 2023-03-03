@@ -7,7 +7,6 @@ namespace HeartmadeCandles.BusinessLogic.Services
     public class CandleConstructorService : ICandleConstructorService
     {
         private readonly ICandleConstructorRepository _candleConstructorRepository;
-
         public CandleConstructorService(ICandleConstructorRepository candleConstructorRepository)
         {
             _candleConstructorRepository = candleConstructorRepository;

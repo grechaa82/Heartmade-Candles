@@ -4,18 +4,9 @@ namespace HeartmadeCandles.Core.Interfaces.Repositories
 {
     public interface IAdminRepository
     {
-        #region Decor
-        Task<List<Decor>> GetDecorAsync();
-        Task CreateDecorAsync(Decor decor);
-        Task UpdateDecorAsync(Decor decor);
-        Task DeleteDecorAsync(string id);
-        #endregion
-
-        #region Smell
-        Task<List<Smell>> GetSmellAsync();
-        Task CreateSmellAsync(Smell smell);
-        Task UpdateSmellAsync(Smell smell);
-        Task DeleteSmellAsync(string id);
-        #endregion
+        Task<IEnumerable<T>> GetAllAsync<T>() where T : ModelBase;
+        Task CreateAsync<T>(T t) where T : ModelBase;
+        Task UpdateAsync<T>(T t) where T : ModelBase;
+        Task DeleteAsync<T>(T t) where T : ModelBase;
     }
 }
