@@ -11,6 +11,7 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
         private readonly IMongoCollection<DecorCollection> _decorCollection;
         private readonly IMongoCollection<LayerColorCollection> _layerColorCollection;
         private readonly IMongoCollection<SmellCollection> _smellCollection;
+        private readonly IMongoCollection<OrderCollection> _orderCollection;
         private readonly IMapper _mapper;
 
         public AdminRepository(IMongoDatabase mongoDatabase, IMapper mapper)
@@ -18,6 +19,7 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
             _decorCollection = mongoDatabase.GetCollection<DecorCollection>("Decor");
             _layerColorCollection = mongoDatabase.GetCollection<LayerColorCollection>("LayerColor");
             _smellCollection = mongoDatabase.GetCollection<SmellCollection>("Smell");
+            _orderCollection = mongoDatabase.GetCollection<OrderCollection>("Order");
             _mapper = mapper;
         }
 
@@ -36,6 +38,10 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
                 case "Smell":
                     var smells = _smellCollection.Find(smell => true).ToEnumerable();
                     return (IEnumerable<T>)_mapper.Map<IEnumerable<SmellCollection>, IEnumerable<Smell>>(smells);
+
+                case "Order":
+                    var order = _orderCollection.Find(order => true).ToEnumerable();
+                    return (IEnumerable<T>)_mapper.Map<IEnumerable<OrderCollection>, IEnumerable<Order>>(order);
 
                 default: return default;
             }

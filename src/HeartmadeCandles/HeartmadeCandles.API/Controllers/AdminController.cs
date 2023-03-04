@@ -104,5 +104,15 @@ namespace HeartmadeCandles.API.Controllers
             return Ok();
         }
         #endregion
+
+        #region Order
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetOrder()
+        {
+            var orders = await _adminService.GetAllAsync<Order>();
+            return Ok(orders);
+        }
+
+        #endregion
     }
 }
