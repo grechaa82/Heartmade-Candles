@@ -16,5 +16,10 @@ namespace HeartmadeCandles.BusinessLogic.Services
         {
             return await _candleConstructorRepository.GetAllAsync();
         }
+
+        public async Task CreateOrder(Order order)
+        {
+            await _candleConstructorRepository.CreateOrder(order);
+        }
     }
 }

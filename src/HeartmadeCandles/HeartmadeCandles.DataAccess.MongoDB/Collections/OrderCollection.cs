@@ -31,8 +31,8 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Collections
         [BsonElement("numberOfLayers")]
         public int? NumberOfLayers { get; set; }
 
-        [BsonElement("layerColors"), BsonExtraElements]
-        public Dictionary<int, LayerColorCollection>? LayerColors { get; set; }
+        [BsonElement("layerColors")]
+        public IDictionary<string, LayerColorCollection>? LayerColors { get; set; }
 
         [BsonElement("smell")]
         public SmellCollection? Smell { get; set; }

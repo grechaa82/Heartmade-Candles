@@ -12,6 +12,9 @@ namespace HeartmadeCandles.DataAccess.MongoDB
             CreateMap<Decor, DecorCollection>().ReverseMap();
             CreateMap<LayerColor, LayerColorCollection>().ReverseMap();
             CreateMap<Smell, SmellCollection>().ReverseMap();
+            CreateMap<Address, AddressCollection>().ReverseMap();
+            CreateMap<Customer, CustomerCollection>().ReverseMap();
+            CreateMap<Order, OrderCollection>().ReverseMap();
         }
     }
 }   

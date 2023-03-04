@@ -1,4 +1,5 @@
 ﻿using HeartmadeCandles.Core.Interfaces.Services;
+using HeartmadeCandles.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers
@@ -19,6 +20,13 @@ namespace HeartmadeCandles.API.Controllers
         {
             var candles = await _candleConstructorService.GetAllAsync();
             return Ok(candles);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Order(Order order)
+        {
+            await _candleConstructorService.CreateOrder(order);
+            return Ok();
         }
     }
 }

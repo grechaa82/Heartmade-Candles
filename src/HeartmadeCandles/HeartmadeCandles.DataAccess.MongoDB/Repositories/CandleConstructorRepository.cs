@@ -11,11 +11,13 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
     public class CandleConstructorRepository : ICandleConstructorRepository
     {
         private readonly IMongoCollection<CandleCollection> _candleCollection;
+        private readonly IMongoCollection<OrderCollection> _orderCollection;
         private readonly IMapper _mapper;
 
         public CandleConstructorRepository(IMongoDatabase mongoDatabase, IMapper mapper)
         {
             _candleCollection = mongoDatabase.GetCollection<CandleCollection>("Candle");
+            _orderCollection = mongoDatabase.GetCollection<OrderCollection>("Order");
             _mapper = mapper;
         }
 
@@ -37,6 +39,12 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
             }
 
             return _mapper.Map<List<CandleCollection>, List<Candle>>(candles);
+        }
+
+        public async Task CreateOrder(Order order)
+        {
+            var orderCollection = _mapper.Map<Order, OrderCollection>(order);
+            await _orderCollection.InsertOneAsync(orderCollection);
         }
     }
 }
