@@ -4,6 +4,7 @@ namespace HeartmadeCandles.Core.Interfaces.Repositories
 {
     public interface IAuthRepository
     {
-        Task<User> GetUserByEmail(string email);
+        Task<User> GetUserByEmailAsync(string email);
+        Task CreateUserAsync(User user);
     }
 }

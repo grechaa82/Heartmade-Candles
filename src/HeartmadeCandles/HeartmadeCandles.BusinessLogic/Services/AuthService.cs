@@ -1,6 +1,8 @@
 ﻿using HeartmadeCandles.Core;
 using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Interfaces.Services;
+using HeartmadeCandles.Core.Models;
+
 namespace HeartmadeCandles.BusinessLogic.Services
 {
     public class AuthService : IAuthService
@@ -11,9 +13,9 @@ namespace HeartmadeCandles.BusinessLogic.Services
             _authRepository = authRepository;
         }
 
-        public async Task<bool> IsVerify(string email, string password)
+        public async Task<bool> IsVerifyAsync(string email, string password)
         {
-            var user = await _authRepository.GetUserByEmail(email);
+            var user = await _authRepository.GetUserByEmailAsync(email);
 
             if (user != null)
             {
@@ -23,6 +25,23 @@ namespace HeartmadeCandles.BusinessLogic.Services
                 }
             }
             return false;
+        }
+
+        public async Task<bool> RegisterUserAsync(string nickName, string email, string password)
+        {
+            if (await _authRepository.GetUserByEmailAsync(email) != null)
+            {
+                return false;
+            }
+            var user = new User(nickName,
+                email,
+                new SHA().GenerateSHA512(password),
+                default,
+                default);
+
+            await _authRepository.CreateUserAsync(user);
+
+            return true;
         }
     }
 }

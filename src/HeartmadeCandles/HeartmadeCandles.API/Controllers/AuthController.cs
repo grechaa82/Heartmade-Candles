@@ -22,10 +22,10 @@ namespace HeartmadeCandles.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var resultVetify = await _authService.IsVerify(email, password);
-            if (!resultVetify)
+            var isVetify = await _authService.IsVerifyAsync(email, password);
+            if (!isVetify)
             {
-                return BadRequest("incorrect password");
+                return BadRequest();
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -47,6 +47,19 @@ namespace HeartmadeCandles.API.Controllers
             var token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
 
             return Ok(token);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Register(string nickName, string email, string password)
+        {
+            var isRegister = await _authService.RegisterUserAsync(nickName, email, password);
+
+            if (!isRegister)
+            {
+                return BadRequest();
+            };
+
+            return Ok();
         }
     }
 }

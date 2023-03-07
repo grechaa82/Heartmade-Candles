@@ -17,11 +17,20 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
             _mapper = mapper;
         }
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            var users = await _userCollection.Find(_ => true).ToListAsync();
             var user = await _userCollection.Find(x => x.Email == email).FirstOrDefaultAsync();
             return _mapper.Map<UserCollection, User>(user);
+        }
+
+        public async Task CreateUserAsync(User user)
+        {
+            try
+            {
+                var userCollection = _mapper.Map<User, UserCollection>(user);
+                await _userCollection.InsertOneAsync(userCollection);
+            }
+            catch { }
         }
     }
 }
