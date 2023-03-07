@@ -15,6 +15,7 @@ namespace HeartmadeCandles.DataAccess.MongoDB
             CreateMap<Address, AddressCollection>().ReverseMap();
             CreateMap<Customer, CustomerCollection>().ReverseMap();
             CreateMap<Order, OrderCollection>().ReverseMap();
+            CreateMap<User, UserCollection>().ReverseMap();
         }
     }
 }   
