@@ -2,23 +2,25 @@
 {
     public class User : ModelBase
     {
-        public User(string nickName,
+        public User(
+            string nickName, 
             string email,
             string password,
-            Customer customer = null,
+            string customerId,
             Role role = Role.Customer)
         {
             NickName = nickName;
             Email = email;
             Password = password;
+            CustomerId = customerId;
             Role = role;
         }
 
-        public string NickName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public Customer? Customer { get; set; }
-        public Role Role { get; set; } = Role.Customer;
+        public string NickName { get; }
+        public string Email { get; }
+        public string Password { get; }
+        public string CustomerId { get; }
+        public Role Role { get; } = Role.Customer;
     }
 
     public enum Role

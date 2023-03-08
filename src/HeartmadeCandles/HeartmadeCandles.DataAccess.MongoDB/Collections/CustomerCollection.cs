@@ -11,22 +11,22 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Collections
         public string? Id { get; set; }
 
         [BsonElement("name")]
-        public string? Name { get; set; }
+        public string? Name { get; set; } = string.Empty;
 
         [BsonElement("surname")]
-        public string? Surname { get; set; }
+        public string? Surname { get; set; } = string.Empty;
 
         [BsonElement("middleName")]
-        public string? MiddleName { get; set; }
+        public string? MiddleName { get; set; } = string.Empty;
 
         [BsonElement("email")]
-        public string? Email { get; set; }
+        public string? Email { get; set; } = string.Empty;
 
         [BsonElement("phone")]
-        public string? Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
 
         [BsonElement("typeDelivery")]
-        public string? TypeDelivery { get; set; }
+        public string TypeDelivery { get; set; } = string.Empty;
 
         [BsonElement("address")]
         public Address? Address { get; set; }

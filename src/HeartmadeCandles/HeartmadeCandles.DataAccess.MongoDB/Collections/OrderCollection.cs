@@ -10,18 +10,6 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Collections
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
 
-        [BsonElement("name")]
-        public string? Name { get; set; }
-
-        [BsonElement("phone")]
-        public string? Phone { get; set; }
-
-        [BsonElement("typeDelivery")]
-        public string? TypeDelivery { get; set; }
-
-        [BsonElement("createdAt")]
-        public DateTime? CreatedAt { get; set; }
-
         [BsonElement("customer")]
         public Customer? Customer { get; set; }
 
@@ -42,5 +30,8 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Collections
 
         [BsonElement("description")]
         public string? Description { get; set; }
+
+        [BsonElement("createdAt")]
+        public DateTime? CreatedAt { get; set; }
     }
 }

@@ -7,24 +7,24 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Collections
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        public string? Id { get; set; } = string.Empty;
 
         [BsonElement("country")]
-        public string? Country { get; set; }
+        public string? Country { get; set; } = string.Empty;
 
         [BsonElement("cities")]
-        public string? Cities { get; set; }
+        public string? Cities { get; set; } = string.Empty;
 
         [BsonElement("street")]
-        public string? Street { get; set; }
+        public string? Street { get; set; } = string.Empty;
 
         [BsonElement("house")]
-        public string? House { get; set; }
+        public string? House { get; set; } = string.Empty;
 
         [BsonElement("flat")]
-        public string? Flat { get; set; }
+        public string? Flat { get; set; } = string.Empty;
 
         [BsonElement("index")]
-        public string? Index { get; set; }
+        public string? Index { get; set; } = string.Empty;
     }
 }
