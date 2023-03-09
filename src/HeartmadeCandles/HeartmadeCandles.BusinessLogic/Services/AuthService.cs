@@ -13,18 +13,20 @@ namespace HeartmadeCandles.BusinessLogic.Services
             _authRepository = authRepository;
         }
 
-        public async Task<bool> IsVerifyAsync(string email, string password)
+        public async Task<User> GetUserAsync(string email, string password)
         {
             var user = await _authRepository.GetUserByEmailAsync(email);
 
-            if (user != null)
+            if (user == null)
             {
-                if (user.Password == new SHA().GenerateSHA512(password))
-                {
-                    return true;
-                }
+                throw new ArgumentNullException(nameof(user));
             }
-            return false;
+
+            if (user.Password != new SHA().GenerateSHA512(password))
+            {
+                throw new Exception();
+            }
+            return user;
         }
 
         public async Task<bool> RegisterUserAsync(string nickName, string email, string password)
@@ -33,10 +35,13 @@ namespace HeartmadeCandles.BusinessLogic.Services
             {
                 return false;
             }
+
+            var address = await _authRepository.CreateAddressAsync();
+            var customer = await _authRepository.CreateCustomerAsync(address);
             var user = new User(nickName,
                 email,
                 new SHA().GenerateSHA512(password),
-                default,
+                customer.Id,
                 default);
 
             await _authRepository.CreateUserAsync(user);

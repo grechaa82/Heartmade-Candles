@@ -1,11 +1,13 @@
 ﻿using HeartmadeCandles.Core.Interfaces.Services;
 using HeartmadeCandles.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;

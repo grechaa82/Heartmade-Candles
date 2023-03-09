@@ -6,5 +6,7 @@ namespace HeartmadeCandles.Core.Interfaces.Repositories
     {
         Task<User> GetUserByEmailAsync(string email);
         Task CreateUserAsync(User user);
+        Task<Address> CreateAddressAsync();
+        Task<Customer> CreateCustomerAsync(Address address);
     }
 }

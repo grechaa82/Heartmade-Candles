@@ -1,4 +1,5 @@
 ﻿using HeartmadeCandles.Core.Interfaces.Services;
+using HeartmadeCandles.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,11 +23,7 @@ namespace HeartmadeCandles.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var isVetify = await _authService.IsVerifyAsync(email, password);
-            if (!isVetify)
-            {
-                return BadRequest();
-            }
+            var user = await _authService.GetUserAsync(email, password);
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -37,6 +34,7 @@ namespace HeartmadeCandles.API.Controllers
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Email, email),
+                    new Claim(ClaimTypes.Role, user.Role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(28),
                 SigningCredentials = new SigningCredentials(
@@ -45,6 +43,8 @@ namespace HeartmadeCandles.API.Controllers
             };
 
             var token = tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+
+            Response.Cookies.Append("userId", user.Id);
 
             return Ok(token);
         }

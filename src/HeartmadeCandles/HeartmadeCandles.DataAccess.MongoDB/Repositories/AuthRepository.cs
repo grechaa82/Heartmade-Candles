@@ -9,11 +9,15 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
     public class AuthRepository : IAuthRepository
     {
         private readonly IMongoCollection<UserCollection> _userCollection;
+        private readonly IMongoCollection<AddressCollection> _addressCollection;
+        private readonly IMongoCollection<CustomerCollection> _customerCollection;
         private readonly IMapper _mapper;
 
         public AuthRepository(IMongoDatabase mongoDatabase, IMapper mapper)
         {
             _userCollection = mongoDatabase.GetCollection<UserCollection>("User");
+            _addressCollection = mongoDatabase.GetCollection<AddressCollection>("Address");
+            _customerCollection = mongoDatabase.GetCollection<CustomerCollection>("Customer");
             _mapper = mapper;
         }
 
@@ -31,6 +35,21 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
                 await _userCollection.InsertOneAsync(userCollection);
             }
             catch { }
+        }
+
+        public async Task<Address> CreateAddressAsync()
+        {
+            var newAddress = new AddressCollection();
+            await _addressCollection.InsertOneAsync(newAddress);
+            return _mapper.Map<AddressCollection, Address>(newAddress);
+        }
+
+        public async Task<Customer> CreateCustomerAsync(Address address)
+        {
+            var newCustomer = new CustomerCollection();
+            newCustomer.Address = address;
+            await _customerCollection.InsertOneAsync(newCustomer);
+            return _mapper.Map<CustomerCollection, Customer>(newCustomer);
         }
     }
 }
