@@ -16,6 +16,7 @@ builder.Services.AddAutoMapper(typeof(DataAccessMappingProfile));
 builder.Services.AddScoped<ICandleConstructorService, CandleConstructorService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Add repositories to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
@@ -29,6 +30,7 @@ builder.Services.AddSingleton(options =>
 builder.Services.AddScoped<ICandleConstructorRepository, CandleConstructorRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -64,6 +66,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
