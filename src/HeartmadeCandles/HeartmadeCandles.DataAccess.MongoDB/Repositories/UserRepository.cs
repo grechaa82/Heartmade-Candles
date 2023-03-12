@@ -3,7 +3,6 @@ using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Models;
 using HeartmadeCandles.DataAccess.MongoDB.Collections;
 using MongoDB.Driver;
-using System.Net.NetworkInformation;
 
 namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
 {
@@ -28,10 +27,16 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
             return _mapper.Map<List<UserCollection>, List<User>>(users);
         }
 
-        public async Task<User> GetAsync(string id)
+        public async Task<User> GetUserAsync(string id)
         {
             var user = await _userCollection.Find(user => user.Id == id).FirstOrDefaultAsync();
             return _mapper.Map<UserCollection, User>(user);
+        }
+
+        public async Task<Customer> GetCustomerAsync(string id)
+        {
+            var customer = await _customerCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return _mapper.Map<CustomerCollection, Customer>(customer);
         }
 
         public async Task UpdateCustomerAsync(Customer customer)

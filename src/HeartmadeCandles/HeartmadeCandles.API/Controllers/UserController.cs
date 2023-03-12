@@ -18,15 +18,6 @@ namespace HeartmadeCandles.API.Controllers
             _userService = userService;
         }
 
-        [AllowAnonymous]
-        [HttpGet("[action]")]
-        public async Task<IActionResult> Users()
-        {
-            var users = await _userService.GetAllAsync();
-
-            return Ok(users);
-        }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -37,19 +28,46 @@ namespace HeartmadeCandles.API.Controllers
             return Ok(user);
         }
 
-        [AllowAnonymous]
         [HttpPost("[action]")]
-        public async Task<IActionResult> UpdateCustomer(Customer customer)
+        public async Task<IActionResult> UpdateCustomer(
+            string name,
+            string surname,
+            string middleName,
+            string phone,
+            TypeDelivery typeDelivery)
         {
-            await _userService.UpdateCustomerAsync(customer);
+            var userId = Request.Cookies["userId"];
+
+            await _userService.UpdateCustomerAsync(
+                userId,
+                name,
+                surname,
+                middleName,
+                phone,
+                typeDelivery);
 
             return Ok();
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> UpdateAddress(Address address)
+        public async Task<IActionResult> UpdateAddress(
+            string country,
+            string cities,
+            string street,
+            string house,
+            string flat,
+            string index)
         {
-            await _userService.UpdateAddressAsync(address);
+            var userId = Request.Cookies["userId"];
+
+            await _userService.UpdateAddressAsync(
+                userId,
+                country,
+                cities,
+                street,
+                house,
+                flat,
+                index);
 
             return Ok();
         }

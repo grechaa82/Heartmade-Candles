@@ -3,12 +3,30 @@
     public class Customer : ModelBase
     {
         public Customer(
-    string name,
-    string surname,
-    string middleName,
-    string phone,
-    Address address,
-    TypeDelivery typeDelivery = TypeDelivery.Pickup)
+            string id,
+            string name,
+            string surname,
+            string middleName,
+            string phone,
+            Address address,
+            TypeDelivery typeDelivery)
+        {
+            Id = id;
+            Name = name;
+            Surname = surname;
+            MiddleName = middleName;
+            Phone = phone;
+            Address = address;
+            TypeDelivery = typeDelivery;
+        }
+
+        public Customer(
+            string name,
+            string surname,
+            string middleName,
+            string phone,
+            Address address,
+            TypeDelivery typeDelivery = TypeDelivery.Pickup)
         {
             Name = name;
             Surname = surname;
