@@ -35,14 +35,19 @@ namespace HeartmadeCandles.BusinessLogic.Services
 
             var customer = await _userRepository.GetCustomerAsync(user.CustomerId);
 
-            var newCustomer = new Customer(
-                customer.Id,
+            var (newCustomer, errors) = Customer.Create(
                 name,
                 surname,
                 middleName,
                 phone,
                 customer.Address,
-                typeDelivery);
+                typeDelivery,
+                customer.Id);
+
+            if (errors.Any())
+            {
+                throw new Exception();
+            }
 
             await _userRepository.UpdateCustomerAsync(newCustomer);
         }
@@ -60,14 +65,19 @@ namespace HeartmadeCandles.BusinessLogic.Services
 
             var customer = await _userRepository.GetCustomerAsync(user.CustomerId);
 
-            var address = new Address(
-                customer.Address.Id,
+            var (address, errors) = Address.Create(
                 country,
                 cities,
                 street,
                 house,
                 flat,
-                index);
+                index,
+                customer.Address.Id);
+
+            if (errors.Any())
+            {
+                throw new Exception();
+            }
 
             await _userRepository.UpdateCustomerAsync(customer);
             await _userRepository.UpdateAddressAsync(address);

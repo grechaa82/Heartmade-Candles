@@ -21,7 +21,6 @@ namespace HeartmadeCandles.BusinessLogic.Services
             {
                 throw new ArgumentNullException(nameof(user));
             }
-
             if (user.Password != new SHA().GenerateSHA512(password))
             {
                 throw new Exception();
@@ -37,12 +36,21 @@ namespace HeartmadeCandles.BusinessLogic.Services
             }
 
             var address = await _authRepository.CreateAddressAsync();
+
             var customer = await _authRepository.CreateCustomerAsync(address);
-            var user = new User(nickName,
+
+            var (user, errors) = User.Create(
+                nickName,
                 email,
-                new SHA().GenerateSHA512(password),
+                password,
                 customer.Id,
+                default,
                 default);
+
+            if (errors.Any())
+            {
+                throw new Exception();
+            }
 
             await _authRepository.CreateUserAsync(user);
 

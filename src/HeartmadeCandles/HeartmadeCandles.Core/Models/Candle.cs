@@ -2,18 +2,69 @@
 {
     public class Candle : ModelBase
     {
-        public bool IsUsed { get; set; }
+        private Candle(
+            string id,
+            bool isUsed,
+            string title,
+            string imageURL,
+            List<int> numberOfLayers,
+            List<LayerColor> layerColors,
+            List<Smell> smells,
+            List<Decor> decors)
+        {
+            Id = id;
+            IsUsed = isUsed;
+            Title = title;
+            ImageURL = imageURL;
+            NumberOfLayers = numberOfLayers;
+            LayerColors = layerColors;
+            Smells = smells;
+            Decors = decors;
+        }
 
-        public string? Title { get; set; }
+        public bool IsUsed { get; }
+        public string Title { get; }
+        public string ImageURL { get; }
+        public List<int> NumberOfLayers { get; }
+        public List<LayerColor> LayerColors { get; }
+        public List<Smell> Smells { get; }
+        public List<Decor> Decors { get; }
 
-        public string? ImageURL { get; set; }
+        public static (Candle, ErrorDetail[]) Create(
+            bool isUsed,
+            string title,
+            string imageURL,
+            List<int> numberOfLayers,
+            List<LayerColor> layerColors,
+            List<Smell> smells,
+            List<Decor> decors,
+            string id = null)
+        {
+            var errors = new List<ErrorDetail>();
+            var errorsMessage = string.Empty;
 
-        public List<int>? NumberOfLayers { get; set; }
+            if (string.IsNullOrWhiteSpace(title))
+            {
+                errorsMessage = $"'{nameof(title)}' connot be null or whitespace.";
+                errors.Add(new ErrorDetail(errorsMessage));
+            }
 
-        public List<LayerColor>? LayerColors { get; set; }
+            if (errors.Any())
+            {
+                return (null, errors.ToArray());
+            }
 
-        public List<Smell>? Smells { get; set; }
+            var candle = new Candle(
+                id,
+                isUsed,
+                title,
+                imageURL,
+                numberOfLayers,
+                layerColors,
+                smells,
+                decors);
 
-        public List<Decor>? Decors { get; set; }
+            return (candle, errors.ToArray());
+        }
     }
 }
