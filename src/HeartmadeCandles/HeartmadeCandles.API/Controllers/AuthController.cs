@@ -1,5 +1,4 @@
 ﻿using HeartmadeCandles.Core.Interfaces.Services;
-using HeartmadeCandles.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -52,11 +51,11 @@ namespace HeartmadeCandles.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Register(string nickName, string email, string password)
         {
-            var isRegister = await _authService.RegisterUserAsync(nickName, email, password);
+            var (result, errors) = await _authService.RegisterUserAsync(nickName, email, password);
 
-            if (!isRegister)
+            if (result == false && errors.Any())
             {
-                return BadRequest();
+                return BadRequest(errors);
             };
 
             return Ok();

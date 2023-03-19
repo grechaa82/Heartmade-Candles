@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Core.Interfaces.Repositories;
+﻿using HeartmadeCandles.Core;
+using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Interfaces.Services;
 using HeartmadeCandles.Core.Models;
 
@@ -23,7 +24,7 @@ namespace HeartmadeCandles.BusinessLogic.Services
             return await _userRepository.GetUserAsync(id);
         }
 
-        public async Task UpdateCustomerAsync(
+        public async Task<(bool, ErrorDetail[])> UpdateCustomerAsync(
             string userId,
             string name,
             string surname,
@@ -46,13 +47,15 @@ namespace HeartmadeCandles.BusinessLogic.Services
 
             if (errors.Any())
             {
-                throw new Exception();
+                return (false, errors);
             }
 
             await _userRepository.UpdateCustomerAsync(newCustomer);
+
+            return (true, errors);
         }
 
-        public async Task UpdateAddressAsync(
+        public async Task<(bool, ErrorDetail[])> UpdateAddressAsync(
             string userId,
             string country,
             string cities,
@@ -76,11 +79,13 @@ namespace HeartmadeCandles.BusinessLogic.Services
 
             if (errors.Any())
             {
-                throw new Exception();
+                return (false, errors);
             }
 
             await _userRepository.UpdateCustomerAsync(customer);
             await _userRepository.UpdateAddressAsync(address);
+
+            return (true, errors);
         }
     }
 }

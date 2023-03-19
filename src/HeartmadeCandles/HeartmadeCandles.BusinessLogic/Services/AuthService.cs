@@ -28,11 +28,12 @@ namespace HeartmadeCandles.BusinessLogic.Services
             return user;
         }
 
-        public async Task<bool> RegisterUserAsync(string nickName, string email, string password)
+        public async Task<(bool, ErrorDetail[])> RegisterUserAsync(string nickName, string email, string password)
         {
             if (await _authRepository.GetUserByEmailAsync(email) != null)
             {
-                return false;
+                var error = new ErrorDetail("User with this email already exists");
+                return (false, new ErrorDetail[1] { error });
             }
 
             var address = await _authRepository.CreateAddressAsync();
@@ -42,19 +43,19 @@ namespace HeartmadeCandles.BusinessLogic.Services
             var (user, errors) = User.Create(
                 nickName,
                 email,
-                password,
+                new SHA().GenerateSHA512(password),
                 customer.Id,
                 default,
                 default);
 
             if (errors.Any())
             {
-                throw new Exception();
+                return (false, errors);
             }
 
             await _authRepository.CreateUserAsync(user);
 
-            return true;
+            return (true, errors);
         }
     }
 }

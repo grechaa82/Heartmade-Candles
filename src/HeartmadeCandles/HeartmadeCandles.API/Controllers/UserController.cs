@@ -38,13 +38,18 @@ namespace HeartmadeCandles.API.Controllers
         {
             var userId = Request.Cookies["userId"];
 
-            await _userService.UpdateCustomerAsync(
+            var (result, errors) = await _userService.UpdateCustomerAsync(
                 userId,
                 name,
                 surname,
                 middleName,
                 phone,
                 typeDelivery);
+
+            if (result == false && errors.Any())
+            {
+                return BadRequest(errors);
+            }
 
             return Ok();
         }
@@ -60,7 +65,7 @@ namespace HeartmadeCandles.API.Controllers
         {
             var userId = Request.Cookies["userId"];
 
-            await _userService.UpdateAddressAsync(
+            var (result, errors) = await _userService.UpdateAddressAsync(
                 userId,
                 country,
                 cities,
@@ -68,6 +73,11 @@ namespace HeartmadeCandles.API.Controllers
                 house,
                 flat,
                 index);
+
+            if (result == false && errors.Any())
+            {
+                return BadRequest(errors);
+            }
 
             return Ok();
         }
