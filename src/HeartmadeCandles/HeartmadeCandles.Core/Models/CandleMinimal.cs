@@ -1,46 +1,26 @@
 ﻿namespace HeartmadeCandles.Core.Models
 {
-    public class Candle : ModelBase
+    public class CandleMinimal : ModelBase
     {
-        private Candle(
+        private CandleMinimal(
             string id,
-            bool isUsed,
             string title,
             string imageURL,
-            List<int> numberOfLayers,
-            List<LayerColor> layerColors,
-            List<Smell> smells,
-            List<Decor> decors,
             string description)
         {
             Id = id;
-            IsUsed = isUsed;
             Title = title;
             ImageURL = imageURL;
-            NumberOfLayers = numberOfLayers;
-            LayerColors = layerColors;
-            Smells = smells;
-            Decors = decors;
             Description = description;
         }
 
-        public bool IsUsed { get; }
         public string Title { get; }
         public string ImageURL { get; }
-        public List<int> NumberOfLayers { get; }
-        public List<LayerColor> LayerColors { get; }
-        public List<Smell> Smells { get; }
-        public List<Decor> Decors { get; }
         public string Description { get; }
 
-        public static (Candle, ErrorDetail[]) Create(
-            bool isUsed,
+        public static (CandleMinimal, ErrorDetail[]) Create(
             string title,
             string imageURL,
-            List<int> numberOfLayers,
-            List<LayerColor> layerColors,
-            List<Smell> smells,
-            List<Decor> decors,
             string id = null,
             string description = "")
         {
@@ -58,18 +38,13 @@
                 return (null, errors.ToArray());
             }
 
-            var candle = new Candle(
+            var candleMinimal = new CandleMinimal(
                 id,
-                isUsed,
                 title,
                 imageURL,
-                numberOfLayers,
-                layerColors,
-                smells,
-                decors,
                 description);
 
-            return (candle, errors.ToArray());
+            return (candleMinimal, errors.ToArray());
         }
     }
 }
