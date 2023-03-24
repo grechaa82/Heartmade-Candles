@@ -6,21 +6,25 @@
             string id,
             string title,
             string imageURL,
+            CandleType candleType,
             string description)
         {
             Id = id;
             Title = title;
             ImageURL = imageURL;
+            CandleType = candleType;
             Description = description;
         }
 
         public string Title { get; }
         public string ImageURL { get; }
+        public CandleType CandleType { get; }
         public string Description { get; }
 
         public static (CandleMinimal, ErrorDetail[]) Create(
             string title,
             string imageURL,
+            CandleType candleType,
             string id = null,
             string description = "")
         {
@@ -33,6 +37,12 @@
                 errors.Add(new ErrorDetail(errorsMessage));
             }
 
+            if (candleType == null)
+            {
+                errorsMessage = $"'{nameof(title)}' connot be null.";
+                errors.Add(new ErrorDetail(errorsMessage));
+            }
+
             if (errors.Any())
             {
                 return (null, errors.ToArray());
@@ -42,9 +52,16 @@
                 id,
                 title,
                 imageURL,
+                candleType,
                 description);
 
             return (candleMinimal, errors.ToArray());
         }
+    }
+
+    public enum CandleType
+    {
+        Shaped,
+        Container
     }
 }
