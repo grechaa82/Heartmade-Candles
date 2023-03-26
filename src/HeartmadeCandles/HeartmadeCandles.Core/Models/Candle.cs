@@ -11,6 +11,7 @@
             List<LayerColor> layerColors,
             List<Smell> smells,
             List<Decor> decors,
+            int weightGrams,
             string description)
         {
             Id = id;
@@ -21,6 +22,7 @@
             LayerColors = layerColors;
             Smells = smells;
             Decors = decors;
+            WeightGrams = weightGrams;
             Description = description;
         }
 
@@ -31,6 +33,7 @@
         public List<LayerColor> LayerColors { get; }
         public List<Smell> Smells { get; }
         public List<Decor> Decors { get; }
+        public int WeightGrams { get; }
         public string Description { get; }
 
         public static (Candle, ErrorDetail[]) Create(
@@ -41,6 +44,7 @@
             List<LayerColor> layerColors,
             List<Smell> smells,
             List<Decor> decors,
+            int weightGrams,
             string id = null,
             string description = "")
         {
@@ -50,6 +54,12 @@
             if (string.IsNullOrWhiteSpace(title))
             {
                 errorsMessage = $"'{nameof(title)}' connot be null or whitespace.";
+                errors.Add(new ErrorDetail(errorsMessage));
+            }
+
+            if (weightGrams <= 0)
+            {
+                errorsMessage = $"'{nameof(weightGrams)}' сannot be 0 or less.";
                 errors.Add(new ErrorDetail(errorsMessage));
             }
 
@@ -67,6 +77,7 @@
                 layerColors,
                 smells,
                 decors,
+                weightGrams,
                 description);
 
             return (candle, errors.ToArray());
