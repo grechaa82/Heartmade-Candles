@@ -1,36 +1,30 @@
-﻿using System.Runtime.ConstrainedExecution;
-
-namespace HeartmadeCandles.Core.Models
+﻿namespace HeartmadeCandles.Core.Models
 {
-    public class Decor : ModelBase
+    public class CandleMinimal : ModelBase
     {
-        private Decor(
+        private CandleMinimal(
             string id,
-            bool isUsed,
             string title,
             string imageURL,
-            decimal price,
+            CandleType candleType,
             string description)
         {
             Id = id;
-            IsUsed = isUsed;
             Title = title;
             ImageURL = imageURL;
-            Price = price;
+            CandleType = candleType;
             Description = description;
         }
 
-        public bool IsUsed { get; }
         public string Title { get; }
         public string ImageURL { get; }
-        public decimal Price { get; }
+        public CandleType CandleType { get; }
         public string Description { get; }
 
-        public static (Decor, ErrorDetail[]) Create(
-            bool isUsed,
+        public static (CandleMinimal, ErrorDetail[]) Create(
             string title,
             string imageURL,
-            decimal price,
+            CandleType candleType,
             string id = null,
             string description = "")
         {
@@ -43,9 +37,9 @@ namespace HeartmadeCandles.Core.Models
                 errors.Add(new ErrorDetail(errorsMessage));
             }
 
-            if (price <= 0)
+            if (candleType == null)
             {
-                errorsMessage = $"'{nameof(price)}' сannot be 0 or less.";
+                errorsMessage = $"'{nameof(title)}' connot be null.";
                 errors.Add(new ErrorDetail(errorsMessage));
             }
 
@@ -54,15 +48,20 @@ namespace HeartmadeCandles.Core.Models
                 return (null, errors.ToArray());
             }
 
-            var decor = new Decor(
+            var candleMinimal = new CandleMinimal(
                 id,
-                isUsed,
                 title,
                 imageURL,
-                price,
+                candleType,
                 description);
 
-            return (decor, errors.ToArray());
+            return (candleMinimal, errors.ToArray());
         }
+    }
+
+    public enum CandleType
+    {
+        Shaped,
+        Container
     }
 }
