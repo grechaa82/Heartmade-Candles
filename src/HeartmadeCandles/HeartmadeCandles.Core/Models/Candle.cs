@@ -82,5 +82,19 @@
 
             return (candle, errors.ToArray());
         }
+
+        public static decimal GetPrice(Candle candle)
+        {
+            var gramsInLayer = candle.WeightGrams / candle.NumberOfLayers.First();
+
+            var price = 0m;
+
+            foreach (var layer in candle.LayerColors)
+            {
+                price = layer.PricePerGram * gramsInLayer;
+            }
+
+            return price;
+        }
     }
 }

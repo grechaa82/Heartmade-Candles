@@ -1,18 +1,31 @@
 ﻿namespace HeartmadeCandles.Core.Models
 {
-    public class ShoppingCartItem
+    public class ShoppingCartItem : ModelBase
     {
-        private ShoppingCartItem(Candle candle, int quantity)
+        private ShoppingCartItem(
+            string id,
+            string userId,
+            Candle candle,
+            int quantity,
+            decimal price)
         {
+            Id = id;
+            UserId = userId;
             Candle = candle;
             Quantity = quantity;
+            Price = price;
         }
 
+        public string UserId { get; }
         public Candle Candle { get; }
         public int Quantity { get; }
-        public decimal TotalAmount { get; }
+        public decimal Price { get; }
 
-        public static (ShoppingCartItem, ErrorDetail[]) Create(Candle candle, int quantity)
+        public static (ShoppingCartItem, ErrorDetail[]) Create(
+            string userId,
+            Candle candle,
+            int quantity,
+            string id = null)
         {
             var errors = new List<ErrorDetail>();
             var errorsMessage = string.Empty;
@@ -29,16 +42,22 @@
                 errors.Add(new ErrorDetail(errorsMessage));
             }
 
-            // TODO: check TotalAmount
+            // TODO: check TotalPrice
 
             if (errors.Any())
             {
                 return (null, errors.ToArray());
             }
 
-            // TODO: Set TotalAmount (price Candle * Quantity)
+            var candlePrice = Candle.GetPrice(candle);
+            var price = candlePrice * quantity;
 
-            var cartItem = new ShoppingCartItem(candle, quantity);
+            var cartItem = new ShoppingCartItem(
+                id,
+                userId,
+                candle,
+                quantity,
+                price);
 
             return (cartItem, errors.ToArray());
         }
@@ -65,7 +84,12 @@
                 return (null, errors.ToArray());
             }
 
-            var newCartItem = new ShoppingCartItem(cartItem.Candle, newQuantity);
+            var newCartItem = new ShoppingCartItem(
+                cartItem.Id,
+                cartItem.UserId,
+                cartItem.Candle,
+                newQuantity,
+                cartItem.Price);
 
             return (newCartItem, errors.ToArray());
         }
