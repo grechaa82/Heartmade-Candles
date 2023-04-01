@@ -1,21 +1,27 @@
-﻿using HeartmadeCandles.Core.Interfaces.Repositories;
+﻿using AutoMapper;
+using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Models;
+using HeartmadeCandles.DataAccess.MongoDB.Collections;
 using MongoDB.Driver;
 
 namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
 {
     public class ShoppingCartRepository : IShoppingCartRepository
     {
-        private readonly IMongoCollection<ShoppingCartItem> _shoppingCartItem;
+        private readonly IMongoCollection<ShoppingCartItemCollection> _shoppingCartItem;
+        private readonly IMapper _mapper;
 
-        public ShoppingCartRepository(IMongoDatabase mongoDatabase)
+        public ShoppingCartRepository(IMongoDatabase mongoDatabase, IMapper mapper)
         {
-            _shoppingCartItem = mongoDatabase.GetCollection<ShoppingCartItem>("ShoppingCartItem");
+            _shoppingCartItem = mongoDatabase.GetCollection<ShoppingCartItemCollection>("ShoppingCartItem");
+            _mapper = mapper;
         }
 
-        public Task<List<ShoppingCartItem>> Get(string id)
+        public async Task<List<ShoppingCartItem>> GetByUserIdAsync(string userId)
         {
-            throw new NotImplementedException();
+            var shoppingCartItems = await _shoppingCartItem.Find(_ => _.UserId == userId).ToListAsync();
+
+            return _mapper.Map<List<ShoppingCartItemCollection>, List<ShoppingCartItem>>(shoppingCartItems);
         }
     }
 }

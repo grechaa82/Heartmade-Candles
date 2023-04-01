@@ -4,6 +4,6 @@ namespace HeartmadeCandles.Core.Interfaces.Services
 {
     public interface IShoppingCartService
     {
-        Task<ShoppingCart> Get(string id);
+        Task<ShoppingCart> Get(string userId);
     }
 }

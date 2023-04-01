@@ -4,6 +4,6 @@ namespace HeartmadeCandles.Core.Interfaces.Repositories
 {
     public interface IShoppingCartRepository
     {
-        Task<List<ShoppingCartItem>> Get(string id);
+        Task<List<ShoppingCartItem>> GetByUserIdAsync(string userId);
     }
 }

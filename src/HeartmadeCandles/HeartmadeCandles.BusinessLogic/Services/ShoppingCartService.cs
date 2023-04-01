@@ -13,13 +13,13 @@ namespace HeartmadeCandles.BusinessLogic.Services
             _shoppingCartRepository = shoppingCartRepository;
         }
 
-        public async Task<ShoppingCart> Get(string id)
+        public async Task<ShoppingCart> Get(string userId)
         {
-            List<ShoppingCartItem> shoppingCartItems = await _shoppingCartRepository.Get(id);
+            var shoppingCartItems = await _shoppingCartRepository.GetByUserIdAsync(userId);
 
-            var shoppingCart = ShoppingCart.Create(id, shoppingCartItems);
+            var shoppingCart = ShoppingCart.Create(userId, shoppingCartItems);
 
-            throw new NotImplementedException();
+            return shoppingCart;
         }
     }
 }

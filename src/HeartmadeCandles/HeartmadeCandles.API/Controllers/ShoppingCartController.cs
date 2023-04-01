@@ -1,8 +1,10 @@
 ﻿using HeartmadeCandles.Core.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class ShoppingCartController : Controller
@@ -14,9 +16,13 @@ namespace HeartmadeCandles.API.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult Get()
+        public async Task<IActionResult> GetAsync()
         {
-            return Ok();
+            var userId = Request.Cookies["userId"];
+
+            var shoppingCart = await _shoppingCartService.Get(userId);
+
+            return Ok(shoppingCart);
         }
 
         [HttpPost("[action]")]
