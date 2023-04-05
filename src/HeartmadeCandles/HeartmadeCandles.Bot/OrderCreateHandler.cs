@@ -8,8 +8,8 @@ namespace HeartmadeCandles.Bot
 {
     public class OrderCreateHandler : IOrderCreateHandler
     {
-        private static readonly string chatId = "502372730";
-        private static readonly string token = "6005658712:AAHRoDoomqxZ_efYr3wBAJEjYf9TP8wlvPg";
+        private static readonly string chatId = "N-chatId";
+        private static readonly string token = "N-token";
         private static TelegramBotClient client = new TelegramBotClient(token);
 
         public OrderCreateHandler()
