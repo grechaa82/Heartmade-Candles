@@ -1,4 +1,6 @@
+using HeartmadeCandles.Bot;
 using HeartmadeCandles.BusinessLogic.Services;
+using HeartmadeCandles.Core.Interfaces;
 using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Interfaces.Services;
 using HeartmadeCandles.DataAccess.MongoDB;
@@ -32,6 +34,8 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 
+builder.Services.AddScoped<IOrderCreateHandler, OrderCreateHandler>();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,7 +54,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
