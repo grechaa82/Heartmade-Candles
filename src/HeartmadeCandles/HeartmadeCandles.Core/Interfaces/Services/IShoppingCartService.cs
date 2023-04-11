@@ -2,10 +2,9 @@
 
 namespace HeartmadeCandles.Core.Interfaces.Services
 {
-    public interface ICandleConstructorService
+    public interface IShoppingCartService
     {
-        Task<List<CandleMinimal>> GetAllAsync();
-        Task<Candle> GetByIdAsync(string id);
         Task<bool> CreateOrder(ShoppingCart shoppingCart);
+        Task<ShoppingCart> Get(string userId);
     }
 }

@@ -1,8 +1,10 @@
-﻿using HeartmadeCandles.Core.Interfaces.Services;
+﻿using Amazon.Runtime.Internal;
+using HeartmadeCandles.Core.Interfaces.Services;
 using HeartmadeCandles.Core.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace HeartmadeCandles.API.Controllers
 {
@@ -38,18 +40,13 @@ namespace HeartmadeCandles.API.Controllers
         {
             var userId = Request.Cookies["userId"];
 
-            var (result, errors) = await _userService.UpdateCustomerAsync(
+            var result = await _userService.UpdateCustomerAsync(
                 userId,
                 name,
                 surname,
                 middleName,
                 phone,
                 typeDelivery);
-
-            if (result == false && errors.Any())
-            {
-                return BadRequest(errors);
-            }
 
             return Ok();
         }
@@ -65,7 +62,7 @@ namespace HeartmadeCandles.API.Controllers
         {
             var userId = Request.Cookies["userId"];
 
-            var (result, errors) = await _userService.UpdateAddressAsync(
+            var result = await _userService.UpdateAddressAsync(
                 userId,
                 country,
                 cities,
@@ -73,11 +70,6 @@ namespace HeartmadeCandles.API.Controllers
                 house,
                 flat,
                 index);
-
-            if (result == false && errors.Any())
-            {
-                return BadRequest(errors);
-            }
 
             return Ok();
         }

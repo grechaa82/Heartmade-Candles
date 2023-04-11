@@ -25,7 +25,7 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync<T>() where T : ModelBase
         {
-            switch (typeof(T).Name)
+            switch(typeof(T).Name)
             {
                 case "Decor":
                     var decors = _decorCollection.Find(decor => true).ToEnumerable();
@@ -34,7 +34,7 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
                 case "LayerColor":
                     var layerColors = _layerColorCollection.Find(LayerColor => true).ToEnumerable();
                     return (IEnumerable<T>)_mapper.Map<IEnumerable<LayerColorCollection>, IEnumerable<LayerColor>>(layerColors);
-
+                    
                 case "Smell":
                     var smells = _smellCollection.Find(smell => true).ToEnumerable();
                     return (IEnumerable<T>)_mapper.Map<IEnumerable<SmellCollection>, IEnumerable<Smell>>(smells);
@@ -81,7 +81,7 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
 
             try
             {
-                switch (t)
+                switch (t) 
                 {
                     case Candle:
                         break;

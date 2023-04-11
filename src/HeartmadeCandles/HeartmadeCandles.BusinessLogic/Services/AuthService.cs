@@ -17,45 +17,39 @@ namespace HeartmadeCandles.BusinessLogic.Services
         {
             var user = await _authRepository.GetUserByEmailAsync(email);
 
-            if (user == null)
+            if (user == null) 
             {
                 throw new ArgumentNullException(nameof(user));
             }
+
             if (user.Password != new SHA().GenerateSHA512(password))
             {
                 throw new Exception();
             }
+
             return user;
         }
 
-        public async Task<(bool, ErrorDetail[])> RegisterUserAsync(string nickName, string email, string password)
+        public async Task<bool> RegisterUserAsync(string nickName, string email, string password)
         {
             if (await _authRepository.GetUserByEmailAsync(email) != null)
             {
-                var error = new ErrorDetail("User with this email already exists");
-                return (false, new ErrorDetail[1] { error });
+                throw new ArgumentNullException("User with this email already exists");
             }
 
             var address = await _authRepository.CreateAddressAsync();
 
             var customer = await _authRepository.CreateCustomerAsync(address);
 
-            var (user, errors) = User.Create(
-                nickName,
+            var user = new User(
+                nickName, 
                 email,
                 new SHA().GenerateSHA512(password),
-                customer.Id,
-                default,
-                default);
-
-            if (errors.Any())
-            {
-                return (false, errors);
-            }
+                customer.Id);
 
             await _authRepository.CreateUserAsync(user);
 
-            return (true, errors);
+            return true;
         }
     }
 }

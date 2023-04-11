@@ -3,6 +3,7 @@ using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Models;
 using HeartmadeCandles.DataAccess.MongoDB.Collections;
 using MongoDB.Driver;
+using System.Net.NetworkInformation;
 
 namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
 {

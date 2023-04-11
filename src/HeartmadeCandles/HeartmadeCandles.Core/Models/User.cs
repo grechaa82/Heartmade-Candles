@@ -1,79 +1,57 @@
-﻿namespace HeartmadeCandles.Core.Models
+﻿using System.Text.Json.Serialization;
+
+namespace HeartmadeCandles.Core.Models
 {
     public class User : ModelBase
     {
-        private User(
-            string id,
+        private string _nickName;
+        private string _email;
+        private string _password;
+        private string _customerId;
+        private Role _role;
+
+        [JsonConstructor]
+        public User(
             string nickName,
             string email,
             string password,
             string customerId,
+            string id = "",
             Role role = Role.Customer)
         {
-            Id = id;
-            NickName = nickName;
-            Email = email;
-            Password = password;
-            CustomerId = customerId;
-            Role = role;
-        }
-
-        public string NickName { get; }
-        public string Email { get; }
-        public string Password { get; }
-        public string CustomerId { get; }
-        public Role Role { get; }
-
-        public static (User, ErrorDetail[]) Create(
-            string nickName,
-            string email,
-            string password,
-            string customerId,
-            Role role = Role.Customer,
-            string id = null)
-        {
-            var errors = new List<ErrorDetail>();
-            var errorsMessage = string.Empty;
-
             if (string.IsNullOrWhiteSpace(nickName))
             {
-                errorsMessage = $"'{nameof(nickName)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException ($"'{nameof(nickName)}' connot be null or whitespace.");
             }
 
             if (string.IsNullOrWhiteSpace(email))
             {
-                errorsMessage = $"'{nameof(email)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(email)}' connot be null or whitespace.");
             }
 
             if (string.IsNullOrWhiteSpace(password))
             {
-                errorsMessage = $"'{nameof(password)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(password)}' connot be null or whitespace.");
             }
 
             if (string.IsNullOrWhiteSpace(customerId))
             {
-                errorsMessage = $"'{nameof(customerId)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(customerId)}' connot be null or whitespace.");
             }
 
-            if (errors.Any())
-            {
-                return (null, errors.ToArray());
-            }
-
-            var user = new User(
-                id,
-                nickName,
-                email,
-                password,
-                customerId,
-                role);
-
-            return (user, errors.ToArray());
+            Id = id;
+            _nickName = nickName;
+            _email = email;
+            _password = password;
+            _customerId = customerId;
+            _role = role;
         }
+
+        public string NickName { get => _nickName; }
+        public string Email { get => _email; }
+        public string Password { get => _password; }
+        public string CustomerId { get => _customerId; }
+        public Role Role { get => _role; }
     }
 
     public enum Role

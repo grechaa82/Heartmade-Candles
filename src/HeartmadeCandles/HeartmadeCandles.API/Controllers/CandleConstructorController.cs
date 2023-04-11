@@ -16,16 +16,26 @@ namespace HeartmadeCandles.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> GetAll()
         {
-            var candles = await _candleConstructorService.GetAllAsync();
-            return Ok(candles);
+            var result = await _candleConstructorService.GetAllAsync();
+
+            return Ok(result);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Order(Order order)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(string id)
         {
-            await _candleConstructorService.CreateOrder(order);
+            var result = await _candleConstructorService.GetByIdAsync(id);
+
+            return Ok(result);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> CreateOrder(ShoppingCart shoppingCart)
+        {
+            var result = await _candleConstructorService.CreateOrder(shoppingCart);
+            
             return Ok();
         }
     }

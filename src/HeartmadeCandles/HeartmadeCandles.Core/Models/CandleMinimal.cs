@@ -1,67 +1,42 @@
-﻿namespace HeartmadeCandles.Core.Models
+﻿using System.Text.Json.Serialization;
+
+namespace HeartmadeCandles.Core.Models
 {
     public class CandleMinimal : ModelBase
     {
-        private CandleMinimal(
-            string id,
-            string title,
+        private string _title ;
+        private string _imageURL ;
+        private TypeCandle _typeCandle;
+        private string _description;
+
+        [JsonConstructor]
+        public CandleMinimal(
+            string title, 
             string imageURL,
-            CandleType candleType,
-            string description)
+            TypeCandle typeCandle,
+            string id = "",
+            string description ="")
         {
-            Id = id;
-            Title = title;
-            ImageURL = imageURL;
-            CandleType = candleType;
-            Description = description;
-        }
-
-        public string Title { get; }
-        public string ImageURL { get; }
-        public CandleType CandleType { get; }
-        public string Description { get; }
-
-        public static (CandleMinimal, ErrorDetail[]) Create(
-            string title,
-            string imageURL,
-            CandleType candleType,
-            string id = null,
-            string description = "")
-        {
-            var errors = new List<ErrorDetail>();
-            var errorsMessage = string.Empty;
-
             if (string.IsNullOrWhiteSpace(title))
             {
-                errorsMessage = $"'{nameof(title)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(title)}' connot be null or whitespace.");
             }
 
-            if (candleType == null)
+            if (typeCandle == null)
             {
-                errorsMessage = $"'{nameof(title)}' connot be null.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(title)}' connot be null.");
             }
 
-            if (errors.Any())
-            {
-                return (null, errors.ToArray());
-            }
-
-            var candleMinimal = new CandleMinimal(
-                id,
-                title,
-                imageURL,
-                candleType,
-                description);
-
-            return (candleMinimal, errors.ToArray());
+            Id = id;
+            _title  = title;
+            _imageURL  = imageURL;
+            _typeCandle = typeCandle;
+            _description  = description;
         }
-    }
 
-    public enum CandleType
-    {
-        Shaped,
-        Container
+        public string Title { get => _title ; }
+        public string ImageURL { get => _imageURL ; }
+        public TypeCandle TypeCandle { get => _typeCandle; }
+        public string Description { get => _description; }
     }
 }

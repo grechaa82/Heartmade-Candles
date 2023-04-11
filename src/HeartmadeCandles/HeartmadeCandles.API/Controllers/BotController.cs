@@ -11,7 +11,7 @@ namespace HeartmadeCandles.API.Controllers
     public class BotController : Controller
     {
         private readonly IConfiguration _configuration;
-        private readonly string chatId = "502372730";
+        private readonly string chatId = "502372730";  
         public BotController(IConfiguration configuration)
         {
             _configuration = configuration;
@@ -24,7 +24,7 @@ namespace HeartmadeCandles.API.Controllers
             //(string)JsonConvert.DeserializeObject(order.ToString());
 
             var token = _configuration.GetSection("Token").Value;
-
+            
             TelegramBotClient client = new TelegramBotClient(token);
 
             await client.SendTextMessageAsync(chatId, orderText);

@@ -22,13 +22,22 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Collections
         [BsonElement("numberOfLayers")]
         public List<int>? NumberOfLayers { get; set; }
 
+        [BsonElement("decors")]
+        public List<DecorCollection>? Decors { get; set; }
+
         [BsonElement("layerColors")]
         public List<LayerColorCollection>? LayerColors { get; set; }
 
         [BsonElement("smells")]
         public List<SmellCollection>? Smells { get; set; }
 
-        [BsonElement("decors")]
-        public List<DecorCollection>? Decors { get; set; }
+        [BsonElement("weightGrams")]
+        public int WeightGrams { get; set; }
+
+        [BsonElement("typeCandle")]
+        public string? TypeCandle { get; set; }
+
+        [BsonElement("description")]
+        public string? Description { get; }
     }
 }

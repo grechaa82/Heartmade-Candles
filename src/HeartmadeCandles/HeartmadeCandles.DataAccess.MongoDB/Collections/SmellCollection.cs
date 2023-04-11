@@ -14,5 +14,11 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Collections
 
         [BsonElement("title")]
         public string? Title { get; set; }
+
+        [BsonElement("price"), BsonRepresentation(BsonType.Decimal128)]
+        public decimal Price { get; set; }
+
+        [BsonElement("description")]
+        public string? Description { get; set; }
     }
 }
