@@ -1,5 +1,4 @@
-﻿using HeartmadeCandles.Core;
-using HeartmadeCandles.Core.Interfaces.Repositories;
+﻿using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Interfaces.Services;
 using HeartmadeCandles.Core.Models;
 
@@ -24,51 +23,46 @@ namespace HeartmadeCandles.BusinessLogic.Services
             return await _userRepository.GetUserAsync(id);
         }
 
-        public async Task<(bool, ErrorDetail[])> UpdateCustomerAsync(
-            string userId,
-            string name,
-            string surname,
-            string middleName,
-            string phone,
+        public async Task<bool> UpdateCustomerAsync(
+            string userId, 
+            string name, 
+            string surname, 
+            string middleName, 
+            string phone, 
             TypeDelivery typeDelivery)
         {
             var user = await _userRepository.GetUserAsync(userId);
 
             var customer = await _userRepository.GetCustomerAsync(user.CustomerId);
 
-            var (newCustomer, errors) = Customer.Create(
-                name,
-                surname,
-                middleName,
-                phone,
-                customer.Address,
+            var newCustomer = new Customer(
+                name, 
+                surname, 
+                middleName, 
+                phone, 
                 typeDelivery,
+                customer.Address, 
                 customer.Id);
-
-            if (errors.Any())
-            {
-                return (false, errors);
-            }
 
             await _userRepository.UpdateCustomerAsync(newCustomer);
 
-            return (true, errors);
+            return true;
         }
 
-        public async Task<(bool, ErrorDetail[])> UpdateAddressAsync(
-            string userId,
-            string country,
-            string cities,
-            string street,
-            string house,
-            string flat,
+        public async Task<bool> UpdateAddressAsync(
+            string userId, 
+            string country, 
+            string cities, 
+            string street, 
+            string house, 
+            string flat, 
             string index)
         {
             var user = await _userRepository.GetUserAsync(userId);
-
+            
             var customer = await _userRepository.GetCustomerAsync(user.CustomerId);
 
-            var (address, errors) = Address.Create(
+            var address = new Address(
                 country,
                 cities,
                 street,
@@ -77,15 +71,10 @@ namespace HeartmadeCandles.BusinessLogic.Services
                 index,
                 customer.Address.Id);
 
-            if (errors.Any())
-            {
-                return (false, errors);
-            }
-
             await _userRepository.UpdateCustomerAsync(customer);
             await _userRepository.UpdateAddressAsync(address);
-
-            return (true, errors);
+            
+            return true;
         }
     }
 }

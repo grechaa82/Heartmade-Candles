@@ -51,12 +51,7 @@ namespace HeartmadeCandles.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Register(string nickName, string email, string password)
         {
-            var (result, errors) = await _authService.RegisterUserAsync(nickName, email, password);
-
-            if (result == false && errors.Any())
-            {
-                return BadRequest(errors);
-            };
+            var result = await _authService.RegisterUserAsync(nickName, email, password);
 
             return Ok();
         }

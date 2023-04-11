@@ -4,7 +4,8 @@ namespace HeartmadeCandles.Core.Interfaces.Services
 {
     public interface ICandleConstructorService
     {
-        Task CreateOrder(Order order);
-        Task<List<Candle>> GetAllAsync();
+        Task<List<CandleMinimal>> GetAllAsync();
+        Task<Candle> GetByIdAsync(string id);
+        Task<bool> CreateOrder(ShoppingCart shoppingCart);
     }
 }

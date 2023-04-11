@@ -41,6 +41,31 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Repositories
             return _mapper.Map<List<CandleCollection>, List<Candle>>(candles);
         }
 
+        public async Task<Candle> GetByIdAsync(string id)
+        {
+            var BsonDocumentCandles = await _candleCollection
+                .Aggregate()
+                .Lookup("LayerColor", "layerColors", "_id", "layerColors")
+                .Lookup("Smell", "smells", "_id", "smells")
+                .Lookup("Decor", "decors", "_id", "decors")
+                //.FirstOrDefaultAsync(_ => _.Id == id);
+                .ToListAsync();
+
+            CandleCollection candle;
+
+            foreach (var item in BsonDocumentCandles)
+            {
+                candle = BsonSerializer.Deserialize<CandleCollection>(item);
+
+                if (candle.Id == id)
+                {
+                    return _mapper.Map<CandleCollection, Candle>(candle);
+                }
+            }
+
+            return default;
+        }
+
         public async Task CreateOrder(Order order)
         {
             var orderCollection = _mapper.Map<Order, OrderCollection>(order);

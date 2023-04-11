@@ -1,109 +1,84 @@
-﻿namespace HeartmadeCandles.Core.Models
+﻿using System.Text.Json.Serialization;
+
+namespace HeartmadeCandles.Core.Models
 {
     public class Customer : ModelBase
     {
-        private Customer(
-            string id,
+        private string _name;
+        private string _surname;
+        private string _middleName;
+        private string _phone;
+        private TypeDelivery _typeDelivery;
+        private Address _address;
+
+        [JsonConstructor]
+        public Customer(
             string name,
             string surname,
             string middleName,
             string phone,
-            Address address,
-            TypeDelivery typeDelivery)
-        {
-            Id = id;
-            Name = name;
-            Surname = surname;
-            MiddleName = middleName;
-            Phone = phone;
-            Address = address;
-            TypeDelivery = typeDelivery;
-        }
-
-        public string? Name { get; }
-        public string? Surname { get; }
-        public string? MiddleName { get; }
-        public string? Phone { get; }
-        public TypeDelivery TypeDelivery { get; }
-        public Address? Address { get; }
-
-        public static (Customer, ErrorDetail[]) Create(
-            string name,
-            string surname,
-            string middleName,
-            string phone,
-            Address address,
             TypeDelivery typeDelivery,
-            string id = null)
+            Address address,
+            string id = "")
         {
-            var errors = new List<ErrorDetail>();
-            var errorsMessage = string.Empty;
-
             if (string.IsNullOrWhiteSpace(name))
             {
-                errorsMessage = $"'{nameof(name)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(name)}' connot be null or whitespace.");
             }
 
             if (string.IsNullOrWhiteSpace(surname))
             {
-                errorsMessage = $"'{nameof(surname)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(surname)}' connot be null or whitespace.");
             }
 
             if (string.IsNullOrWhiteSpace(middleName))
             {
-                errorsMessage = $"'{nameof(middleName)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(middleName)}' connot be null or whitespace.");
             }
 
             if (string.IsNullOrWhiteSpace(phone))
             {
-                errorsMessage = $"'{nameof(phone)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(phone)}' connot be null or whitespace.");
             }
 
             if (address == null)
             {
-                errorsMessage = $"'{nameof(address)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(address)}' connot be null or whitespace.");
             }
 
             if (typeDelivery == null)
             {
-                errorsMessage = $"'{nameof(typeDelivery)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(typeDelivery)}' connot be null or whitespace.");
             }
 
-            if (errors.Any())
-            {
-                return (null, errors.ToArray());
-            }
-
-            var customer = new Customer(
-                id,
-                name,
-                surname,
-                middleName,
-                phone,
-                address,
-                typeDelivery);
-
-            return (customer, errors.ToArray());
+            Id = id;
+            _name = name;
+            _surname = surname;
+            _middleName = middleName;
+            _phone = phone;
+            _typeDelivery = typeDelivery;
+            _address  = address;
         }
 
-        public static (Customer, ErrorDetail[]) ChangeTypeDelivery(Customer customer, TypeDelivery newTypeDelivery)
+        public string Name { get => _name; }
+        public string Surname { get => _surname; }
+        public string MiddleName { get => _middleName; }
+        public string Phone { get => _phone; }
+        public TypeDelivery TypeDelivery { get => _typeDelivery; }
+        public Address Address { get => _address; }
+
+        public static Customer ChangeTypeDelivery(Customer customer, TypeDelivery newTypeDelivery)
         {
-            var (newCustomer, errors) = Customer.Create(
+            var newCustomer = new Customer(
                 customer.Name,
                 customer.Surname,
                 customer.MiddleName,
                 customer.Phone,
-                customer.Address,
                 newTypeDelivery,
+                customer.Address,
                 customer.Id);
 
-            return (newCustomer, errors);
+            return newCustomer;
         }
     }
 

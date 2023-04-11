@@ -6,8 +6,8 @@ namespace HeartmadeCandles.DataAccess.MongoDB
 {
     public class DataAccessMappingProfile : Profile
     {
-        public DataAccessMappingProfile()
-        {
+        public DataAccessMappingProfile() 
+        { 
             CreateMap<Candle, CandleCollection>().ReverseMap();
             CreateMap<Decor, DecorCollection>().ReverseMap();
             CreateMap<LayerColor, LayerColorCollection>().ReverseMap();
@@ -19,4 +19,4 @@ namespace HeartmadeCandles.DataAccess.MongoDB
             CreateMap<ShoppingCartItem, ShoppingCartItemCollection>().ReverseMap();
         }
     }
-}   
+}

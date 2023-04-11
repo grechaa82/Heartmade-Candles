@@ -1,9 +1,22 @@
-﻿namespace HeartmadeCandles.Core.Models
+﻿using System.Text.Json.Serialization;
+
+namespace HeartmadeCandles.Core.Models
 {
     public class Candle : ModelBase
     {
-        private Candle(
-            string id,
+        private bool _isUsed;
+        private string _title;
+        private string _imageURL;
+        private List<int> _numberOfLayers;
+        private List<LayerColor> _layerColors;
+        private List<Smell> _smells;
+        private List<Decor> _decors;
+        private int _weightGrams;
+        private TypeCandle _typeCandle;
+        private string _description;
+
+        [JsonConstructor]
+        public Candle(
             bool isUsed,
             string title,
             string imageURL,
@@ -12,76 +25,43 @@
             List<Smell> smells,
             List<Decor> decors,
             int weightGrams,
-            string description)
-        {
-            Id = id;
-            IsUsed = isUsed;
-            Title = title;
-            ImageURL = imageURL;
-            NumberOfLayers = numberOfLayers;
-            LayerColors = layerColors;
-            Smells = smells;
-            Decors = decors;
-            WeightGrams = weightGrams;
-            Description = description;
-        }
-
-        public bool IsUsed { get; }
-        public string Title { get; }
-        public string ImageURL { get; }
-        public List<int> NumberOfLayers { get; }
-        public List<LayerColor> LayerColors { get; }
-        public List<Smell> Smells { get; }
-        public List<Decor> Decors { get; }
-        public int WeightGrams { get; }
-        public string Description { get; }
-
-        public static (Candle, ErrorDetail[]) Create(
-            bool isUsed,
-            string title,
-            string imageURL,
-            List<int> numberOfLayers,
-            List<LayerColor> layerColors,
-            List<Smell> smells,
-            List<Decor> decors,
-            int weightGrams,
-            string id = null,
+            TypeCandle typeCandle,
+            string id = "",
             string description = "")
         {
-            var errors = new List<ErrorDetail>();
-            var errorsMessage = string.Empty;
-
             if (string.IsNullOrWhiteSpace(title))
             {
-                errorsMessage = $"'{nameof(title)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(title)}' connot be null or whitespace.");
             }
 
             if (weightGrams <= 0)
             {
-                errorsMessage = $"'{nameof(weightGrams)}' сannot be 0 or less.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentOutOfRangeException($"'{nameof(weightGrams)}' сannot be 0 or less.");
             }
 
-            if (errors.Any())
-            {
-                return (null, errors.ToArray());
-            }
-
-            var candle = new Candle(
-                id,
-                isUsed,
-                title,
-                imageURL,
-                numberOfLayers,
-                layerColors,
-                smells,
-                decors,
-                weightGrams,
-                description);
-
-            return (candle, errors.ToArray());
+            Id = id;
+            _isUsed = isUsed;
+            _title = title;
+            _imageURL = imageURL;
+            _numberOfLayers = numberOfLayers;
+            _layerColors = layerColors;
+            _smells = smells;
+            _decors = decors;
+            _weightGrams = weightGrams;
+            _typeCandle = typeCandle;
+            _description = description;
         }
+
+        public bool IsUsed { get => _isUsed; }
+        public string Title { get => _title; }
+        public string ImageURL { get => _imageURL; }
+        public List<int> NumberOfLayers { get => _numberOfLayers; }
+        public List<LayerColor> LayerColors { get => _layerColors; }
+        public List<Smell> Smells { get => _smells; }
+        public List<Decor> Decors { get => _decors; }
+        public int WeightGrams { get => _weightGrams; }
+        public TypeCandle TypeCandle { get => _typeCandle; }
+        public string Description { get => _description; }
 
         public static decimal GetPrice(Candle candle)
         {
@@ -96,5 +76,11 @@
 
             return price;
         }
+    }
+
+    public enum TypeCandle
+    {
+        ContainerCandle,
+        ShapedCandle
     }
 }

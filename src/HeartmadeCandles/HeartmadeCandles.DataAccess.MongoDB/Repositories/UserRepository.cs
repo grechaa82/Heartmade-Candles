@@ -2,6 +2,7 @@
 using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Models;
 using HeartmadeCandles.DataAccess.MongoDB.Collections;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace HeartmadeCandles.DataAccess.MongoDB.Repositories

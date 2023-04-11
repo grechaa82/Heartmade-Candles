@@ -7,7 +7,6 @@ namespace HeartmadeCandles.Core.Interfaces.Repositories
         Task<List<User>> GetAllAsync();
         Task<User> GetUserAsync(string id);
         Task<Customer> GetCustomerAsync(string id);
-        
         Task UpdateCustomerAsync(Customer customer);
         Task UpdateAddressAsync(Address address);
     }

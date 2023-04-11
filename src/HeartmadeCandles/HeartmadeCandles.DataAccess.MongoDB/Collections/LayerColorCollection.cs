@@ -19,5 +19,11 @@ namespace HeartmadeCandles.DataAccess.MongoDB.Collections
 
         [BsonElement("imageURL")]
         public string? ImageURL { get; set; }
+
+        [BsonElement("pricePerGram"), BsonRepresentation(BsonType.Decimal128)]
+        public decimal PricePerGram { get; set; }
+
+        [BsonElement("description")]
+        public string Description { get; set; }
     }
 }

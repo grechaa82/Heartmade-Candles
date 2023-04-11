@@ -1,9 +1,17 @@
-﻿using System.Diagnostics;
+﻿using System.Text.Json.Serialization;
 
 namespace HeartmadeCandles.Core.Models
 {
     public class LayerColor : ModelBase
     {
+        private bool _isUsed;
+        private string _title;
+        private string _hex;
+        private string _imageURL;
+        private decimal _pricePerGram;
+        private string _description;
+
+        [JsonConstructor]
         public LayerColor(
             string id,
             bool isUsed,
@@ -13,62 +21,30 @@ namespace HeartmadeCandles.Core.Models
             decimal pricePerGram,
             string description)
         {
-            Id = id;
-            IsUsed = isUsed;
-            Title = title;
-            HEX = hEX;
-            ImageURL = imageURL;
-            PricePerGram = pricePerGram;
-            Description = description;
-        }
-
-        public bool IsUsed { get; }
-        public string Title { get; }
-        public string HEX { get; }
-        public string ImageURL { get; }
-        public decimal PricePerGram { get; }
-        public string Description { get; }
-
-        public static (LayerColor, ErrorDetail[]) Create(
-            bool isUsed,
-            string title,
-            string hex,
-            string imageURL,
-            decimal pricePerGram,
-            string id = null,
-            string description = "")
-        {
-            var errors = new List<ErrorDetail>();
-            var errorsMessage = string.Empty;
-
             if (string.IsNullOrWhiteSpace(title))
             {
-                errorsMessage = $"'{nameof(title)}' connot be null or whitespace.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(title)}' connot be null or whitespace.");
             }
 
             if (pricePerGram <= 0)
             {
-                errorsMessage = $"'{nameof(pricePerGram)}' сannot be 0 or less.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentOutOfRangeException($"'{nameof(pricePerGram)}' сannot be 0 or less.");
             }
 
-            if (errors.Any())
-            {
-                return (null, errors.ToArray());
-            }
-
-            var layerColor = new LayerColor(
-                id,
-                isUsed,
-                title,
-                hex,
-                imageURL,
-                pricePerGram,
-                description);
-
-            return (layerColor, errors.ToArray());
+            Id = id;
+            _isUsed = isUsed;
+            _title = title;
+            _hex = hEX;
+            _imageURL = imageURL;
+            _pricePerGram = pricePerGram;
+            _description  = description;
         }
 
+        public bool IsUsed { get => _isUsed; }
+        public string Title { get => _title; }
+        public string HEX { get => _hex; }
+        public string ImageURL { get => _imageURL; }
+        public decimal PricePerGram { get => _pricePerGram; }
+        public string Description { get => _description; }
     }
 }

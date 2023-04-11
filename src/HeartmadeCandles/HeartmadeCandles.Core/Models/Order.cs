@@ -1,83 +1,63 @@
-﻿namespace HeartmadeCandles.Core.Models
+﻿using System.Text.Json.Serialization;
+
+namespace HeartmadeCandles.Core.Models
 {
     public class Order : ModelBase
     {
-        private Order(
-            string id,
+        private User _user;
+        private Customer _customer;
+        private Dictionary<int, Candle> _candles;
+        private Status _status;
+        private string _description;
+        private DateTime _createdAt;
+
+        [JsonConstructor]
+        public Order(
             User user,
             Customer customer,
-            List<Candle> candles,
-            Status status,
-            string description)
+            Dictionary<int, Candle> candles,
+            string id = "",
+            Status status = Status.New,
+            string description = "")
         {
-            Id = id;
-            User = user;
-            Customer = customer;
-            Candles = candles;
-            Status = status;
-            Description = description;
-            CreatedAt = DateTime.UtcNow;
-        }
-
-        public User User { get; }
-        public Customer Customer { get; }
-        public List<Candle> Candles { get; }
-        public Status Status { get; }
-        public string Description { get; }
-        public DateTime CreatedAt { get; }
-
-        public static (Order, ErrorDetail[]) Create(
-            User user,
-            Customer customer,
-            List<Candle> candles,
-            string description,
-            string id = null,
-            Status status = Status.New)
-        {
-            var errors = new List<ErrorDetail>();
-            var errorsMessage = string.Empty;
-
             if (user == null)
             {
-                errorsMessage = $"'{nameof(user)}' connot be null.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(user)}' connot be null.");
             }
 
             if (customer == null)
             {
-                errorsMessage = $"'{nameof(customer)}' connot be null.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(customer)}' connot be null.");
             }
 
-            if (candles == null || candles.Any())
+            if (candles == null || !candles.Any())
             {
-                errorsMessage = $"'{nameof(candles)}' connot be null or empty.";
-                errors.Add(new ErrorDetail(errorsMessage));
+                throw new ArgumentNullException($"'{nameof(candles)}' connot be null or empty.");
             }
 
-            if (errors.Any())
-            {
-                return (null, errors.ToArray());
-            }
-
-            var order = new Order(
-                id,
-                user,
-                customer,
-                candles,
-                status,
-                description);
-
-            return (order, errors.ToArray());
+            Id = id;
+            _user = user;
+            _customer = customer;
+            _candles = candles;
+            _status = status;
+            _description = description;
+            _createdAt  = DateTime.UtcNow;
         }
+
+        public User User { get => _user; }
+        public Customer Customer { get => _customer; }
+        public Dictionary<int, Candle> Candles { get => _candles; }
+        public Status Status { get => _status; }
+        public string Description { get => _description; }
+        public DateTime CreatedAt { get => _createdAt; }
 
         public Order ChangeStatus(Order order, Status newStatus)
         {
             return new Order(
-                order.Id,
                 order.User,
                 order.Customer,
                 order.Candles,
+                order.Id,
                 newStatus,
                 order.Description);
         }

@@ -16,9 +16,9 @@ namespace HeartmadeCandles.BusinessLogic.Services
         public async Task<List<T>> GetAllAsync<T>() where T : ModelBase
         {
             var result = new List<T>();
-            var items = await _adminRepository.GetAllAsync<T>();
-            foreach (var item in items)
-            {
+            var items =  await _adminRepository.GetAllAsync<T>();
+            foreach (var item in items) 
+            { 
                 result.Add(item);
             }
             return result;
