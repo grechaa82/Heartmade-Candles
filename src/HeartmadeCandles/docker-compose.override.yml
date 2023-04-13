@@ -1,0 +1,35 @@
+version: '3.4'
+
+services:
+  api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "5000:80"
+  
+  client:
+    ports:
+      - "5001:3000"
+
+  pg_db:
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=pg_db
+    image: postgres:15.2
+    ports:
+      - "5432:5432"
+  
+  pg_admin:
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=root@root.root
+      - PGADMIN_DEFAULT_PASSWORD=root
+    image: dpage/pgadmin4:6.21
+    ports:
+      - "5050:80"
+
+  proxy:
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"

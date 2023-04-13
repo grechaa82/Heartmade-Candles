@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HeartmadeCandles.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CandleConstructorController : Controller
     {
         private readonly ICandleConstructorService _candleConstructorService;

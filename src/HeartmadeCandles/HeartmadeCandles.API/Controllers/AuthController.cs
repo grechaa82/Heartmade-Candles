@@ -8,7 +8,7 @@ using System.Text;
 namespace HeartmadeCandles.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HeartmadeCandles.API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {

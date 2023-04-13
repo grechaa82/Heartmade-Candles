@@ -8,7 +8,7 @@ namespace HeartmadeCandles.API.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ShoppingCartController : Controller
     {
         private readonly IShoppingCartService _shoppingCartService;

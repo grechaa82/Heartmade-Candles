@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "HeartmadeCandles.Core": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:56074;http://localhost:56077"
+    }
+  }
+}
