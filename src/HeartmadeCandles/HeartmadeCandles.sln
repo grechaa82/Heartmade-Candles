@@ -11,7 +11,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Core", "He
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.DataAccess.MongoDB", "HeartmadeCandles.DataAccess.MongoDB\HeartmadeCandles.DataAccess.MongoDB.csproj", "{65A76418-682B-4F71-B718-ADE2AEF0CB7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Bot", "HeartmadeCandles.Bot\HeartmadeCandles.Bot.csproj", "{51E9B37F-4EF9-4DA1-BDAB-82A808B250DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Bot", "HeartmadeCandles.Bot\HeartmadeCandles.Bot.csproj", "{51E9B37F-4EF9-4DA1-BDAB-82A808B250DE}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{7B37A876-2905-4F90-B552-DDA679D1F4FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{84501C02-3691-4A99-83EA-EA14DE255AA0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admin", "Admin", "{8B4D0D36-33B4-416D-A027-9CF25A892441}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Modules.Admin.Core", "HeartmadeCandles.Modules.Admin.Core\HeartmadeCandles.Modules.Admin.Core.csproj", "{7442A40D-0959-4F55-AAD8-636456CE3E10}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Modules.Admin.BL", "HeartmadeCandles.Modules.Admin.BL\HeartmadeCandles.Modules.Admin.BL.csproj", "{06BC35CA-8778-4616-A70C-B310E59CE724}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Modules.Admin.DAL", "HeartmadeCandles.Modules.Admin.DAL\HeartmadeCandles.Modules.Admin.DAL.csproj", "{0D436A66-3BCD-4444-8192-50F08AA85B4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,9 +51,31 @@ Global
 		{51E9B37F-4EF9-4DA1-BDAB-82A808B250DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51E9B37F-4EF9-4DA1-BDAB-82A808B250DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51E9B37F-4EF9-4DA1-BDAB-82A808B250DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B37A876-2905-4F90-B552-DDA679D1F4FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B37A876-2905-4F90-B552-DDA679D1F4FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B37A876-2905-4F90-B552-DDA679D1F4FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B37A876-2905-4F90-B552-DDA679D1F4FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7442A40D-0959-4F55-AAD8-636456CE3E10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7442A40D-0959-4F55-AAD8-636456CE3E10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7442A40D-0959-4F55-AAD8-636456CE3E10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7442A40D-0959-4F55-AAD8-636456CE3E10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06BC35CA-8778-4616-A70C-B310E59CE724}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06BC35CA-8778-4616-A70C-B310E59CE724}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06BC35CA-8778-4616-A70C-B310E59CE724}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06BC35CA-8778-4616-A70C-B310E59CE724}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D436A66-3BCD-4444-8192-50F08AA85B4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D436A66-3BCD-4444-8192-50F08AA85B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D436A66-3BCD-4444-8192-50F08AA85B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D436A66-3BCD-4444-8192-50F08AA85B4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8B4D0D36-33B4-416D-A027-9CF25A892441} = {84501C02-3691-4A99-83EA-EA14DE255AA0}
+		{7442A40D-0959-4F55-AAD8-636456CE3E10} = {8B4D0D36-33B4-416D-A027-9CF25A892441}
+		{06BC35CA-8778-4616-A70C-B310E59CE724} = {8B4D0D36-33B4-416D-A027-9CF25A892441}
+		{0D436A66-3BCD-4444-8192-50F08AA85B4C} = {8B4D0D36-33B4-416D-A027-9CF25A892441}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D6110671-4E49-4702-832A-BE22583842C7}
