@@ -3,6 +3,7 @@
     public enum TypeCandle
     {
         ContainerCandle,
-        ShapedCandle
+        ShapedCandle,
+        OtherCandle
     }
 }

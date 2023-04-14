@@ -5,7 +5,11 @@ using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Interfaces.Services;
 using HeartmadeCandles.DataAccess.MongoDB;
 using HeartmadeCandles.DataAccess.MongoDB.Repositories;
+using HeartmadeCandles.Modules.Admin.BL.Services;
+using HeartmadeCandles.Modules.Admin.Core.Interfaces;
+using HeartmadeCandles.Modules.Admin.DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.Text;
@@ -37,6 +41,12 @@ builder.Services.AddSingleton(options =>
 
     return mongoDbClient.GetDatabase(databaseSettings.DatabaseName);
 });
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
 builder.Services.AddScoped<ICandleConstructorRepository, CandleConstructorRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
@@ -44,6 +54,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 
 builder.Services.AddScoped<IOrderCreateHandler, OrderCreateHandler>();
+
+//Admin module
+builder.Services.AddScoped<ICandleService, CandleService>();
+builder.Services.AddScoped<ICandleRepository, CandleRepository>();
 
 builder.Services.AddAuthentication(options =>
 {

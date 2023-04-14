@@ -15,8 +15,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
@@ -28,7 +33,9 @@
     <ProjectReference Include="..\HeartmadeCandles.BusinessLogic\HeartmadeCandles.BusinessLogic.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Core\HeartmadeCandles.Core.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.DataAccess.MongoDB\HeartmadeCandles.DataAccess.MongoDB.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Modules.Admin.BL\HeartmadeCandles.Modules.Admin.BL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Modules.Admin.Core\HeartmadeCandles.Modules.Admin.Core.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Modules.Admin.DAL\HeartmadeCandles.Modules.Admin.DAL.csproj" />
   </ItemGroup>
 
 </Project>

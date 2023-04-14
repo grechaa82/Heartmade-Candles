@@ -1,4 +1,6 @@
-﻿namespace HeartmadeCandles.Modules.Admin.Core.Models
+﻿using System.Text.Json.Serialization;
+
+namespace HeartmadeCandles.Modules.Admin.Core.Models
 {
     public class Candle
     {
@@ -7,18 +9,19 @@
         private string _description;
         private string _imageURL;
         private int _weightGrams;
-        private bool _isUsed;
+        private bool _isActive;
         private TypeCandle _typeCandle;
         private DateTime _createdAt;
 
+        [JsonConstructor]
         public Candle(
-            int id, 
             string title, 
             string description, 
             string imageURL, 
             int weightGrams, 
-            bool isUsed, 
-            TypeCandle typeCandle)
+            bool isActive = true, 
+            TypeCandle typeCandle = TypeCandle.OtherCandle,
+            int id = 0)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
@@ -40,7 +43,7 @@
             _description = description;
             _imageURL = imageURL;
             _weightGrams = weightGrams;
-            _isUsed = isUsed;
+            _isActive = isActive;
             _typeCandle = typeCandle;
             _createdAt = DateTime.UtcNow;
         }
@@ -50,7 +53,7 @@
         public string Description { get => _description; }
         public string ImageURL { get => _imageURL; }
         public int WeightGrams { get => _weightGrams; }
-        public bool IsUsed { get => _isUsed; }
+        public bool IsActive { get => _isActive; }
         public TypeCandle TypeCandle { get => _typeCandle; }
         public DateTime CreatedAt { get => _createdAt; }
     }

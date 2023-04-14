@@ -4,14 +4,7 @@ namespace HeartmadeCandles.Modules.Admin.Core.Interfaces
 {
     public interface ICandleService
     {
-        Task Create(
-            int id,
-            string title,
-            string description,
-            string imageURL,
-            int weightGrams,
-            bool isUsed,
-            TypeCandle typeCandle);
+        Task Create(Candle candle);
 
         Task<IList<Candle>> GetAll();
 

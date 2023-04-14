@@ -12,43 +12,29 @@ namespace HeartmadeCandles.Modules.Admin.BL.Services
             _candlerepository = candlerepository;
         }
 
-        public async Task Create(
-            int id, 
-            string title, 
-            string description, 
-            string imageURL, 
-            int weightGrams, 
-            bool isUsed, 
-            TypeCandle typeCandle)
-        {
-            var candle = new Candle(
-                id, 
-                title, 
-                description, 
-                imageURL, 
-                weightGrams, 
-                isUsed, 
-                typeCandle);
-        }
-
         public async Task<IList<Candle>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _candlerepository.GetAll();
         }
 
         public async Task<Candle> Get(int id)
         {
-            throw new NotImplementedException();
+            return await _candlerepository.Get(id);
         }
 
-        public async Task Delete(int id)
+        public async Task Create(Candle candle)
         {
-            throw new NotImplementedException();
+            _candlerepository.Create(candle);
         }
 
         public async Task Update(Candle candle)
         {
-            throw new NotImplementedException();
+            _candlerepository.Update(candle);
+        }
+
+        public async Task Delete(int id)
+        {
+            await _candlerepository.Delete(id);
         }
     }
 }

@@ -1,33 +1,119 @@
 ﻿using HeartmadeCandles.Modules.Admin.Core.Interfaces;
 using HeartmadeCandles.Modules.Admin.Core.Models;
+using HeartmadeCandles.Modules.Admin.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace HeartmadeCandles.Modules.Admin.DAL.Repositories
 {
-    internal class CandleRepository : ICandleRepository
+    public class CandleRepository : ICandleRepository
     {
-        public Task Create(Candle candle)
+        private readonly ApplicationDbContext _context;
+
+        public CandleRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<IList<Candle>> GetAll()
+        public async Task<IList<Candle>> GetAll()
         {
-            throw new NotImplementedException();
+            using (_context)
+            {
+                var result = new List<Candle>();
+
+                var items = await _context.Candle
+                    .AsNoTracking()
+                    .Include(c => c.TypeCandle)
+                    .ToListAsync();
+
+                foreach (var item in items)
+                {
+                    result.Add(new Candle(
+                        item.Title,
+                        item.Description,
+                        item.ImageURL,
+                        item.WeightGrams,
+                        item.IsActive,
+                        TypeCandle.ContainerCandle,
+                        item.Id));
+                }
+
+                return result;
+            }
         }
 
-        public Task<IList<Candle>> Get(int id)
+        public async Task<Candle> Get(int id)
         {
-            throw new NotImplementedException();
+            using (_context)
+            {
+                var item = await _context.Candle.FirstOrDefaultAsync(c => c.Id == id);
+
+                var candle = new Candle(
+                    item.Title,
+                    item.Description,
+                    item.ImageURL,
+                    item.WeightGrams,
+                    item.IsActive,
+                    TypeCandle.ContainerCandle,
+                    item.Id);
+
+                return candle;
+            }
         }
 
-        public Task Delete(int id)
+        public async Task Create(Candle candle)
         {
-            throw new NotImplementedException();
+            using (_context)
+            {
+                var item = new CandleEntity() 
+                {
+                    Id = candle.Id,
+                    Title = candle.Title,
+                    Description = candle.Description,
+                    ImageURL = candle.ImageURL,
+                    WeightGrams = candle.WeightGrams,
+                    IsActive = candle.IsActive,
+                    TypeCandleId = 1,
+                    CreatedAt = candle.CreatedAt
+                };
+
+                _context.AddAsync(item);
+                _context.SaveChanges();
+            }
         }
 
-        public Task Update(Candle candle)
+        public async Task Update(Candle candle)
         {
-            throw new NotImplementedException();
+            using (_context)
+            {
+                var item = new CandleEntity()
+                {
+                    Id = candle.Id,
+                    Title = candle.Title,
+                    Description = candle.Description,
+                    ImageURL = candle.ImageURL,
+                    WeightGrams = candle.WeightGrams,
+                    IsActive = candle.IsActive,
+                    TypeCandleId = 1,
+                    CreatedAt = candle.CreatedAt
+                };
+
+                _context.Update(item);
+                _context.SaveChanges();
+            }
+        }
+
+        public async Task Delete(int id)
+        {
+            using (_context)
+            {
+                var item = await _context.Candle.FirstOrDefaultAsync(c => c.Id == id);
+
+                if (item != null)
+                {
+                    _context.Candle.Remove(item);
+                    _context.SaveChanges();
+                }
+            }
         }
     }
 }
