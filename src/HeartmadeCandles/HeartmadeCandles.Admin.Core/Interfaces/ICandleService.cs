@@ -1,6 +1,6 @@
-﻿using HeartmadeCandles.Modules.Admin.Core.Models;
+﻿using HeartmadeCandles.Admin.Core.Models;
 
-namespace HeartmadeCandles.Modules.Admin.Core.Interfaces
+namespace HeartmadeCandles.Admin.Core.Interfaces
 {
     public interface ICandleService
     {

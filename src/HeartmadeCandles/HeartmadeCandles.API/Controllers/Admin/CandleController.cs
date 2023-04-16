@@ -1,31 +1,31 @@
 ﻿using HeartmadeCandles.API.Contracts.Requests;
-using HeartmadeCandles.Modules.Admin.Core.Interfaces;
-using HeartmadeCandles.Modules.Admin.Core.Models;
+using HeartmadeCandles.Admin.Core.Interfaces;
+using HeartmadeCandles.Admin.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers.Admin
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/admin/candles")]
     public class CandleController : Controller
     {
-        private readonly ICandleService _cadleService;
+        private readonly ICandleService _candleService;
 
         public CandleController(ICandleService cadleService)
         {
-            _cadleService = cadleService;
+            _candleService = cadleService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return Ok(await _cadleService.GetAll());
+            return Ok(await _candleService.GetAll());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(await _cadleService.Get(id));
+            return Ok(await _candleService.Get(id));
         }
 
         [HttpPost]
@@ -44,7 +44,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 candleRequest.IsActive,
                 (TypeCandle)Enum.Parse(typeof(TypeCandle), candleRequest.TypeCandle));
 
-            _cadleService.Create(candle);
+            _candleService.Create(candle);
 
             return Ok();
         }
@@ -61,7 +61,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 (TypeCandle)Enum.Parse(typeof(TypeCandle), candleRequest.TypeCandle),
                 id);
 
-            _cadleService.Update(candle);
+            _candleService.Update(candle);
 
             return Ok();
         }
@@ -69,7 +69,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _cadleService.Delete(id);
+            await _candleService.Delete(id);
 
             return Ok();
         }

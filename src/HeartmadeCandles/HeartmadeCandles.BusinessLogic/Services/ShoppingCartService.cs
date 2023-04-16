@@ -10,16 +10,16 @@ namespace HeartmadeCandles.BusinessLogic.Services
     {
         private readonly IShoppingCartRepository _shoppingCartRepository;
         private readonly IUserRepository _userRepository;
-        private readonly IOrderCreateHandler _orderCreateHandler;
+        //private readonly IOrderCreateHandler _orderCreateHandler;
 
         public ShoppingCartService(
             IShoppingCartRepository shoppingCartRepository, 
-            IUserRepository userRepository, 
-            IOrderCreateHandler orderCreateHandler)
+            IUserRepository userRepository) 
+            //IOrderCreateHandler orderCreateHandler)
         {
             _shoppingCartRepository = shoppingCartRepository;
             _userRepository = userRepository;
-            _orderCreateHandler = orderCreateHandler;
+            //_orderCreateHandler = orderCreateHandler;
         }
 
         public async Task<ShoppingCart> Get(string userId)
@@ -54,7 +54,7 @@ namespace HeartmadeCandles.BusinessLogic.Services
                 description: shoppingCart.Description);
 
             await _shoppingCartRepository.CreateOrderAsync(order);
-            _orderCreateHandler.OnOrderCreated(order);
+            //_orderCreateHandler.OnOrderCreated(order);
 
             return true;
         }

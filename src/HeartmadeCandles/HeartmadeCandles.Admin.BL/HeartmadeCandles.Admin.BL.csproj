@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HeartmadeCandles.Modules.Admin.Core\HeartmadeCandles.Modules.Admin.Core.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Admin.Core\HeartmadeCandles.Admin.Core.csproj" />
   </ItemGroup>
 
 </Project>

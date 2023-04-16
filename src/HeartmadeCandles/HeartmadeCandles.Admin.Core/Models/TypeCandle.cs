@@ -1,4 +1,4 @@
-﻿namespace HeartmadeCandles.Modules.Admin.Core.Models
+﻿namespace HeartmadeCandles.Admin.Core.Models
 {
     public enum TypeCandle
     {

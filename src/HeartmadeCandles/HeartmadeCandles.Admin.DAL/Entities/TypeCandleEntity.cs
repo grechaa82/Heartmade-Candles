@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HeartmadeCandles.Modules.Admin.DAL.Entities
+namespace HeartmadeCandles.Admin.DAL.Entities
 {
     [Table("TypeCandle")]
     public class TypeCandleEntity

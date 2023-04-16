@@ -12,7 +12,7 @@ namespace HeartmadeCandles.BusinessLogic.Services
         public delegate void OrderEventHandler (Order order);
         public event OrderEventHandler OrderCreated;
 
-        private readonly IOrderCreateHandler _orderCreateHandler;
+        //private readonly IOrderCreateHandler _orderCreateHandler;
 
         private readonly ICandleConstructorRepository _candleConstructorRepository;
         private readonly IUserRepository _userRepository;
@@ -23,11 +23,11 @@ namespace HeartmadeCandles.BusinessLogic.Services
 
         public CandleConstructorService(
             ICandleConstructorRepository candleConstructorRepository, 
-            IOrderCreateHandler orderCreateHandler, 
+            //IOrderCreateHandler orderCreateHandler, 
             IUserRepository userRepository)
         {
             _candleConstructorRepository = candleConstructorRepository;
-            _orderCreateHandler = orderCreateHandler;
+            //_orderCreateHandler = orderCreateHandler;
             _userRepository = userRepository;
         }
 
@@ -81,7 +81,7 @@ namespace HeartmadeCandles.BusinessLogic.Services
                 shoppingCart.Description);
 
             await _candleConstructorRepository.CreateOrder(order);
-            _orderCreateHandler.OnOrderCreated(order);
+            //_orderCreateHandler.OnOrderCreated(order);
 
             return true;
         }

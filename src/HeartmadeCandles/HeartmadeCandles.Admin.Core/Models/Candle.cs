@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace HeartmadeCandles.Modules.Admin.Core.Models
+namespace HeartmadeCandles.Admin.Core.Models
 {
     public class Candle
     {
@@ -15,11 +15,11 @@ namespace HeartmadeCandles.Modules.Admin.Core.Models
 
         [JsonConstructor]
         public Candle(
-            string title, 
-            string description, 
-            string imageURL, 
-            int weightGrams, 
-            bool isActive = true, 
+            string title,
+            string description,
+            string imageURL,
+            int weightGrams,
+            bool isActive = true,
             TypeCandle typeCandle = TypeCandle.OtherCandle,
             int id = 0)
         {
