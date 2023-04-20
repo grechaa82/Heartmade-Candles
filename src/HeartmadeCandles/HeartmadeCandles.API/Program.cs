@@ -45,7 +45,9 @@ builder.Services.AddSingleton(options =>
 
 builder.Services.AddDbContext<AdminDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(
+        connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+        npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
 });
 
 builder.Services.AddScoped<ICandleConstructorRepository, CandleConstructorRepository>();

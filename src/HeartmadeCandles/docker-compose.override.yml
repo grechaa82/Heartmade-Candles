@@ -15,7 +15,7 @@ services:
 
   pg_db:
     environment:
-      - POSTGRES_USER=admin
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=pg_db
     image: postgres:15.2

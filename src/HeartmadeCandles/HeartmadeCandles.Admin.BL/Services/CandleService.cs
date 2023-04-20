@@ -5,36 +5,36 @@ namespace HeartmadeCandles.Admin.BL.Services
 {
     public class CandleService : ICandleService
     {
-        private readonly ICandleRepository _candlerepository;
+        private readonly ICandleRepository _candleRepository;
 
         public CandleService(ICandleRepository candlerepository)
         {
-            _candlerepository = candlerepository;
+            _candleRepository = candlerepository;
         }
 
         public async Task<IList<Candle>> GetAll()
         {
-            return await _candlerepository.GetAll();
+            return await _candleRepository.GetAll();
         }
 
         public async Task<Candle> Get(int id)
         {
-            return await _candlerepository.Get(id);
+            return await _candleRepository.Get(id);
         }
 
         public async Task Create(Candle candle)
         {
-            _candlerepository.Create(candle);
+            await _candleRepository.Create(candle);
         }
 
         public async Task Update(Candle candle)
         {
-            _candlerepository.Update(candle);
+            await _candleRepository.Update(candle);
         }
 
         public async Task Delete(int id)
         {
-            await _candlerepository.Delete(id);
+            await _candleRepository.Delete(id);
         }
     }
 }

@@ -17,11 +17,13 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Admin", "Admin", "{95A9DDDF-6519-4EE5-A51C-0E665D67BEDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Admin.BL", "HeartmadeCandles.Admin.BL\HeartmadeCandles.Admin.BL.csproj", "{C6FF08C9-56B2-49B0-94FF-A5065797B676}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Admin.BL", "HeartmadeCandles.Admin.BL\HeartmadeCandles.Admin.BL.csproj", "{C6FF08C9-56B2-49B0-94FF-A5065797B676}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Admin.DAL", "HeartmadeCandles.Admin.DAL\HeartmadeCandles.Admin.DAL.csproj", "{E1AB6BB5-881B-4D14-80F8-A57FCB411552}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Admin.DAL", "HeartmadeCandles.Admin.DAL\HeartmadeCandles.Admin.DAL.csproj", "{E1AB6BB5-881B-4D14-80F8-A57FCB411552}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Admin.Core", "HeartmadeCandles.Admin.Core\HeartmadeCandles.Admin.Core.csproj", "{0521F71C-9CFC-46E3-8E52-33B600B83985}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Admin.Core", "HeartmadeCandles.Admin.Core\HeartmadeCandles.Admin.Core.csproj", "{0521F71C-9CFC-46E3-8E52-33B600B83985}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Migrations", "HeartmadeCandles.Migrations\HeartmadeCandles.Migrations.csproj", "{131B8296-9A56-402E-9DDF-CF4234E57F39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,10 @@ Global
 		{0521F71C-9CFC-46E3-8E52-33B600B83985}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0521F71C-9CFC-46E3-8E52-33B600B83985}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0521F71C-9CFC-46E3-8E52-33B600B83985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{131B8296-9A56-402E-9DDF-CF4234E57F39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{131B8296-9A56-402E-9DDF-CF4234E57F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{131B8296-9A56-402E-9DDF-CF4234E57F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{131B8296-9A56-402E-9DDF-CF4234E57F39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

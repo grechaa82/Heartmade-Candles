@@ -19,6 +19,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
@@ -36,6 +40,7 @@
     <ProjectReference Include="..\HeartmadeCandles.BusinessLogic\HeartmadeCandles.BusinessLogic.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Core\HeartmadeCandles.Core.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.DataAccess.MongoDB\HeartmadeCandles.DataAccess.MongoDB.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Migrations\HeartmadeCandles.Migrations.csproj" />
   </ItemGroup>
 
 </Project>

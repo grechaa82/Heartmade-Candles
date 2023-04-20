@@ -8,10 +8,14 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["HeartmadeCandles.API/HeartmadeCandles.API.csproj", "HeartmadeCandles.API/"]
+COPY ["HeartmadeCandles.Admin.BL/HeartmadeCandles.Admin.BL.csproj", "HeartmadeCandles.Admin.BL/"]
+COPY ["HeartmadeCandles.Admin.Core/HeartmadeCandles.Admin.Core.csproj", "HeartmadeCandles.Admin.Core/"]
+COPY ["HeartmadeCandles.Admin.DAL/HeartmadeCandles.Admin.DAL.csproj", "HeartmadeCandles.Admin.DAL/"]
 COPY ["HeartmadeCandles.Bot/HeartmadeCandles.Bot.csproj", "HeartmadeCandles.Bot/"]
 COPY ["HeartmadeCandles.BusinessLogic/HeartmadeCandles.BusinessLogic.csproj", "HeartmadeCandles.BusinessLogic/"]
 COPY ["HeartmadeCandles.Core/HeartmadeCandles.Core.csproj", "HeartmadeCandles.Core/"]
 COPY ["HeartmadeCandles.DataAccess.MongoDB/HeartmadeCandles.DataAccess.MongoDB.csproj", "HeartmadeCandles.DataAccess.MongoDB/"]
+COPY ["HeartmadeCandles.Migrations/HeartmadeCandles.Migrations.csproj", "HeartmadeCandles.Migrations/"]
 RUN dotnet restore "HeartmadeCandles.API/HeartmadeCandles.API.csproj"
 COPY . .
 WORKDIR "/src/HeartmadeCandles.API"

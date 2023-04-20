@@ -44,7 +44,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 candleRequest.IsActive,
                 (TypeCandle)Enum.Parse(typeof(TypeCandle), candleRequest.TypeCandle));
 
-            _candleService.Create(candle);
+            await _candleService.Create(candle);
 
             return Ok();
         }
