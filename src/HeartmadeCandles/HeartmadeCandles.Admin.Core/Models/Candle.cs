@@ -28,6 +28,16 @@ namespace HeartmadeCandles.Admin.Core.Models
                 throw new ArgumentNullException($"'{nameof(title)}' connot be null or whitespace.");
             }
 
+            if (title.Length < 48)
+            {
+                throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 64 characters.");
+            }
+
+            if (description.Length < 256)
+            {
+                throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 256 characters.");
+            }
+
             if (weightGrams <= 0)
             {
                 throw new ArgumentOutOfRangeException($"'{nameof(weightGrams)}' сannot be 0 or less.");

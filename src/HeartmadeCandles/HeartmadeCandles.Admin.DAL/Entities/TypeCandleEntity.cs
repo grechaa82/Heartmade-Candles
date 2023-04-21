@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HeartmadeCandles.Admin.DAL.Entities
 {
@@ -8,7 +9,7 @@ namespace HeartmadeCandles.Admin.DAL.Entities
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("title")]
+        [Column("title"), MaxLength(32)]
         public string Title { get; set; }
 
         public ICollection<CandleEntity> Candles { get; set; }
