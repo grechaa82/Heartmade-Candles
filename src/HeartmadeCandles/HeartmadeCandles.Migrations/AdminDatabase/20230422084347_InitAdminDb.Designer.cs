@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HeartmadeCandles.Migrations.AdminDatabase
 {
     [DbContext(typeof(AdminDbContext))]
-    [Migration("20230420093355_InitAdminDb")]
+    [Migration("20230422084347_InitAdminDb")]
     partial class InitAdminDb
     {
         /// <inheritdoc />
@@ -70,6 +70,45 @@ namespace HeartmadeCandles.Migrations.AdminDatabase
                     b.HasIndex("TypeCandleId");
 
                     b.ToTable("Candle");
+                });
+
+            modelBuilder.Entity("HeartmadeCandles.Admin.DAL.Entities.DecorEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("imageURL");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isActive");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric")
+                        .HasColumnName("price");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Decor");
                 });
 
             modelBuilder.Entity("HeartmadeCandles.Admin.DAL.Entities.TypeCandleEntity", b =>

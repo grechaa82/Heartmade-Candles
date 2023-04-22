@@ -61,6 +61,8 @@ builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 //Admin module
 builder.Services.AddScoped<ICandleService, CandleService>();
 builder.Services.AddScoped<ICandleRepository, CandleRepository>();
+builder.Services.AddScoped<IDecorService, DecorService>();
+builder.Services.AddScoped<IDecorRepository, DecorRepository>();
 
 builder.Services.AddAuthentication(options =>
 {
