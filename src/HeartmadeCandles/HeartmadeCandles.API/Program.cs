@@ -63,6 +63,8 @@ builder.Services.AddScoped<ICandleService, CandleService>();
 builder.Services.AddScoped<ICandleRepository, CandleRepository>();
 builder.Services.AddScoped<IDecorService, DecorService>();
 builder.Services.AddScoped<IDecorRepository, DecorRepository>();
+builder.Services.AddScoped<ILayerColorService, LayerColorService>();
+builder.Services.AddScoped<ILayerColorRepository, LayerColorRepository>();
 
 builder.Services.AddAuthentication(options =>
 {
