@@ -9,5 +9,6 @@ namespace HeartmadeCandles.Admin.DAL
 
         public DbSet<CandleEntity> Candle { get; set; }
         public DbSet<TypeCandleEntity> TypeCandle { get; set; }
+        public DbSet<DecorEntity> Decor { get; set; }
     }
 }
