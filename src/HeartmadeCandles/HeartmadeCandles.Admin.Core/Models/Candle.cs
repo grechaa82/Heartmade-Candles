@@ -21,19 +21,20 @@ namespace HeartmadeCandles.Admin.Core.Models
             int weightGrams,
             bool isActive = true,
             TypeCandle typeCandle = TypeCandle.OtherCandle,
-            int id = 0)
+            int id = 0,
+            DateTime? createdAt = null)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
                 throw new ArgumentNullException($"'{nameof(title)}' connot be null or whitespace.");
             }
 
-            if (title.Length < 48)
+            if (title.Length > 48)
             {
                 throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 64 characters.");
             }
 
-            if (description.Length < 256)
+            if (description.Length > 256)
             {
                 throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 256 characters.");
             }
@@ -43,11 +44,6 @@ namespace HeartmadeCandles.Admin.Core.Models
                 throw new ArgumentOutOfRangeException($"'{nameof(weightGrams)}' сannot be 0 or less.");
             }
 
-            if (typeCandle == null)
-            {
-                throw new ArgumentNullException($"'{nameof(typeCandle)}' connot be null.");
-            }
-
             _id = id;
             _title = title;
             _description = description;
@@ -55,7 +51,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             _weightGrams = weightGrams;
             _isActive = isActive;
             _typeCandle = typeCandle;
-            _createdAt = DateTime.UtcNow;
+            _createdAt = createdAt ?? DateTime.UtcNow;
         }
 
         public int Id { get => _id; }
