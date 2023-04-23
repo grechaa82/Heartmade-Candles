@@ -67,6 +67,8 @@ builder.Services.AddScoped<ILayerColorService, LayerColorService>();
 builder.Services.AddScoped<ILayerColorRepository, LayerColorRepository>();
 builder.Services.AddScoped<ISmellService, SmellService>();
 builder.Services.AddScoped<ISmellRepository, SmellRepository>();
+builder.Services.AddScoped<IWickService, WickService>();
+builder.Services.AddScoped<IWickRepository, WickRepository>();
 
 builder.Services.AddAuthentication(options =>
 {
