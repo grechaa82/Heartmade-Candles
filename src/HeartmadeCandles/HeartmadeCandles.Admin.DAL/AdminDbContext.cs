@@ -13,5 +13,6 @@ namespace HeartmadeCandles.Admin.DAL
         public DbSet<LayerColorEntity> LayerColor { get; set; }
         public DbSet<SmellEntity> Smell { get; set; }
         public DbSet<WickEntity> Wick { get; set; }
+        public DbSet<NumberOfLayerEntity> NumberOfLayer { get; set; }
     }
 }

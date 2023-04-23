@@ -69,6 +69,8 @@ builder.Services.AddScoped<ISmellService, SmellService>();
 builder.Services.AddScoped<ISmellRepository, SmellRepository>();
 builder.Services.AddScoped<IWickService, WickService>();
 builder.Services.AddScoped<IWickRepository, WickRepository>();
+builder.Services.AddScoped<INumberOfLayerService, NumberOfLayerService>();
+builder.Services.AddScoped<INumberOfLayerRepository, NumberOfLayerRepository>();
 
 builder.Services.AddAuthentication(options =>
 {

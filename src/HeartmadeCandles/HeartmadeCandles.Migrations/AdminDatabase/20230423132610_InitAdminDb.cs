@@ -47,6 +47,19 @@ namespace HeartmadeCandles.Migrations.AdminDatabase
                 });
 
             migrationBuilder.CreateTable(
+                name: "NumberOfLayer",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    number = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NumberOfLayer", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Smell",
                 columns: table => new
                 {
@@ -134,6 +147,9 @@ namespace HeartmadeCandles.Migrations.AdminDatabase
 
             migrationBuilder.DropTable(
                 name: "LayerColor");
+
+            migrationBuilder.DropTable(
+                name: "NumberOfLayer");
 
             migrationBuilder.DropTable(
                 name: "Smell");

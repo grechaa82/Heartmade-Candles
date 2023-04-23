@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HeartmadeCandles.Migrations.AdminDatabase
 {
     [DbContext(typeof(AdminDbContext))]
-    [Migration("20230423120850_InitAdminDb")]
+    [Migration("20230423132610_InitAdminDb")]
     partial class InitAdminDb
     {
         /// <inheritdoc />
@@ -150,6 +150,24 @@ namespace HeartmadeCandles.Migrations.AdminDatabase
                     b.HasKey("Id");
 
                     b.ToTable("LayerColor");
+                });
+
+            modelBuilder.Entity("HeartmadeCandles.Admin.DAL.Entities.NumberOfLayerEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer")
+                        .HasColumnName("number");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NumberOfLayer");
                 });
 
             modelBuilder.Entity("HeartmadeCandles.Admin.DAL.Entities.SmellEntity", b =>

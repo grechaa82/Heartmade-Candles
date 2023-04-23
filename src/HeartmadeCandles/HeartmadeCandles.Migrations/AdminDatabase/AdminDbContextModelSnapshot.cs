@@ -149,6 +149,24 @@ namespace HeartmadeCandles.Migrations.AdminDatabase
                     b.ToTable("LayerColor");
                 });
 
+            modelBuilder.Entity("HeartmadeCandles.Admin.DAL.Entities.NumberOfLayerEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer")
+                        .HasColumnName("number");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NumberOfLayer");
+                });
+
             modelBuilder.Entity("HeartmadeCandles.Admin.DAL.Entities.SmellEntity", b =>
                 {
                     b.Property<int>("Id")
