@@ -11,5 +11,6 @@ namespace HeartmadeCandles.Admin.DAL
         public DbSet<TypeCandleEntity> TypeCandle { get; set; }
         public DbSet<DecorEntity> Decor { get; set; }
         public DbSet<LayerColorEntity> LayerColor { get; set; }
+        public DbSet<SmellEntity> Smell { get; set; }
     }
 }

@@ -1,21 +1,19 @@
 ﻿namespace HeartmadeCandles.Admin.Core.Models
 {
-    public class Decor
+    public class Smell
     {
         private int _id;
         private string _title;
         private string _description;
         private decimal _price;
-        private string _imageURL;
         private bool _isActive;
 
-        public Decor(
+        public Smell(
             string title, 
             string description, 
             decimal price, 
-            string imageURL, 
-            bool isActive = true,
-            int id = 0) 
+            bool isActive,
+            int id = 0)
         {
             if (string.IsNullOrWhiteSpace(title))
             {
@@ -41,7 +39,6 @@
             _title = title;
             _description = description;
             _price = price;
-            _imageURL = imageURL;
             _isActive = isActive;
         }
 
@@ -49,7 +46,6 @@
         public string Title { get => _title; }
         public string Description { get => _description; }
         public decimal Price { get => _price; }
-        public string ImageURL { get => _imageURL; }
         public bool IsActive { get => _isActive; }
     }
 }

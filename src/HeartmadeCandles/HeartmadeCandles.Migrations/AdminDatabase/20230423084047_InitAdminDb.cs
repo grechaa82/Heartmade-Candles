@@ -47,6 +47,22 @@ namespace HeartmadeCandles.Migrations.AdminDatabase
                 });
 
             migrationBuilder.CreateTable(
+                name: "Smell",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    title = table.Column<string>(type: "character varying(48)", maxLength: 48, nullable: false),
+                    description = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    price = table.Column<decimal>(type: "numeric", nullable: false),
+                    isActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Smell", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TypeCandle",
                 columns: table => new
                 {
@@ -101,6 +117,9 @@ namespace HeartmadeCandles.Migrations.AdminDatabase
 
             migrationBuilder.DropTable(
                 name: "LayerColor");
+
+            migrationBuilder.DropTable(
+                name: "Smell");
 
             migrationBuilder.DropTable(
                 name: "TypeCandle");

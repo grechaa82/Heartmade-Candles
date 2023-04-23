@@ -1,0 +1,93 @@
+﻿using HeartmadeCandles.Admin.Core.Interfaces;
+using HeartmadeCandles.Admin.Core.Models;
+using HeartmadeCandles.Admin.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace HeartmadeCandles.Admin.DAL.Repositories
+{
+    public class SmellRepository : ISmellRepository
+    {
+        private readonly AdminDbContext _context;
+
+        public SmellRepository(AdminDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<Smell>> GetAll()
+        {
+            var result = new List<Smell>();
+
+            var items = await _context.Smell
+                .AsNoTracking()
+                .ToArrayAsync();
+
+            foreach (var item in items)
+            {
+                result.Add(new Smell(
+                    item.Title,
+                    item.Description,
+                    item.Price,
+                    item.IsActive,
+                    item.Id));
+            }
+
+            return result;
+        }
+        
+        public async Task<Smell> Get(int id)
+        {
+            var item = await _context.Smell.FirstOrDefaultAsync(c => c.Id == id);
+
+            var result = new Smell(
+                item.Title,
+                item.Description,
+                item.Price,
+                item.IsActive,
+                item.Id);
+
+            return result;
+        }
+        
+        public async Task Create(Smell smell)
+        {
+            var result = new SmellEntity()
+            {
+                Id = smell.Id,
+                Title = smell.Title,
+                Description = smell.Description,
+                Price = smell.Price,
+                IsActive = smell.IsActive
+            };
+
+            _context.Smell.Add(result);
+            _context.SaveChanges();
+        }
+        
+        public async Task Update(Smell smell)
+        {
+            var result = new SmellEntity()
+            {
+                Id = smell.Id,
+                Title = smell.Title,
+                Description = smell.Description,
+                Price = smell.Price,
+                IsActive = smell.IsActive,
+            };
+
+            _context.Smell.Update(result);
+            _context.SaveChanges();
+        }
+
+        public async Task Delete(int id)
+        {
+            var result = await _context.Smell.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (result != null)
+            {
+                _context.Smell.Remove(result);
+                _context.SaveChanges();
+            }
+        }
+    }
+}
