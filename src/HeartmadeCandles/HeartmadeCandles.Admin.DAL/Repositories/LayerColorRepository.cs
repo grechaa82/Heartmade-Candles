@@ -24,7 +24,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(new LayerColor(
+                result.Add(LayerColor.Create(
                     item.Title,
                     item.Description,
                     item.PricePerGram,
@@ -42,7 +42,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(l => l.Id == id);
             
-            var layerColor = new LayerColor(
+            var layerColor = LayerColor.Create(
                 item.Title,
                 item.Description,
                 item.PricePerGram,

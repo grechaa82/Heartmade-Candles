@@ -4,6 +4,9 @@ namespace HeartmadeCandles.Admin.Core.Models
 {
     public class Candle
     {
+        private const int MaxTitleLenght = 48;
+        private const int MaxDescriptionLenght = 256;
+        
         private int _id;
         private string _title;
         private string _description;
@@ -13,8 +16,36 @@ namespace HeartmadeCandles.Admin.Core.Models
         private TypeCandle _typeCandle;
         private DateTime _createdAt;
 
-        [JsonConstructor]
-        public Candle(
+        private Candle(
+            int id,
+            string title,
+            string description,
+            int weightGrams,
+            string imageURL,
+            bool isActive,
+            TypeCandle typeCandle,
+            DateTime createdAt)
+        {
+            _id = id;
+            _title = title;
+            _description = description;
+            _weightGrams = weightGrams;
+            _imageURL = imageURL;
+            _isActive = isActive;
+            _typeCandle = typeCandle;
+            _createdAt = createdAt;
+        }
+
+        public int Id { get => _id; }
+        public string Title { get => _title; }
+        public string Description { get => _description; }
+        public int WeightGrams { get => _weightGrams; }
+        public string ImageURL { get => _imageURL; }
+        public bool IsActive { get => _isActive; }
+        public TypeCandle TypeCandle { get => _typeCandle; }
+        public DateTime CreatedAt { get => _createdAt; }
+        
+        public static Candle Create(
             string title,
             string description,
             int weightGrams,
@@ -29,12 +60,12 @@ namespace HeartmadeCandles.Admin.Core.Models
                 throw new ArgumentNullException($"'{nameof(title)}' connot be null or whitespace.");
             }
 
-            if (title.Length > 48)
+            if (title.Length > MaxTitleLenght)
             {
                 throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 64 characters.");
             }
 
-            if (description.Length > 256)
+            if (description.Length > MaxDescriptionLenght)
             {
                 throw new ArgumentOutOfRangeException($"'{nameof(description)}' connot be more than 256 characters.");
             }
@@ -43,24 +74,16 @@ namespace HeartmadeCandles.Admin.Core.Models
             {
                 throw new ArgumentOutOfRangeException($"'{nameof(weightGrams)}' сannot be 0 or less.");
             }
-
-            _id = id;
-            _title = title;
-            _description = description;
-            _weightGrams = weightGrams;
-            _imageURL = imageURL;
-            _isActive = isActive;
-            _typeCandle = typeCandle;
-            _createdAt = createdAt ?? DateTime.UtcNow;
+            
+            return new Candle(
+                id, 
+                title, 
+                description, 
+                weightGrams, 
+                imageURL, 
+                isActive, 
+                typeCandle, 
+                createdAt ?? DateTime.UtcNow);
         }
-
-        public int Id { get => _id; }
-        public string Title { get => _title; }
-        public string Description { get => _description; }
-        public int WeightGrams { get => _weightGrams; }
-        public string ImageURL { get => _imageURL; }
-        public bool IsActive { get => _isActive; }
-        public TypeCandle TypeCandle { get => _typeCandle; }
-        public DateTime CreatedAt { get => _createdAt; }
     }
 }

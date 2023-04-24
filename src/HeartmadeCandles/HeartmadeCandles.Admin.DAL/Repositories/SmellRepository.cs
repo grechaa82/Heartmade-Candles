@@ -24,7 +24,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(new Smell(
+                result.Add(Smell.Create(
                     item.Title,
                     item.Description,
                     item.Price,
@@ -41,7 +41,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var result = new Smell(
+            var result = Smell.Create(
                 item.Title,
                 item.Description,
                 item.Price,

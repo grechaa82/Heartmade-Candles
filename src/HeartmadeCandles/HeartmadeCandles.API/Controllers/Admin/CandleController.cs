@@ -36,7 +36,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 throw new InvalidOperationException();
             }
 
-            var candle = new Candle(
+            var candle = Candle.Create(
                 candleRequest.Title, 
                 candleRequest.Description, 
                 candleRequest.WeightGrams,
@@ -52,7 +52,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, CandleRequest candleRequest)
         {
-            var candle = new Candle(
+            var candle = Candle.Create(
                 candleRequest.Title,
                 candleRequest.Description,
                 candleRequest.WeightGrams,

@@ -31,7 +31,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(SmellRequest smellRequest)
         {
-            var smell = new Smell(
+            var smell = Smell.Create(
                 smellRequest.Title,
                 smellRequest.Description,
                 smellRequest.Price,
@@ -45,7 +45,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, SmellRequest smellRequest)
         {
-            var smell = new Smell(
+            var smell = Smell.Create(
                 smellRequest.Title,
                 smellRequest.Description,
                 smellRequest.Price,

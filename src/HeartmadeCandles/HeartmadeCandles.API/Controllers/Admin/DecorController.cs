@@ -31,7 +31,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(DecorRequest decorRequest)
         {
-            var decor = new Decor(
+            var decor = Decor.Create(
                 decorRequest.Title, 
                 decorRequest.Description, 
                 decorRequest.Price, 
@@ -46,7 +46,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, DecorRequest decorRequest)
         {
-            var decor = new Decor(
+            var decor = Decor.Create(
                 decorRequest.Title,
                 decorRequest.Description,
                 decorRequest.Price,

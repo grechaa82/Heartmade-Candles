@@ -26,7 +26,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(new Candle(
+                result.Add(Candle.Create(
                     item.Title,
                     item.Description,
                     item.WeightGrams,
@@ -45,7 +45,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var candle = new Candle(
+            var candle = Candle.Create(
                 item.Title,
                 item.Description,
                 item.WeightGrams,

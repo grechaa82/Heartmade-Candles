@@ -31,7 +31,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(LayerColorRequest layerColorRequest)
         {
-            var decor = new LayerColor(
+            var decor = LayerColor.Create(
                 layerColorRequest.Title,
                 layerColorRequest.Description,
                 layerColorRequest.PricePerGram,
@@ -46,7 +46,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, LayerColorRequest layerColorRequest)
         {
-            var decor = new LayerColor(
+            var decor = LayerColor.Create(
                 layerColorRequest.Title,
                 layerColorRequest.Description,
                 layerColorRequest.PricePerGram,

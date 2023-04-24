@@ -31,7 +31,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(WickRequest wickRequest)
         {
-            var wick = new Wick(
+            var wick = Wick.Create(
                 wickRequest.Title,
                 wickRequest.Description,
                 wickRequest.Price,
@@ -46,7 +46,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, WickRequest wickRequest)
         {
-            var wick = new Wick(
+            var wick = Wick.Create(
                 wickRequest.Title,
                 wickRequest.Description,
                 wickRequest.Price,

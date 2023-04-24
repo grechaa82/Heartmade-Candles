@@ -24,7 +24,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(new Wick(
+                result.Add(Wick.Create(
                     item.Title,
                     item.Description,
                     item.Price,
@@ -42,7 +42,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var wick = new Wick(
+            var wick = Wick.Create(
                 item.Title,
                 item.Description,
                 item.Price,
