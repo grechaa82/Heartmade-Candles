@@ -22,7 +22,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .ToListAsync();
 
-            foreach ( var item in items )
+            foreach (var item in items)
             {
                 result.Add(new LayerColor(
                     item.Title,
@@ -38,7 +38,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task<LayerColor> Get(int id)
         {
-            var item = await _context.LayerColor.FirstOrDefaultAsync(l => l.Id == id);
+            var item = await _context.LayerColor
+                .AsNoTracking()
+                .FirstOrDefaultAsync(l => l.Id == id);
             
             var layerColor = new LayerColor(
                 item.Title,

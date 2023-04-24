@@ -38,7 +38,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
         
         public async Task<Decor> Get(int id)
         {
-            var item = await _context.Decor.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.Decor
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             var decor = new Decor(
                 item.Title,
@@ -64,8 +66,8 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 
             };
 
-            _context.Decor.Add(item);
-            _context.SaveChanges();
+            await _context.Decor.AddAsync(item);
+            await _context.SaveChangesAsync();
         }
 
         public async Task Update(Decor decor)
@@ -82,7 +84,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             };
 
             _context.Decor.Update(item);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         
         public async Task Delete(int id)
@@ -92,7 +94,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             if (item != null)
             {
                 _context.Decor.Remove(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

@@ -8,23 +8,23 @@ namespace HeartmadeCandles.API.Contracts.Requests
         public CandleRequest(
             string title, 
             string description, 
-            string imageURL, 
             int weightGrams, 
+            string imageURL, 
             string typeCandle,
             bool isActive)
         {
             Title = title;
             Description = description;
-            ImageURL = imageURL;
             WeightGrams = weightGrams;
+            ImageURL = imageURL;
             TypeCandle = typeCandle;
             IsActive = isActive;
         }
 
         public string Title { get; set; }
         public string Description { get; set; }
-        public string ImageURL { get; set; }
         public int WeightGrams { get; set; }
+        public string ImageURL { get; set; }
         public string TypeCandle { get; set; }
         public bool IsActive { get; set; }
     }

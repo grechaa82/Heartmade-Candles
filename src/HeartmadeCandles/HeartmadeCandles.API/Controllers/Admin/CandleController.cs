@@ -39,8 +39,8 @@ namespace HeartmadeCandles.API.Controllers.Admin
             var candle = new Candle(
                 candleRequest.Title, 
                 candleRequest.Description, 
-                candleRequest.ImageURL,
                 candleRequest.WeightGrams,
+                candleRequest.ImageURL,
                 candleRequest.IsActive,
                 (TypeCandle)Enum.Parse(typeof(TypeCandle), candleRequest.TypeCandle));
 
@@ -55,13 +55,13 @@ namespace HeartmadeCandles.API.Controllers.Admin
             var candle = new Candle(
                 candleRequest.Title,
                 candleRequest.Description,
-                candleRequest.ImageURL,
                 candleRequest.WeightGrams,
+                candleRequest.ImageURL,
                 candleRequest.IsActive,
                 (TypeCandle)Enum.Parse(typeof(TypeCandle), candleRequest.TypeCandle),
                 id);
 
-            _candleService.Update(candle);
+            await _candleService.Update(candle);
 
             return Ok();
         }

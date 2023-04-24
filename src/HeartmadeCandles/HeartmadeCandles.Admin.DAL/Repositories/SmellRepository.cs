@@ -37,7 +37,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
         
         public async Task<Smell> Get(int id)
         {
-            var item = await _context.Smell.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.Smell
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             var result = new Smell(
                 item.Title,
@@ -60,8 +62,8 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 IsActive = smell.IsActive
             };
 
-            _context.Smell.Add(result);
-            _context.SaveChanges();
+            await _context.Smell.AddAsync(result);
+            await _context.SaveChangesAsync();
         }
         
         public async Task Update(Smell smell)
@@ -76,7 +78,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             };
 
             _context.Smell.Update(result);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int id)
@@ -86,7 +88,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             if (result != null)
             {
                 _context.Smell.Remove(result);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

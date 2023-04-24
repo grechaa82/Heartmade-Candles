@@ -38,7 +38,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task<Wick> Get(int id)
         {
-            var item = await _context.Wick.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.Wick
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             var wick = new Wick(
                 item.Title,
@@ -64,8 +66,8 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             };
 
-            _context.Wick.Add(item);
-            _context.SaveChanges();
+            await _context.Wick.AddAsync(item);
+            await _context.SaveChangesAsync();
         }
 
         public async Task Update(Wick wick)
@@ -82,7 +84,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             };
 
             _context.Wick.Update(item);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int id)
@@ -92,7 +94,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             if (item != null)
             {
                 _context.Wick.Remove(item);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

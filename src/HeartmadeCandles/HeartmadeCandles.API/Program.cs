@@ -43,13 +43,6 @@ builder.Services.AddSingleton(options =>
     return mongoDbClient.GetDatabase(databaseSettings.DatabaseName);
 });
 
-builder.Services.AddDbContext<AdminDbContext>(options =>
-{
-    options.UseNpgsql(
-        connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
-        npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
-});
-
 builder.Services.AddScoped<ICandleConstructorRepository, CandleConstructorRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
@@ -59,6 +52,13 @@ builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
 //builder.Services.AddScoped<IOrderCreateHandler, OrderCreateHandler>();
 
 //Admin module
+builder.Services.AddDbContext<AdminDbContext>(options =>
+{
+    options.UseNpgsql(
+        connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+        npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
+});
+
 builder.Services.AddScoped<ICandleService, CandleService>();
 builder.Services.AddScoped<ICandleRepository, CandleRepository>();
 builder.Services.AddScoped<IDecorService, DecorService>();

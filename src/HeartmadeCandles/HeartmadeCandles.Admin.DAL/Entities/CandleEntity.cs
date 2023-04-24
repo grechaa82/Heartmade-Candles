@@ -15,11 +15,11 @@ namespace HeartmadeCandles.Admin.DAL.Entities
         [Column("description"), MaxLength(256)]
         public string Description { get; set; }
 
-        [Column("imageURL")]
-        public string ImageURL { get; set; }
-
         [Column("weightGrams")]
         public int WeightGrams { get; set; }
+        
+        [Column("imageURL")]
+        public string ImageURL { get; set; }
 
         [Column("isActive")]
         public bool IsActive { get; set; }

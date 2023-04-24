@@ -27,7 +27,7 @@
 
             if (description.Length > 256)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 256 characters.");
+                throw new ArgumentOutOfRangeException($"'{nameof(description)}' connot be more than 256 characters.");
             }
 
             if (price <= 0)

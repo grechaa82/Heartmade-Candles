@@ -7,8 +7,8 @@ namespace HeartmadeCandles.Admin.Core.Models
         private int _id;
         private string _title;
         private string _description;
-        private string _imageURL;
         private int _weightGrams;
+        private string _imageURL;
         private bool _isActive;
         private TypeCandle _typeCandle;
         private DateTime _createdAt;
@@ -17,8 +17,8 @@ namespace HeartmadeCandles.Admin.Core.Models
         public Candle(
             string title,
             string description,
-            string imageURL,
             int weightGrams,
+            string imageURL,
             bool isActive = true,
             TypeCandle typeCandle = TypeCandle.OtherCandle,
             int id = 0,
@@ -36,7 +36,7 @@ namespace HeartmadeCandles.Admin.Core.Models
 
             if (description.Length > 256)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 256 characters.");
+                throw new ArgumentOutOfRangeException($"'{nameof(description)}' connot be more than 256 characters.");
             }
 
             if (weightGrams <= 0)
@@ -47,8 +47,8 @@ namespace HeartmadeCandles.Admin.Core.Models
             _id = id;
             _title = title;
             _description = description;
-            _imageURL = imageURL;
             _weightGrams = weightGrams;
+            _imageURL = imageURL;
             _isActive = isActive;
             _typeCandle = typeCandle;
             _createdAt = createdAt ?? DateTime.UtcNow;
@@ -57,8 +57,8 @@ namespace HeartmadeCandles.Admin.Core.Models
         public int Id { get => _id; }
         public string Title { get => _title; }
         public string Description { get => _description; }
-        public string ImageURL { get => _imageURL; }
         public int WeightGrams { get => _weightGrams; }
+        public string ImageURL { get => _imageURL; }
         public bool IsActive { get => _isActive; }
         public TypeCandle TypeCandle { get => _typeCandle; }
         public DateTime CreatedAt { get => _createdAt; }
