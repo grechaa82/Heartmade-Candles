@@ -1,4 +1,6 @@
-﻿namespace HeartmadeCandles.Admin.Core.Models
+﻿using CSharpFunctionalExtensions;
+
+namespace HeartmadeCandles.Admin.Core.Models
 {
     public class Smell
     {
@@ -31,7 +33,7 @@
         public decimal Price { get => _price; }
         public bool IsActive { get => _isActive; }
         
-        public static Smell Create(
+        public static Result<Smell> Create(
             string title, 
             string description, 
             decimal price, 
@@ -40,30 +42,37 @@
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                throw new ArgumentNullException($"'{nameof(title)}' connot be null or whitespace.");
+                return Result.Failure<Smell>($"'{nameof(title)}' connot be null or whitespace.");
             }
 
             if (title.Length > MaxTitleLenght)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 48 characters.");
+                return Result.Failure<Smell>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
+            }
+
+            if (description == null)
+            {
+                return Result.Failure<Smell>($"'{nameof(description)}' connot be null.");
             }
 
             if (description.Length > MaxDescriptionLenght)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(description)}' connot be more than 256 characters.");
+                return Result.Failure<Smell>($"'{nameof(description)}' connot be more than {MaxDescriptionLenght} characters.");
             }
 
             if (price <= 0)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(price)}' сannot be 0 or less.");
+                return Result.Failure<Smell>($"'{nameof(price)}' сannot be 0 or less.");
             }
             
-            return new Smell(
+            var smell = new Smell(
                 id, 
                 title, 
                 description, 
                 price, 
                 isActive);
+
+            return Result.Success(smell);
         }
     }
 }

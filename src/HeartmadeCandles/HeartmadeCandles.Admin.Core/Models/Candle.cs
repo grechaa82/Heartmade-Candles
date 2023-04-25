@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using CSharpFunctionalExtensions;
 
 namespace HeartmadeCandles.Admin.Core.Models
 {
@@ -45,7 +45,7 @@ namespace HeartmadeCandles.Admin.Core.Models
         public TypeCandle TypeCandle { get => _typeCandle; }
         public DateTime CreatedAt { get => _createdAt; }
         
-        public static Candle Create(
+        public static Result<Candle> Create(
             string title,
             string description,
             int weightGrams,
@@ -57,33 +57,40 @@ namespace HeartmadeCandles.Admin.Core.Models
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                throw new ArgumentNullException($"'{nameof(title)}' connot be null or whitespace.");
+                return Result.Failure<Candle>($"'{nameof(title)}' connot be null or whitespace.");
             }
 
             if (title.Length > MaxTitleLenght)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 64 characters.");
+                return Result.Failure<Candle>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
+            }
+
+            if (description == null)
+            {
+                return Result.Failure<Candle>($"'{nameof(description)}' connot be null.");
             }
 
             if (description.Length > MaxDescriptionLenght)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(description)}' connot be more than 256 characters.");
+                return Result.Failure<Candle>($"'{nameof(description)}' connot be more than {MaxDescriptionLenght} characters.");
             }
 
             if (weightGrams <= 0)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(weightGrams)}' сannot be 0 or less.");
+                return Result.Failure<Candle>($"'{nameof(weightGrams)}' сannot be 0 or less.");
             }
             
-            return new Candle(
-                id, 
-                title, 
-                description, 
-                weightGrams, 
-                imageURL, 
-                isActive, 
-                typeCandle, 
+            var candle = new Candle(
+                id,
+                title,
+                description,
+                weightGrams,
+                imageURL,
+                isActive,
+                typeCandle,
                 createdAt ?? DateTime.UtcNow);
+
+            return Result.Success(candle);
         }
     }
 }

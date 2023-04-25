@@ -1,4 +1,6 @@
-﻿namespace HeartmadeCandles.Admin.Core.Models
+﻿using CSharpFunctionalExtensions;
+
+namespace HeartmadeCandles.Admin.Core.Models
 {
     public class Decor
     {
@@ -35,7 +37,7 @@
         public string ImageURL { get => _imageURL; }
         public bool IsActive { get => _isActive; }
         
-        public static Decor Create(
+        public static Result<Decor> Create(
             string title,
             string description,
             decimal price,
@@ -45,31 +47,38 @@
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                throw new ArgumentNullException($"'{nameof(title)}' connot be null or whitespace.");
+                return Result.Failure<Decor>($"'{nameof(title)}' connot be null or whitespace.");
             }
 
             if (title.Length > MaxTitleLenght)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(title)}' connot be more than 48 characters.");
+                return Result.Failure<Decor>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
+            }
+
+            if (description == null)
+            {
+                return Result.Failure<Decor>($"'{nameof(description)}' connot be null.");
             }
 
             if (description.Length > MaxDescriptionLenght)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(description)}' connot be more than 256 characters.");
+                return Result.Failure<Decor>($"'{nameof(description)}' connot be more than {MaxDescriptionLenght} characters.");
             }
 
             if (price <= 0)
             {
-                throw new ArgumentOutOfRangeException($"'{nameof(price)}' сannot be 0 or less.");
+                return Result.Failure<Decor>($"'{nameof(price)}' сannot be 0 or less.");
             }
             
-            return new Decor(
+            var decor = new Decor(
                 id, 
                 title, 
                 description, 
                 price, 
                 imageURL, 
                 isActive);
+
+            return Result.Success(decor);
         }
     }
 }
