@@ -36,7 +36,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 throw new InvalidOperationException();
             }
 
-            var candle = Candle.Create(
+            var result = Candle.Create(
                 candleRequest.Title, 
                 candleRequest.Description, 
                 candleRequest.WeightGrams,
@@ -44,7 +44,12 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 candleRequest.IsActive,
                 (TypeCandle)Enum.Parse(typeof(TypeCandle), candleRequest.TypeCandle));
 
-            await _candleService.Create(candle);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _candleService.Create(result.Value);
 
             return Ok();
         }
@@ -52,7 +57,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, CandleRequest candleRequest)
         {
-            var candle = Candle.Create(
+            var result = Candle.Create(
                 candleRequest.Title,
                 candleRequest.Description,
                 candleRequest.WeightGrams,
@@ -61,7 +66,12 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 (TypeCandle)Enum.Parse(typeof(TypeCandle), candleRequest.TypeCandle),
                 id);
 
-            await _candleService.Update(candle);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _candleService.Update(result.Value);
 
             return Ok();
         }

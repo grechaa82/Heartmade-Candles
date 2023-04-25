@@ -24,7 +24,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(NumberOfLayer.Create(item.Number, item.Id));
+                var numberOfLayer = NumberOfLayer.Create(item.Number, item.Id);
+
+                result.Add(numberOfLayer.Value);
             }
 
             return result;
@@ -36,9 +38,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var result = NumberOfLayer.Create(item.Number, item.Id);
+            var numberOfLayer = NumberOfLayer.Create(item.Number, item.Id);
 
-            return result;
+            return numberOfLayer.Value;
         }
 
         public async Task Create(NumberOfLayer numberOfLayer)

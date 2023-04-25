@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HeartmadeCandles.Migrations.AdminDatabase
 {
     [DbContext(typeof(AdminDbContext))]
-    [Migration("20230423132610_InitAdminDb")]
+    [Migration("20230425102847_InitAdminDb")]
     partial class InitAdminDb
     {
         /// <inheritdoc />

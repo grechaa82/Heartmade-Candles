@@ -24,13 +24,15 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(Decor.Create(
+                var decor = Decor.Create(
                     item.Title,
                     item.Description,
                     item.Price,
                     item.ImageURL,
                     item.IsActive,
-                    item.Id));
+                    item.Id);
+
+                result.Add(decor.Value);
             }
 
             return result;
@@ -50,7 +52,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 item.IsActive,
                 item.Id);
 
-            return decor;
+            return decor.Value;
         }
         
         public async Task Create(Decor decor)

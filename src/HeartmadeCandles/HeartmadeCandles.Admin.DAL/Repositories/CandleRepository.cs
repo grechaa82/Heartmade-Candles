@@ -26,14 +26,16 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(Candle.Create(
+                var candle = Candle.Create(
                     item.Title,
                     item.Description,
                     item.WeightGrams,
                     item.ImageURL,
                     item.IsActive,
                     TypeCandle.ContainerCandle,
-                    item.Id));
+                    item.Id);
+
+                result.Add(candle.Value);
             }
 
             return result;
@@ -54,7 +56,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 TypeCandle.ContainerCandle,
                 item.Id);
 
-            return candle;
+            return candle.Value;
         }
 
         public async Task Create(Candle candle)

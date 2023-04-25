@@ -31,13 +31,18 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(SmellRequest smellRequest)
         {
-            var smell = Smell.Create(
+            var result = Smell.Create(
                 smellRequest.Title,
                 smellRequest.Description,
                 smellRequest.Price,
                 smellRequest.IsActive);
 
-            await _smellService.Create(smell);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _smellService.Create(result.Value);
 
             return Ok();
         }
@@ -45,14 +50,19 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, SmellRequest smellRequest)
         {
-            var smell = Smell.Create(
-                smellRequest.Title,
-                smellRequest.Description,
-                smellRequest.Price,
-                smellRequest.IsActive,
-                id);
+            var result = Smell.Create(
+                 smellRequest.Title,
+                 smellRequest.Description,
+                 smellRequest.Price,
+                 smellRequest.IsActive,
+                 id);
 
-            await _smellService.Update(smell);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _smellService.Update(result.Value);
 
             return Ok();
         }

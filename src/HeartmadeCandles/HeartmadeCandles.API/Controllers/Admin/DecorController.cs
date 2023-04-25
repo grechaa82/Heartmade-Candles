@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
@@ -31,14 +32,19 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(DecorRequest decorRequest)
         {
-            var decor = Decor.Create(
+            var result = Decor.Create(
                 decorRequest.Title, 
                 decorRequest.Description, 
                 decorRequest.Price, 
                 decorRequest.ImageURL,
                 decorRequest.IsActive);
 
-            await _decorService.Create(decor);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _decorService.Create(result.Value);
 
             return Ok();
         }
@@ -46,7 +52,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, DecorRequest decorRequest)
         {
-            var decor = Decor.Create(
+            var result = Decor.Create(
                 decorRequest.Title,
                 decorRequest.Description,
                 decorRequest.Price,
@@ -54,7 +60,12 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 decorRequest.IsActive,
                 id);
 
-            await _decorService.Update(decor);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _decorService.Update(result.Value);
 
             return Ok();
         }

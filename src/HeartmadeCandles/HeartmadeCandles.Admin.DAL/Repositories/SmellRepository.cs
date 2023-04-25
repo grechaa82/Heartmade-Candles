@@ -24,12 +24,14 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(Smell.Create(
+                var smell = Smell.Create(
                     item.Title,
                     item.Description,
                     item.Price,
                     item.IsActive,
-                    item.Id));
+                    item.Id);
+
+                result.Add(smell.Value);
             }
 
             return result;
@@ -41,14 +43,14 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var result = Smell.Create(
+            var smell = Smell.Create(
                 item.Title,
                 item.Description,
                 item.Price,
                 item.IsActive,
                 item.Id);
 
-            return result;
+            return smell.Value;
         }
         
         public async Task Create(Smell smell)

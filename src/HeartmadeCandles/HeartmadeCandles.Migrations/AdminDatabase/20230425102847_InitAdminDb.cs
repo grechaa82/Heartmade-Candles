@@ -113,8 +113,8 @@ namespace HeartmadeCandles.Migrations.AdminDatabase
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     title = table.Column<string>(type: "character varying(48)", maxLength: 48, nullable: false),
                     description = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    imageURL = table.Column<string>(type: "text", nullable: false),
                     weightGrams = table.Column<int>(type: "integer", nullable: false),
+                    imageURL = table.Column<string>(type: "text", nullable: false),
                     isActive = table.Column<bool>(type: "boolean", nullable: false),
                     typeCandleId = table.Column<int>(type: "integer", nullable: false),
                     createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)

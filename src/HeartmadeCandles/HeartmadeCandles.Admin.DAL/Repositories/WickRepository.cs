@@ -24,13 +24,15 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(Wick.Create(
+                var wick = Wick.Create(
                     item.Title,
                     item.Description,
                     item.Price,
                     item.ImageURL,
                     item.IsActive,
-                    item.Id));
+                    item.Id);
+
+                result.Add(wick.Value);
             }
 
             return result;
@@ -50,7 +52,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 item.IsActive,
                 item.Id);
 
-            return wick;
+            return wick.Value;
         }
 
         public async Task Create(Wick wick)

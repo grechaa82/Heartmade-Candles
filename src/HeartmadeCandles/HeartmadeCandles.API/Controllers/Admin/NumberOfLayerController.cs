@@ -31,9 +31,14 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(NumberOfLayerRequest numberOfLayerRequest)
         {
-            var numberOfLayer = NumberOfLayer.Create(numberOfLayerRequest.Number);
+            var result = NumberOfLayer.Create(numberOfLayerRequest.Number);
 
-            await _numberOfLayerService.Create(numberOfLayer);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _numberOfLayerService.Create(result.Value);
 
             return Ok();
         }
@@ -41,9 +46,14 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, NumberOfLayerRequest numberOfLayerRequest)
         {
-            var numberOfLayer = NumberOfLayer.Create(numberOfLayerRequest.Number, id);
+            var result = NumberOfLayer.Create(numberOfLayerRequest.Number, id);
 
-            await _numberOfLayerService.Update(numberOfLayer);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _numberOfLayerService.Update(result.Value);
 
             return Ok();
         }

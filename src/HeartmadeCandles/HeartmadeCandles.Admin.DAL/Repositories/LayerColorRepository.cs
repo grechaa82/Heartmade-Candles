@@ -24,13 +24,15 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                result.Add(LayerColor.Create(
+                var layerColor = LayerColor.Create(
                     item.Title,
                     item.Description,
                     item.PricePerGram,
                     item.ImageURL,
                     item.IsActive,
-                    item.Id));
+                    item.Id);
+
+                result.Add(layerColor.Value);
             }
 
             return result;
@@ -50,7 +52,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 item.IsActive,
                 item.Id);
 
-            return layerColor;
+            return layerColor.Value;
         }
 
         public async Task Create(LayerColor layerColor)

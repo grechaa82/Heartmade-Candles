@@ -31,14 +31,19 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(WickRequest wickRequest)
         {
-            var wick = Wick.Create(
+            var result = Wick.Create(
                 wickRequest.Title,
                 wickRequest.Description,
                 wickRequest.Price,
                 wickRequest.ImageURL,
                 wickRequest.IsActive);
 
-            await _wickService.Create(wick);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _wickService.Create(result.Value);
 
             return Ok();
         }
@@ -46,7 +51,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, WickRequest wickRequest)
         {
-            var wick = Wick.Create(
+            var result = Wick.Create(
                 wickRequest.Title,
                 wickRequest.Description,
                 wickRequest.Price,
@@ -54,7 +59,12 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 wickRequest.IsActive,
                 id);
 
-            await _wickService.Update(wick);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _wickService.Update(result.Value);
 
             return Ok();
         }

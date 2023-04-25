@@ -31,14 +31,19 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(LayerColorRequest layerColorRequest)
         {
-            var decor = LayerColor.Create(
+            var result = LayerColor.Create(
                 layerColorRequest.Title,
                 layerColorRequest.Description,
                 layerColorRequest.PricePerGram,
                 layerColorRequest.ImageURL,
                 layerColorRequest.IsActive);
 
-            await _layerColorService.Create(decor);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _layerColorService.Create(result.Value);
 
             return Ok();
         }
@@ -46,7 +51,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut]
         public async Task<IActionResult> Update(int id, LayerColorRequest layerColorRequest)
         {
-            var decor = LayerColor.Create(
+            var result = LayerColor.Create(
                 layerColorRequest.Title,
                 layerColorRequest.Description,
                 layerColorRequest.PricePerGram,
@@ -54,7 +59,12 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 layerColorRequest.IsActive,
                 id);
 
-            await _layerColorService.Update(decor);
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            await _layerColorService.Update(result.Value);
 
             return Ok();
         }
