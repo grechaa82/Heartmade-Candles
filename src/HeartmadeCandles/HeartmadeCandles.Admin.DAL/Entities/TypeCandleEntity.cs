@@ -9,7 +9,7 @@ namespace HeartmadeCandles.Admin.DAL.Entities
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("title"), MaxLength(32)]
+        [Column("title"), MaxLength(32), Required]
         public string Title { get; set; }
 
         public ICollection<CandleEntity> Candles { get; set; }
