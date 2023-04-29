@@ -49,7 +49,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, DecorRequest decorRequest)
         {
             var result = Decor.Create(

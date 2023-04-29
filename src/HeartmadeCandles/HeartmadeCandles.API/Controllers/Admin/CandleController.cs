@@ -33,7 +33,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         {
             if (!Enum.IsDefined(typeof(TypeCandle), candleRequest.TypeCandle))
             {
-                throw new InvalidOperationException();
+                return BadRequest($"'{candleRequest.TypeCandle}' there is no such type.");
             }
 
             var result = Candle.Create(
@@ -54,7 +54,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, CandleRequest candleRequest)
         {
             var result = Candle.Create(

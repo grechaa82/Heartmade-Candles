@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using HeartmadeCandles.Admin.Core.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HeartmadeCandles.Admin.DAL.Entities
@@ -9,10 +10,10 @@ namespace HeartmadeCandles.Admin.DAL.Entities
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("title"), MaxLength(48), Required] 
+        [Column("title"), MaxLength(Decor.MaxTitleLenght), Required] 
         public string Title { get; set; }
 
-        [Column("description"), MaxLength(256), Required]
+        [Column("description"), MaxLength(Decor.MaxDescriptionLenght), Required]
         public string Description { get; set; }
 
         [Column("price")]

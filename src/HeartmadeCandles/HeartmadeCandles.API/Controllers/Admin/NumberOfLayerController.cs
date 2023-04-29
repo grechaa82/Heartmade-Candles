@@ -43,7 +43,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, NumberOfLayerRequest numberOfLayerRequest)
         {
             var result = NumberOfLayer.Create(numberOfLayerRequest.Number, id);

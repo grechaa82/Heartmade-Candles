@@ -47,7 +47,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, SmellRequest smellRequest)
         {
             var result = Smell.Create(

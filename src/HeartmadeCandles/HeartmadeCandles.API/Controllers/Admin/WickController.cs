@@ -48,7 +48,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, WickRequest wickRequest)
         {
             var result = Wick.Create(
