@@ -14,101 +14,127 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.Text;
 using HeartmadeCandles.Admin.DAL;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+try
 {
-    options.AddDefaultPolicy(
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:3000");
-        });
-});
-
-builder.Services.AddAutoMapper(typeof(DataAccessMappingProfile));
-
-builder.Services.AddScoped<ICandleConstructorService, CandleConstructorService>();
-builder.Services.AddScoped<IAdminService, AdminService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
-
-builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
-builder.Services.AddSingleton(options =>
-{
-    var databaseSettings = builder.Configuration.GetSection("DatabaseSettings").Get<DatabaseSettings>();
-    var mongoDbClient = new MongoClient(databaseSettings.ConnectionString);
-
-    return mongoDbClient.GetDatabase(databaseSettings.DatabaseName);
-});
-
-builder.Services.AddScoped<ICandleConstructorRepository, CandleConstructorRepository>();
-builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
-
-//builder.Services.AddScoped<IOrderCreateHandler, OrderCreateHandler>();
-
-//Admin module
-builder.Services.AddDbContext<AdminDbContext>(options =>
-{
-    options.UseNpgsql(
-        connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
-        npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
-});
-
-builder.Services.AddScoped<ICandleService, CandleService>();
-builder.Services.AddScoped<ICandleRepository, CandleRepository>();
-builder.Services.AddScoped<IDecorService, DecorService>();
-builder.Services.AddScoped<IDecorRepository, DecorRepository>();
-builder.Services.AddScoped<ILayerColorService, LayerColorService>();
-builder.Services.AddScoped<ILayerColorRepository, LayerColorRepository>();
-builder.Services.AddScoped<ISmellService, SmellService>();
-builder.Services.AddScoped<ISmellRepository, SmellRepository>();
-builder.Services.AddScoped<IWickService, WickService>();
-builder.Services.AddScoped<IWickRepository, WickRepository>();
-builder.Services.AddScoped<INumberOfLayerService, NumberOfLayerService>();
-builder.Services.AddScoped<INumberOfLayerRepository, NumberOfLayerRepository>();
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
+    builder.Services.AddLogging(loggingBuilder =>
     {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetSection("SecurityKey").Value)),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
+        loggingBuilder.ClearProviders();
 
-builder.Services.AddControllers().AddNewtonsoftJson();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+        loggingBuilder.AddSerilog(logger, true);
+    });
 
-var app = builder.Build();
+    builder.Services.AddCors(options =>
+    {
+        options.AddDefaultPolicy(
+            policy =>
+            {
+                policy.WithOrigins("http://localhost:3000");
+            });
+    });
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    builder.Services.AddAutoMapper(typeof(DataAccessMappingProfile));
+
+    builder.Services.AddScoped<ICandleConstructorService, CandleConstructorService>();
+    builder.Services.AddScoped<IAdminService, AdminService>();
+    builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
+
+    builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+    builder.Services.AddSingleton(options =>
+    {
+        var databaseSettings = builder.Configuration.GetSection("DatabaseSettings").Get<DatabaseSettings>();
+        var mongoDbClient = new MongoClient(databaseSettings.ConnectionString);
+
+        return mongoDbClient.GetDatabase(databaseSettings.DatabaseName);
+    });
+
+    builder.Services.AddScoped<ICandleConstructorRepository, CandleConstructorRepository>();
+    builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+    builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+    builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+
+    //builder.Services.AddScoped<IOrderCreateHandler, OrderCreateHandler>();
+
+    //Admin module
+    builder.Services.AddDbContext<AdminDbContext>(options =>
+    {
+        options.UseNpgsql(
+            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+            npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
+    });
+
+    builder.Services.AddScoped<ICandleService, CandleService>();
+    builder.Services.AddScoped<ICandleRepository, CandleRepository>();
+    builder.Services.AddScoped<IDecorService, DecorService>();
+    builder.Services.AddScoped<IDecorRepository, DecorRepository>();
+    builder.Services.AddScoped<ILayerColorService, LayerColorService>();
+    builder.Services.AddScoped<ILayerColorRepository, LayerColorRepository>();
+    builder.Services.AddScoped<ISmellService, SmellService>();
+    builder.Services.AddScoped<ISmellRepository, SmellRepository>();
+    builder.Services.AddScoped<IWickService, WickService>();
+    builder.Services.AddScoped<IWickRepository, WickRepository>();
+    builder.Services.AddScoped<INumberOfLayerService, NumberOfLayerService>();
+    builder.Services.AddScoped<INumberOfLayerRepository, NumberOfLayerRepository>();
+
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetSection("SecurityKey").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+    builder.Services.AddControllers().AddNewtonsoftJson();
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+
+    builder.Services.AddHttpLogging(options => { });
+
+    var app = builder.Build();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseCors();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-
-app.UseCors();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception ex)
+{
+    logger.Fatal(ex.ToString());
+    throw;
+}
+finally
+{
+    logger.Dispose();
+}

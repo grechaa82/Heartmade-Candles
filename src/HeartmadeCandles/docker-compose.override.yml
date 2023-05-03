@@ -32,6 +32,15 @@ services:
     ports:
       - "5050:80"
 
+  seq:
+    container_name: seq
+    image: datalust/seq:latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: Y
+    ports:
+      - "5341:80"
+
   proxy:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
@@ -42,3 +51,4 @@ services:
       - client
       - pg_db
       - pg_admin
+      - seq
