@@ -1,6 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Button from './components/Button';
+import Checkbox from './components/Checkbox';
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         >
           Learn React
         </a>
+        <Button width={320} color="#2E67EA" text="Добавить" />
+        <Checkbox />
       </header>
     </div>
   );
