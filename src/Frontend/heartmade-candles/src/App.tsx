@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import Button from './components/Button';
 import Checkbox from './components/Checkbox';
+import CheckboxBlock from './components/CheckboxBlock';
+import InputTag from './components/InputTag';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
         </a>
         <Button width={320} color="#2E67EA" text="Добавить" />
         <Checkbox />
+        <CheckboxBlock text="Активна" />
+        <InputTag text="6" />
       </header>
     </div>
   );
