@@ -4,6 +4,7 @@ import './App.css';
 import Button from './components/Button';
 import Checkbox from './components/Checkbox';
 import CheckboxBlock from './components/CheckboxBlock';
+import Tag from './components/Tag';
 import InputTag from './components/InputTag';
 
 function App() {
@@ -25,7 +26,8 @@ function App() {
         <Button width={320} color="#2E67EA" text="Добавить" />
         <Checkbox />
         <CheckboxBlock text="Активна" />
-        <InputTag text="6" />
+        <Tag id={1} text="6" />
+        <InputTag />
       </header>
     </div>
   );

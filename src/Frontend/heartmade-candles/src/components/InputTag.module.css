@@ -1,24 +1,13 @@
 .inputTag {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   align-items: center;
-  gap: 8px;
-  box-sizing: border-box;
-  border: 2px solid #6fcf97;
+  gap: 16px;
+  padding: 16px;
+  border: 2px solid #eee;
   border-radius: 10px;
-  background-color: #6fcf97;
-  padding: 8px 12px;
-}
-
-.inputTag > p {
-  margin: 0;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 20px;
-  line-height: 130%;
-  color: #fff;
-}
-
-.inputTag > svg {
-  cursor: pointer;
+  background-color: transparent;
+  box-sizing: border-box;
+  width: 100%;
 }

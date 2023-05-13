@@ -7,6 +7,7 @@ interface ButtonProps {
   color?: string;
   height?: number;
   width?: number;
+  // TODO: add props: Icon, SizeByContent
 }
 
 const Button: React.FC<ButtonProps> = ({
