@@ -1,24 +1,46 @@
 .button {
-  padding: 0;
   box-sizing: border-box;
   border: 2px solid #eeeeee;
   border-radius: 10px;
   background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 16px 16px 16px;
+  gap: 8px;
 }
 button:hover {
   cursor: pointer;
 }
-.button > div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 2px;
-  gap: 8px;
-  min-width: 320px;
-}
-.button > div > p {
+.button > p {
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
   margin: 0px;
+}
+
+.buttonNormal {
+}
+
+.buttonDropdown {
+  justify-content: space-between;
+}
+.buttonDropdown > p {
+  margin-inline-end: 8px;
+}
+.dropdownIcon {
+  position: relative;
+  display: flex;
+  padding-left: 14px;
+}
+.dropdownIcon > span::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -60%;
+  height: 230%;
+  border-inline-start: 2px solid #eeeeee;
+}
+
+.buttonWithIcon {
 }

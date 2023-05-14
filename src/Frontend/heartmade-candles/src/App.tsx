@@ -6,6 +6,7 @@ import Checkbox from './components/Checkbox';
 import CheckboxBlock from './components/CheckboxBlock';
 import Tag from './components/Tag';
 import InputTag from './components/InputTag';
+import Icon from './UI/IconPlusLarge';
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
         >
           Learn React
         </a>
-        <Button width={320} color="#2E67EA" text="Добавить" />
+        <Button text="Добавить" type="Dropdown" icon={Icon} color="#6fcf97" />
         <Checkbox />
         <CheckboxBlock text="Активна" />
         <Tag id={1} text="6" />

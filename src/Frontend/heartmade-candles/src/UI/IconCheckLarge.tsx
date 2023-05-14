@@ -1,10 +1,7 @@
 import React from 'react';
+import { IconProps } from './IconProps';
 
-interface IconCheckLargeProps {
-  color?: string;
-}
-
-const IconCheckLarge: React.FC<IconCheckLargeProps> = ({ color = '#000' }) => {
+const IconCheckLarge: React.FC<IconProps> = ({ color = '#000' }) => {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path

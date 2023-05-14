@@ -1,10 +1,7 @@
 import React from 'react';
+import { IconProps } from './IconProps';
 
-interface IconRemoveLargeProps {
-  color?: string;
-}
-
-const IconRemoveLarge: React.FC<IconRemoveLargeProps> = ({ color = '#000' }) => {
+const IconRemoveLarge: React.FC<IconProps> = ({ color = '#000' }) => {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
