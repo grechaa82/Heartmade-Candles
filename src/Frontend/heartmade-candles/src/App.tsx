@@ -2,6 +2,8 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Button from './components/Button';
+import ButtonDropdown from './components/ButtonDropdown';
+import ButtonWithIcon from './components/ButtonWithIcon';
 import Checkbox from './components/Checkbox';
 import CheckboxBlock from './components/CheckboxBlock';
 import Tag from './components/Tag';
@@ -24,7 +26,15 @@ function App() {
         >
           Learn React
         </a>
-        <Button text="Добавить" type="Dropdown" icon={Icon} color="#6fcf97" />
+        <div className="df">
+          <Button text="Добавить" onClick={() => console.log('Click')} />
+          <ButtonDropdown
+            options={['Option 1', 'Option 2', 'Option 3']}
+            text="Dropdown кнопка"
+            onClick={() => console.log('Click')}
+          />
+          <ButtonWithIcon text="ButtonWithIcon" icon={Icon} onClick={() => console.log('Click')} />
+        </div>
         <Checkbox />
         <CheckboxBlock text="Активна" />
         <Tag id={1} text="6" />

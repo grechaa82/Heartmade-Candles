@@ -1,0 +1,15 @@
+.buttonNormal {
+}
+
+.buttonDropdown {
+  justify-content: space-between;
+}
+.buttonDropdown > p {
+  margin-inline-end: 8px;
+}
+.dropdownIcon {
+  position: relative;
+  display: flex;
+  padding-left: 14px;
+  border-inline-start: 2px solid #eeeeee;
+}
