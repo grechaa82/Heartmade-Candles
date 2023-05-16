@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Button from './components/Button';
@@ -8,9 +8,24 @@ import Checkbox from './components/Checkbox';
 import CheckboxBlock from './components/CheckboxBlock';
 import Tag from './components/Tag';
 import InputTag from './components/InputTag';
+import Textarea from './components/Textarea';
 import Icon from './UI/IconPlusLarge';
+import MainInfoCandles, { CandleData } from './modules/MainInfoCandles';
 
 function App() {
+  const [candleData, setCandleData] = useState(null);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/admin/candles/1`)
+      .then((response) => response.json())
+      .then((data) => {
+        setCandleData(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -40,6 +55,9 @@ function App() {
         <Tag id={1} text="6" />
         <InputTag />
       </header>
+      <div className="formMainInfoCandles">
+        {candleData ? <MainInfoCandles candleData={candleData} /> : null}
+      </div>
     </div>
   );
 }

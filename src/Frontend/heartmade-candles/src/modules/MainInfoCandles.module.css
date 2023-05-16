@@ -1,0 +1,39 @@
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 16px;
+}
+
+.formForCandle {
+}
+
+.formItem {
+}
+
+.itemTitle,
+.itemDescription {
+  grid-column: span 4;
+}
+
+.itemPrice,
+.itemWeightGrams {
+  grid-column: span 2;
+}
+
+.itemType {
+  grid-column: 1/4;
+}
+
+.itemActive {
+}
+
+.candleInfo {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+}
+.image {
+  height: 530px;
+  width: 530px;
+  background-color: #eee;
+}

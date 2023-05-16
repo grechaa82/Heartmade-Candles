@@ -120,7 +120,12 @@ try
 
     app.UseHttpsRedirection();
 
-    app.UseCors();
+    app.UseCors(x =>
+    {
+        x.WithHeaders().AllowAnyHeader();
+        x.WithOrigins().AllowAnyOrigin();
+        x.AllowAnyMethod();
+    });
 
     app.UseAuthentication();
     app.UseAuthorization();

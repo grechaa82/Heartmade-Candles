@@ -1,0 +1,39 @@
+.textarea {
+  position: relative;
+  display: flex;
+}
+
+.textarea > textarea {
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 150%;
+  color: #222222;
+  padding: 34px 16px 16px 16px;
+  border: 2px solid #eeeeee;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  resize: none;
+  height: 84px;
+}
+
+.textarea > label {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+  color: #c9c9c9;
+  position: absolute;
+  top: 12px;
+  left: 16px;
+}
+.textarea > p {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 130%;
+  color: #c9c9c9;
+  position: absolute;
+  margin: 0;
+  bottom: 8px;
+  right: 8px;
+}

@@ -1,8 +1,7 @@
-.buttonNormal {
-}
-
 .buttonDropdown {
   justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
 }
 .buttonDropdown > p {
   margin-inline-end: 8px;
