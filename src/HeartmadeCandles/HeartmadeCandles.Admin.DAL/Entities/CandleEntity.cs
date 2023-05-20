@@ -16,6 +16,10 @@ namespace HeartmadeCandles.Admin.DAL.Entities
         [Column("description"), MaxLength(Candle.MaxDescriptionLenght), Required]
         public string Description { get; set; }
 
+        [Column("price")]
+        public decimal Price { get; set; }
+
+
         [Column("weightGrams")]
         public int WeightGrams { get; set; }
         

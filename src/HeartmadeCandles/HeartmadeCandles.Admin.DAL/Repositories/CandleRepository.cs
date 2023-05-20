@@ -29,6 +29,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 var candle = Candle.Create(
                     item.Title,
                     item.Description,
+                    item.Price,
                     item.WeightGrams,
                     item.ImageURL,
                     item.IsActive,
@@ -50,6 +51,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             var candle = Candle.Create(
                 item.Title,
                 item.Description,
+                item.Price,
                 item.WeightGrams,
                 item.ImageURL,
                 item.IsActive,
@@ -66,6 +68,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 Id = candle.Id,
                 Title = candle.Title,
                 Description = candle.Description,
+                Price = candle.Price,
                 WeightGrams = candle.WeightGrams,
                 ImageURL = candle.ImageURL,
                 IsActive = candle.IsActive,
@@ -84,6 +87,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 Id = candle.Id,
                 Title = candle.Title,
                 Description = candle.Description,
+                Price = candle.Price,
                 WeightGrams = candle.WeightGrams,
                 ImageURL = candle.ImageURL,
                 IsActive = candle.IsActive,
