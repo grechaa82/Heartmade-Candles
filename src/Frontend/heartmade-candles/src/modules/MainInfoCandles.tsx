@@ -9,6 +9,7 @@ export interface CandleData {
   id: number;
   title: string;
   description: string;
+  price: number;
   weightGrams: number;
   imageURL: string;
   isActive: boolean;
@@ -29,7 +30,7 @@ const MainInfoCandles: React.FC<MainInfoCandlesProps> = ({ candleData }) => {
           <Textarea text={candleData.title} label="Название" limitation={{ limit: 48 }} />
         </div>
         <div className={`${Style.formItem} ${Style.itemPrice}`}>
-          <Textarea text={candleData.weightGrams.toString()} label="Стоимость" />
+          <Textarea text={candleData.price.toString()} label="Стоимость" />
         </div>
         <div className={`${Style.formItem} ${Style.itemWeightGrams}`}>
           <Textarea text={candleData.weightGrams.toString()} label="Вес в граммах" />

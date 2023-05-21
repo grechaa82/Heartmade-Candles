@@ -4,6 +4,7 @@ export interface CandleData {
   id: number;
   title: string;
   description: string;
+  price: number;
   weightGrams: number;
   imageURL: string;
   isActive: boolean;
@@ -32,6 +33,7 @@ const CandlePage: React.FC<CandlePageProps> = () => {
       {candlesData.map((candle: CandleData) => (
         <li key={candle.id.toString()}>
           <p>{candle.title}</p>
+          <p>{candle.price} руб</p>
         </li>
       ))}
     </ul>
