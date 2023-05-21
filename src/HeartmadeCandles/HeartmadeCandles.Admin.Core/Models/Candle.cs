@@ -10,6 +10,7 @@ namespace HeartmadeCandles.Admin.Core.Models
         private int _id;
         private string _title;
         private string _description;
+        private decimal _price;
         private int _weightGrams;
         private string _imageURL;
         private bool _isActive;
@@ -20,6 +21,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             int id,
             string title,
             string description,
+            decimal price,
             int weightGrams,
             string imageURL,
             bool isActive,
@@ -29,6 +31,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             _id = id;
             _title = title;
             _description = description;
+            _price = price;
             _weightGrams = weightGrams;
             _imageURL = imageURL;
             _isActive = isActive;
@@ -39,6 +42,7 @@ namespace HeartmadeCandles.Admin.Core.Models
         public int Id { get => _id; }
         public string Title { get => _title; }
         public string Description { get => _description; }
+        public decimal Price { get => _price; }
         public int WeightGrams { get => _weightGrams; }
         public string ImageURL { get => _imageURL; }
         public bool IsActive { get => _isActive; }
@@ -48,6 +52,7 @@ namespace HeartmadeCandles.Admin.Core.Models
         public static Result<Candle> Create(
             string title,
             string description,
+            decimal price,
             int weightGrams,
             string imageURL,
             bool isActive = true,
@@ -75,6 +80,11 @@ namespace HeartmadeCandles.Admin.Core.Models
                 return Result.Failure<Candle>($"'{nameof(description)}' connot be more than {MaxDescriptionLenght} characters.");
             }
 
+            if (price <= 0)
+            {
+                return Result.Failure<Candle>($"'{nameof(price)}' сannot be 0 or less.");
+            }
+
             if (weightGrams <= 0)
             {
                 return Result.Failure<Candle>($"'{nameof(weightGrams)}' сannot be 0 or less.");
@@ -84,6 +94,7 @@ namespace HeartmadeCandles.Admin.Core.Models
                 id,
                 title,
                 description,
+                price,
                 weightGrams,
                 imageURL,
                 isActive,

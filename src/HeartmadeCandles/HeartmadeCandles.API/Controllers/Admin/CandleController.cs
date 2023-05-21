@@ -38,7 +38,8 @@ namespace HeartmadeCandles.API.Controllers.Admin
 
             var result = Candle.Create(
                 candleRequest.Title, 
-                candleRequest.Description, 
+                candleRequest.Description,
+                candleRequest.Price,
                 candleRequest.WeightGrams,
                 candleRequest.ImageURL,
                 candleRequest.IsActive,
@@ -60,6 +61,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
             var result = Candle.Create(
                 candleRequest.Title,
                 candleRequest.Description,
+                candleRequest.Price,
                 candleRequest.WeightGrams,
                 candleRequest.ImageURL,
                 candleRequest.IsActive,

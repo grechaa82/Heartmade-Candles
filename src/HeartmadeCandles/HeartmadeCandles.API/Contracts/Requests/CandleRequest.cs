@@ -7,7 +7,8 @@ namespace HeartmadeCandles.API.Contracts.Requests
         [JsonConstructor]
         public CandleRequest(
             string title, 
-            string description, 
+            string description,
+            decimal price,
             int weightGrams, 
             string imageURL, 
             string typeCandle,
@@ -23,6 +24,7 @@ namespace HeartmadeCandles.API.Contracts.Requests
 
         public string Title { get; set; }
         public string Description { get; set; }
+        public decimal Price { get; set; }
         public int WeightGrams { get; set; }
         public string ImageURL { get; set; }
         public string TypeCandle { get; set; }
