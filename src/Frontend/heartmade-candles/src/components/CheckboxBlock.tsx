@@ -6,9 +6,10 @@ import Style from './CheckboxBlock.module.css';
 interface CheckboxBlockProps {
   text: string;
   color?: string;
+  checked: boolean;
 }
 
-const CheckboxBlock: React.FC<CheckboxBlockProps> = ({ text, color = '#222' }) => {
+const CheckboxBlock: React.FC<CheckboxBlockProps> = ({ text, color = '#222', checked }) => {
   const CheckboxBlockStyle = {
     color: color,
   };
@@ -16,7 +17,7 @@ const CheckboxBlock: React.FC<CheckboxBlockProps> = ({ text, color = '#222' }) =
   return (
     <div className={Style.checkboxBlock}>
       <p style={CheckboxBlockStyle}>{text}</p>
-      <Checkbox />
+      <Checkbox checked={checked} />
     </div>
   );
 };

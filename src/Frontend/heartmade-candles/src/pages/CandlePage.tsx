@@ -1,4 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import BlockProduct from '../components/ProductBlock';
+import ButtonWithIcon from '../components/ButtonWithIcon';
+import IconPlusLarge from '../UI/IconPlusLarge';
+import CandlesGrid from '../modules/CandlesGrid';
+
+import Style from './CandlePage.module.css';
 
 export interface CandleData {
   id: number;
@@ -28,16 +34,8 @@ const CandlePage: React.FC<CandlePageProps> = () => {
 
   return (
     <div>
-    <h1>Candles</h1>
-    <ul>
-      {candlesData.map((candle: CandleData) => (
-        <li key={candle.id.toString()}>
-          <p>{candle.title}</p>
-          <p>{candle.price} руб</p>
-        </li>
-      ))}
-    </ul>
-  </div>
+      <CandlesGrid candlesData={candlesData} />
+    </div>
   );
 };
 

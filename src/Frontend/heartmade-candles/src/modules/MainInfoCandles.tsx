@@ -43,7 +43,7 @@ const MainInfoCandles: React.FC<MainInfoCandlesProps> = ({ candleData }) => {
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemActive}`}>
-          <CheckboxBlock text="Активна" />
+          <CheckboxBlock text="Активна" checked={candleData.isActive} />
         </div>
         <div className={`${Style.formItem} ${Style.itemDescription}`}>
           <Textarea

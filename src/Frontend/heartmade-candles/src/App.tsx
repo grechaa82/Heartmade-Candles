@@ -7,10 +7,10 @@ import CandlePage from './pages/CandlePage';
 function App() {
   return (
     <Routes>
-      <Route path='admin/candles' element={<CandlePage />} />
-      <Route path='admin/candles/:id' element={<CandleDetailsPage />} />
+      <Route path="admin/candles" element={<CandlePage />} />
+      <Route path="admin/candles/:id" element={<CandleDetailsPage />} />
     </Routes>
-);
+  );
 }
 
 export default App;
