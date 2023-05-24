@@ -23,7 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Admin.DAL"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Admin.Core", "HeartmadeCandles.Admin.Core\HeartmadeCandles.Admin.Core.csproj", "{0521F71C-9CFC-46E3-8E52-33B600B83985}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Migrations", "HeartmadeCandles.Migrations\HeartmadeCandles.Migrations.csproj", "{131B8296-9A56-402E-9DDF-CF4234E57F39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Migrations", "HeartmadeCandles.Migrations\HeartmadeCandles.Migrations.csproj", "{131B8296-9A56-402E-9DDF-CF4234E57F39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Tests", "HeartmadeCandles.Tests\HeartmadeCandles.Tests.csproj", "{E3690643-3097-4AC6-B770-A4884B31B30B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{131B8296-9A56-402E-9DDF-CF4234E57F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{131B8296-9A56-402E-9DDF-CF4234E57F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{131B8296-9A56-402E-9DDF-CF4234E57F39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3690643-3097-4AC6-B770-A4884B31B30B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3690643-3097-4AC6-B770-A4884B31B30B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3690643-3097-4AC6-B770-A4884B31B30B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3690643-3097-4AC6-B770-A4884B31B30B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
