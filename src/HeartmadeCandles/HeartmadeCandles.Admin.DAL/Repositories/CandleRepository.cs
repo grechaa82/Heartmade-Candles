@@ -26,14 +26,16 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
+                var typeCandle = TypeCandle.Create(item.TypeCandle.Title, item.TypeCandle.Id);
+
                 var candle = Candle.Create(
                     item.Title,
                     item.Description,
                     item.Price,
                     item.WeightGrams,
                     item.ImageURL,
+                    typeCandle.Value,
                     item.IsActive,
-                    TypeCandle.ContainerCandle,
                     item.Id);
 
                 result.Add(candle.Value);
@@ -46,7 +48,10 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
         {
             var item = await _context.Candle
                 .AsNoTracking()
+                .Include(c => c.TypeCandle)
                 .FirstOrDefaultAsync(c => c.Id == id);
+
+            var typeCandle = TypeCandle.Create(item.TypeCandle.Title, item.TypeCandle.Id);
 
             var candle = Candle.Create(
                 item.Title,
@@ -54,8 +59,8 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 item.Price,
                 item.WeightGrams,
                 item.ImageURL,
+                typeCandle.Value,
                 item.IsActive,
-                TypeCandle.ContainerCandle,
                 item.Id);
 
             return candle.Value;
@@ -72,11 +77,11 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 WeightGrams = candle.WeightGrams,
                 ImageURL = candle.ImageURL,
                 IsActive = candle.IsActive,
-                TypeCandleId = 1,
+                TypeCandleId = candle.TypeCandle.Id,
                 CreatedAt = candle.CreatedAt
             };
 
-            await _context.AddAsync(item);
+            await _context.Candle.AddAsync(item);
             await _context.SaveChangesAsync();
         }
 
@@ -91,11 +96,11 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 WeightGrams = candle.WeightGrams,
                 ImageURL = candle.ImageURL,
                 IsActive = candle.IsActive,
-                TypeCandleId = 1,
+                TypeCandleId = candle.TypeCandle.Id,
                 CreatedAt = candle.CreatedAt
             };
 
-            _context.Update(item);
+            _context.Candle.Update(item);
             await _context.SaveChangesAsync();
         }
 

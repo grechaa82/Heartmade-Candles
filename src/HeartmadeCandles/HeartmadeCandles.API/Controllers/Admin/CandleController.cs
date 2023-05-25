@@ -31,19 +31,21 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(CandleRequest candleRequest)
         {
-            if (!Enum.IsDefined(typeof(TypeCandle), candleRequest.TypeCandle))
+            var typeCandleResult = TypeCandle.Create(candleRequest.TypeCandle.Title, candleRequest.TypeCandle.Id);
+
+            if (typeCandleResult.IsFailure)
             {
-                return BadRequest($"'{candleRequest.TypeCandle}' there is no such type.");
+                return BadRequest(typeCandleResult.Error);
             }
 
             var result = Candle.Create(
-                candleRequest.Title, 
+                candleRequest.Title,
                 candleRequest.Description,
                 candleRequest.Price,
                 candleRequest.WeightGrams,
                 candleRequest.ImageURL,
-                candleRequest.IsActive,
-                (TypeCandle)Enum.Parse(typeof(TypeCandle), candleRequest.TypeCandle));
+                typeCandleResult.Value,
+                candleRequest.IsActive);
 
             if (result.IsFailure)
             {
@@ -58,14 +60,21 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, CandleRequest candleRequest)
         {
+            var typeCandleResult = TypeCandle.Create(candleRequest.TypeCandle.Title, candleRequest.TypeCandle.Id);
+
+            if (typeCandleResult.IsFailure)
+            {
+                return BadRequest(typeCandleResult.Error);
+            }
+
             var result = Candle.Create(
                 candleRequest.Title,
                 candleRequest.Description,
                 candleRequest.Price,
                 candleRequest.WeightGrams,
                 candleRequest.ImageURL,
+                typeCandleResult.Value,
                 candleRequest.IsActive,
-                (TypeCandle)Enum.Parse(typeof(TypeCandle), candleRequest.TypeCandle),
                 id);
 
             if (result.IsFailure)

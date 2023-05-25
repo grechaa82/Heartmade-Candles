@@ -55,8 +55,8 @@ namespace HeartmadeCandles.Admin.Core.Models
             decimal price,
             int weightGrams,
             string imageURL,
+            TypeCandle typeCandle,
             bool isActive = true,
-            TypeCandle typeCandle = TypeCandle.OtherCandle,
             int id = 0,
             DateTime? createdAt = null)
         {
@@ -89,7 +89,12 @@ namespace HeartmadeCandles.Admin.Core.Models
             {
                 return Result.Failure<Candle>($"'{nameof(weightGrams)}' сannot be 0 or less.");
             }
-            
+
+            if (typeCandle == null)
+            {
+                return Result.Failure<Candle>($"'{nameof(typeCandle)}' connot be null.");
+            }
+
             var candle = new Candle(
                 id,
                 title,

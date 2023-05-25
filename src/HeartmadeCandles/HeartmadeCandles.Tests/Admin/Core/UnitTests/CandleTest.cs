@@ -16,6 +16,8 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
 
         public CandleTests()
         {
+            var typeCandle = TypeCandle.Create("Test typeCandle", 1);
+
             _id = 1;
             _title = "Test candle";
             _description = "Test candle description";
@@ -23,7 +25,7 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
             _weightGrams = 600;
             _imageURL = "https://testImageURL/candle.jpg";
             _isActive = true;
-            _typeCandle = TypeCandle.OtherCandle;
+            _typeCandle = typeCandle.Value;
             _createdAt = DateTime.UtcNow;
         }
 
@@ -186,6 +188,29 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
             // Assert
             Assert.True(result.IsFailure);
             Assert.Equal("'weightGrams' сannot be 0 or less.", result.Error);
+        }
+
+        [Fact]
+        public void CreateCandle_NullTypeCandle_ShouldReturnFailure()
+        {
+            // Arrange
+            TypeCandle typeCandle = null;
+
+            // Act
+            var result = Candle.Create(
+                title: _title,
+                description: _description,
+                price: _price,
+                weightGrams: _weightGrams,
+                imageURL: _imageURL,
+                isActive: _isActive,
+                typeCandle: typeCandle,
+                id: _id,
+                createdAt: _createdAt);
+
+            // Assert
+            Assert.True(result.IsFailure);
+            Assert.Equal("'typeCandle' connot be null.", result.Error);
         }
     }
 }

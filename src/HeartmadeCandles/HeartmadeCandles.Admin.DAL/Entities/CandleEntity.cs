@@ -7,7 +7,7 @@ namespace HeartmadeCandles.Admin.DAL.Entities
     [Table("Candle")]
     public class CandleEntity
     {
-        [Column("id")]
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), Column("id")]
         public int Id { get; set; }
 
         [Column("title"), MaxLength(Candle.MaxTitleLenght), Required] 
