@@ -1,27 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import BlockProduct from '../components/ProductBlock';
-import ButtonWithIcon from '../components/ButtonWithIcon';
-import IconPlusLarge from '../UI/IconPlusLarge';
-import CandlesGrid from '../modules/CandlesGrid';
+import CandlesGrid from '../modules/ProductsGrid';
+import { Candle } from '../types/Candle';
 
 import Style from './CandlePage.module.css';
-
-export interface CandleData {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  weightGrams: number;
-  imageURL: string;
-  isActive: boolean;
-  typeCandle: number;
-  createdAt: string;
-}
 
 export interface CandlePageProps {}
 
 const CandlePage: React.FC<CandlePageProps> = () => {
-  const [candlesData, setCandlesData] = useState<CandleData[]>([]);
+  const [candlesData, setCandlesData] = useState<Candle[]>([]);
 
   useEffect(() => {
     async function fetchCandles() {
@@ -34,7 +20,7 @@ const CandlePage: React.FC<CandlePageProps> = () => {
 
   return (
     <div>
-      <CandlesGrid candlesData={candlesData} />
+      <CandlesGrid data={candlesData} />
     </div>
   );
 };

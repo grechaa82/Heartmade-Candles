@@ -1,26 +1,15 @@
 import React, { FC } from 'react';
+import { BaseProduct } from '../types/BaseProduct';
 import Checkbox from './Checkbox';
-import CandleData from '../pages/CandlePage';
+
 import Style from './ProductBlock.module.css';
 
-export interface CandleData {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  weightGrams: number;
-  imageURL: string;
-  isActive: boolean;
-  typeCandle: number;
-  createdAt: string;
-}
-
-export interface ProductBlockProps {
-  candleData: CandleData;
+export interface ProductBlockProps<T extends BaseProduct> {
+  product: T;
   width?: number;
 }
 
-const ProductBlock: React.FC<ProductBlockProps> = ({ candleData, width }) => {
+const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({ product, width }) => {
   const productBlockStyle = {
     ...(width && { width: `${width}px` }),
   };
@@ -29,10 +18,10 @@ const ProductBlock: React.FC<ProductBlockProps> = ({ candleData, width }) => {
     <div className={Style.productBlock} style={productBlockStyle}>
       <div className={Style.image}></div>
       <div className={Style.info}>
-        <p className={Style.title}>{candleData.title}</p>
-        <p className={Style.description}>{candleData.description}</p>
+        <p className={Style.title}>{product.title}</p>
+        <p className={Style.description}>{product.description}</p>
       </div>
-      <Checkbox checked={candleData.isActive} />
+      <Checkbox checked={product.isActive} />
     </div>
   );
 };
