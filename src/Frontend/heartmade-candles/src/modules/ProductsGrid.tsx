@@ -7,12 +7,13 @@ import IconPlusLarge from '../UI/IconPlusLarge';
 
 export interface ProductsGridProps<T extends BaseProduct> {
   data: T[];
+  title: string;
 }
 
-const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({ data }) => {
+const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({ data, title }) => {
   return (
     <div className={Style.candlesGrid}>
-      <h1>Свечи</h1>
+      <h1>{title}</h1>
       <div className={Style.grid}>
         {data.map((item: BaseProduct) => (
           <ProductBlock key={item.id} product={item} />

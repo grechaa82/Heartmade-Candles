@@ -20,7 +20,7 @@ const CandlePage: React.FC<CandlePageProps> = () => {
 
   return (
     <div>
-      <CandlesGrid data={candlesData} />
+      <CandlesGrid data={candlesData} title="Свечи" />
     </div>
   );
 };
