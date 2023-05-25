@@ -85,6 +85,8 @@ try
     builder.Services.AddScoped<IWickRepository, WickRepository>();
     builder.Services.AddScoped<INumberOfLayerService, NumberOfLayerService>();
     builder.Services.AddScoped<INumberOfLayerRepository, NumberOfLayerRepository>();
+    builder.Services.AddScoped<ITypeCandleService, TypeCandleService>();
+    builder.Services.AddScoped<ITypeCandleRepository, TypeCandleRepository>();
 
     builder.Services.AddAuthentication(options =>
     {

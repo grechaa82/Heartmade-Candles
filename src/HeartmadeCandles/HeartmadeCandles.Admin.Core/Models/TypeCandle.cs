@@ -4,7 +4,7 @@ namespace HeartmadeCandles.Admin.Core.Models
 {
     public class TypeCandle
     {
-        public const int MaxTitleLenght = 48;
+        public const int MaxTitleLenght = 32;
 
         private int _id;
         private string _title;
