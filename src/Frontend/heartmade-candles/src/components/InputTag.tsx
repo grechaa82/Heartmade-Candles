@@ -1,13 +1,19 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import Tag, { TagProps } from './Tag';
 
 import Style from './InputTag.module.css';
 
-interface InputTagProps {}
+interface InputTagProps {
+  tagsData: TagProps[];
+}
 
-const InputTag: React.FC<InputTagProps> = () => {
+const InputTag: FC<InputTagProps> = ({ tagsData }) => {
   const [tags, setTags] = React.useState<TagProps[]>([]);
   const [inputValue, setInputValue] = React.useState('');
+
+  useEffect(() => {
+    setTags(tagsData);
+  }, [tagsData]);
 
   //TODO: Implement adding by "Enter" and by the comma sign ","
 

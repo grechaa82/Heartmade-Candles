@@ -10,8 +10,8 @@ export interface TagProps {
   removeTag?: () => void;
 }
 
-const Tag: React.FC<TagProps> = ({ id, text, removable = true, removeTag }) => {
-  const [isRemoved, setIsRemoved] = React.useState(false);
+const Tag: FC<TagProps> = ({ id, text, removable = true, removeTag }) => {
+  const [isRemoved, setIsRemoved] = useState(false);
 
   const handleRemoveClick = () => {
     setIsRemoved(true);
