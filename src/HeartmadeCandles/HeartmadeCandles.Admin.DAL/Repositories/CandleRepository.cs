@@ -44,26 +44,142 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             return result;
         }
 
-        public async Task<Candle> Get(int id)
+        public async Task<CandleDetail> Get(int id)
         {
-            var item = await _context.Candle
+            var candleDetailEntity = await _context.Candle
                 .AsNoTracking()
+                .Where(c => c.Id == id)
                 .Include(c => c.TypeCandle)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .Include(d => d.CandleDecor)
+                .Include(l => l.CandleLayerColor)
+                .Include(n => n.CandleNumberOfLayer)
+                .Include(s => s.CandleSmell)
+                .Include(w => w.CandleWick)
+                .ToArrayAsync();
 
-            var typeCandle = TypeCandle.Create(item.TypeCandle.Title, item.TypeCandle.Id);
+            if (candleDetailEntity == null)
+            {
+                return default;
+            }
+
+            var typeCandle = TypeCandle.Create(candleDetailEntity[0].TypeCandle.Title, candleDetailEntity[0].TypeCandle.Id);
 
             var candle = Candle.Create(
-                item.Title,
-                item.Description,
-                item.Price,
-                item.WeightGrams,
-                item.ImageURL,
+                candleDetailEntity[0].Title,
+                candleDetailEntity[0].Description,
+                candleDetailEntity[0].Price,
+                candleDetailEntity[0].WeightGrams,
+                candleDetailEntity[0].ImageURL,
                 typeCandle.Value,
-                item.IsActive,
-                item.Id);
+                candleDetailEntity[0].IsActive,
+                candleDetailEntity[0].Id);
 
-            return candle.Value;
+            List<Decor> decors = new List<Decor>();
+            var decorEntities = candleDetailEntity[0].CandleDecor;
+            if (decorEntities != null)
+            {
+                foreach (var decorEntity in decorEntities)
+                {
+                    var item = await _context.Decor
+                        .AsNoTracking()
+                        .FirstAsync(d => d.Id == decorEntity.DecorId);
+
+                    var decor = Decor.Create(
+                        item.Title,
+                        item.Description,
+                        item.Price,
+                        item.ImageURL,
+                        item.IsActive,
+                        item.Id);
+
+                    decors.Add(decor.Value);
+                }
+            }
+
+            List<LayerColor> layerColors = new List<LayerColor>();
+            var layerColorEntities = candleDetailEntity[0].CandleLayerColor;
+            if (layerColorEntities != null)
+            {
+                foreach (var layerColorEntity in layerColorEntities)
+                {
+                    var item = await _context.LayerColor
+                        .AsNoTracking()
+                        .FirstAsync(l => l.Id == layerColorEntity.LayerColorId);
+
+                    var layerColor = LayerColor.Create(
+                        item.Title,
+                        item.Description,
+                        item.PricePerGram,
+                        item.ImageURL,
+                        item.IsActive,
+                        item.Id);
+
+                    layerColors.Add(layerColor.Value);
+                }
+            }
+
+            List<NumberOfLayer> numberOfLayers = new List<NumberOfLayer>();
+            var numberOfLayerEntities = candleDetailEntity[0].CandleNumberOfLayer;
+            if (numberOfLayerEntities != null)
+            {
+                foreach (var numberOfLayerEntity in numberOfLayerEntities)
+                {
+                    var item = await _context.NumberOfLayer
+                        .AsNoTracking()
+                        .FirstAsync(n => n.Id == numberOfLayerEntity.NumberOfLayerId);
+
+                    var numberOfLayer = NumberOfLayer.Create(item.Number, item.Id);
+
+                    numberOfLayers.Add(numberOfLayer.Value);
+                }
+            }
+
+            List<Smell> smells = new List<Smell>();
+            var smellEntities = candleDetailEntity[0].CandleSmell;
+            if (smellEntities != null)
+            {
+                foreach (var smellEntity in smellEntities)
+                {
+                    var item = await _context.Smell
+                        .AsNoTracking()
+                        .FirstAsync(s => s.Id == smellEntity.SmellId);
+
+                    var smell = Smell.Create(
+                        item.Title,
+                        item.Description,
+                        item.Price,
+                        item.IsActive,
+                        item.Id);
+
+                    smells.Add(smell.Value);
+                }
+            }
+
+            List<Wick> wicks = new List<Wick>();
+            var wickEntities = candleDetailEntity[0].CandleWick;
+            if (smellEntities != null)
+            {
+                foreach (var wickEntity in wickEntities)
+                {
+                    var item = await _context.Wick
+                        .AsNoTracking()
+                        .FirstAsync(s => s.Id == wickEntity.WickId);
+
+                    var wick = Wick.Create(
+                        item.Title,
+                        item.Description,
+                        item.Price,
+                        item.ImageURL,
+                        item.IsActive,
+                        item.Id);
+
+                    wicks.Add(wick.Value);
+                }
+            }
+
+            var candleDetail = CandleDetail.Create(candle.Value, decors, layerColors, numberOfLayers, smells, wicks);
+
+            return candleDetail.Value;
         }
 
         public async Task Create(Candle candle)
