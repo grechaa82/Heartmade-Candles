@@ -24,5 +24,7 @@ namespace HeartmadeCandles.Admin.DAL.Entities
 
         [Column("isActive")]
         public bool IsActive { get; set; }
+
+        public virtual ICollection<CandleEntityLayerColorEntity> CandleLayerColor { get; set; }
     }
 }

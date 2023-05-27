@@ -17,7 +17,7 @@ namespace HeartmadeCandles.Admin.BL.Services
             return await _candleRepository.GetAll();
         }
 
-        public async Task<Candle> Get(int id)
+        public async Task<CandleDetail> Get(int id)
         {
             return await _candleRepository.Get(id);
         }
