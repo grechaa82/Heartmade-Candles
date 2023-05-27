@@ -1,27 +1,33 @@
-import React from 'react';
-import Button from '../components/Button';
+import React, { FC, useState, useEffect } from 'react';
 import ButtonDropdown from '../components/ButtonDropdown';
 import CheckboxBlock from '../components/CheckboxBlock';
 import Textarea from '../components/Textarea';
 import Style from './MainInfoCandles.module.css';
-
-export interface CandleData {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  weightGrams: number;
-  imageURL: string;
-  isActive: boolean;
-  typeCandle: number;
-  createdAt: string;
-}
+import { Candle } from '../types/Candle';
+import { TypeCandle } from '../types/TypeCandle';
 
 export interface MainInfoCandlesProps {
-  candleData: CandleData;
+  candleData: Candle;
 }
 
-const MainInfoCandles: React.FC<MainInfoCandlesProps> = ({ candleData }) => {
+const MainInfoCandles: FC<MainInfoCandlesProps> = ({ candleData }) => {
+  const [typeCandlesData, setTypeCandlesData] = useState<TypeCandle[]>([]);
+  const typeCandlesArray = typeCandlesData.map((candle) => candle.title);
+
+  useEffect(() => {
+    async function fetchTypeCandles() {
+      try {
+        const response = await fetch(`http://localhost:5000/api/admin/typeCandles/`);
+        const data = await response.json();
+        setTypeCandlesData(data);
+        console.log('fetchNumberOfLayers:', data);
+      } catch (error) {
+        console.error('Произошла ошибка при загрузке типов свечей:', error);
+      }
+    }
+    fetchTypeCandles();
+  }, []);
+
   return (
     <div className={Style.candleInfo}>
       <div className={Style.image}></div>
@@ -37,8 +43,8 @@ const MainInfoCandles: React.FC<MainInfoCandlesProps> = ({ candleData }) => {
         </div>
         <div className={`${Style.formItem} ${Style.itemType}`}>
           <ButtonDropdown
-            text={candleData.typeCandle.toString()}
-            options={['Type 1', 'Type 2', 'Type 3', 'Type 4']}
+            text={candleData.typeCandle.title}
+            options={typeCandlesArray}
             onClick={() => console.log('text')}
           />
         </div>
