@@ -21,5 +21,7 @@ namespace HeartmadeCandles.Admin.DAL.Entities
 
         [Column("isActive")]
         public bool IsActive { get; set; }
+
+        public virtual ICollection<CandleEntitySmellEntity> CandleSmell { get; set; }
     }
 }

@@ -36,5 +36,15 @@ namespace HeartmadeCandles.Admin.DAL.Entities
         public DateTime CreatedAt { get; set; }
 
         public virtual TypeCandleEntity TypeCandle { get; set; }
+
+        public virtual ICollection<CandleEntityDecorEntity> CandleDecor { get; set; }
+
+        public virtual ICollection<CandleEntityLayerColorEntity> CandleLayerColor { get; set; }
+
+        public virtual ICollection<CandleEntityNumberOfLayerEntity> CandleNumberOfLayer { get; set; }
+
+        public virtual ICollection<CandleEntitySmellEntity> CandleSmell { get; set; }
+
+        public virtual ICollection<CandleEntityWickEntity> CandleWick { get; set; }
     }
 }

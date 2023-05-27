@@ -11,5 +11,7 @@ namespace HeartmadeCandles.Admin.DAL.Entities
 
         [Column("number")]
         public int Number { get; set; }
+
+        public virtual ICollection<CandleEntityNumberOfLayerEntity> CandleNumberOfLayer { get; set; }
     }
 }

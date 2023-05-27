@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.DAL.Entities
@@ -25,5 +24,7 @@ namespace HeartmadeCandles.Admin.DAL.Entities
 
         [Column("isActive")]
         public bool IsActive { get; set; }
+
+        public virtual ICollection<CandleEntityWickEntity> CandleWick { get; set; }
     }
 }
