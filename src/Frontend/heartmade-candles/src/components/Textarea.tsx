@@ -44,7 +44,7 @@ const Textarea: React.FC<TextareaProps> = ({ text, label, height, width, limitat
       <label>{label}</label>
       {limitation && (
         <p>
-          {charCount}/{limitation.limit}
+          {charCount} / {limitation.limit}
         </p>
       )}
     </div>

@@ -15,3 +15,11 @@
     grid-template-columns: 1fr;
   }
 }
+
+.candlesGrid > h2 {
+  font-weight: 600;
+  font-size: 50px;
+  line-height: 110%;
+  margin: 0 0 24px 0;
+  color: #aaa;
+}

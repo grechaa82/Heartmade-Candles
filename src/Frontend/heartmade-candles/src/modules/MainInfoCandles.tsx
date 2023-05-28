@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
 import ButtonDropdown from '../components/ButtonDropdown';
 import CheckboxBlock from '../components/CheckboxBlock';
 import Textarea from '../components/Textarea';
@@ -20,7 +20,6 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({ candleData }) => {
         const response = await fetch(`http://localhost:5000/api/admin/typeCandles/`);
         const data = await response.json();
         setTypeCandlesData(data);
-        console.log('fetchNumberOfLayers:', data);
       } catch (error) {
         console.error('Произошла ошибка при загрузке типов свечей:', error);
       }
@@ -55,7 +54,7 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({ candleData }) => {
           <Textarea
             text={candleData.description}
             label="Описание"
-            height={205}
+            height={175}
             limitation={{ limit: 256 }}
           />
         </div>

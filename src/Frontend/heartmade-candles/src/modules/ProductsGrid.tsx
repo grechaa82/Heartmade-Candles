@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import Style from './ProductsGrid.module.css';
 import { BaseProduct } from '../types/BaseProduct';
 import ProductBlock from '../components/ProductBlock';
@@ -13,7 +13,7 @@ export interface ProductsGridProps<T extends BaseProduct> {
 const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({ data, title }) => {
   return (
     <div className={Style.candlesGrid}>
-      <h1>{title}</h1>
+      <h2>{title}</h2>
       <div className={Style.grid}>
         {data.map((item: BaseProduct) => (
           <ProductBlock key={item.id} product={item} />

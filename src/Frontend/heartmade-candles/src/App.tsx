@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import './App.css';
+
 import CandleDetailsPage from './pages/CandleDetailsPage';
 import CandlePage from './pages/CandlePage';
 import DecorPage from './pages/DecorPage';
@@ -8,16 +7,27 @@ import LayerColorPage from './pages/LayerColorPage';
 import SmellPage from './pages/SmellPage';
 import WickPage from './pages/WickPage';
 
+import Style from './App.module.css';
+
 function App() {
   return (
-    <Routes>
-      <Route path="admin/candles" element={<CandlePage />} />
-      <Route path="admin/candles/:id" element={<CandleDetailsPage />} />
-      <Route path="admin/decors" element={<DecorPage />} />
-      <Route path="admin/layerColors" element={<LayerColorPage />} />
-      <Route path="admin/smells" element={<SmellPage />} />
-      <Route path="admin/wicks" element={<WickPage />} />
-    </Routes>
+    <>
+      <header></header>
+      <div className={Style.AdminContent}>
+        <div className={Style.AdminContainer}>
+          <Routes>
+            <Route path="admin/">
+              <Route path="candles" element={<CandlePage />} />
+              <Route path="candles/:id" element={<CandleDetailsPage />} />
+              <Route path="decors" element={<DecorPage />} />
+              <Route path="layerColors" element={<LayerColorPage />} />
+              <Route path="smells" element={<SmellPage />} />
+              <Route path="wicks" element={<WickPage />} />
+            </Route>
+          </Routes>
+        </div>
+      </div>
+    </>
   );
 }
 

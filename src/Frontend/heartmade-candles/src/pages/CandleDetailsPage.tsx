@@ -30,7 +30,7 @@ const CandleDetailsPage: FC = () => {
   }, [id]);
 
   return (
-    <div>
+    <>
       <div className="candles">
         {candleDetailData && <MainInfoCandles candleData={candleDetailData.candle} />}
       </div>
@@ -43,7 +43,7 @@ const CandleDetailsPage: FC = () => {
       )}
       {candleDetailData?.smells && <ProductsGrid data={candleDetailData.smells} title="Запахи" />}
       {candleDetailData?.wicks && <ProductsGrid data={candleDetailData.wicks} title="Фитили" />}
-    </div>
+    </>
   );
 };
 

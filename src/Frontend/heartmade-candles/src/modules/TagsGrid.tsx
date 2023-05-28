@@ -1,9 +1,8 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { NumberOfLayer } from '../types/NumberOfLayer';
 import { TypeCandle } from '../types/TypeCandle';
 import InputTag from '../components/InputTag';
 import { TagProps } from '../components/Tag';
-import Tag from '../components/Tag';
 
 import Style from './TagsGrid.module.css';
 

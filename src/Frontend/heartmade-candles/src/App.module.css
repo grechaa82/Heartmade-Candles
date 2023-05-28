@@ -37,12 +37,16 @@
   }
 }
 
-.df {
-  display: flex;
-  gap: 16px;
+.AdminContent {
 }
 
-.formMainInfoCandles {
-  margin-bottom: 100px;
-  margin-top: 100px;
+.AdminContainer {
+  max-width: 1300px;
+  margin: auto;
+}
+.AdminContainer > div {
+  margin-top: 64px;
+}
+.AdminContainer > div:first-child {
+  margin-top: 32px;
 }
