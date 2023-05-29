@@ -1,6 +1,6 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
-using HeartmadeCandles.Admin.DAL.Entities;
+using HeartmadeCandles.Admin.DAL.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace HeartmadeCandles.Admin.DAL.Repositories
@@ -24,9 +24,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                var numberOfLayer = NumberOfLayer.Create(item.Number, item.Id);
+                var numberOfLayer = NumberOfLayerMapping.MapToNumberOfLayer(item);
 
-                result.Add(numberOfLayer.Value);
+                result.Add(numberOfLayer);
             }
 
             return result;
@@ -38,18 +38,14 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var numberOfLayer = NumberOfLayer.Create(item.Number, item.Id);
+            var numberOfLayer = NumberOfLayerMapping.MapToNumberOfLayer(item);
 
-            return numberOfLayer.Value;
+            return numberOfLayer;
         }
 
         public async Task Create(NumberOfLayer numberOfLayer)
         {
-            var item = new NumberOfLayerEntity()
-            {
-                Id = numberOfLayer.Id,
-                Number = numberOfLayer.Number
-            };
+            var item = NumberOfLayerMapping.MapToNumberOfLayerEntity(numberOfLayer);
 
             await _context.NumberOfLayer.AddAsync(item);
             await _context.SaveChangesAsync();
@@ -57,11 +53,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task Update(NumberOfLayer numberOfLayer)
         {
-            var item = new NumberOfLayerEntity()
-            {
-                Id = numberOfLayer.Id,
-                Number = numberOfLayer.Number
-            };
+            var item = NumberOfLayerMapping.MapToNumberOfLayerEntity(numberOfLayer);
 
             _context.NumberOfLayer.Update(item);
             await _context.SaveChangesAsync();

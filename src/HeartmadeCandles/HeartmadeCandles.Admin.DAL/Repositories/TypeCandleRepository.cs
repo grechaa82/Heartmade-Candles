@@ -1,6 +1,7 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.Admin.DAL.Entities;
+using HeartmadeCandles.Admin.DAL.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace HeartmadeCandles.Admin.DAL.Repositories
@@ -24,9 +25,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                var typeCandle = TypeCandle.Create(item.Title, item.Id);
+                var typeCandle = TypeCandleMapping.MapToCandleType(item);
 
-                result.Add(typeCandle.Value);
+                result.Add(typeCandle);
             }
 
             return result;
@@ -38,18 +39,14 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var typeCandle = TypeCandle.Create(item.Title, item.Id);
+            var typeCandle = TypeCandleMapping.MapToCandleType(item);
 
-            return typeCandle.Value;
+            return typeCandle;
         }
 
         public async Task Create(TypeCandle typeCandle)
         {
-            var item = new TypeCandleEntity()
-            {
-                Id = typeCandle.Id,
-                Title = typeCandle.Title
-            };
+            var item = TypeCandleMapping.MapToTypeCandleEntity(typeCandle);
 
             await _context.TypeCandle.AddAsync(item);
             await _context.SaveChangesAsync();
@@ -57,11 +54,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task Update(TypeCandle typeCandle)
         {
-            var item = new TypeCandleEntity()
-            {
-                Id = typeCandle.Id,
-                Title = typeCandle.Title
-            };
+            var item = TypeCandleMapping.MapToTypeCandleEntity(typeCandle);
 
             _context.TypeCandle.Update(item);
             await _context.SaveChangesAsync();

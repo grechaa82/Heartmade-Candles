@@ -1,6 +1,7 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.Admin.DAL.Entities;
+using HeartmadeCandles.Admin.DAL.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace HeartmadeCandles.Admin.DAL.Repositories
@@ -24,14 +25,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                var smell = Smell.Create(
-                    item.Title,
-                    item.Description,
-                    item.Price,
-                    item.IsActive,
-                    item.Id);
+                var smell = SmellMapping.MapToSmell(item);
 
-                result.Add(smell.Value);
+                result.Add(smell);
             }
 
             return result;
@@ -43,26 +39,14 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var smell = Smell.Create(
-                item.Title,
-                item.Description,
-                item.Price,
-                item.IsActive,
-                item.Id);
+            var smell = SmellMapping.MapToSmell(item);
 
-            return smell.Value;
+            return smell;
         }
         
         public async Task Create(Smell smell)
         {
-            var result = new SmellEntity()
-            {
-                Id = smell.Id,
-                Title = smell.Title,
-                Description = smell.Description,
-                Price = smell.Price,
-                IsActive = smell.IsActive
-            };
+            var result = SmellMapping.MapToSmellEntity(smell);
 
             await _context.Smell.AddAsync(result);
             await _context.SaveChangesAsync();
@@ -70,26 +54,19 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
         
         public async Task Update(Smell smell)
         {
-            var result = new SmellEntity()
-            {
-                Id = smell.Id,
-                Title = smell.Title,
-                Description = smell.Description,
-                Price = smell.Price,
-                IsActive = smell.IsActive,
-            };
+            var item = SmellMapping.MapToSmellEntity(smell);
 
-            _context.Smell.Update(result);
+            _context.Smell.Update(item);
             await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int id)
         {
-            var result = await _context.Smell.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.Smell.FirstOrDefaultAsync(c => c.Id == id);
 
-            if (result != null)
+            if (item != null)
             {
-                _context.Smell.Remove(result);
+                _context.Smell.Remove(item);
                 await _context.SaveChangesAsync();
             }
         }

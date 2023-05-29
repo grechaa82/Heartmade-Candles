@@ -1,6 +1,7 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.Admin.DAL.Entities;
+using HeartmadeCandles.Admin.DAL.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace HeartmadeCandles.Admin.DAL.Repositories
@@ -24,15 +25,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                var wick = Wick.Create(
-                    item.Title,
-                    item.Description,
-                    item.Price,
-                    item.ImageURL,
-                    item.IsActive,
-                    item.Id);
+                var wick = WickMapping.MapToWick(item);
 
-                result.Add(wick.Value);
+                result.Add(wick);
             }
 
             return result;
@@ -44,29 +39,14 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var wick = Wick.Create(
-                item.Title,
-                item.Description,
-                item.Price,
-                item.ImageURL,
-                item.IsActive,
-                item.Id);
+            var wick = WickMapping.MapToWick(item);
 
-            return wick.Value;
+            return wick;
         }
 
         public async Task Create(Wick wick)
         {
-            var item = new WickEntity()
-            {
-                Id = wick.Id,
-                Title = wick.Title,
-                Description = wick.Description,
-                Price = wick.Price,
-                ImageURL = wick.ImageURL,
-                IsActive = wick.IsActive,
-
-            };
+            var item = WickMapping.MapToWickEntity(wick);
 
             await _context.Wick.AddAsync(item);
             await _context.SaveChangesAsync();
@@ -74,16 +54,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task Update(Wick wick)
         {
-            var item = new WickEntity()
-            {
-                Id = wick.Id,
-                Title = wick.Title,
-                Description = wick.Description,
-                Price = wick.Price,
-                ImageURL = wick.ImageURL,
-                IsActive = wick.IsActive,
-
-            };
+            var item = WickMapping.MapToWickEntity(wick);
 
             _context.Wick.Update(item);
             await _context.SaveChangesAsync();

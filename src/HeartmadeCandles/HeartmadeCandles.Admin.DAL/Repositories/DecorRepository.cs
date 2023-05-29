@@ -1,6 +1,6 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
-using HeartmadeCandles.Admin.DAL.Entities;
+using HeartmadeCandles.Admin.DAL.Mapping;
 using Microsoft.EntityFrameworkCore;
 
 namespace HeartmadeCandles.Admin.DAL.Repositories
@@ -24,15 +24,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             foreach (var item in items)
             {
-                var decor = Decor.Create(
-                    item.Title,
-                    item.Description,
-                    item.Price,
-                    item.ImageURL,
-                    item.IsActive,
-                    item.Id);
+                var decor = DecorMapping.MapToDecor(item);
 
-                result.Add(decor.Value);
+                result.Add(decor);
             }
 
             return result;
@@ -44,29 +38,14 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            var decor = Decor.Create(
-                item.Title,
-                item.Description,
-                item.Price,
-                item.ImageURL,
-                item.IsActive,
-                item.Id);
+            var decor = DecorMapping.MapToDecor(item);
 
-            return decor.Value;
+            return decor;
         }
         
         public async Task Create(Decor decor)
         {
-            var item = new DecorEntity()
-            {
-                Id = decor.Id,
-                Title = decor.Title,
-                Description = decor.Description,
-                Price = decor.Price,
-                ImageURL = decor.ImageURL,
-                IsActive = decor.IsActive,
-                
-            };
+            var item = DecorMapping.MapToDecorEntity(decor);
 
             await _context.Decor.AddAsync(item);
             await _context.SaveChangesAsync();
@@ -74,16 +53,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task Update(Decor decor)
         {
-            var item = new DecorEntity()
-            {
-                Id = decor.Id,
-                Title = decor.Title,
-                Description = decor.Description,
-                Price = decor.Price,
-                ImageURL = decor.ImageURL,
-                IsActive = decor.IsActive,
-
-            };
+            var item = DecorMapping.MapToDecorEntity(decor);
 
             _context.Decor.Update(item);
             await _context.SaveChangesAsync();
