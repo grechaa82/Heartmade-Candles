@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import { ChangeEvent, FC, useState, useEffect } from 'react';
 import Style from './Textarea.module.css';
 
 export interface LimitationProps {
@@ -13,7 +13,7 @@ interface TextareaProps {
   limitation?: LimitationProps;
 }
 
-const Textarea: React.FC<TextareaProps> = ({ text, label, height, width, limitation }) => {
+const Textarea: FC<TextareaProps> = ({ text, label, height, width, limitation }) => {
   const [value, setValue] = useState(text);
   const [charCount, setCharCount] = useState<number>(text.length);
 
@@ -21,7 +21,7 @@ const Textarea: React.FC<TextareaProps> = ({ text, label, height, width, limitat
     setValue(text);
   }, [text]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     if (!limitation || newValue.length <= limitation.limit) {
       setValue(newValue);

@@ -8,24 +8,22 @@ import { TypeCandle } from '../types/TypeCandle';
 
 export interface MainInfoCandlesProps {
   candleData: Candle;
+  fetchTypeCandles: FetchTypeCandles;
 }
 
-const MainInfoCandles: FC<MainInfoCandlesProps> = ({ candleData }) => {
+export type FetchTypeCandles = () => Promise<TypeCandle[]>;
+
+const MainInfoCandles: FC<MainInfoCandlesProps> = ({ candleData, fetchTypeCandles }) => {
   const [typeCandlesData, setTypeCandlesData] = useState<TypeCandle[]>([]);
   const typeCandlesArray = typeCandlesData.map((candle) => candle.title);
 
   useEffect(() => {
-    async function fetchTypeCandles() {
-      try {
-        const response = await fetch(`http://localhost:5000/api/admin/typeCandles/`);
-        const data = await response.json();
-        setTypeCandlesData(data);
-      } catch (error) {
-        console.error('Произошла ошибка при загрузке типов свечей:', error);
-      }
+    async function getTypeCandles() {
+      const data = await fetchTypeCandles();
+      setTypeCandlesData(data);
     }
-    fetchTypeCandles();
-  }, []);
+    getTypeCandles();
+  }, [fetchTypeCandles]);
 
   return (
     <div className={Style.candleInfo}>

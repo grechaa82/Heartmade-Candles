@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProductsGrid from '../modules/ProductsGrid';
 import { LayerColor } from '../types/LayerColor';
+import { getLayerColors } from '../Api';
 
 export interface LayerColorPageProps {}
 
@@ -9,8 +10,7 @@ const LayerColorPage: React.FC<LayerColorPageProps> = () => {
 
   useEffect(() => {
     async function fetchLayerColors() {
-      const response = await fetch(`http://localhost:5000/api/admin/layerColors/`);
-      const data = await response.json();
+      const data = await getLayerColors();
       setLayerColorData(data);
     }
     fetchLayerColors();

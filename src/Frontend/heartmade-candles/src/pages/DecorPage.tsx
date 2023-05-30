@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProductsGrid from '../modules/ProductsGrid';
 import { Decor } from '../types/Decor';
+import { getDecors } from '../Api';
 
 export interface DecorPageProps {}
 
@@ -9,8 +10,7 @@ const DecorPage: React.FC<DecorPageProps> = () => {
 
   useEffect(() => {
     async function fetchDecors() {
-      const response = await fetch(`http://localhost:5000/api/admin/decors/`);
-      const data = await response.json();
+      const data = await getDecors();
       setDecorsData(data);
     }
     fetchDecors();

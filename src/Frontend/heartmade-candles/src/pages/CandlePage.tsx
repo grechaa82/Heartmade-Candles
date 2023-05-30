@@ -4,8 +4,7 @@ import { Candle } from '../types/Candle';
 import { NumberOfLayer } from '../types/NumberOfLayer';
 import { TypeCandle } from '../types/TypeCandle';
 import TagsGrid from '../modules/TagsGrid';
-
-import Style from './CandlePage.module.css';
+import { getCandle, getNumberOfLayers, getTypeCandles } from '../Api';
 
 export interface CandlePageProps {}
 
@@ -17,8 +16,7 @@ const CandlePage: FC<CandlePageProps> = () => {
   useEffect(() => {
     async function fetchTypeCandles() {
       try {
-        const response = await fetch(`http://localhost:5000/api/admin/typeCandles/`);
-        const data = await response.json();
+        const data = await getTypeCandles();
         setTypeCandlesData(data);
       } catch (error) {
         console.error('Произошла ошибка при загрузке типов свечей:', error);
@@ -27,8 +25,7 @@ const CandlePage: FC<CandlePageProps> = () => {
 
     async function fetchNumberOfLayers() {
       try {
-        const response = await fetch(`http://localhost:5000/api/admin/numberOfLayers/`);
-        const data = await response.json();
+        const data = await getNumberOfLayers();
         setNumberOfLayersData(data);
       } catch (error) {
         console.error('Произошла ошибка при загрузке количества слоев:', error);
@@ -37,8 +34,7 @@ const CandlePage: FC<CandlePageProps> = () => {
 
     async function fetchCandles() {
       try {
-        const response = await fetch(`http://localhost:5000/api/admin/candles/`);
-        const data = await response.json();
+        const data = await getCandle();
         setCandlesData(data);
       } catch (error) {
         console.error('Произошла ошибка при загрузке свечей:', error);
