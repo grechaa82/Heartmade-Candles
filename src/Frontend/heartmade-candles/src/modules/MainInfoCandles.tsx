@@ -1,61 +1,135 @@
-import { FC, useState, useEffect } from 'react';
-import ButtonDropdown from '../components/ButtonDropdown';
+import { FC, useState, useEffect, ChangeEvent } from 'react';
+import ButtonDropdown, { optionData } from '../components/ButtonDropdown';
 import CheckboxBlock from '../components/CheckboxBlock';
 import Textarea from '../components/Textarea';
-import Style from './MainInfoCandles.module.css';
 import { Candle } from '../types/Candle';
 import { TypeCandle } from '../types/TypeCandle';
+
+import Style from './MainInfoCandles.module.css';
 
 export interface MainInfoCandlesProps {
   candleData: Candle;
   fetchTypeCandles: FetchTypeCandles;
+  updateCandle: UpdateCandle;
 }
 
 export type FetchTypeCandles = () => Promise<TypeCandle[]>;
+export type UpdateCandle = (candle: Candle) => Promise<void>;
 
-const MainInfoCandles: FC<MainInfoCandlesProps> = ({ candleData, fetchTypeCandles }) => {
-  const [typeCandlesData, setTypeCandlesData] = useState<TypeCandle[]>([]);
-  const typeCandlesArray = typeCandlesData.map((candle) => candle.title);
+const MainInfoCandles: FC<MainInfoCandlesProps> = ({
+  candleData,
+  fetchTypeCandles,
+  updateCandle,
+}) => {
+  const [candle, setCandle] = useState<Candle>(candleData);
+  const [typesCandle, setTypesCandle] = useState<TypeCandle[]>([]);
+  const typeCandlesArray: optionData[] = typesCandle.map(({ id, title }) => ({
+    id: id.toString(),
+    title,
+  }));
+  const [isChanges, setIsChanges] = useState<boolean>(false);
 
   useEffect(() => {
     async function getTypeCandles() {
       const data = await fetchTypeCandles();
-      setTypeCandlesData(data);
+      setTypesCandle(data);
     }
     getTypeCandles();
   }, [fetchTypeCandles]);
+
+  const handleSaveChanges = async () => {
+    updateCandle(candle);
+    setIsChanges(false);
+  };
+
+  const handleChangeTitle = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setCandle((prev) => ({ ...prev, title: event.target.value }));
+    setIsChanges(true);
+  };
+
+  const handleChangePrice = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setCandle((prev) => ({
+      ...prev,
+      price: parseFloat(event.target.value),
+    }));
+    setIsChanges(true);
+  };
+
+  const handleChangeWeightGrams = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setCandle((prev) => ({
+      ...prev,
+      weightGrams: parseFloat(event.target.value),
+    }));
+    setIsChanges(true);
+  };
+
+  const handleChangeTypeCandle = (id: string) => {
+    const selectedTypeCandle = typesCandle.find((typeCandle) => typeCandle.id.toString() === id);
+    if (selectedTypeCandle) {
+      setCandle((prev) => ({
+        ...prev,
+        typeCandle: selectedTypeCandle,
+      }));
+      setIsChanges(true);
+    }
+  };
+
+  const handleChangeIsActive = (isActive: boolean) => {
+    setCandle((prev) => ({ ...prev, isActive }));
+    setIsChanges(true);
+  };
+
+  const handleChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setCandle((prev) => ({ ...prev, description: event.target.value }));
+    setIsChanges(true);
+  };
 
   return (
     <div className={Style.candleInfo}>
       <div className={Style.image}></div>
       <form className={`${Style.gridContainer} ${Style.formForCandle}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
-          <Textarea text={candleData.title} label="Название" limitation={{ limit: 48 }} />
+          <Textarea
+            text={candle.title}
+            label="Название"
+            limitation={{ limit: 48 }}
+            onChange={handleChangeTitle}
+          />
         </div>
         <div className={`${Style.formItem} ${Style.itemPrice}`}>
-          <Textarea text={candleData.price.toString()} label="Стоимость" />
+          <Textarea text={candle.price.toString()} label="Стоимость" onChange={handleChangePrice} />
         </div>
         <div className={`${Style.formItem} ${Style.itemWeightGrams}`}>
-          <Textarea text={candleData.weightGrams.toString()} label="Вес в граммах" />
+          <Textarea
+            text={candle.weightGrams.toString()}
+            label="Вес в граммах"
+            onChange={handleChangeWeightGrams}
+          />
         </div>
         <div className={`${Style.formItem} ${Style.itemType}`}>
           <ButtonDropdown
-            text={candleData.typeCandle.title}
             options={typeCandlesArray}
-            onClick={() => console.log('text')}
+            text={candle.typeCandle.title}
+            onClick={handleChangeTypeCandle}
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemActive}`}>
-          <CheckboxBlock text="Активна" checked={candleData.isActive} />
+          <CheckboxBlock text="Активна" checked={candle.isActive} onChange={handleChangeIsActive} />
         </div>
         <div className={`${Style.formItem} ${Style.itemDescription}`}>
           <Textarea
-            text={candleData.description}
+            text={candle.description}
             label="Описание"
             height={175}
             limitation={{ limit: 256 }}
+            onChange={handleChangeDescription}
           />
         </div>
+        {isChanges && (
+          <button className={Style.saveBtn} type="button" onClick={handleSaveChanges}>
+            Сохранить
+          </button>
+        )}
       </form>
     </div>
   );

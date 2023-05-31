@@ -6,6 +6,7 @@ import { NumberOfLayer } from "./types/NumberOfLayer";
 import { Smell } from "./types/Smell";
 import { TypeCandle } from "./types/TypeCandle";
 import { Wick } from "./types/Wick";
+import { CandleRequest } from "./types/Requests/CandleRequest";
 
 type FetchOptions = {
     path: string;
@@ -21,13 +22,10 @@ const fetchApi = async <T>({ path, method = 'GET', body }: FetchOptions): Promis
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify(body),
     });
-
     if (!response.ok) {
         throw new Error('Ошибка получения данных');
     }
-
     const data = await response.json() as T;
-
     return data;
 };
 
@@ -39,6 +37,13 @@ fetchApi<Candle[]>({
 export const getCandleById = (id: string): Promise<CandleDetail> =>
 fetchApi<CandleDetail>({
     path: `/admin/candles/${id}`,
+});
+
+export const putCandle = (id: string, candleRequest: CandleRequest): Promise<void> =>
+fetchApi<void>({
+    path: `/admin/candles/${id}`,
+    method: 'PUT',
+    body: candleRequest,
 });
 
 export const getTypeCandles = (): Promise<TypeCandle[]> =>

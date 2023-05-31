@@ -11,9 +11,10 @@ interface TextareaProps {
   height?: number;
   width?: number;
   limitation?: LimitationProps;
+  onChange?: (event: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-const Textarea: FC<TextareaProps> = ({ text, label, height, width, limitation }) => {
+const Textarea: FC<TextareaProps> = ({ text, label, height, width, limitation, onChange }) => {
   const [value, setValue] = useState(text);
   const [charCount, setCharCount] = useState<number>(text.length);
 
@@ -26,6 +27,9 @@ const Textarea: FC<TextareaProps> = ({ text, label, height, width, limitation })
     if (!limitation || newValue.length <= limitation.limit) {
       setValue(newValue);
       setCharCount(newValue.length);
+      if (onChange) {
+        onChange(e);
+      }
     }
   };
 

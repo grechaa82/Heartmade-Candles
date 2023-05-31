@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import Checkbox from './Checkbox';
 
 import Style from './CheckboxBlock.module.css';
@@ -7,9 +7,12 @@ interface CheckboxBlockProps {
   text: string;
   color?: string;
   checked: boolean;
+  onChange?: (isActive: boolean) => void;
 }
 
-const CheckboxBlock: React.FC<CheckboxBlockProps> = ({ text, color = '#222', checked }) => {
+const CheckboxBlock: FC<CheckboxBlockProps> = ({ text, color = '#222', checked, onChange }) => {
+  const [isChecked, setIsChecked] = useState<boolean>(checked);
+
   const CheckboxBlockStyle = {
     color: color,
   };
@@ -17,7 +20,7 @@ const CheckboxBlock: React.FC<CheckboxBlockProps> = ({ text, color = '#222', che
   return (
     <div className={Style.checkboxBlock}>
       <p style={CheckboxBlockStyle}>{text}</p>
-      <Checkbox checked={checked} />
+      <Checkbox checked={isChecked} onChange={onChange} />
     </div>
   );
 };

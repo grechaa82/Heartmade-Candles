@@ -40,3 +40,17 @@
 
 .itemActive {
 }
+
+.saveBtn {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background: #d5e6fb;
+  border: 2px solid #d5e6fb;
+  border-radius: 16px 0px 0px;
+  color: #2e67ea;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 130%;
+  padding: 14px 16px 16px 16px;
+}

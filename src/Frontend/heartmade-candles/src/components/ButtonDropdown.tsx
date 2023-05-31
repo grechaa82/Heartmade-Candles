@@ -1,39 +1,64 @@
-import React, { FC, useState } from 'react';
-import Button, { ButtonProps } from './Button';
+import { ChangeEvent, FC, useState } from 'react';
+import { ButtonProps } from './Button';
 import IconChevronDownLarge from '../UI/IconChevronDownLarge';
-import Style from './ButtonDropdown.module.css';
-import StyleButton from './Button.module.css';
 
-interface ButtonDropdownProps extends ButtonProps {
-  options: string[];
+import StyleButton from './Button.module.css';
+import Style from './ButtonDropdown.module.css';
+
+export interface optionData {
+  id: string;
+  title: string;
 }
 
-const ButtonDropdown: React.FC<ButtonDropdownProps> = ({ options, ...buttonProps }) => {
+export interface ButtonDropdownProps extends ButtonProps {
+  options: optionData[];
+  onClick: (id: string) => void;
+}
+
+const ButtonDropdown: FC<ButtonDropdownProps> = ({
+  options,
+  onClick,
+  text,
+  color = '#000',
+  height,
+  width,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<null | optionData>(null);
 
   const buttonStyle = {
-    color: buttonProps.color,
-    ...(buttonProps.height && { height: `${buttonProps.height - 4}px` }),
-    ...(buttonProps.width && { width: `${buttonProps.width}px` }),
+    color: color,
+    ...(height && { height: `${height - 4}px` }),
+    ...(width && { width: `${width}px` }),
+  };
+
+  const handleOptionClick = (optionData: optionData) => {
+    setSelectedOption(optionData);
+    setIsOpen(false);
+    onClick(optionData.id);
   };
 
   return (
-    <div>
+    <div className={Style.dropdownBlock} onClick={() => setIsOpen(!isOpen)}>
       <button
-        className={`${StyleButton.button} ${Style.buttonDropdown}`}
-        onClick={buttonProps.onClick}
         style={buttonStyle}
+        className={`${StyleButton.button} ${Style.buttonDropdown}`}
+        type="button"
       >
-        <p>{buttonProps.text}</p>
+        <p>{selectedOption ? selectedOption.title : text}</p>
         <div className={Style.dropdownIcon}>
           <IconChevronDownLarge color="#aaa" />
         </div>
       </button>
       {isOpen && (
-        <div style={{ position: 'absolute', top: '100%', left: 0 }}>
-          {options.map((option) => (
-            <Button text={option} onClick={() => console.log()} />
-          ))}
+        <div className={Style.dropdownMenu}>
+          <ul>
+            {options.map((option) => (
+              <li key={option.id} onClick={() => handleOptionClick(option)}>
+                {option.title}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

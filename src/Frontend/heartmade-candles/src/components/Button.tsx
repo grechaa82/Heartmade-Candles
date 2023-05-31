@@ -6,10 +6,13 @@ export interface ButtonProps {
   color?: string;
   height?: number;
   width?: number;
+}
+
+export interface ButtonDefaultProps extends ButtonProps {
   onClick: () => void;
 }
 
-const Button: React.FC<ButtonProps> = ({ text, color = '#000', height, width, onClick }) => {
+const Button: React.FC<ButtonDefaultProps> = ({ text, color = '#000', height, width, onClick }) => {
   return (
     <button
       className={Style.button}
@@ -19,6 +22,7 @@ const Button: React.FC<ButtonProps> = ({ text, color = '#000', height, width, on
         ...(width && { width: `${width}px` }),
       }}
       onClick={onClick}
+      type="button"
     >
       <p>{text}</p>
     </button>

@@ -6,9 +6,10 @@ import StyleButton from './Button.module.css';
 
 interface ButtonWithIconProps extends ButtonProps {
   icon: React.FC<IconProps>;
+  onClick: () => void;
 }
 
-const ButtonWithIcon: React.FC<ButtonWithIconProps> = ({ icon: Icon, ...buttonProps }) => {
+const ButtonWithIcon: React.FC<ButtonWithIconProps> = ({ icon: Icon, onClick, ...buttonProps }) => {
   const buttonStyle = {
     color: buttonProps.color,
     ...(buttonProps.height && { height: `${buttonProps.height - 4}px` }),
@@ -18,8 +19,9 @@ const ButtonWithIcon: React.FC<ButtonWithIconProps> = ({ icon: Icon, ...buttonPr
   return (
     <button
       className={`${StyleButton.button} ${Style.buttonButtonWithIcon}`}
-      onClick={buttonProps.onClick}
+      onClick={onClick}
       style={buttonStyle}
+      type="button"
     >
       <Icon color={buttonProps.color} />
       <p>{buttonProps.text}</p>

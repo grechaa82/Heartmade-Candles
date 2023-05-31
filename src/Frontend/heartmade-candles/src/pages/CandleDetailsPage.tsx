@@ -1,10 +1,12 @@
 import { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import MainInfoCandles, { FetchTypeCandles } from '../modules/MainInfoCandles';
+import MainInfoCandles, { FetchTypeCandles, UpdateCandle } from '../modules/MainInfoCandles';
 import { CandleDetail } from '../types/CandleDetail';
 import ProductsGrid from '../modules/ProductsGrid';
 import TagsGrid from '../modules/TagsGrid';
-import { getCandleById, getTypeCandles } from '../Api';
+import { getCandleById, getTypeCandles, putCandle } from '../Api';
+import { Candle } from '../types/Candle';
+import { CandleRequest } from '../types/Requests/CandleRequest';
 
 type CandleDetailsParams = {
   id: string;
@@ -12,7 +14,7 @@ type CandleDetailsParams = {
 
 const CandleDetailsPage: FC = () => {
   const { id } = useParams<CandleDetailsParams>();
-  const [candleDetailData, setCandleDetailData] = useState<CandleDetail | undefined>(undefined);
+  const [candleDetailData, setCandleDetailData] = useState<CandleDetail | undefined>();
 
   const fetchTypeCandles: FetchTypeCandles = async () => {
     try {
@@ -24,6 +26,25 @@ const CandleDetailsPage: FC = () => {
     }
   };
 
+  const updateCandle: UpdateCandle = async (candle: Candle): Promise<void> => {
+    const { id, title, description, price, weightGrams, imageURL, typeCandle, isActive } = candle;
+    const candleRequest: CandleRequest = {
+      title,
+      description,
+      price,
+      weightGrams,
+      imageURL,
+      typeCandle,
+      isActive,
+    };
+    console.log('updateCandle candleRequest', candleRequest);
+    try {
+      await putCandle(id.toString(), candleRequest);
+    } catch (error) {
+      console.error('Error updating candle:', error);
+    }
+  };
+
   useEffect(() => {
     async function fetchCandle() {
       try {
@@ -31,8 +52,8 @@ const CandleDetailsPage: FC = () => {
           const data = await getCandleById(id);
           setCandleDetailData(data);
         }
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.log(error);
       }
     }
     fetchCandle();
@@ -45,6 +66,7 @@ const CandleDetailsPage: FC = () => {
           <MainInfoCandles
             candleData={candleDetailData.candle}
             fetchTypeCandles={fetchTypeCandles}
+            updateCandle={updateCandle}
           />
         )}
       </div>
