@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import CandlesGrid from '../modules/ProductsGrid';
+import ProductsGrid from '../modules/ProductsGrid';
 import { Candle } from '../types/Candle';
 import { NumberOfLayer } from '../types/NumberOfLayer';
 import { TypeCandle } from '../types/TypeCandle';
@@ -50,7 +50,7 @@ const CandlePage: FC<CandlePageProps> = () => {
     <>
       <TagsGrid data={typeCandlesData} title="Типы свечей" />
       <TagsGrid data={numberOfLayersData} title="Количество слоев" />
-      <CandlesGrid data={candlesData} title="Свечи" />
+      <ProductsGrid data={candlesData} title="Свечи" />
     </>
   );
 };
