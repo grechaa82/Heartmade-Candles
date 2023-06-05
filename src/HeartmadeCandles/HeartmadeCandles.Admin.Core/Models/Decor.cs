@@ -55,7 +55,7 @@ namespace HeartmadeCandles.Admin.Core.Models
                 return Result.Failure<Decor>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
             }
 
-            if (description == null)
+            if (string.IsNullOrWhiteSpace(description))
             {
                 return Result.Failure<Decor>($"'{nameof(description)}' connot be null.");
             }

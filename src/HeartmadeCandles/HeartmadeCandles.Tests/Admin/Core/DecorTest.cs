@@ -1,9 +1,11 @@
-﻿using HeartmadeCandles.Admin.Core.Models;
+﻿using Bogus;
+using HeartmadeCandles.Admin.Core.Models;
 
-namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
+namespace HeartmadeCandles.Tests.Admin.Core
 {
     public class DecorTest
     {
+        private static Faker _faker = new Faker();
         private readonly int _id;
         private readonly string _title;
         private readonly string _description;
@@ -13,37 +15,69 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
 
         public DecorTest()
         {
-            _id = 1;
-            _title = "Test decor";
-            _description = "Test decor description";
-            _price = 10;
-            _imageURL = "https://testImageURL/decor.jpg";
-            _isActive = true;
+            _id = _faker.Random.Number(1, 10000);
+            _title = _faker.Random.String(1, Decor.MaxTitleLenght);
+            _description = _faker.Random.String(1, Decor.MaxDescriptionLenght);
+            _price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal();
+            _imageURL = _faker.Image.PicsumUrl();
+            _isActive = _faker.Random.Bool();
         }
 
-        [Fact]
-        public void Create_ValidParameters_ReturnsSuccess()
+        [Theory, MemberData(nameof(GenerateData))]
+        public void Create_ValidParameters_ReturnsSuccess(
+            int id,
+            string title,
+            string description,
+            decimal price,
+            string imageURL,
+            bool isActive)
         {
             // Arrange
 
             // Act
             var result = Decor.Create(
-                id: _id,
-                title: _title,
-                description: _description,
-                price: _price,
-                imageURL: _imageURL,
-                isActive: _isActive);
+                title: title,
+                description: description,
+                price: price,
+                imageURL: imageURL,
+                isActive: isActive,
+                id: id);
 
             // Assert
             Assert.True(result.IsSuccess);
         }
 
-        [Fact]
-        public void Create_NullTitle_ShouldReturnFailure()
+        public static IEnumerable<object[]> GenerateData()
+        {
+            var faker = new Faker();
+
+            for (int i = 0; i < 100; i++)
+            {
+                var id = faker.Random.Number(1, 10000);
+                var title = faker.Random.String(1, Decor.MaxTitleLenght);
+                var description = faker.Random.String(1, Decor.MaxDescriptionLenght);
+                var price = faker.Random.Number(1, 10000) * faker.Random.Decimal();
+                var imageURL = faker.Image.PicsumUrl();
+                var isActive = faker.Random.Bool();
+
+                yield return new object[] {
+                    id,
+                    title,
+                    description,
+                    price,
+                    imageURL,
+                    isActive
+                };
+            }
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData(null)]
+        public void Create_NullOrWhiteSpaceTitle_ShouldReturnFailure(string title)
         {
             // Arrange
-            string title = null;
 
             // Act
             var result = Decor.Create(
@@ -63,7 +97,7 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
         public void Create_LongTitle_ShouldReturnFailure()
         {
             // Arrange
-            var title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+            var title = _faker.Random.String(Decor.MaxTitleLenght + 1);
 
             // Act
             var result = Decor.Create(
@@ -80,11 +114,13 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
 
         }
 
-        [Fact]
-        public void Create_NullDescription_ShouldReturnFailure()
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData(null)]
+        public void Create_NullOrWhiteSpaceDescription_ShouldReturnFailure(string description)
         {
             // Arrange
-            string description = null;
 
             // Act
             var result = Decor.Create(
@@ -104,9 +140,7 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
         public void Create_LongDescription_ShouldReturnFailure()
         {
             // Arrange
-            var description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. " +
-                  "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer " +
-                  "took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.";
+            var description = _faker.Random.String(Decor.MaxDescriptionLenght + 1);
 
             // Act
             var result = Decor.Create(
@@ -124,10 +158,10 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
         }
 
         [Fact]
-        public void Create_ZeroPrice_ShouldReturnFailure()
+        public void Create_ZeroOrLessPrice_ShouldReturnFailure()
         {
             // Arrange
-            var price = 0m;
+            var price = _faker.Random.Number(-10000, 0) * _faker.Random.Decimal();
 
             // Act
             var result = Decor.Create(

@@ -17,6 +17,8 @@ namespace HeartmadeCandles.Admin.Core.Models
         private TypeCandle _typeCandle;
         private DateTime _createdAt;
 
+        public Candle() { }
+
         private Candle(
             int id,
             string title,
@@ -70,7 +72,7 @@ namespace HeartmadeCandles.Admin.Core.Models
                 return Result.Failure<Candle>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
             }
 
-            if (description == null)
+            if (string.IsNullOrWhiteSpace(description))
             {
                 return Result.Failure<Candle>($"'{nameof(description)}' connot be null.");
             }

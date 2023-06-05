@@ -1,9 +1,11 @@
-﻿using HeartmadeCandles.Admin.Core.Models;
+﻿using Bogus;
+using HeartmadeCandles.Admin.Core.Models;
 
-namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
+namespace HeartmadeCandles.Tests.Admin.Core
 {
     public class CandleTests
     {
+        private static Faker _faker = new Faker();
         private readonly int _id;
         private readonly string _title;
         private readonly string _description;
@@ -16,45 +18,88 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
 
         public CandleTests()
         {
-            var typeCandle = TypeCandle.Create("Test typeCandle", 1);
+            var typeCandle = TypeCandle.Create(_faker.Random.String(1, TypeCandle.MaxTitleLenght), _faker.Random.Number(1, 10000));
 
-            _id = 1;
-            _title = "Test candle";
-            _description = "Test candle description";
-            _price = 20;
-            _weightGrams = 600;
-            _imageURL = "https://testImageURL/candle.jpg";
-            _isActive = true;
+            _id = _faker.Random.Number(1, 10000);
+            _title = _faker.Random.String(1, Candle.MaxTitleLenght);
+            _description = _faker.Random.String(1, Candle.MaxDescriptionLenght);
+            _price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal();
+            _weightGrams = _faker.Random.Number(1, 10000);
+            _imageURL = _faker.Image.PicsumUrl();
+            _isActive = _faker.Random.Bool();
             _typeCandle = typeCandle.Value;
-            _createdAt = DateTime.UtcNow;
+            _createdAt = _faker.Date.Past(1);
         }
 
-        [Fact]
-        public void CreateCandle_ValidParameters_ReturnsSuccess()
+        
+        [Theory, MemberData(nameof(GenerateData))]
+        public void CreateCandle_ValidParameters_ReturnsSuccess(
+            int id,
+            string title,
+            string description,
+            decimal price,
+            int weightGrams,
+            string imageURL,
+            bool isActive,
+            TypeCandle typeCandle,
+            DateTime createdAt)
         {
             // Arrange
 
             // Act
             var result = Candle.Create(
-                title: _title,
-                description: _description,
-                price: _price,
-                weightGrams: _weightGrams,
-                imageURL: _imageURL,
-                isActive: _isActive,
-                typeCandle: _typeCandle,
-                id: _id,
-                createdAt: _createdAt);
+                title: title,
+                description: description,
+                price: price,
+                weightGrams: weightGrams,
+                imageURL: imageURL,
+                isActive: isActive,
+                typeCandle: typeCandle,
+                id: id,
+                createdAt: createdAt);
 
             // Assert
             Assert.True(result.IsSuccess);
         }
 
-        [Fact]
-        public void CreateCandle_NullTitle_ShouldReturnFailure()
+        public static IEnumerable<object[]> GenerateData()
+        {
+            var faker = new Faker();
+            
+            for (int i = 0; i < 1000; i++)
+            {
+
+                var id = faker.Random.Number(1, 10000);
+                var title = faker.Random.String(1, Candle.MaxTitleLenght);
+                var description = faker.Random.String(1, Candle.MaxDescriptionLenght);
+                var price = faker.Random.Number(1, 10000) * faker.Random.Decimal();
+                var weightGrams = faker.Random.Number(1, 10000);
+                var imageURL = faker.Image.PicsumUrl();
+                var isActive = faker.Random.Bool();
+                var typeCandle = TypeCandle.Create(faker.Random.String(1, TypeCandle.MaxTitleLenght), _faker.Random.Number(1, 10000));
+                var createdAt = faker.Date.Past(1);
+
+                yield return new object[] {
+                    id,
+                    title,
+                    description,
+                    price,
+                    weightGrams,
+                    imageURL,
+                    isActive,
+                    typeCandle.Value,
+                    createdAt
+                };
+            }
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData(null)]
+        public void CreateCandle_NullOrWhiteSpaceTitle_ShouldReturnFailure(string title)
         {
             // Arrange
-            string title = null;
 
             // Act
             var result = Candle.Create(
@@ -77,7 +122,7 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
         public void CreateCandle_LongTitle_ShouldReturnFailure()
         {
             // Arrange
-            var title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+            var title = _faker.Random.String(Candle.MaxTitleLenght + 1);
 
             // Act
             var result = Candle.Create(
@@ -96,11 +141,13 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
             Assert.Equal($"'title' connot be more than {Candle.MaxTitleLenght} characters.", result.Error);
         }
 
-        [Fact]
-        public void CreateCandle_NullDescription_ShouldReturnFailure()
+        [Theory]
+        [InlineData("")]
+        [InlineData("   ")]
+        [InlineData(null)]
+        public void CreateCandle_NullOrWhiteSpaceDescription_ShouldReturnFailure(string description)
         {
             // Arrange
-            string description = null;
 
             // Act
             var result = Candle.Create(
@@ -123,9 +170,7 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
         public void CreateCandle_LongDescription_ShouldReturnFailure()
         {
             // Arrange
-            var description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. " +
-                              "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer " +
-                              "took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries.";
+            var description = _faker.Random.String(Candle.MaxDescriptionLenght + 1);
 
             // Act
             var result = Candle.Create(
@@ -145,10 +190,10 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
         }
 
         [Fact]
-        public void CreateCandle_ZeroPrice_ShouldReturnFailure()
+        public void CreateCandle_ZeroOrLessPrice_ShouldReturnFailure()
         {
             // Arrange
-            var price = 0m;
+            var price = _faker.Random.Number(-10000, 0) * _faker.Random.Decimal();
 
             // Act
             var result = Candle.Create(
@@ -168,10 +213,10 @@ namespace HeartmadeCandles.Tests.Admin.Core.UnitTests
         }
 
         [Fact]
-        public void CreateCandle_ZeroWeightGrams_ShouldReturnFailure()
+        public void CreateCandle_ZeroOrLessWeightGrams_ShouldReturnFailure()
         {
             // Arrange
-            int weightGrams = 0;
+            int weightGrams = _faker.Random.Number(-10000, 0);
 
             // Act
             var result = Candle.Create(
