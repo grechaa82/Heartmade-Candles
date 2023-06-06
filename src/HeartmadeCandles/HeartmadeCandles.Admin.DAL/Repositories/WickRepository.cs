@@ -70,5 +70,27 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task UpdateCandleWick(int candleId, List<Wick> wicks)
+        {
+            var wicksToDelete = _context.CandleWick.Where(c => c.CandleId == candleId).ToList();
+            _context.RemoveRange(wicksToDelete);
+            await _context.SaveChangesAsync();
+
+            var wicksToAdd = new List<CandleEntityWickEntity>();
+            foreach (var wick in wicks)
+            {
+                var wickEntity = new CandleEntityWickEntity()
+                {
+                    CandleId = candleId,
+                    WickId= wick.Id
+                };
+
+                wicksToAdd.Add(wickEntity);
+            }
+
+            _context.AddRange(wicksToAdd);
+            await _context.SaveChangesAsync();
+        }
     }
 }

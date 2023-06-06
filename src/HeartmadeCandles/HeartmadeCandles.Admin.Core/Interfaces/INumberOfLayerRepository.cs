@@ -9,5 +9,6 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
         Task Create(NumberOfLayer numberOfLayer);
         Task Update(NumberOfLayer numberOfLayer);
         Task Delete(int id);
+        Task UpdateCandleNumberOfLayer(int candleId, List<NumberOfLayer> numberOfLayers);
     }
 }

@@ -10,10 +10,30 @@ namespace HeartmadeCandles.API.Controllers.Admin
     public class CandleController : Controller
     {
         private readonly ICandleService _candleService;
+        private readonly IDecorService _decorService;
+        private readonly ILayerColorService _layerColorService;
+        private readonly INumberOfLayerService _numberOfLayerService;
+        private readonly ISmellService _smellService;
+        private readonly ITypeCandleService _typeCandleService;
+        private readonly IWickService _wickService;
 
-        public CandleController(ICandleService cadleService)
+
+        public CandleController(
+            ICandleService candleService, 
+            IDecorService decorService, 
+            ILayerColorService layerColorService, 
+            INumberOfLayerService numberOfLayerService, 
+            ISmellService smellService,
+            ITypeCandleService typeCandleService,
+            IWickService wickService)
         {
-            _candleService = cadleService;
+            _candleService = candleService;
+            _decorService = decorService;
+            _layerColorService = layerColorService;
+            _numberOfLayerService = numberOfLayerService;
+            _smellService = smellService;
+            _typeCandleService = typeCandleService;
+            _wickService = wickService;
         }
 
         [HttpGet]
@@ -58,31 +78,103 @@ namespace HeartmadeCandles.API.Controllers.Admin
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, CandleRequest candleRequest)
+        public async Task<IActionResult> Update(int id, UpdateCandleDetailsRequest updateRequest)
         {
-            var typeCandleResult = TypeCandle.Create(candleRequest.TypeCandle.Title, candleRequest.TypeCandle.Id);
-
-            if (typeCandleResult.IsFailure)
+            var decors = new List<Decor>();
+            foreach (var decorId in updateRequest.DecorsIds)
             {
-                return BadRequest(typeCandleResult.Error);
+                var decor = await _decorService.Get(decorId);
+                
+                if(decor == null)
+                {
+                    return BadRequest($"Decor with Id '${decorId}' does not exist");
+                }
+                    
+                decors.Add(decor);
             }
 
-            var result = Candle.Create(
-                candleRequest.Title,
-                candleRequest.Description,
-                candleRequest.Price,
-                candleRequest.WeightGrams,
-                candleRequest.ImageURL,
-                typeCandleResult.Value,
-                candleRequest.IsActive,
+            var layerColors = new List<LayerColor>();
+            foreach (var layerColorId in updateRequest.LayerColorsIds)
+            {
+                var layerColor = await _layerColorService.Get(layerColorId);
+
+                if (layerColor == null)
+                {
+                    return BadRequest($"LayerColor with Id '${layerColorId}' does not exist");
+                }
+
+                layerColors.Add(layerColor);
+            }
+
+            var numberOfLayers = new List<NumberOfLayer>();
+            foreach (var numberOfLayerId in updateRequest.NumberOfLayersIds)
+            {
+                var numberOfLayer = await _numberOfLayerService.Get(numberOfLayerId);
+
+                if (numberOfLayer == null)
+                {
+                    return BadRequest($"NumberOfLayer with Id '${numberOfLayerId}' does not exist");
+                }
+
+                numberOfLayers.Add(numberOfLayer);
+            }
+
+            var smells = new List<Smell>();
+            foreach (var smellId in updateRequest.SmellsIds)
+            {
+                var smell = await _smellService.Get(smellId);
+
+                if (smell == null)
+                {
+                    return BadRequest($"Smell with Id '${smellId}' does not exist");
+                }
+
+                smells.Add(smell);
+            }
+
+            var wicks = new List<Wick>();
+            foreach (var wickId in updateRequest.WicksIds)
+            {
+                var wick = await _wickService.Get(wickId);
+
+                if (wick == null)
+                {
+                    return BadRequest($"Wick with Id '${wickId}' does not exist");
+                }
+
+                wicks.Add(wick);
+            }
+
+            var typeCandle = await _typeCandleService.Get(updateRequest.CandleRequest.TypeCandle.Id);
+
+            if (typeCandle == null)
+            {
+                return BadRequest($"TypeCandle with Id '${updateRequest.CandleRequest.TypeCandle.Id}' does not exist");
+            }
+
+            var candle = Candle.Create(
+                updateRequest.CandleRequest.Title,
+                updateRequest.CandleRequest.Description,
+                updateRequest.CandleRequest.Price,
+                updateRequest.CandleRequest.WeightGrams,
+                updateRequest.CandleRequest.ImageURL,
+                typeCandle,
+                updateRequest.CandleRequest.IsActive,
                 id);
 
-            if (result.IsFailure)
+            if (candle.IsFailure)
             {
-                return BadRequest(result.Error);
+                return BadRequest(candle.Error);
             }
 
-            await _candleService.Update(result.Value);
+            var candleDetail = CandleDetail.Create(candle.Value, decors, layerColors, numberOfLayers, smells, wicks);
+
+            if (candleDetail.IsFailure)
+            {
+                return BadRequest(candleDetail.Error);
+            }
+
+            await _candleService.Update(candleDetail.Value);
 
             return Ok();
         }

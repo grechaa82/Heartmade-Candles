@@ -1,5 +1,6 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
+using HeartmadeCandles.Admin.DAL.Entities;
 using HeartmadeCandles.Admin.DAL.Mapping;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,6 +69,28 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 _context.NumberOfLayer.Remove(item);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task UpdateCandleNumberOfLayer(int candleId, List<NumberOfLayer> numberOfLayers)
+        {
+            var numberOfLayersToDelete = _context.CandleNumberOfLayer.Where(c => c.CandleId == candleId).ToList();
+            _context.RemoveRange(numberOfLayersToDelete);
+            await _context.SaveChangesAsync();
+
+            var numberOfLayersToAdd = new List<CandleEntityNumberOfLayerEntity>();
+            foreach (var numberOfLayer in numberOfLayers)
+            {
+                var numberOfLayerEntity = new CandleEntityNumberOfLayerEntity()
+                {
+                    CandleId = candleId,
+                    NumberOfLayerId = numberOfLayer.Id
+                };
+
+                numberOfLayersToAdd.Add(numberOfLayerEntity);
+            }
+
+            _context.AddRange(numberOfLayersToAdd);
+            await _context.SaveChangesAsync();
         }
     }
 }

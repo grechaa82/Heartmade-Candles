@@ -70,5 +70,27 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task UpdateCandleLayerColor(int candleId, List<LayerColor> layerColors)
+        {
+            var layerColorsToDelete = _context.CandleLayerColor.Where(c => c.CandleId == candleId).ToList();
+            _context.RemoveRange(layerColorsToDelete);
+            await _context.SaveChangesAsync();
+
+            var layerColorsToAdd = new List<CandleEntityLayerColorEntity>();
+            foreach (var layerColor in layerColors)
+            {
+                var layerColorEntity = new CandleEntityLayerColorEntity()
+                {
+                    CandleId = candleId,
+                    LayerColorId = layerColor.Id
+                };
+
+                layerColorsToAdd.Add(layerColorEntity);
+            }
+
+            _context.AddRange(layerColorsToAdd);
+            await _context.SaveChangesAsync();
+        }
     }
 }

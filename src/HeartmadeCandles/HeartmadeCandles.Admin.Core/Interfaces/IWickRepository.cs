@@ -9,5 +9,6 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
         Task Create(Wick wick);
         Task Update(Wick wick);
         Task Delete(int id);
+        Task UpdateCandleWick(int candleId, List<Wick> wicks);
     }
 }

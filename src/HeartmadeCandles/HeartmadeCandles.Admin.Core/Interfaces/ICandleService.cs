@@ -10,7 +10,7 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
 
         Task<CandleDetail> Get(int id);
 
-        Task Update(Candle candle);
+        Task Update(CandleDetail candleDetail);
 
         Task Delete(int id);
     }

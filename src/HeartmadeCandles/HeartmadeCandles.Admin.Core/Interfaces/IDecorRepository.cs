@@ -9,5 +9,6 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
         Task Create(Decor decor);
         Task Update(Decor decor);
         Task Delete(int id);
+        Task UpdateCandleDecor(int candleId, List<Decor> decors);
     }
 }
