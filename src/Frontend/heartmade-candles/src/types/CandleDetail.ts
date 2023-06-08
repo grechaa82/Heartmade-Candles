@@ -7,9 +7,9 @@ import { Wick } from './Wick'
 
 export interface CandleDetail {
   candle: Candle;
-  decors: Decor[];
-  layerColors: LayerColor[];
-  numberOfLayers: NumberOfLayer[];
-  smells: Smell[];
-  wicks: Wick[];
+  decors?: Decor[];
+  layerColors?: LayerColor[];
+  numberOfLayers?: NumberOfLayer[];
+  smells?: Smell[];
+  wicks?: Wick[];
 }

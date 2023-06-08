@@ -44,6 +44,18 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
+.productButton {
+  background: none;
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0px;
+  border: none;
+}
+.selectedButton {
+  padding: 10px;
+  border: 2px solid black;
+}
+
 @media screen and (max-width: 1350px) {
   .popUp {
     border-radius: 20px;

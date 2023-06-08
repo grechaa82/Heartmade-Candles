@@ -8,26 +8,26 @@ import { TypeCandle } from '../types/TypeCandle';
 import Style from './MainInfoCandles.module.css';
 
 export interface MainInfoCandlesProps {
-  candleData: Candle;
+  data: Candle;
   fetchTypeCandles: FetchTypeCandles;
-  updateCandle: UpdateCandle;
+  onChanges: (isChanges: boolean) => void;
+  handleChangesCandle: (candle: Candle) => void;
 }
 
 export type FetchTypeCandles = () => Promise<TypeCandle[]>;
-export type UpdateCandle = (candle: Candle) => Promise<void>;
 
 const MainInfoCandles: FC<MainInfoCandlesProps> = ({
-  candleData,
+  data,
   fetchTypeCandles,
-  updateCandle,
+  onChanges,
+  handleChangesCandle,
 }) => {
-  const [candle, setCandle] = useState<Candle>(candleData);
+  const [candle, setCandle] = useState<Candle>(data);
   const [typesCandle, setTypesCandle] = useState<TypeCandle[]>([]);
   const typeCandlesArray: optionData[] = typesCandle.map(({ id, title }) => ({
     id: id.toString(),
     title,
   }));
-  const [isChanges, setIsChanges] = useState<boolean>(false);
 
   useEffect(() => {
     async function getTypeCandles() {
@@ -37,14 +37,10 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
     getTypeCandles();
   }, [fetchTypeCandles]);
 
-  const handleSaveChanges = async () => {
-    updateCandle(candle);
-    setIsChanges(false);
-  };
-
   const handleChangeTitle = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCandle((prev) => ({ ...prev, title: event.target.value }));
-    setIsChanges(true);
+    onChanges(true);
+    handleChangesCandle(candle);
   };
 
   const handleChangePrice = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -52,7 +48,8 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
       ...prev,
       price: parseFloat(event.target.value),
     }));
-    setIsChanges(true);
+    onChanges(true);
+    handleChangesCandle(candle);
   };
 
   const handleChangeWeightGrams = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -60,7 +57,8 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
       ...prev,
       weightGrams: parseFloat(event.target.value),
     }));
-    setIsChanges(true);
+    onChanges(true);
+    handleChangesCandle(candle);
   };
 
   const handleChangeTypeCandle = (id: string) => {
@@ -70,18 +68,21 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
         ...prev,
         typeCandle: selectedTypeCandle,
       }));
-      setIsChanges(true);
+      onChanges(true);
+      handleChangesCandle(candle);
     }
   };
 
   const handleChangeIsActive = (isActive: boolean) => {
     setCandle((prev) => ({ ...prev, isActive }));
-    setIsChanges(true);
+    onChanges(true);
+    handleChangesCandle(candle);
   };
 
   const handleChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCandle((prev) => ({ ...prev, description: event.target.value }));
-    setIsChanges(true);
+    onChanges(true);
+    handleChangesCandle(candle);
   };
 
   return (
@@ -125,11 +126,6 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
             onChange={handleChangeDescription}
           />
         </div>
-        {isChanges && (
-          <button className={Style.saveBtn} type="button" onClick={handleSaveChanges}>
-            Сохранить
-          </button>
-        )}
       </form>
     </div>
   );

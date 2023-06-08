@@ -6,7 +6,7 @@ import { NumberOfLayer } from "./types/NumberOfLayer";
 import { Smell } from "./types/Smell";
 import { TypeCandle } from "./types/TypeCandle";
 import { Wick } from "./types/Wick";
-import { CandleRequest } from "./types/Requests/CandleRequest";
+import { UpdateCandleDetailsRequest } from "./types/Requests/UpdateCandleDetailsRequest";
 
 type FetchOptions = {
     path: string;
@@ -39,11 +39,11 @@ fetchApi<CandleDetail>({
     path: `/admin/candles/${id}`,
 });
 
-export const putCandle = (id: string, candleRequest: CandleRequest): Promise<void> =>
+export const putCandle = (id: string, updateCandleDetailsRequest: UpdateCandleDetailsRequest): Promise<void> =>
 fetchApi<void>({
     path: `/admin/candles/${id}`,
     method: 'PUT',
-    body: candleRequest,
+    body: updateCandleDetailsRequest,
 });
 
 export const getTypeCandles = (): Promise<TypeCandle[]> =>
