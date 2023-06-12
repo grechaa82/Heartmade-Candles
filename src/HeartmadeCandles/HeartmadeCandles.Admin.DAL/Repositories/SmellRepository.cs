@@ -73,23 +73,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task UpdateCandleSmell(int candleId, List<Smell> smells)
         {
-            var smellsToDelete = _context.CandleSmell.Where(c => c.CandleId == candleId).ToList();
+            var existingSmells = await _context.CandleSmell
+                .Where(c => c.CandleId == candleId)
+                .ToArrayAsync();
+
+            var smellsToDelete = existingSmells
+                .Where(es => !smells.Any(s => s.Id == es.SmellId))
+                .ToArray();
+
+            var smellsToAdd = smells
+                .Where(s => !existingSmells.Any(es => es.SmellId == s.Id))
+                .Select(s => new CandleEntitySmellEntity { CandleId = candleId, SmellId = s.Id })
+                .ToArray();
+
             _context.RemoveRange(smellsToDelete);
-            await _context.SaveChangesAsync();
-
-            var smellsToAdd = new List<CandleEntitySmellEntity>();
-            foreach (var smell in smells)
-            {
-                var smellEntity = new CandleEntitySmellEntity()
-                {
-                    CandleId = candleId,
-                    SmellId = smell.Id
-                };
-
-                smellsToAdd.Add(smellEntity);
-            }
-
             _context.AddRange(smellsToAdd);
+
             await _context.SaveChangesAsync();
         }
     }

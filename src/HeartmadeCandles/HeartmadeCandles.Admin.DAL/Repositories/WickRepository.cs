@@ -73,23 +73,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task UpdateCandleWick(int candleId, List<Wick> wicks)
         {
-            var wicksToDelete = _context.CandleWick.Where(c => c.CandleId == candleId).ToList();
+            var existingWicks = await _context.CandleWick
+                .Where(c => c.CandleId == candleId)
+                .ToArrayAsync();
+
+            var wicksToDelete = existingWicks
+                .Where(ew => !wicks.Any(w => w.Id == ew.WickId))
+                .ToArray();
+
+            var wicksToAdd = wicks
+                .Where(w => !existingWicks.Any(ew => ew.WickId == w.Id))
+                .Select(w => new CandleEntityWickEntity { CandleId = candleId, WickId = w.Id })
+                .ToArray();
+
             _context.RemoveRange(wicksToDelete);
-            await _context.SaveChangesAsync();
-
-            var wicksToAdd = new List<CandleEntityWickEntity>();
-            foreach (var wick in wicks)
-            {
-                var wickEntity = new CandleEntityWickEntity()
-                {
-                    CandleId = candleId,
-                    WickId= wick.Id
-                };
-
-                wicksToAdd.Add(wickEntity);
-            }
-
             _context.AddRange(wicksToAdd);
+
             await _context.SaveChangesAsync();
         }
     }

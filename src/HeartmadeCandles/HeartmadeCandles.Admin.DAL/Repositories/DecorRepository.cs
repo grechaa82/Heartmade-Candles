@@ -32,7 +32,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             return result;
         }
-        
+
         public async Task<Decor> Get(int id)
         {
             var item = await _context.Decor
@@ -43,7 +43,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             return decor;
         }
-        
+
         public async Task Create(Decor decor)
         {
             var item = DecorMapping.MapToDecorEntity(decor);
@@ -59,7 +59,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             _context.Decor.Update(item);
             await _context.SaveChangesAsync();
         }
-        
+
         public async Task Delete(int id)
         {
             var item = await _context.Decor.FirstOrDefaultAsync(c => c.Id == id);
@@ -73,23 +73,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task UpdateCandleDecor(int candleId, List<Decor> decors)
         {
-            var decorsToDelete = _context.CandleDecor.Where(c => c.CandleId == candleId).ToList();
+            var existingDecors = await _context.CandleDecor
+                .Where(c => c.CandleId == candleId)
+                .ToArrayAsync();
+
+            var decorsToDelete = existingDecors
+                .Where(ed => !decors.Any(d => d.Id == ed.DecorId))
+                .ToArray();
+
+            var decorsToAdd = decors
+                .Where(d => !existingDecors.Any(ed => ed.DecorId == d.Id))
+                .Select(d => new CandleEntityDecorEntity { CandleId = candleId, DecorId = d.Id })
+                .ToArray();
+
             _context.RemoveRange(decorsToDelete);
-            await _context.SaveChangesAsync();
-
-            var decorsToAdd = new List<CandleEntityDecorEntity>();
-            foreach (var decor in decors)
-            {
-                var decorEntity = new CandleEntityDecorEntity()
-                {
-                    CandleId = candleId,
-                    DecorId = decor.Id
-                };
-
-                decorsToAdd.Add(decorEntity);
-            }
-
             _context.AddRange(decorsToAdd);
+
             await _context.SaveChangesAsync();
         }
     }

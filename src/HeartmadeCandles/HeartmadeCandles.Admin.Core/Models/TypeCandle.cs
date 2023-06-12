@@ -9,8 +9,6 @@ namespace HeartmadeCandles.Admin.Core.Models
         private int _id;
         private string _title;
 
-        public TypeCandle() { }
-
         private TypeCandle(int id, string title)
         {
             _id = id;

@@ -6,7 +6,7 @@ namespace HeartmadeCandles.Admin.Core.Models
     {
         public const int MaxTitleLenght = 48;
         public const int MaxDescriptionLenght = 256;
-        
+
         private int _id;
         private string _title;
         private string _description;
@@ -16,8 +16,6 @@ namespace HeartmadeCandles.Admin.Core.Models
         private bool _isActive;
         private TypeCandle _typeCandle;
         private DateTime _createdAt;
-
-        public Candle() { }
 
         private Candle(
             int id,
@@ -50,7 +48,7 @@ namespace HeartmadeCandles.Admin.Core.Models
         public bool IsActive { get => _isActive; }
         public TypeCandle TypeCandle { get => _typeCandle; }
         public DateTime CreatedAt { get => _createdAt; }
-        
+
         public static Result<Candle> Create(
             string title,
             string description,

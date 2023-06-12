@@ -73,23 +73,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task UpdateCandleLayerColor(int candleId, List<LayerColor> layerColors)
         {
-            var layerColorsToDelete = _context.CandleLayerColor.Where(c => c.CandleId == candleId).ToList();
+            var existingLayerColors = await _context.CandleLayerColor
+                .Where(c => c.CandleId == candleId)
+                .ToArrayAsync();
+
+            var layerColorsToDelete = existingLayerColors
+                .Where(el => !layerColors.Any(l => l.Id == el.LayerColorId))
+                .ToArray();
+
+            var layerColorssToAdd = layerColors
+                .Where(l => !existingLayerColors.Any(el => el.LayerColorId == l.Id))
+                .Select(l => new CandleEntityLayerColorEntity { CandleId = candleId, LayerColorId = l.Id })
+                .ToArray();
+
             _context.RemoveRange(layerColorsToDelete);
-            await _context.SaveChangesAsync();
+            _context.AddRange(layerColorssToAdd);
 
-            var layerColorsToAdd = new List<CandleEntityLayerColorEntity>();
-            foreach (var layerColor in layerColors)
-            {
-                var layerColorEntity = new CandleEntityLayerColorEntity()
-                {
-                    CandleId = candleId,
-                    LayerColorId = layerColor.Id
-                };
-
-                layerColorsToAdd.Add(layerColorEntity);
-            }
-
-            _context.AddRange(layerColorsToAdd);
             await _context.SaveChangesAsync();
         }
     }

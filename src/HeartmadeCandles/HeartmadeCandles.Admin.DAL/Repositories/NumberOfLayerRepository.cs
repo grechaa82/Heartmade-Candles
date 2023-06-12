@@ -73,23 +73,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
         public async Task UpdateCandleNumberOfLayer(int candleId, List<NumberOfLayer> numberOfLayers)
         {
-            var numberOfLayersToDelete = _context.CandleNumberOfLayer.Where(c => c.CandleId == candleId).ToList();
+            var existingNumberOfLayers = await _context.CandleNumberOfLayer
+                .Where(c => c.CandleId == candleId)
+                .ToArrayAsync();
+
+            var numberOfLayersToDelete = existingNumberOfLayers
+                .Where(en => !numberOfLayers.Any(w => w.Id == en.NumberOfLayerId))
+                .ToArray();
+
+            var numberOfLayersToAdd = numberOfLayers
+                .Where(n => !existingNumberOfLayers.Any(en => en.NumberOfLayerId == n.Id))
+                .Select(n => new CandleEntityNumberOfLayerEntity { CandleId = candleId, NumberOfLayerId = n.Id })
+                .ToArray();
+
             _context.RemoveRange(numberOfLayersToDelete);
-            await _context.SaveChangesAsync();
-
-            var numberOfLayersToAdd = new List<CandleEntityNumberOfLayerEntity>();
-            foreach (var numberOfLayer in numberOfLayers)
-            {
-                var numberOfLayerEntity = new CandleEntityNumberOfLayerEntity()
-                {
-                    CandleId = candleId,
-                    NumberOfLayerId = numberOfLayer.Id
-                };
-
-                numberOfLayersToAdd.Add(numberOfLayerEntity);
-            }
-
             _context.AddRange(numberOfLayersToAdd);
+
             await _context.SaveChangesAsync();
         }
     }
