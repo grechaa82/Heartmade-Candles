@@ -4,7 +4,7 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
 {
     public interface INumberOfLayerService
     {
-        Task<List<NumberOfLayer>> GetAll();
+        Task<NumberOfLayer[]> GetAll();
         Task<NumberOfLayer> Get(int id);
         Task Create(NumberOfLayer numberOfLayer);
         Task Update(NumberOfLayer numberOfLayer);

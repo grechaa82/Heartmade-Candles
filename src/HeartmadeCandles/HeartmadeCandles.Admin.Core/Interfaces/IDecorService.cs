@@ -4,7 +4,7 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
 {
     public interface IDecorService
     {
-        Task<List<Decor>> GetAll();
+        Task<Decor[]> GetAll();
         Task<Decor> Get(int id);
         Task Create(Decor decor);
         Task Update(Decor decor);

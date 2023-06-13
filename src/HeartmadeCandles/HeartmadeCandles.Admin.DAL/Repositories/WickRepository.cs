@@ -15,20 +15,15 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             _context = context;
         }
 
-        public async Task<List<Wick>> GetAll()
+        public async Task<Wick[]> GetAll()
         {
-            var result = new List<Wick>();
-
             var items = await _context.Wick
                 .AsNoTracking()
                 .ToArrayAsync();
 
-            foreach (var item in items)
-            {
-                var wick = WickMapping.MapToWick(item);
-
-                result.Add(wick);
-            }
+            var result = items
+                .Select(item => WickMapping.MapToWick(item))
+                .ToArray();
 
             return result;
         }
@@ -51,7 +46,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .Where(c => ids.Contains(c.Id))
                 .ToArrayAsync();
 
-            var result = items.Select(item => WickMapping.MapToWick(item)).ToArray();
+            var result = items
+                .Select(item => WickMapping.MapToWick(item))
+                .ToArray();
 
             return result;
         }
@@ -83,7 +80,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             }
         }
 
-        public async Task UpdateCandleWick(int candleId, List<Wick> wicks)
+        public async Task UpdateCandleWick(int candleId, Wick[] wicks)
         {
             var existingWicks = await _context.CandleWick
                 .Where(c => c.CandleId == candleId)

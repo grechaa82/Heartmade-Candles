@@ -12,7 +12,7 @@ namespace HeartmadeCandles.Admin.BL.Services
             _wickRepository = wickRepository;
         }
 
-        public async Task<List<Wick>> GetAll()
+        public async Task<Wick[]> GetAll()
         {
             return await _wickRepository.GetAll();
         }

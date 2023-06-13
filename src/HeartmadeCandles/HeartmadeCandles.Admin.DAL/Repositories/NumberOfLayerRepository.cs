@@ -15,20 +15,15 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             _context = context;
         }
 
-        public async Task<List<NumberOfLayer>> GetAll()
+        public async Task<NumberOfLayer[]> GetAll()
         {
-            var result = new List<NumberOfLayer>();
-
             var items = await _context.NumberOfLayer
                 .AsNoTracking()
                 .ToArrayAsync();
 
-            foreach (var item in items)
-            {
-                var numberOfLayer = NumberOfLayerMapping.MapToNumberOfLayer(item);
-
-                result.Add(numberOfLayer);
-            }
+            var result = items
+                .Select(item => NumberOfLayerMapping.MapToNumberOfLayer(item))
+                .ToArray();
 
             return result;
         }
@@ -51,7 +46,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .Where(c => ids.Contains(c.Id))
                 .ToArrayAsync();
 
-            var result = items.Select(item => NumberOfLayerMapping.MapToNumberOfLayer(item)).ToArray();
+            var result = items
+                .Select(item => NumberOfLayerMapping.MapToNumberOfLayer(item))
+                .ToArray();
 
             return result;
         }
@@ -83,7 +80,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             }
         }
 
-        public async Task UpdateCandleNumberOfLayer(int candleId, List<NumberOfLayer> numberOfLayers)
+        public async Task UpdateCandleNumberOfLayer(int candleId, NumberOfLayer[] numberOfLayers)
         {
             var existingNumberOfLayers = await _context.CandleNumberOfLayer
                 .Where(c => c.CandleId == candleId)

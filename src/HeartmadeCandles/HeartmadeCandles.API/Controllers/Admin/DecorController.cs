@@ -1,5 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;

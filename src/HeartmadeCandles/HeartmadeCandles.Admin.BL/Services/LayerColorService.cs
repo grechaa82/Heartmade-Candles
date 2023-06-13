@@ -12,7 +12,7 @@ namespace HeartmadeCandles.Admin.BL.Services
             _layerColorRepository = layerColorRepository;
         }
 
-        public async Task<List<LayerColor>> GetAll()
+        public async Task<LayerColor[]> GetAll()
         {
             return await _layerColorRepository.GetAll();
         }

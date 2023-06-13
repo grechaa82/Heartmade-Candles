@@ -12,7 +12,7 @@ namespace HeartmadeCandles.Admin.BL.Services
             _numberOfLayerServiceRepository = numberOfLayerServiceRepository;
         }
 
-        public async Task<List<NumberOfLayer>> GetAll()
+        public async Task<NumberOfLayer[]> GetAll()
         {
             return await _numberOfLayerServiceRepository.GetAll();
         }

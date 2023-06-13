@@ -53,7 +53,7 @@ namespace HeartmadeCandles.UnitTests.Admin.BL.Services
             _decorRepositoryMock.Setup(dr => dr.GetByIds(ids))
                 .ReturnsAsync(decors);
 
-            _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, decors.ToList()));
+            _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, decors));
 
             // Act
             var result = await _service.UpdateDecor(id, ids);

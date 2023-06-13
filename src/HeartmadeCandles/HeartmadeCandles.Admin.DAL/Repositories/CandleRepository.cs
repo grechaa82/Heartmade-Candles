@@ -16,22 +16,18 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             _context = context;
         }
 
-        public async Task<IList<Candle>> GetAll()
+        public async Task<Candle[]> GetAll()
         {
-            var result = new List<Candle>();
-
             var items = await _context.Candle
                 .AsNoTracking()
                 .Include(c => c.TypeCandle)
-                .ToListAsync();
+                .ToArrayAsync();
 
-            foreach (var item in items)
+            var result = items.Select(item =>
             {
                 var typeCandle = TypeCandleMapping.MapToCandleType(item.TypeCandle);
-                var candle = CandleMapping.MapToCandle(item, typeCandle);
-
-                result.Add(candle);
-            }
+                return CandleMapping.MapToCandle(item, typeCandle);
+            }).ToArray();
 
             return result;
         }

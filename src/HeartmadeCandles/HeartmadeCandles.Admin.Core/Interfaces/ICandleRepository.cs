@@ -4,7 +4,7 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
 {
     public interface ICandleRepository
     {
-        Task<IList<Candle>> GetAll();
+        Task<Candle[]> GetAll();
 
         Task<CandleDetail> Get(int id);
 

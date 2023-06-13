@@ -15,20 +15,15 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             _context = context;
         }
 
-        public async Task<List<LayerColor>> GetAll()
+        public async Task<LayerColor[]> GetAll()
         {
-            var result = new List<LayerColor>();
-
             var items = await _context.LayerColor
                 .AsNoTracking()
-                .ToListAsync();
+                .ToArrayAsync();
 
-            foreach (var item in items)
-            {
-                var layerColor = LayerColorMapping.MapToLayerColor(item);
-
-                result.Add(layerColor);
-            }
+            var result = items
+                .Select(item => LayerColorMapping.MapToLayerColor(item))
+                .ToArray();
 
             return result;
         }
@@ -51,7 +46,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .Where(c => ids.Contains(c.Id))
                 .ToArrayAsync();
 
-            var result = items.Select(item => LayerColorMapping.MapToLayerColor(item)).ToArray();
+            var result = items
+                .Select(item => LayerColorMapping.MapToLayerColor(item))
+                .ToArray();
 
             return result;
         }
@@ -83,7 +80,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             }
         }
 
-        public async Task UpdateCandleLayerColor(int candleId, List<LayerColor> layerColors)
+        public async Task UpdateCandleLayerColor(int candleId, LayerColor[] layerColors)
         {
             var existingLayerColors = await _context.CandleLayerColor
                 .Where(c => c.CandleId == candleId)

@@ -32,7 +32,7 @@ namespace HeartmadeCandles.Admin.BL.Services
             _wickRepository = wickRepository;
         }
 
-        public async Task<IList<Candle>> GetAll()
+        public async Task<Candle[]> GetAll()
         {
             return await _candleRepository.GetAll();
         }
@@ -68,7 +68,7 @@ namespace HeartmadeCandles.Admin.BL.Services
 
             var decors = await _decorRepository.GetByIds(ids);
 
-            await _decorRepository.UpdateCandleDecor(id, decors.ToList());
+            await _decorRepository.UpdateCandleDecor(id, decors);
 
             return Result.Success();
         }
@@ -86,7 +86,7 @@ namespace HeartmadeCandles.Admin.BL.Services
 
                 var layerColors = await _layerColorRepository.GetByIds(ids);
 
-                await _layerColorRepository.UpdateCandleLayerColor(id, layerColors.ToList());
+                await _layerColorRepository.UpdateCandleLayerColor(id, layerColors);
 
                 return Result.Success();
             }
@@ -98,14 +98,14 @@ namespace HeartmadeCandles.Admin.BL.Services
 
         public async Task<bool> UpdateNumberOfLayer(int id, int[] ids)
         {
-            if (!await _layerColorRepository.AreIdsExist(ids))
+            if (!await _numberOfLayerRepository.AreIdsExist(ids))
             {
                 return false;
             }
 
-            var layerColors = await _layerColorRepository.GetByIds(ids);
+            var numberOfLayers = await _numberOfLayerRepository.GetByIds(ids);
 
-            await _layerColorRepository.UpdateCandleLayerColor(id, layerColors.ToList());
+            await _numberOfLayerRepository.UpdateCandleNumberOfLayer(id, numberOfLayers);
 
             return true;
         }
@@ -121,7 +121,7 @@ namespace HeartmadeCandles.Admin.BL.Services
 
             var smells = await _smellRepository.GetByIds(ids);
 
-            await _smellRepository.UpdateCandleSmell(id, smells.ToList());
+            await _smellRepository.UpdateCandleSmell(id, smells);
 
             return Result.Success();
         }
@@ -137,7 +137,7 @@ namespace HeartmadeCandles.Admin.BL.Services
 
             var wicks = await _wickRepository.GetByIds(ids);
 
-            await _wickRepository.UpdateCandleWick(id, wicks.ToList());
+            await _wickRepository.UpdateCandleWick(id, wicks);
 
             return Result.Success();
         }

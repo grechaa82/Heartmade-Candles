@@ -7,7 +7,7 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
     {
         Task Create(Candle candle);
 
-        Task<IList<Candle>> GetAll();
+        Task<Candle[]> GetAll();
 
         Task<CandleDetail> Get(int id);
 

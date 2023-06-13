@@ -15,20 +15,15 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             _context = context;
         }
 
-        public async Task<List<Decor>> GetAll()
+        public async Task<Decor[]> GetAll()
         {
-            var result = new List<Decor>();
-
             var items = await _context.Decor
                 .AsNoTracking()
                 .ToArrayAsync();
 
-            foreach (var item in items)
-            {
-                var decor = DecorMapping.MapToDecor(item);
-
-                result.Add(decor);
-            }
+            var result = items
+                .Select(item => DecorMapping.MapToDecor(item))
+                .ToArray();
 
             return result;
         }
@@ -51,7 +46,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .Where(c => ids.Contains(c.Id))
                 .ToArrayAsync();
 
-            var result = items.Select(item => DecorMapping.MapToDecor(item)).ToArray();
+            var result = items
+                .Select(item => DecorMapping.MapToDecor(item))
+                .ToArray();
 
             return result;
         }
@@ -83,7 +80,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             }
         }
 
-        public async Task UpdateCandleDecor(int candleId, List<Decor> decors)
+        public async Task UpdateCandleDecor(int candleId, Decor[] decors)
         {
             var existingDecors = await _context.CandleDecor
                 .Where(c => c.CandleId == candleId)

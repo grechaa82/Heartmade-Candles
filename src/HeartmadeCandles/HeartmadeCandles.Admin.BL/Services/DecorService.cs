@@ -12,7 +12,7 @@ namespace HeartmadeCandles.Admin.BL.Services
             _decorRepository = decorRepository;
         }
 
-        public async Task<List<Decor>> GetAll()
+        public async Task<Decor[]> GetAll()
         {
             return await _decorRepository.GetAll();
         }

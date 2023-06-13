@@ -12,7 +12,7 @@ namespace HeartmadeCandles.Admin.BL.Services
             _smellRepository = smellRepository;
         }
 
-        public async Task<List<Smell>> GetAll()
+        public async Task<Smell[]> GetAll()
         {
             return await _smellRepository.GetAll();
         }

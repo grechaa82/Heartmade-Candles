@@ -12,7 +12,7 @@ namespace HeartmadeCandles.Admin.BL.Services
             _typeCandleRepository = typeCandleRepository;
         }
 
-        public async Task<List<TypeCandle>> GetAll()
+        public async Task<TypeCandle[]> GetAll()
         {
             return await _typeCandleRepository.GetAll();
         }

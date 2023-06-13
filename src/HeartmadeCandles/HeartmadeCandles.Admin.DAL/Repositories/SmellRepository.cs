@@ -15,20 +15,15 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             _context = context;
         }
 
-        public async Task<List<Smell>> GetAll()
+        public async Task<Smell[]> GetAll()
         {
-            var result = new List<Smell>();
-
             var items = await _context.Smell
                 .AsNoTracking()
                 .ToArrayAsync();
 
-            foreach (var item in items)
-            {
-                var smell = SmellMapping.MapToSmell(item);
-
-                result.Add(smell);
-            }
+            var result = items
+                .Select(item => SmellMapping.MapToSmell(item))
+                .ToArray();
 
             return result;
         }
@@ -51,7 +46,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .Where(c => ids.Contains(c.Id))
                 .ToArrayAsync();
 
-            var result = items.Select(item => SmellMapping.MapToSmell(item)).ToArray();
+            var result = items
+                .Select(item => SmellMapping.MapToSmell(item))
+                .ToArray();
 
             return result;
         }
@@ -83,7 +80,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             }
         }
 
-        public async Task UpdateCandleSmell(int candleId, List<Smell> smells)
+        public async Task UpdateCandleSmell(int candleId, Smell[] smells)
         {
             var existingSmells = await _context.CandleSmell
                 .Where(c => c.CandleId == candleId)
