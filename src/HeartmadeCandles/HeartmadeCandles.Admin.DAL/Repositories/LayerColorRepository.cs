@@ -38,10 +38,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             var item = await _context.LayerColor
                 .AsNoTracking()
                 .FirstOrDefaultAsync(l => l.Id == id);
-            
+
             var layerColor = LayerColorMapping.MapToLayerColor(item);
 
             return layerColor;
+        }
+
+        public async Task<LayerColor[]> GetByIds(int[] ids)
+        {
+            var items = await _context.LayerColor
+                .AsNoTracking()
+                .Where(c => ids.Contains(c.Id))
+                .ToArrayAsync();
+
+            var result = items.Select(item => LayerColorMapping.MapToLayerColor(item)).ToArray();
+
+            return result;
         }
 
         public async Task Create(LayerColor layerColor)
@@ -90,6 +102,38 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             _context.AddRange(layerColorssToAdd);
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> AreIdsExist(int[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var exists = await _context.LayerColor.AnyAsync(l => l.Id == id);
+
+                if (!exists)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public async Task<int[]> GetNonExistingIds(int[] ids)
+        {
+            var nonExistingIds = new List<int>();
+
+            foreach (var id in ids)
+            {
+                var exists = await _context.LayerColor.AnyAsync(l => l.Id == id);
+
+                if (!exists)
+                {
+                    nonExistingIds.Add(id);
+                }
+            }
+
+            return nonExistingIds.ToArray();
         }
     }
 }

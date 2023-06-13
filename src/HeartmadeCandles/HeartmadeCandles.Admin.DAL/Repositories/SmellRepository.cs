@@ -43,7 +43,19 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
 
             return smell;
         }
-        
+
+        public async Task<Smell[]> GetByIds(int[] ids)
+        {
+            var items = await _context.Smell
+                .AsNoTracking()
+                .Where(c => ids.Contains(c.Id))
+                .ToArrayAsync();
+
+            var result = items.Select(item => SmellMapping.MapToSmell(item)).ToArray();
+
+            return result;
+        }
+
         public async Task Create(Smell smell)
         {
             var result = SmellMapping.MapToSmellEntity(smell);
@@ -90,6 +102,38 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             _context.AddRange(smellsToAdd);
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> AreIdsExist(int[] ids)
+        {
+            foreach (var id in ids)
+            {
+                var exists = await _context.Smell.AnyAsync(d => d.Id == id);
+
+                if (!exists)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public async Task<int[]> GetNonExistingIds(int[] ids)
+        {
+            var nonExistingIds = new List<int>();
+
+            foreach (var id in ids)
+            {
+                var exists = await _context.Smell.AnyAsync(d => d.Id == id);
+
+                if (!exists)
+                {
+                    nonExistingIds.Add(id);
+                }
+            }
+
+            return nonExistingIds.ToArray();
         }
     }
 }
