@@ -60,39 +60,60 @@ namespace HeartmadeCandles.Admin.Core.Models
             int id = 0,
             DateTime? createdAt = null)
         {
+            var result = Result.Success();
+
             if (string.IsNullOrWhiteSpace(title))
             {
-                return Result.Failure<Candle>($"'{nameof(title)}' connot be null or whitespace.");
+                result = Result.Combine(
+                   result, 
+                   Result.Failure<Candle>($"'{nameof(title)}' cannot be null or whitespace"));
             }
 
-            if (title.Length > MaxTitleLenght)
+            if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
             {
-                return Result.Failure<Candle>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<Candle>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters"));
             }
 
             if (string.IsNullOrWhiteSpace(description))
             {
-                return Result.Failure<Candle>($"'{nameof(description)}' connot be null.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<Candle>($"'{nameof(description)}' cannot be null or whitespace"));
             }
 
-            if (description.Length > MaxDescriptionLenght)
+            if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
             {
-                return Result.Failure<Candle>($"'{nameof(description)}' connot be more than {MaxDescriptionLenght} characters.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<Candle>($"'{nameof(description)}' cannot be more than {MaxDescriptionLenght} characters"));
             }
 
             if (price <= 0)
             {
-                return Result.Failure<Candle>($"'{nameof(price)}' сannot be 0 or less.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<Candle>($"'{nameof(price)}' сannot be 0 or less"));
             }
 
             if (weightGrams <= 0)
             {
-                return Result.Failure<Candle>($"'{nameof(weightGrams)}' сannot be 0 or less.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<Candle>($"'{nameof(weightGrams)}' сannot be 0 or less"));
             }
 
             if (typeCandle == null)
             {
-                return Result.Failure<Candle>($"'{nameof(typeCandle)}' connot be null.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<Candle>($"'{nameof(typeCandle)}' cannot be null"));
+            }
+
+            if (result.IsFailure)
+            {
+                return Result.Failure<Candle>(result.Error);
             }
 
             var candle = new Candle(

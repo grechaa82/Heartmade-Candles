@@ -22,12 +22,12 @@ namespace HeartmadeCandles.Admin.Core.Models
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                return Result.Failure<TypeCandle>($"'{nameof(title)}' connot be null or whitespace.");
+                return Result.Failure<TypeCandle>($"'{nameof(title)}' cannot be null or whitespace");
             }
 
-            if (title.Length > MaxTitleLenght)
+            if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
             {
-                return Result.Failure<TypeCandle>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
+                return Result.Failure<TypeCandle>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters");
             }
 
             var typeCandle = new TypeCandle(id, title);

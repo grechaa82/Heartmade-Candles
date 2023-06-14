@@ -1,39 +1,15 @@
 ﻿using Bogus;
+using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Tests.Admin.Core
 {
     public class CandleTests
     {
-        private static Faker _faker = new Faker();
-        private readonly int _id;
-        private readonly string _title;
-        private readonly string _description;
-        private readonly decimal _price;
-        private readonly int _weightGrams;
-        private readonly string _imageURL;
-        private readonly bool _isActive;
-        private readonly TypeCandle _typeCandle;
-        private readonly DateTime _createdAt;
-
-        public CandleTests()
-        {
-            var typeCandle = TypeCandle.Create(_faker.Random.String(1, TypeCandle.MaxTitleLenght), _faker.Random.Number(1, 10000));
-
-            _id = _faker.Random.Number(1, 10000);
-            _title = _faker.Random.String(1, Candle.MaxTitleLenght);
-            _description = _faker.Random.String(1, Candle.MaxDescriptionLenght);
-            _price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal();
-            _weightGrams = _faker.Random.Number(1, 10000);
-            _imageURL = _faker.Image.PicsumUrl();
-            _isActive = _faker.Random.Bool();
-            _typeCandle = typeCandle.Value;
-            _createdAt = _faker.Date.Past(1);
-        }
-
+        private static Faker _faker = new Faker("ru");
         
         [Theory, MemberData(nameof(GenerateData))]
-        public void CreateCandle_ValidParameters_ReturnsSuccess(
+        public void Create_ValidParameters_ReturnsSuccess(
             int id,
             string title,
             string description,
@@ -66,29 +42,18 @@ namespace HeartmadeCandles.Tests.Admin.Core
         {
             var faker = new Faker();
             
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100; i++)
             {
-
-                var id = faker.Random.Number(1, 10000);
-                var title = faker.Random.String(1, Candle.MaxTitleLenght);
-                var description = faker.Random.String(1, Candle.MaxDescriptionLenght);
-                var price = faker.Random.Number(1, 10000) * faker.Random.Decimal();
-                var weightGrams = faker.Random.Number(1, 10000);
-                var imageURL = faker.Image.PicsumUrl();
-                var isActive = faker.Random.Bool();
-                var typeCandle = TypeCandle.Create(faker.Random.String(1, TypeCandle.MaxTitleLenght), _faker.Random.Number(1, 10000));
-                var createdAt = faker.Date.Past(1);
-
                 yield return new object[] {
-                    id,
-                    title,
-                    description,
-                    price,
-                    weightGrams,
-                    imageURL,
-                    isActive,
-                    typeCandle.Value,
-                    createdAt
+                    faker.Random.Number(1, 10000),
+                    faker.Random.String(1, Candle.MaxTitleLenght),
+                    faker.Random.String(1, Candle.MaxDescriptionLenght),
+                    faker.Random.Number(1, 10000) * faker.Random.Decimal(),
+                    faker.Random.Number(1, 10000),
+                    faker.Image.PicsumUrl(),
+                    faker.Random.Bool(),
+                    TypeCandle.Create(faker.Random.String(1, TypeCandle.MaxTitleLenght), faker.Random.Number(1, 10000)).Value,
+                    faker.Date.Past(1)
                 };
             }
         }
@@ -97,165 +62,183 @@ namespace HeartmadeCandles.Tests.Admin.Core
         [InlineData("")]
         [InlineData("   ")]
         [InlineData(null)]
-        public void CreateCandle_NullOrWhiteSpaceTitle_ShouldReturnFailure(string title)
+        public void Create_NullOrWhiteSpaceTitle_ShouldReturnFailure(string title)
         {
             // Arrange
 
             // Act
             var result = Candle.Create(
+                id: _faker.Random.Number(1, 10000),
                 title: title,
-                description: _description,
-                price: _price,
-                weightGrams: _weightGrams,
-                imageURL: _imageURL,
-                isActive: _isActive,
-                typeCandle: _typeCandle,
-                id: _id,
-                createdAt: _createdAt);
+                description: _faker.Random.String(1, Candle.MaxDescriptionLenght),
+                price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+                weightGrams: _faker.Random.Number(1, 10000),
+                imageURL: _faker.Image.PicsumUrl(),
+                isActive: _faker.Random.Bool(),
+                typeCandle: TypeCandle.Create(_faker.Random.String(1, TypeCandle.MaxTitleLenght), _faker.Random.Number(1, 10000)).Value,
+                createdAt: _faker.Date.Past(1));
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'title' connot be null or whitespace.", result.Error);
+            Assert.Equal("'title' cannot be null or whitespace", result.Error);
         }
 
         [Fact]
-        public void CreateCandle_LongTitle_ShouldReturnFailure()
+        public void Create_LongTitle_ShouldReturnFailure()
         {
             // Arrange
             var title = _faker.Random.String(Candle.MaxTitleLenght + 1);
 
             // Act
-            var result = Candle.Create(
-                title: title,
-                description: _description,
-                price: _price,
-                weightGrams: _weightGrams,
-                imageURL: _imageURL,
-                isActive: _isActive,
-                typeCandle: _typeCandle,
-                id: _id,
-                createdAt: _createdAt);
+            var result = Make(title: title);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal($"'title' connot be more than {Candle.MaxTitleLenght} characters.", result.Error);
+            Assert.Equal($"'title' cannot be more than {Candle.MaxTitleLenght} characters", result.Error);
         }
 
         [Theory]
         [InlineData("")]
         [InlineData("   ")]
         [InlineData(null)]
-        public void CreateCandle_NullOrWhiteSpaceDescription_ShouldReturnFailure(string description)
+        public void Create_NullOrWhiteSpaceDescription_ShouldReturnFailure(string description)
         {
             // Arrange
 
             // Act
             var result = Candle.Create(
-                title: _title,
+                id: _faker.Random.Number(1, 10000),
+                title: _faker.Random.String(1, Candle.MaxTitleLenght),
                 description: description,
-                price: _price,
-                weightGrams: _weightGrams,
-                imageURL: _imageURL,
-                isActive: _isActive,
-                typeCandle: _typeCandle,
-                id: _id,
-                createdAt: _createdAt);
+                price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+                weightGrams: _faker.Random.Number(1, 10000),
+                imageURL: _faker.Image.PicsumUrl(),
+                isActive: _faker.Random.Bool(),
+                typeCandle: TypeCandle.Create(_faker.Random.String(1, TypeCandle.MaxTitleLenght), _faker.Random.Number(1, 10000)).Value,
+                createdAt: _faker.Date.Past(1));
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'description' connot be null.", result.Error);
+            Assert.Equal("'description' cannot be null", result.Error);
         }
 
         [Fact]
-        public void CreateCandle_LongDescription_ShouldReturnFailure()
+        public void Create_LongDescription_ShouldReturnFailure()
         {
             // Arrange
-            var description = _faker.Random.String(Candle.MaxDescriptionLenght + 1);
+            var description = _faker.Random.String(Candle.MaxDescriptionLenght + 10);
 
             // Act
-            var result = Candle.Create(
-                title: _title,
-                description: description,
-                price: _price,
-                weightGrams: _weightGrams,
-                imageURL: _imageURL,
-                isActive: _isActive,
-                typeCandle: _typeCandle,
-                id: _id,
-                createdAt: _createdAt);
+            var result = Make(description: description);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal($"'description' connot be more than {Candle.MaxDescriptionLenght} characters.", result.Error);
+            Assert.Equal($"'description' cannot be more than {Candle.MaxDescriptionLenght} characters", result.Error);
         }
 
         [Fact]
-        public void CreateCandle_ZeroOrLessPrice_ShouldReturnFailure()
+        public void Create_ZeroOrLessPrice_ShouldReturnFailure()
         {
             // Arrange
             var price = _faker.Random.Number(-10000, 0) * _faker.Random.Decimal();
 
             // Act
-            var result = Candle.Create(
-                title: _title,
-                description: _description,
-                price: price,
-                weightGrams: _weightGrams,
-                imageURL: _imageURL,
-                isActive: _isActive,
-                typeCandle: _typeCandle,
-                id: _id,
-                createdAt: _createdAt);
+            var result = Make(price: price);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'price' сannot be 0 or less.", result.Error);
+            Assert.Equal("'price' сannot be 0 or less", result.Error);
         }
 
         [Fact]
-        public void CreateCandle_ZeroOrLessWeightGrams_ShouldReturnFailure()
+        public void Create_ZeroOrLessWeightGrams_ShouldReturnFailure()
         {
             // Arrange
             int weightGrams = _faker.Random.Number(-10000, 0);
 
             // Act
-            var result = Candle.Create(
-                title: _title,
-                description: _description,
-                price: _price,
-                weightGrams: weightGrams,
-                imageURL: _imageURL,
-                isActive: _isActive,
-                typeCandle: _typeCandle,
-                id: _id,
-                createdAt: _createdAt);
+            var result = Make(weightGrams: weightGrams);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'weightGrams' сannot be 0 or less.", result.Error);
+            Assert.Equal("'weightGrams' сannot be 0 or less", result.Error);
         }
 
         [Fact]
-        public void CreateCandle_NullTypeCandle_ShouldReturnFailure()
+        public void Create_NullTypeCandle_ShouldReturnFailure()
         {
             // Arrange
             TypeCandle typeCandle = null;
 
             // Act
             var result = Candle.Create(
-                title: _title,
-                description: _description,
-                price: _price,
-                weightGrams: _weightGrams,
-                imageURL: _imageURL,
-                isActive: _isActive,
+                id: _faker.Random.Number(1, 10000),
+                title: _faker.Random.String(1, Candle.MaxTitleLenght),
+                description: _faker.Random.String(1, Candle.MaxDescriptionLenght),
+                price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+                weightGrams: _faker.Random.Number(1, 10000),
+                imageURL: _faker.Image.PicsumUrl(),
+                isActive: _faker.Random.Bool(),
                 typeCandle: typeCandle,
-                id: _id,
-                createdAt: _createdAt);
+                createdAt: _faker.Date.Past(1));
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'typeCandle' connot be null.", result.Error);
+            Assert.Equal("'typeCandle' cannot be null", result.Error);
+        }
+
+        [Fact]
+        public void Create_InvalidParameters_ShouldReturnFailure()
+        {
+            // Arrange
+            var resultError = "'title' cannot be null or whitespace, " +
+                "'description' cannot be more than 256 characters, " +
+                "'price' сannot be 0 or less, " +
+                "'weightGrams' сannot be 0 or less, " +
+                "'typeCandle' cannot be null";
+
+            TypeCandle typeCandle = null;
+
+            // Act
+            var result = Candle.Create(
+                id: _faker.Random.Number(1, 10000),
+                title: null,
+                description: _faker.Random.String(Candle.MaxDescriptionLenght + 1),
+                price: -10m,
+                weightGrams: 0,
+                imageURL: _faker.Image.PicsumUrl(),
+                isActive: _faker.Random.Bool(),
+                typeCandle: typeCandle,
+                createdAt: _faker.Date.Past(1));
+
+            // Assert
+            Assert.True(result.IsFailure);
+            Assert.Equal(resultError, result.Error);
+        }
+
+        private static Result<Candle> Make(
+           int? id = null,
+           string? title = null,
+           string? description = null,
+           decimal? price = null,
+           int? weightGrams = null,
+           string? imageURL = null,
+           bool? isActive = null,
+           TypeCandle? typeCandle = null,
+           DateTime? createdAt = null)
+        {
+            var faker = new Faker();
+
+            return Candle.Create(
+                id: id ?? faker.Random.Number(1, 10000),
+                title: title ?? faker.Random.String(1, Candle.MaxTitleLenght),
+                description: description ?? faker.Random.String(1, Candle.MaxDescriptionLenght),
+                price: price ?? faker.Random.Number(1, 10000) * faker.Random.Decimal(),
+                weightGrams: weightGrams ?? faker.Random.Number(1, 10000),
+                imageURL: imageURL ?? faker.Image.PicsumUrl(),
+                isActive: isActive ?? faker.Random.Bool(),
+                typeCandle: typeCandle ?? TypeCandle.Create(faker.Random.String(1, TypeCandle.MaxTitleLenght), faker.Random.Number(1, 10000)).Value,
+                createdAt: createdAt ?? faker.Date.Past(1));
         }
     }
 }

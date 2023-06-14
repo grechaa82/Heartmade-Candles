@@ -1,27 +1,12 @@
 ﻿using Bogus;
+using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Tests.Admin.Core
 {
     public class DecorTest
     {
-        private static Faker _faker = new Faker();
-        private readonly int _id;
-        private readonly string _title;
-        private readonly string _description;
-        private readonly decimal _price;
-        private readonly string _imageURL;
-        private readonly bool _isActive;
-
-        public DecorTest()
-        {
-            _id = _faker.Random.Number(1, 10000);
-            _title = _faker.Random.String(1, Decor.MaxTitleLenght);
-            _description = _faker.Random.String(1, Decor.MaxDescriptionLenght);
-            _price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal();
-            _imageURL = _faker.Image.PicsumUrl();
-            _isActive = _faker.Random.Bool();
-        }
+        private static Faker _faker = new Faker("ru");
 
         [Theory, MemberData(nameof(GenerateData))]
         public void Create_ValidParameters_ReturnsSuccess(
@@ -53,20 +38,13 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             for (int i = 0; i < 100; i++)
             {
-                var id = faker.Random.Number(1, 10000);
-                var title = faker.Random.String(1, Decor.MaxTitleLenght);
-                var description = faker.Random.String(1, Decor.MaxDescriptionLenght);
-                var price = faker.Random.Number(1, 10000) * faker.Random.Decimal();
-                var imageURL = faker.Image.PicsumUrl();
-                var isActive = faker.Random.Bool();
-
                 yield return new object[] {
-                    id,
-                    title,
-                    description,
-                    price,
-                    imageURL,
-                    isActive
+                    faker.Random.Number(1, 10000),
+                    faker.Random.String(1, Decor.MaxTitleLenght),
+                    faker.Random.String(1, Decor.MaxDescriptionLenght),
+                    faker.Random.Number(1, 10000) * faker.Random.Decimal(),
+                    faker.Image.PicsumUrl(),
+                    faker.Random.Bool(),
                 };
             }
         }
@@ -81,16 +59,16 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             // Act
             var result = Decor.Create(
-                id: _id,
+                id: _faker.Random.Number(1, 10000),
                 title: title,
-                description: _description,
-                price: _price,
-                imageURL: _imageURL,
-                isActive: _isActive);
+                description: _faker.Random.String(1, Decor.MaxDescriptionLenght),
+                price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+                imageURL: _faker.Image.PicsumUrl(),
+                isActive: _faker.Random.Bool());
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'title' connot be null or whitespace.", result.Error);
+            Assert.Equal("'title' cannot be null or whitespace", result.Error);
         }
 
         [Fact]
@@ -100,17 +78,11 @@ namespace HeartmadeCandles.Tests.Admin.Core
             var title = _faker.Random.String(Decor.MaxTitleLenght + 1);
 
             // Act
-            var result = Decor.Create(
-                id: _id,
-                title: title,
-                description: _description,
-                price: _price,
-                imageURL: _imageURL,
-                isActive: _isActive);
+            var result = Make(title: title);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal($"'title' connot be more than {Decor.MaxTitleLenght} characters.", result.Error);
+            Assert.Equal($"'title' cannot be more than {Decor.MaxTitleLenght} characters", result.Error);
 
         }
 
@@ -124,16 +96,16 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             // Act
             var result = Decor.Create(
-                id: _id,
-                title: _title,
+                id: _faker.Random.Number(1, 10000),
+                title: _faker.Random.String(1, Decor.MaxTitleLenght),
                 description: description,
-                price: _price,
-                imageURL: _imageURL,
-                isActive: _isActive);
+                price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+                imageURL: _faker.Image.PicsumUrl(),
+                isActive: _faker.Random.Bool());
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'description' connot be null.", result.Error);
+            Assert.Equal("'description' cannot be null", result.Error);
         }
 
         [Fact]
@@ -143,17 +115,11 @@ namespace HeartmadeCandles.Tests.Admin.Core
             var description = _faker.Random.String(Decor.MaxDescriptionLenght + 1);
 
             // Act
-            var result = Decor.Create(
-                id: _id,
-                title: _title,
-                description: description,
-                price: _price,
-                imageURL: _imageURL,
-                isActive: _isActive);
+            var result = Make(description: description);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal($"'description' connot be more than {Decor.MaxDescriptionLenght} characters.", result.Error);
+            Assert.Equal($"'description' cannot be more than {Decor.MaxDescriptionLenght} characters", result.Error);
 
         }
 
@@ -164,17 +130,52 @@ namespace HeartmadeCandles.Tests.Admin.Core
             var price = _faker.Random.Number(-10000, 0) * _faker.Random.Decimal();
 
             // Act
-            var result = Decor.Create(
-                id: _id,
-                title: _title,
-                description: _description,
-                price: price,
-                imageURL: _imageURL,
-                isActive: _isActive);
+            var result = Make(price: price);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'price' сannot be 0 or less.", result.Error);
+            Assert.Equal("'price' сannot be 0 or less", result.Error);
+        }
+
+        [Fact]
+        public void Create_InvalidParameters_ShouldReturnFailure()
+        {
+            // Arrange
+            var title = "   ";
+            string description = "";
+            var price = -10.0m;
+            var imageURL = "";
+
+            // Act
+            var result = Make(
+                title: title,
+                description: description,
+                price: price,
+                imageURL: imageURL);
+
+            // Assert
+            Assert.True(result.IsFailure);
+            Assert.Equal("'title' cannot be null or whitespace, 'description' cannot be null, 'price' сannot be 0 or less", result.Error);
+        }
+
+        private static Result<Decor> Make(
+            int? id = null,
+            string title = null,
+            string description = null,
+            decimal? price = null,
+            string imageURL = null,
+            bool? isActive = null)
+        {
+            var faker = new Faker();
+
+            return Decor.Create(
+                id: id ?? faker.Random.Number(1, 10000),
+                title: title ?? faker.Random.String(1, Decor.MaxTitleLenght),
+                description: description ?? faker.Random.String(1, Decor.MaxDescriptionLenght),
+                price: price ?? faker.Random.Number(1, 10000) * faker.Random.Decimal(),
+                imageURL: imageURL ?? faker.Image.PicsumUrl(),
+                isActive: isActive ?? faker.Random.Bool()
+            );
         }
     }
 }

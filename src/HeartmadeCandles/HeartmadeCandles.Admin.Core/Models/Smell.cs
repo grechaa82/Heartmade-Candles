@@ -40,29 +40,41 @@ namespace HeartmadeCandles.Admin.Core.Models
             bool isActive,
             int id = 0)
         {
+            var result = Result.Success();
+
             if (string.IsNullOrWhiteSpace(title))
             {
-                return Result.Failure<Smell>($"'{nameof(title)}' connot be null or whitespace.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<Smell>($"'{nameof(title)}' cannot be null or whitespace"));
             }
 
-            if (title.Length > MaxTitleLenght)
+            if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
             {
-                return Result.Failure<Smell>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<Smell>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters"));
             }
 
-            if (description == null)
+            if (string.IsNullOrWhiteSpace(description))
             {
-                return Result.Failure<Smell>($"'{nameof(description)}' connot be null.");
+                result = Result.Combine(
+                    result,
+                    Result.Failure<Smell>($"'{nameof(description)}' cannot be null or whitespace"));
             }
 
-            if (description.Length > MaxDescriptionLenght)
+            if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
             {
-                return Result.Failure<Smell>($"'{nameof(description)}' connot be more than {MaxDescriptionLenght} characters.");
+                result = Result.Combine(
+                  result,
+                  Result.Failure<Smell>($"'{nameof(description)}' cannot be more than {MaxDescriptionLenght} characters"));
             }
 
             if (price <= 0)
             {
-                return Result.Failure<Smell>($"'{nameof(price)}' сannot be 0 or less.");
+                result = Result.Combine(
+                  result,
+                  Result.Failure<Smell>($"'{nameof(price)}' сannot be 0 or less"));
             }
             
             var smell = new Smell(

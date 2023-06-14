@@ -45,31 +45,48 @@ namespace HeartmadeCandles.Admin.Core.Models
             bool isActive = true,
             int id = 0)
         {
+            var result = Result.Success();
+
             if (string.IsNullOrWhiteSpace(title))
             {
-                return Result.Failure<LayerColor>($"'{nameof(title)}' connot be null or whitespace.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<LayerColor>($"'{nameof(title)}' сannot be null or whitespace"));
             }
 
-            if (title.Length > MaxTitleLenght)
+            if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
             {
-                return Result.Failure<LayerColor>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<LayerColor>($"'{nameof(title)}' сannot be more than {MaxTitleLenght} characters"));
             }
 
-            if (description == null)
+            if (string.IsNullOrWhiteSpace(description))
             {
-                return Result.Failure<LayerColor>($"'{nameof(description)}' connot be null.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<LayerColor>($"'{nameof(description)}' сannot be null or whitespace"));
             }
 
-            if (description.Length > MaxDescriptionLenght)
+            if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
             {
-                return Result.Failure<LayerColor>($"'{nameof(description)}' connot be more than {MaxDescriptionLenght} characters.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<LayerColor>($"'{nameof(description)}' сannot be more than {MaxDescriptionLenght} characters"));
             }
 
             if (pricePerGram <= 0)
             {
-                return Result.Failure<LayerColor>($"'{nameof(pricePerGram)}' сannot be 0 or less.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<LayerColor>($"'{nameof(pricePerGram)}' сannot be 0 or less"));
             }
-            
+
+            if (result.IsFailure)
+            {
+                return Result.Failure<LayerColor>(result.Error);
+            }
+
             var layerColor = new LayerColor(
                 id, 
                 title, 

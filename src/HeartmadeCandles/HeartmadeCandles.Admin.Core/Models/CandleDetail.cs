@@ -42,34 +42,53 @@ namespace HeartmadeCandles.Admin.Core.Models
             List<Smell> smells,
             List<Wick> wicks)
         {
+            var result = Result.Success();
+
             if (candle == null)
             {
-                return Result.Failure<CandleDetail>($"'{nameof(candle)}' connot be null.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<CandleDetail>($"'{nameof(candle)}' cannot be null"));
             }
 
             if (decors == null)
             {
-                return Result.Failure<CandleDetail>($"'{nameof(decors)}' connot be null.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<CandleDetail>($"'{nameof(decors)}' cannot be null"));
             }
 
             if (layerColors == null)
             {
-                return Result.Failure<CandleDetail>($"'{nameof(layerColors)}' connot be null.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<CandleDetail>($"'{nameof(layerColors)}' cannot be null"));
             }
 
             if (numberOfLayers == null)
             {
-                return Result.Failure<CandleDetail>($"'{nameof(numberOfLayers)}' connot be null.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<CandleDetail>($"'{nameof(numberOfLayers)}' cannot be null"));
             }
 
             if (smells == null)
             {
-                return Result.Failure<CandleDetail>($"'{nameof(smells)}' connot be null.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<CandleDetail>($"'{nameof(smells)}' cannot be null"));
             }
 
             if (wicks == null)
             {
-                return Result.Failure<CandleDetail>($"'{nameof(wicks)}' connot be null.");
+                result = Result.Combine(
+                   result,
+                   Result.Failure<CandleDetail>($"'{nameof(wicks)}' cannot be null"));
+            }
+
+            if (result.IsFailure)
+            {
+                return Result.Failure<CandleDetail>(result.Error);
             }
 
             var candleDetail = new CandleDetail(

@@ -6,7 +6,7 @@ namespace HeartmadeCandles.Admin.Core.Models
     {
         public const int MaxTitleLenght = 48;
         public const int MaxDescriptionLenght = 256;
-        
+
         private int _id;
         private string _title;
         private string _description;
@@ -16,11 +16,11 @@ namespace HeartmadeCandles.Admin.Core.Models
 
         private Decor(
             int id,
-            string title, 
-            string description, 
-            decimal price, 
-            string imageURL, 
-            bool isActive) 
+            string title,
+            string description,
+            decimal price,
+            string imageURL,
+            bool isActive)
         {
             _id = id;
             _title = title;
@@ -36,7 +36,7 @@ namespace HeartmadeCandles.Admin.Core.Models
         public decimal Price { get => _price; }
         public string ImageURL { get => _imageURL; }
         public bool IsActive { get => _isActive; }
-        
+
         public static Result<Decor> Create(
             string title,
             string description,
@@ -45,37 +45,54 @@ namespace HeartmadeCandles.Admin.Core.Models
             bool isActive = true,
             int id = 0)
         {
+            var result = Result.Success();
+
             if (string.IsNullOrWhiteSpace(title))
             {
-                return Result.Failure<Decor>($"'{nameof(title)}' connot be null or whitespace.");
+                result = Result.Combine(
+                    result,
+                    Result.Failure<Decor>($"'{nameof(title)}' cannot be null or whitespace"));
             }
 
-            if (title.Length > MaxTitleLenght)
+            if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
             {
-                return Result.Failure<Decor>($"'{nameof(title)}' connot be more than {MaxTitleLenght} characters.");
+                result = Result.Combine(
+                    result,
+                    Result.Failure<Decor>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters"));
             }
 
             if (string.IsNullOrWhiteSpace(description))
             {
-                return Result.Failure<Decor>($"'{nameof(description)}' connot be null.");
+                result = Result.Combine(
+                    result,
+                    Result.Failure<Decor>($"'{nameof(description)}' cannot be null"));
             }
 
-            if (description.Length > MaxDescriptionLenght)
+            if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
             {
-                return Result.Failure<Decor>($"'{nameof(description)}' connot be more than {MaxDescriptionLenght} characters.");
+                result = Result.Combine(
+                    result,
+                    Result.Failure<Decor>($"'{nameof(description)}' cannot be more than {MaxDescriptionLenght} characters"));
             }
 
             if (price <= 0)
             {
-                return Result.Failure<Decor>($"'{nameof(price)}' сannot be 0 or less.");
+                result = Result.Combine(
+                    result,
+                    Result.Failure<Decor>($"'{nameof(price)}' сannot be 0 or less"));
             }
-            
+
+            if (result.IsFailure)
+            {
+                return Result.Failure<Decor>(result.Error);
+            }
+
             var decor = new Decor(
-                id, 
-                title, 
-                description, 
-                price, 
-                imageURL, 
+                id,
+                title,
+                description,
+                price,
+                imageURL,
                 isActive);
 
             return Result.Success(decor);
