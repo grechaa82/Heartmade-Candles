@@ -11,7 +11,5 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
         Task Update(LayerColor layerColor);
         Task Delete(int id);
         Task UpdateCandleLayerColor(int candleId, LayerColor[] layerColors);
-        Task<bool> AreIdsExist(int[] ids);
-        Task<int[]> GetNonExistingIds(int[] ids);
     }
 }

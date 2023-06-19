@@ -11,7 +11,5 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
         Task Update(Wick wick);
         Task Delete(int id);
         Task UpdateCandleWick(int candleId, Wick[] wicks);
-        Task<bool> AreIdsExist(int[] ids);
-        Task<int[]> GetNonExistingIds(int[] ids);
     }
 }

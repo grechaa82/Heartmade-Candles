@@ -51,35 +51,35 @@ namespace HeartmadeCandles.Admin.Core.Models
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<LayerColor>($"'{nameof(title)}' сannot be null or whitespace"));
+                   Result.Failure<LayerColor>($"'{nameof(title)}' cannot be null or whitespace"));
             }
 
             if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<LayerColor>($"'{nameof(title)}' сannot be more than {MaxTitleLenght} characters"));
+                   Result.Failure<LayerColor>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters"));
             }
 
             if (string.IsNullOrWhiteSpace(description))
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<LayerColor>($"'{nameof(description)}' сannot be null or whitespace"));
+                   Result.Failure<LayerColor>($"'{nameof(description)}' cannot be null or whitespace"));
             }
 
             if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<LayerColor>($"'{nameof(description)}' сannot be more than {MaxDescriptionLenght} characters"));
+                   Result.Failure<LayerColor>($"'{nameof(description)}' cannot be more than {MaxDescriptionLenght} characters"));
             }
 
             if (pricePerGram <= 0)
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<LayerColor>($"'{nameof(pricePerGram)}' сannot be 0 or less"));
+                   Result.Failure<LayerColor>($"'{nameof(pricePerGram)}' cannot be 0 or less"));
             }
 
             if (result.IsFailure)

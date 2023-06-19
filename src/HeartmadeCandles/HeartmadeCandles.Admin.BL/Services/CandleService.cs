@@ -59,14 +59,14 @@ namespace HeartmadeCandles.Admin.BL.Services
 
         public async Task<Result> UpdateDecor(int id, int[] ids)
         {
-            if (!await _decorRepository.AreIdsExist(ids))
-            {
-                var nonExistingIds = await _decorRepository.GetNonExistingIds(ids);
-                var nonExistingIdsString = string.Join(", ", nonExistingIds);
-                return Result.Failure<int[]>($"'{nonExistingIdsString}' these ids do not exist");
-            }
-
             var decors = await _decorRepository.GetByIds(ids);
+
+            if (decors.Length != ids.Length)
+            {
+                var missingIds = ids.Except(decors.Select(d => d.Id));
+                var missingIdsString = string.Join(", ", missingIds);
+                return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
+            }
 
             await _decorRepository.UpdateCandleDecor(id, decors);
 
@@ -75,51 +75,46 @@ namespace HeartmadeCandles.Admin.BL.Services
 
         public async Task<Result> UpdateLayerColor(int id, int[] ids)
         {
-            try
+            var layerColors = await _layerColorRepository.GetByIds(ids);
+
+            if (layerColors.Length != ids.Length)
             {
-                if (!await _layerColorRepository.AreIdsExist(ids))
-                {
-                    var nonExistingIds = await _layerColorRepository.GetNonExistingIds(ids);
-                    var nonExistingIdsString = string.Join(", ", nonExistingIds);
-                    return Result.Failure<int[]>($"'{nonExistingIdsString}' these ids do not exist");
-                }
-
-                var layerColors = await _layerColorRepository.GetByIds(ids);
-
-                await _layerColorRepository.UpdateCandleLayerColor(id, layerColors);
-
-                return Result.Success();
+                var missingIds = ids.Except(layerColors.Select(l => l.Id));
+                var missingIdsString = string.Join(", ", missingIds);
+                return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
             }
-            catch (Exception ex)
-            {
-                return Result.Failure(ex.Message);
-            }
+
+            await _layerColorRepository.UpdateCandleLayerColor(id, layerColors);
+
+            return Result.Success();
         }
 
-        public async Task<bool> UpdateNumberOfLayer(int id, int[] ids)
+        public async Task<Result> UpdateNumberOfLayer(int id, int[] ids)
         {
-            if (!await _numberOfLayerRepository.AreIdsExist(ids))
-            {
-                return false;
-            }
-
             var numberOfLayers = await _numberOfLayerRepository.GetByIds(ids);
+
+            if (numberOfLayers.Length != ids.Length)
+            {
+                var missingIds = ids.Except(numberOfLayers.Select(l => l.Id));
+                var missingIdsString = string.Join(", ", missingIds);
+                return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
+            }
 
             await _numberOfLayerRepository.UpdateCandleNumberOfLayer(id, numberOfLayers);
 
-            return true;
+            return Result.Success();
         }
 
         public async Task<Result> UpdateSmell(int id, int[] ids)
         {
-            if (!await _smellRepository.AreIdsExist(ids))
-            {
-                var nonExistingIds = await _smellRepository.GetNonExistingIds(ids);
-                var nonExistingIdsString = string.Join(", ", nonExistingIds);
-                return Result.Failure<int[]>($"'{nonExistingIdsString}' these ids do not exist");
-            }
-
             var smells = await _smellRepository.GetByIds(ids);
+
+            if (smells.Length != ids.Length)
+            {
+                var missingIds = ids.Except(smells.Select(l => l.Id));
+                var missingIdsString = string.Join(", ", missingIds);
+                return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
+            }
 
             await _smellRepository.UpdateCandleSmell(id, smells);
 
@@ -128,14 +123,14 @@ namespace HeartmadeCandles.Admin.BL.Services
 
         public async Task<Result> UpdateWick(int id, int[] ids)
         {
-            if (!await _wickRepository.AreIdsExist(ids))
-            {
-                var nonExistingIds = await _wickRepository.GetNonExistingIds(ids);
-                var nonExistingIdsString = string.Join(", ", nonExistingIds);
-                return Result.Failure<int[]>($"'{nonExistingIdsString}' these ids do not exist");
-            }
-
             var wicks = await _wickRepository.GetByIds(ids);
+
+            if (wicks.Length != ids.Length)
+            {
+                var missingIds = ids.Except(wicks.Select(l => l.Id));
+                var missingIdsString = string.Join(", ", missingIds);
+                return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
+            }
 
             await _wickRepository.UpdateCandleWick(id, wicks);
 

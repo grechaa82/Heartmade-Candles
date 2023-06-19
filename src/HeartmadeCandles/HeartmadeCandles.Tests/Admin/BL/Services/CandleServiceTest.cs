@@ -47,13 +47,12 @@ namespace HeartmadeCandles.UnitTests.Admin.BL.Services
                 decors[i] = GenerateDecor(i);
             }
 
-            _decorRepositoryMock.Setup(dr => dr.AreIdsExist(ids))
-                .ReturnsAsync(true);
+            _decorRepositoryMock.Setup(d => d.GetByIds(ids))
+                .ReturnsAsync(decors)
+                .Verifiable();
 
-            _decorRepositoryMock.Setup(dr => dr.GetByIds(ids))
-                .ReturnsAsync(decors);
-
-            _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, decors));
+            _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, decors))
+                .Verifiable();
 
             // Act
             var result = await _service.UpdateDecor(id, ids);
@@ -77,37 +76,50 @@ namespace HeartmadeCandles.UnitTests.Admin.BL.Services
         }
 
         [Fact]
-        public async Task UpdateDecor_WhenDecorNotExist_ShouldReturnFailureAsync()
+        public async Task UpdateDecor_WhenAllDecorsNotExist_ShouldReturnFailureAsync()
         {
             // Arrange
             var id = _faker.Random.Number(1, 100);
-            var count = _faker.Random.Number(1, 100);
-            var ids = new int[count];
-            for (int i = 0; i < count; i++)
-            {
-                ids.SetValue(GenerateId(), i);
-            }
-            var nonExistingId = new int[] { _faker.Random.Number(100, 1000) };
+            var ids = new int[] { 1, 2, 3 };
 
-            _decorRepositoryMock.Setup(dr => dr.AreIdsExist(ids))
-                .ReturnsAsync(false);
-
-            _decorRepositoryMock.Setup(dr => dr.GetNonExistingIds(ids))
-                .ReturnsAsync(nonExistingId);
-
-            var resultErrorMessage = $"'{nonExistingId[0]}' these ids do not exist";
+            _decorRepositoryMock.Setup(d => d.GetByIds(ids))
+                .ReturnsAsync(Array.Empty<Decor>())
+                .Verifiable();
 
             // Act
             var result = await _service.UpdateDecor(id, ids);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal(resultErrorMessage, result.Error);
+            Assert.Equal($"'{string.Join(", ", ids)}' these ids do not exist", result.Error);
         }
 
-        private static int GenerateId()
+        [Fact]
+        public async Task UpdateDecor_WhenOneDecorNotExist_ShouldReturnFailureAsync()
         {
-            return _faker.Random.Number(1, 10000);
+            // Arrange
+            var id = _faker.Random.Number(1, 100);
+            var ids = new int[] { 1, 2, 3, 4 };
+
+            var decors = new Decor[ids.Length - 1];
+            for (int i = 0; i < decors.Length; i++)
+            {
+                decors[ids[i] - 1] = GenerateDecor(ids[i]);
+            }
+
+            var idsToCheck = ids.Take(3).ToArray();
+
+            _decorRepositoryMock.Setup(d => d.GetByIds(ids))
+                .ReturnsAsync(decors)
+                .Verifiable();
+
+            // Act
+            var result = await _service.UpdateDecor(id, ids);
+
+            // Assert
+            Assert.True(result.IsFailure);
+            Assert.Equal("'4' these ids do not exist", result.Error);
         }
+
     }
 }
