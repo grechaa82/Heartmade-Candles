@@ -119,7 +119,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'description' cannot be null", result.Error);
+            Assert.Equal("'description' cannot be null or whitespace", result.Error);
         }
 
         [Fact]

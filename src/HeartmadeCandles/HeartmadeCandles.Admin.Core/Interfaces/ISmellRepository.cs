@@ -11,7 +11,5 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
         Task Update(Smell smell);
         Task Delete(int id);
         Task UpdateCandleSmell(int candleId, Smell[] smells);
-        Task<bool> AreIdsExist(int[] ids);
-        Task<int[]> GetNonExistingIds(int[] ids);
     }
 }

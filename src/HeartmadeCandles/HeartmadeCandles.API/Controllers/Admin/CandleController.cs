@@ -125,9 +125,9 @@ namespace HeartmadeCandles.API.Controllers.Admin
         {
             var result = await _candleService.UpdateNumberOfLayer(id, numberOfLayersIds);
 
-            if (result)
+            if (result.IsFailure)
             {
-                return BadRequest();
+                return BadRequest(result.Error);
             }
 
             return Ok();

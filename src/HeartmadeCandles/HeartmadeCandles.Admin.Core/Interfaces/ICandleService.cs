@@ -16,7 +16,7 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
         Task Delete(int id);
         Task<Result> UpdateDecor(int id, int[] decorsIds);
         Task<Result> UpdateLayerColor(int id, int[] layerColorsIds);
-        Task<bool> UpdateNumberOfLayer(int id, int[] numberOfLayersIds);
+        Task<Result> UpdateNumberOfLayer(int id, int[] numberOfLayersIds);
         Task<Result> UpdateSmell(int id, int[] smellsIds);
         Task<Result> UpdateWick(int id, int[] wicksIds);
     }
