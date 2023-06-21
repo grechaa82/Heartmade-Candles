@@ -1,17 +1,17 @@
-import { FC, useState, useEffect } from 'react';
-import Style from './ProductsGrid.module.css';
-import { BaseProduct } from '../types/BaseProduct';
-import ProductBlock from '../components/ProductBlock';
-import ButtonWithIcon from '../components/ButtonWithIcon';
-import IconPlusLarge from '../UI/IconPlusLarge';
-import AddProductPopUp from '../components/AddProductPopUp';
+import { FC, useState, useEffect } from "react";
+import Style from "./ProductsGrid.module.css";
+import { BaseProduct } from "../types/BaseProduct";
+import ProductBlock from "../components/ProductBlock";
+import ButtonWithIcon from "../components/ButtonWithIcon";
+import IconPlusLarge from "../UI/IconPlusLarge";
+import AddProductPopUp from "../components/AddProductPopUp";
 
 export interface ProductsGridProps<T extends BaseProduct> {
   data: T[];
   title: string;
   fetchProducts?: FetchProducts<T>;
-  onChanges?: (isChanges: boolean) => void;
   handleChangesProduct?: (updatedItem: T[]) => void;
+  onSave?: (saveProduct: T[]) => void;
 }
 
 export type FetchProducts<T extends BaseProduct> = () => Promise<T[]>;
@@ -20,8 +20,8 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
   data,
   title,
   fetchProducts,
-  onChanges,
   handleChangesProduct,
+  onSave,
 }) => {
   const [products, setProducts] = useState<BaseProduct[]>(data);
   const [allProducts, setAllProducts] = useState<BaseProduct[]>([]);
@@ -45,8 +45,7 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
 
     setSelectedProducts([...selectedProducts, product]);
 
-    if (onChanges && handleChangesProduct) {
-      onChanges(true);
+    if (handleChangesProduct) {
       handleChangesProduct(products);
     }
   };
@@ -54,9 +53,14 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
   const handleRemoveProduct = (product: BaseProduct) => {
     setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id));
 
-    if (onChanges && handleChangesProduct) {
-      onChanges(true);
+    if (handleChangesProduct) {
       handleChangesProduct(products);
+    }
+  };
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave(selectedProducts);
     }
   };
 
@@ -94,6 +98,7 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
             onRemoveProduct={handleRemoveProduct}
             onClose={() => setOpenPopUp(false)}
             isDataLoaded={isDataLoaded}
+            onSave={handleSave}
           />
         )}
       </div>

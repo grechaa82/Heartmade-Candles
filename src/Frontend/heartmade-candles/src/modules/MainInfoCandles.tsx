@@ -1,16 +1,15 @@
-import { FC, useState, useEffect, ChangeEvent } from 'react';
-import ButtonDropdown, { optionData } from '../components/ButtonDropdown';
-import CheckboxBlock from '../components/CheckboxBlock';
-import Textarea from '../components/Textarea';
-import { Candle } from '../types/Candle';
-import { TypeCandle } from '../types/TypeCandle';
+import { FC, useState, useEffect, ChangeEvent } from "react";
+import ButtonDropdown, { optionData } from "../components/ButtonDropdown";
+import CheckboxBlock from "../components/CheckboxBlock";
+import Textarea from "../components/Textarea";
+import { Candle } from "../types/Candle";
+import { TypeCandle } from "../types/TypeCandle";
 
-import Style from './MainInfoCandles.module.css';
+import Style from "./MainInfoCandles.module.css";
 
 export interface MainInfoCandlesProps {
   data: Candle;
   fetchTypeCandles: FetchTypeCandles;
-  onChanges: (isChanges: boolean) => void;
   handleChangesCandle: (candle: Candle) => void;
 }
 
@@ -19,7 +18,6 @@ export type FetchTypeCandles = () => Promise<TypeCandle[]>;
 const MainInfoCandles: FC<MainInfoCandlesProps> = ({
   data,
   fetchTypeCandles,
-  onChanges,
   handleChangesCandle,
 }) => {
   const [candle, setCandle] = useState<Candle>(data);
@@ -39,7 +37,6 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
 
   const handleChangeTitle = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCandle((prev) => ({ ...prev, title: event.target.value }));
-    onChanges(true);
     handleChangesCandle(candle);
   };
 
@@ -48,7 +45,6 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
       ...prev,
       price: parseFloat(event.target.value),
     }));
-    onChanges(true);
     handleChangesCandle(candle);
   };
 
@@ -57,31 +53,29 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
       ...prev,
       weightGrams: parseFloat(event.target.value),
     }));
-    onChanges(true);
     handleChangesCandle(candle);
   };
 
   const handleChangeTypeCandle = (id: string) => {
-    const selectedTypeCandle = typesCandle.find((typeCandle) => typeCandle.id.toString() === id);
+    const selectedTypeCandle = typesCandle.find(
+      (typeCandle) => typeCandle.id.toString() === id
+    );
     if (selectedTypeCandle) {
       setCandle((prev) => ({
         ...prev,
         typeCandle: selectedTypeCandle,
       }));
-      onChanges(true);
       handleChangesCandle(candle);
     }
   };
 
   const handleChangeIsActive = (isActive: boolean) => {
     setCandle((prev) => ({ ...prev, isActive }));
-    onChanges(true);
     handleChangesCandle(candle);
   };
 
   const handleChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCandle((prev) => ({ ...prev, description: event.target.value }));
-    onChanges(true);
     handleChangesCandle(candle);
   };
 
@@ -98,7 +92,11 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemPrice}`}>
-          <Textarea text={candle.price.toString()} label="Стоимость" onChange={handleChangePrice} />
+          <Textarea
+            text={candle.price.toString()}
+            label="Стоимость"
+            onChange={handleChangePrice}
+          />
         </div>
         <div className={`${Style.formItem} ${Style.itemWeightGrams}`}>
           <Textarea
@@ -115,7 +113,11 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemActive}`}>
-          <CheckboxBlock text="Активна" checked={candle.isActive} onChange={handleChangeIsActive} />
+          <CheckboxBlock
+            text="Активна"
+            checked={candle.isActive}
+            onChange={handleChangeIsActive}
+          />
         </div>
         <div className={`${Style.formItem} ${Style.itemDescription}`}>
           <Textarea

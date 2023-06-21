@@ -1,9 +1,9 @@
-import { FC } from 'react';
-import IconRemoveLarge from '../UI/IconRemoveLarge';
-import { BaseProduct } from '../types/BaseProduct';
-import ProductBlock from './ProductBlock';
+import { FC, useState } from "react";
+import IconRemoveLarge from "../UI/IconRemoveLarge";
+import { BaseProduct } from "../types/BaseProduct";
+import ProductBlock from "./ProductBlock";
 
-import Style from './AddProductPopUp.module.css';
+import Style from "./AddProductPopUp.module.css";
 
 export interface AddProductPopUpProps<T extends BaseProduct> {
   allData: T[];
@@ -13,6 +13,7 @@ export interface AddProductPopUpProps<T extends BaseProduct> {
   title: string;
   onClose: () => void;
   isDataLoaded: boolean;
+  onSave?: () => void;
 }
 
 const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
@@ -23,31 +24,28 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
   title,
   onClose,
   isDataLoaded,
+  onSave,
 }) => {
-  console.log('AddProductPopUp', allData, selectedData);
+  const [isModified, setIsModified] = useState(false);
 
   const handleAddProduct = (product: BaseProduct) => {
-    console.log('handleAddProduct');
     onAddProduct(product);
+    setIsModified(true);
   };
 
   const handleRemoveProduct = (product: BaseProduct) => {
-    console.log('handleRemoveProduct');
     onRemoveProduct(product);
+    setIsModified(true);
   };
 
   const isProductSelected = (product: BaseProduct) => {
-    console.log(
-      'isProductSelected',
-      selectedData.some((p) => p.id === product.id),
-    );
     return selectedData.some((p) => p.id === product.id);
   };
 
   return (
     <div className={Style.overlay}>
       <div className={Style.popUp}>
-        <button className={Style.closeBtn} onClick={onClose}>
+        <button className={Style.closeButton} onClick={onClose}>
           <IconRemoveLarge color="#777" />
         </button>
         <h2>{title}</h2>
@@ -56,10 +54,12 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
             {allData.map((item: BaseProduct) => (
               <button
                 className={`${Style.productButton} ${
-                  isProductSelected(item) ? Style.selectedButton : ''
+                  isProductSelected(item) ? Style.selectedButton : ""
                 }`}
                 onClick={() =>
-                  isProductSelected(item) ? handleRemoveProduct(item) : handleAddProduct(item)
+                  isProductSelected(item)
+                    ? handleRemoveProduct(item)
+                    : handleAddProduct(item)
                 }
               >
                 <ProductBlock key={item.id} product={item} />
@@ -68,6 +68,18 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
           </div>
         ) : (
           <div>Loading...</div>
+        )}
+        {onSave && isModified && (
+          <button
+            type="button"
+            className={Style.saveButton}
+            onClick={() => {
+              onSave();
+              onClose();
+            }}
+          >
+            Сохранить
+          </button>
         )}
       </div>
     </div>

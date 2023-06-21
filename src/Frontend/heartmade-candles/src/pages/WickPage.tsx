@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import ProductsGrid from '../modules/ProductsGrid';
-import { Wick } from '../types/Wick';
-import { getWicks } from '../Api';
+import React, { useState, useEffect } from "react";
+import ProductsGrid from "../modules/ProductsGrid";
+import { Wick } from "../types/Wick";
+import { getWicks } from "../Api";
 
 export interface WickPageProps {}
 

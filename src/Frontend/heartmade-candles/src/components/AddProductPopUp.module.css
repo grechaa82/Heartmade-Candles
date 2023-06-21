@@ -18,7 +18,7 @@
   z-index: 101;
   border-radius: 40px;
 }
-.popUp > button {
+.closeButton {
   position: absolute;
   top: 0;
   right: 0;
@@ -54,6 +54,21 @@
 .selectedButton {
   padding: 10px;
   border: 2px solid black;
+}
+
+.saveButton {
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  width: 50%;
+  border-radius: 40px 0;
+  color: #eb5757;
+  font-size: 28px;
+  font-weight: 600;
+  background: #fbdddd;
+  line-height: 130%;
+  border: none;
+  min-height: 66px;
 }
 
 @media screen and (max-width: 1350px) {
