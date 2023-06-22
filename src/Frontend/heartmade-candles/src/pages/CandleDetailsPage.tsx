@@ -11,6 +11,7 @@ import {
   getSmells,
   getTypeCandles,
   getWicks,
+  putCandle,
   putCandleDecors,
   putCandleLayerColors,
   putCandleSmells,
@@ -149,6 +150,21 @@ const CandleDetailsPage: FC = () => {
     setCandleDetailData(newCandleDetailData);
   };
 
+  const updateCandle = (updatedItem: Candle) => {
+    if (id) {
+      const candleRequest = {
+        title: updatedItem.title,
+        description: updatedItem.description,
+        price: updatedItem.price,
+        weightGrams: updatedItem.weightGrams,
+        imageURL: updatedItem.imageURL,
+        typeCandle: updatedItem.typeCandle,
+        isActive: updatedItem.isActive,
+      };
+      putCandle(id, candleRequest);
+    }
+  };
+
   const updateCandleDecors = (updatedItems: BaseProduct[]) => {
     if (id) {
       const updatedDecors = updatedItems as Decor[];
@@ -202,6 +218,7 @@ const CandleDetailsPage: FC = () => {
             data={candleDetailData.candle}
             fetchTypeCandles={fetchTypeCandles}
             handleChangesCandle={handleChangesCandle}
+            onSave={updateCandle}
           />
         )}
       </div>

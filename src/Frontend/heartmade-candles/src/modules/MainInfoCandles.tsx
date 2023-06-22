@@ -11,6 +11,7 @@ export interface MainInfoCandlesProps {
   data: Candle;
   fetchTypeCandles: FetchTypeCandles;
   handleChangesCandle: (candle: Candle) => void;
+  onSave?: (saveCandle: Candle) => void;
 }
 
 export type FetchTypeCandles = () => Promise<TypeCandle[]>;
@@ -19,6 +20,7 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
   data,
   fetchTypeCandles,
   handleChangesCandle,
+  onSave,
 }) => {
   const [candle, setCandle] = useState<Candle>(data);
   const [typesCandle, setTypesCandle] = useState<TypeCandle[]>([]);
@@ -26,6 +28,7 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
     id: id.toString(),
     title,
   }));
+  const [isModified, setIsModified] = useState(false);
 
   useEffect(() => {
     async function getTypeCandles() {
@@ -38,6 +41,7 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
   const handleChangeTitle = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCandle((prev) => ({ ...prev, title: event.target.value }));
     handleChangesCandle(candle);
+    setIsModified(true);
   };
 
   const handleChangePrice = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -46,6 +50,7 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
       price: parseFloat(event.target.value),
     }));
     handleChangesCandle(candle);
+    setIsModified(true);
   };
 
   const handleChangeWeightGrams = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -54,6 +59,7 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
       weightGrams: parseFloat(event.target.value),
     }));
     handleChangesCandle(candle);
+    setIsModified(true);
   };
 
   const handleChangeTypeCandle = (id: string) => {
@@ -66,17 +72,20 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
         typeCandle: selectedTypeCandle,
       }));
       handleChangesCandle(candle);
+      setIsModified(true);
     }
   };
 
   const handleChangeIsActive = (isActive: boolean) => {
     setCandle((prev) => ({ ...prev, isActive }));
     handleChangesCandle(candle);
+    setIsModified(true);
   };
 
   const handleChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCandle((prev) => ({ ...prev, description: event.target.value }));
     handleChangesCandle(candle);
+    setIsModified(true);
   };
 
   return (
@@ -128,6 +137,15 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
             onChange={handleChangeDescription}
           />
         </div>
+        {onSave && isModified && (
+          <button
+            type="button"
+            className={Style.saveButton}
+            onClick={() => onSave(candle)}
+          >
+            Сохранить
+          </button>
+        )}
       </form>
     </div>
   );

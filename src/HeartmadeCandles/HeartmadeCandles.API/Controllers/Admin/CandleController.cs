@@ -74,7 +74,8 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 candleRequest.WeightGrams,
                 candleRequest.ImageURL,
                 typeCandleResult.Value,
-                candleRequest.IsActive);
+                candleRequest.IsActive,
+                id);
 
             if (candleResult.IsFailure)
             {

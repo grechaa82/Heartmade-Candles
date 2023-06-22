@@ -6,6 +6,7 @@ import { NumberOfLayer } from "./types/NumberOfLayer";
 import { Smell } from "./types/Smell";
 import { TypeCandle } from "./types/TypeCandle";
 import { Wick } from "./types/Wick";
+import { CandleRequest } from "./types/Requests/CandleRequest";
 
 type FetchOptions = {
   path: string;
@@ -71,6 +72,23 @@ export const getWicks = (): Promise<Wick[]> =>
   fetchApi<Wick[]>({
     path: "/admin/wicks/",
   });
+
+export const putCandle = async (
+  id: string,
+  candle: CandleRequest
+): Promise<void> => {
+  const url = `/api/admin/candles/${id}`;
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(candle),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update candle: ${errorText}`);
+  }
+};
 
 export const putCandleDecors = async (
   id: string,
