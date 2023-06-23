@@ -1,33 +1,29 @@
-import React, { FC, useState } from 'react';
-import IconRemoveLarge from '../UI/IconRemoveLarge';
+import { FC } from "react";
+import IconRemoveLarge from "../UI/IconRemoveLarge";
 
-import Style from './Tag.module.css';
+import Style from "./Tag.module.css";
 
-export interface TagProps {
+export interface TagData {
   id: number;
   text: string;
-  removable?: boolean;
-  removeTag?: () => void;
 }
 
-const Tag: FC<TagProps> = ({ id, text, removable = true, removeTag }) => {
-  const [isRemoved, setIsRemoved] = useState(false);
+export interface TagProps {
+  tag: TagData;
+  onRemove?: () => void;
+}
 
+const Tag: FC<TagProps> = ({ tag, onRemove }) => {
   const handleRemoveClick = () => {
-    setIsRemoved(true);
-    if (removeTag) {
-      removeTag();
+    if (onRemove) {
+      onRemove();
     }
   };
 
-  if (isRemoved) {
-    return null;
-  }
-
   return (
     <div className={Style.tag}>
-      <p>{text}</p>
-      {removable && (
+      <p>{tag.text}</p>
+      {onRemove && (
         <button onClick={handleRemoveClick}>
           <IconRemoveLarge color="#fff" />
         </button>

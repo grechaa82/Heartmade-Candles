@@ -1,50 +1,51 @@
-import React, { FC, useEffect } from 'react';
-import Tag, { TagProps } from './Tag';
+import React, { FC } from "react";
+import Tag, { TagData } from "./Tag";
 
-import Style from './InputTag.module.css';
+import Style from "./InputTag.module.css";
 
 interface InputTagProps {
-  tagsData: TagProps[];
+  tags: TagData[];
+  allTags: TagData[];
+  onChange: (tags: TagData[]) => void;
 }
 
-const InputTag: FC<InputTagProps> = ({ tagsData }) => {
-  const [tags, setTags] = React.useState<TagProps[]>([]);
-  const [inputValue, setInputValue] = React.useState('');
+const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange }) => {
+  const [inputValue, setInputValue] = React.useState("");
 
-  useEffect(() => {
-    setTags(tagsData);
-  }, [tagsData]);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+  };
 
-  //TODO: Implement adding by "Enter" and by the comma sign ","
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      if (allTags) {
+        const tag = allTags.find((tag) => tag.text === inputValue);
 
-  const handleAddTag = () => {
-    if (inputValue) {
-      const newTag: TagProps = {
-        id: tags.length,
-        text: inputValue,
-        removable: true,
-      };
-      setTags([...tags, newTag]);
-      setInputValue('');
+        if (tag && !tags.includes(tag)) {
+          onChange([...tags, tag]);
+        }
+      }
+      setInputValue("");
     }
   };
 
-  const handleRemoveTag = (id: number) => {
-    setTags(tags.filter((tag) => tag.id !== id));
+  const handleRemoveTag = (tag: TagData) => {
+    const newSelectedTags = tags.filter((t) => t !== tag);
+    onChange(newSelectedTags);
   };
 
   return (
     <div className={Style.inputTag}>
       {tags.map((tag) => (
-        <Tag key={tag.id} {...tag} removeTag={() => handleRemoveTag(tag.id)} />
+        <Tag key={tag.id} tag={tag} onRemove={() => handleRemoveTag(tag)} />
       ))}
       <div className={Style.inputContainer}>
         <input
-          placeholder="Type here to add new tag"
+          type="text"
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
         />
-        <button onClick={handleAddTag}>add</button>
       </div>
     </div>
   );

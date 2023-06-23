@@ -1,29 +1,66 @@
-import { FC } from 'react';
-import { NumberOfLayer } from '../types/NumberOfLayer';
-import { TypeCandle } from '../types/TypeCandle';
-import InputTag from '../components/InputTag';
-import { TagProps } from '../components/Tag';
+import { FC, useState, useEffect } from "react";
+import InputTag from "../components/InputTag";
+import { TagData } from "../components/Tag";
 
-import Style from './TagsGrid.module.css';
-
-type TagsData = TypeCandle[] | NumberOfLayer[];
+import Style from "./TagsGrid.module.css";
 
 export interface TagsGridProps {
-  data: TagsData;
   title: string;
+  tags: TagData[];
+  allTags?: TagData[];
+  onChanges?: (updatedTags: TagData[]) => void;
+  onSave?: (saveProduct: TagData[]) => void;
 }
 
-const TagsGrid: FC<TagsGridProps> = ({ data, title }) => {
-  const tagsData: TagProps[] = data.map((item) => ({
-    id: item.id,
-    text: 'number' in item ? `${item.number}` : `${item.title}`,
-    removable: true,
-  }));
+const TagsGrid: FC<TagsGridProps> = ({
+  title,
+  tags,
+  allTags,
+  onChanges,
+  onSave,
+}) => {
+  const [selectedTags, setSelectedTags] = useState<TagData[]>([]);
+  const [isModified, setIsModified] = useState(false);
+
+  const handleChangesTags = (tags: TagData[]) => {
+    setSelectedTags(tags);
+    if (onChanges) {
+      onChanges(tags);
+    }
+    setIsModified(true);
+  };
+
+  const handleOnSave = () => {
+    if (onSave) {
+      onSave(selectedTags);
+      if (onChanges) {
+        onChanges(selectedTags);
+      }
+      setIsModified(false);
+    }
+  };
+
+  useEffect(() => {
+    setSelectedTags(tags);
+  }, [tags]);
 
   return (
     <div className={Style.tabsInput}>
       <h2>{title}</h2>
-      <InputTag tagsData={tagsData} />
+      <InputTag
+        tags={selectedTags}
+        allTags={allTags || []}
+        onChange={handleChangesTags}
+      />
+      {onSave && isModified && (
+        <button
+          type="button"
+          className={Style.saveButton}
+          onClick={handleOnSave}
+        >
+          Сохранить
+        </button>
+      )}
     </div>
   );
 };

@@ -8,17 +8,17 @@ import {
   getCandleById,
   getDecors,
   getLayerColors,
+  getNumberOfLayers,
   getSmells,
   getTypeCandles,
   getWicks,
   putCandle,
   putCandleDecors,
   putCandleLayerColors,
+  putCandleNumberOfLayer,
   putCandleSmells,
   putCandleWicks,
 } from "../Api";
-import { UpdateCandleDetailsRequest } from "../types/Requests/UpdateCandleDetailsRequest";
-import { CandleRequest } from "../types/Requests/CandleRequest";
 import { Candle } from "../types/Candle";
 import { Decor } from "../types/Decor";
 import { NumberOfLayer } from "../types/NumberOfLayer";
@@ -28,6 +28,7 @@ import { Wick } from "../types/Wick";
 import { BaseProduct } from "../types/BaseProduct";
 
 import Style from "./CandleDetailsPage.module.css";
+import { TagData } from "../components/Tag";
 
 type CandleDetailsParams = {
   id: string;
@@ -36,6 +37,7 @@ type CandleDetailsParams = {
 const CandleDetailsPage: FC = () => {
   const { id } = useParams<CandleDetailsParams>();
   const [candleDetailData, setCandleDetailData] = useState<CandleDetail>();
+  const [numberOfLayerTagData, setNumberOfLayerTagData] = useState<TagData[]>();
 
   const fetchTypeCandles: FetchTypeCandles = async () => {
     try {
@@ -60,6 +62,16 @@ const CandleDetailsPage: FC = () => {
   const fetchLayerColors: FetchProducts<LayerColor> = async () => {
     try {
       const data = await getLayerColors();
+      return data;
+    } catch (error) {
+      console.error("Произошла ошибка при загрузке типов свечей:", error);
+      return [];
+    }
+  };
+
+  const fetchNumberOfLayer = async (): Promise<NumberOfLayer[]> => {
+    try {
+      const data = await getNumberOfLayers();
       return data;
     } catch (error) {
       console.error("Произошла ошибка при загрузке типов свечей:", error);
@@ -120,11 +132,18 @@ const CandleDetailsPage: FC = () => {
   };
 
   const handleChangesNumberOfLayers = (
-    updatedNumberOfLayers: NumberOfLayer[]
-  ) => {
+    updatedNumberOfLayers: TagData[]
+  ): void => {
+    const numberOfLayers: NumberOfLayer[] = updatedNumberOfLayers.map(
+      (tagData) => ({
+        id: tagData.id,
+        number: parseInt(tagData.text),
+      })
+    );
+
     const newCandleDetailData: CandleDetail = {
       ...candleDetailData!,
-      numberOfLayers: updatedNumberOfLayers,
+      numberOfLayers: numberOfLayers,
     };
 
     setCandleDetailData(newCandleDetailData);
@@ -181,8 +200,11 @@ const CandleDetailsPage: FC = () => {
     }
   };
 
-  const updateCandleNumberOfLayers = (updatedItems: BaseProduct[]) => {
-    // Update NumberOfLayers
+  const updateCandleNumberOfLayers = (updatedItems: TagData[]) => {
+    if (id) {
+      const ids = updatedItems.map((n) => n.id);
+      putCandleNumberOfLayer(id, ids);
+    }
   };
 
   const updateCandleSmells = (updatedItems: BaseProduct[]) => {
@@ -200,6 +222,7 @@ const CandleDetailsPage: FC = () => {
       putCandleWicks(id, ids);
     }
   };
+
   useEffect(() => {
     async function fetchCandle() {
       if (id) {
@@ -207,7 +230,15 @@ const CandleDetailsPage: FC = () => {
         setCandleDetailData(data);
       }
     }
+
+    async function fetchNumberOfLayers() {
+      const data = await fetchNumberOfLayer();
+      const tagData = convertToTagData(data);
+      setNumberOfLayerTagData(tagData);
+    }
+
     fetchCandle();
+    fetchNumberOfLayers();
   }, [id]);
 
   return (
@@ -224,8 +255,11 @@ const CandleDetailsPage: FC = () => {
       </div>
       {candleDetailData?.numberOfLayers && (
         <TagsGrid
-          data={candleDetailData.numberOfLayers}
           title="Количество слоев"
+          tags={convertToTagData(candleDetailData.numberOfLayers)}
+          allTags={numberOfLayerTagData || []}
+          onSave={updateCandleNumberOfLayers}
+          onChanges={handleChangesNumberOfLayers}
         />
       )}
       {candleDetailData?.decors && (
@@ -269,3 +303,19 @@ const CandleDetailsPage: FC = () => {
 };
 
 export default CandleDetailsPage;
+
+export function convertToTagData(numberOfLayers: NumberOfLayer[]): TagData[] {
+  const tagDataArray: TagData[] = [];
+
+  for (let i = 0; i < numberOfLayers.length; i++) {
+    const numberOfLayer = numberOfLayers[i];
+    const tagData: TagData = {
+      id: numberOfLayer.id,
+      text: `${numberOfLayer.number}`,
+    };
+
+    tagDataArray.push(tagData);
+  }
+
+  return tagDataArray;
+}

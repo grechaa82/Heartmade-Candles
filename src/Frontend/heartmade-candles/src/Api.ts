@@ -124,6 +124,23 @@ export const putCandleLayerColors = async (
   }
 };
 
+export const putCandleNumberOfLayer = async (
+  id: string,
+  numberOfLayerIds: number[]
+): Promise<void> => {
+  const url = `/api/admin/candles/${id}/numberOfLayers`;
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(numberOfLayerIds),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update candleDecor: ${errorText}`);
+  }
+};
+
 export const putCandleSmells = async (
   id: string,
   decorIds: number[]
