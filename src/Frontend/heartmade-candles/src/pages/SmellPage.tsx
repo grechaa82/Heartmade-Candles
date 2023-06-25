@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import ProductsGrid from '../modules/ProductsGrid';
-import { Smell } from '../types/Smell';
-import { getSmells } from '../Api';
+import React, { useState, useEffect } from "react";
+import ProductsGrid from "../modules/ProductsGrid";
+import { Smell } from "../types/Smell";
+import { getSmells } from "../Api";
 
 export interface SmellPageProps {}
 
@@ -17,9 +17,9 @@ const SmellPage: React.FC<SmellPageProps> = () => {
   }, []);
 
   return (
-    <div>
-      <ProductsGrid data={smellsData} title="Запахи" />
-    </div>
+    <>
+      <ProductsGrid data={smellsData} title="Запахи" pageUrl="smells" />
+    </>
   );
 };
 

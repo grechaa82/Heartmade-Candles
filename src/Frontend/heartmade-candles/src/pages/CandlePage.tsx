@@ -60,7 +60,7 @@ const CandlePage: FC<CandlePageProps> = () => {
         title="Количество слоев"
         tags={convertToTagData(numberOfLayersData)}
       />
-      <ProductsGrid data={candlesData} title="Свечи" />
+      <ProductsGrid data={candlesData} title="Свечи" pageUrl="candles" />
     </>
   );
 };

@@ -17,9 +17,9 @@ const WickPage: React.FC<WickPageProps> = () => {
   }, []);
 
   return (
-    <div>
-      <ProductsGrid data={wicksData} title="Фитили" />
-    </div>
+    <>
+      <ProductsGrid data={wicksData} title="Фитили" pageUrl="wicks" />
+    </>
   );
 };
 

@@ -5,6 +5,7 @@ import ProductBlock from "../components/ProductBlock";
 import ButtonWithIcon from "../components/ButtonWithIcon";
 import IconPlusLarge from "../UI/IconPlusLarge";
 import AddProductPopUp from "../components/AddProductPopUp";
+import { Link } from "react-router-dom";
 
 export interface ProductsGridProps<T extends BaseProduct> {
   data: T[];
@@ -12,6 +13,7 @@ export interface ProductsGridProps<T extends BaseProduct> {
   fetchProducts?: FetchProducts<T>;
   handleChangesProduct?: (updatedItem: T[]) => void;
   onSave?: (saveProduct: T[]) => void;
+  pageUrl?: string;
 }
 
 export type FetchProducts<T extends BaseProduct> = () => Promise<T[]>;
@@ -22,6 +24,7 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
   fetchProducts,
   handleChangesProduct,
   onSave,
+  pageUrl,
 }) => {
   const [products, setProducts] = useState<BaseProduct[]>(data);
   const [allProducts, setAllProducts] = useState<BaseProduct[]>([]);
@@ -77,9 +80,16 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
     <div className={Style.candlesGrid}>
       <h2>{title}</h2>
       <div className={Style.grid}>
-        {products.map((item: BaseProduct) => (
-          <ProductBlock key={item.id} product={item} />
-        ))}
+        {products.map((item: BaseProduct) =>
+          pageUrl ? (
+            <Link to={`/admin/${pageUrl}/${item.id}`} className={Style.link}>
+              <ProductBlock key={item.id} product={item} />
+            </Link>
+          ) : (
+            <ProductBlock key={item.id} product={item} />
+          )
+        )}
+
         <ButtonWithIcon
           icon={IconPlusLarge}
           text="Добавить"

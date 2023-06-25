@@ -141,7 +141,10 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
           <button
             type="button"
             className={Style.saveButton}
-            onClick={() => onSave(candle)}
+            onClick={() => {
+              onSave(candle);
+              setIsModified(false);
+            }}
           >
             Сохранить
           </button>

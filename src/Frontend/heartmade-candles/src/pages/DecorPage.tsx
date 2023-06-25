@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import ProductsGrid from '../modules/ProductsGrid';
-import { Decor } from '../types/Decor';
-import { getDecors } from '../Api';
+import React, { useState, useEffect } from "react";
+import ProductsGrid from "../modules/ProductsGrid";
+import { Decor } from "../types/Decor";
+import { getDecors } from "../Api";
 
 export interface DecorPageProps {}
 
@@ -17,9 +17,9 @@ const DecorPage: React.FC<DecorPageProps> = () => {
   }, []);
 
   return (
-    <div>
-      <ProductsGrid data={decorsData} title="Декоры" />
-    </div>
+    <>
+      <ProductsGrid data={decorsData} title="Декоры" pageUrl="decors" />
+    </>
   );
 };
 
