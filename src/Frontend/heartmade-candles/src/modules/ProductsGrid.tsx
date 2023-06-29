@@ -1,78 +1,48 @@
-import { FC, useState, useEffect } from "react";
-import Style from "./ProductsGrid.module.css";
+import {
+  FC,
+  useState,
+  useEffect,
+  ReactNode,
+  cloneElement,
+  ReactElement,
+} from "react";
+import { Link } from "react-router-dom";
+
 import { BaseProduct } from "../types/BaseProduct";
 import ProductBlock from "../components/ProductBlock";
 import ButtonWithIcon from "../components/ButtonWithIcon";
 import IconPlusLarge from "../UI/IconPlusLarge";
-import AddProductPopUp from "../components/AddProductPopUp";
-import { Link } from "react-router-dom";
+import PopUp, { PopUpProps } from "../components/PopUp/PopUp";
+
+import Style from "./ProductsGrid.module.css";
 
 export interface ProductsGridProps<T extends BaseProduct> {
-  data: T[];
   title: string;
-  fetchProducts?: FetchProducts<T>;
-  handleChangesProduct?: (updatedItem: T[]) => void;
-  onSave?: (saveProduct: T[]) => void;
+  data: T[];
   pageUrl?: string;
+  popUpComponent?: ReactNode;
 }
 
 export type FetchProducts<T extends BaseProduct> = () => Promise<T[]>;
 
 const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
-  data,
   title,
-  fetchProducts,
-  handleChangesProduct,
-  onSave,
+  data,
   pageUrl,
+  popUpComponent,
 }) => {
   const [products, setProducts] = useState<BaseProduct[]>(data);
-  const [allProducts, setAllProducts] = useState<BaseProduct[]>([]);
-  const [selectedProducts, setSelectedProducts] = useState<BaseProduct[]>([]);
-  const [openPopUp, setOpenPopUp] = useState(false);
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
-  const fetchData = async () => {
-    if (fetchProducts) {
-      const fetchedData = await fetchProducts();
-      setAllProducts(fetchedData);
-      setIsDataLoaded(true);
-    }
+  const handlePopUpOpen = () => {
+    setIsPopUpOpen(true);
   };
 
-  const handleAddProduct = (product: BaseProduct) => {
-    const index = selectedProducts.findIndex((p) => p.id === product.id);
-    if (index >= 0) {
-      return;
-    }
-
-    setSelectedProducts([...selectedProducts, product]);
-
-    if (handleChangesProduct) {
-      handleChangesProduct(products);
-    }
-  };
-
-  const handleRemoveProduct = (product: BaseProduct) => {
-    setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id));
-
-    if (handleChangesProduct) {
-      handleChangesProduct(products);
-    }
-  };
-
-  const handleSave = () => {
-    if (onSave) {
-      onSave(selectedProducts);
-    }
+  const handlePopUpClose = () => {
+    setIsPopUpOpen(false);
   };
 
   useEffect(() => {
-    setProducts(selectedProducts);
-  }, [selectedProducts]);
-
-  useEffect(() => {
-    setSelectedProducts(data);
     setProducts(data);
   }, [data]);
 
@@ -89,29 +59,19 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
             <ProductBlock key={item.id} product={item} />
           )
         )}
-
-        <ButtonWithIcon
-          icon={IconPlusLarge}
-          text="Добавить"
-          onClick={async () => {
-            await fetchData();
-            setOpenPopUp(true);
-          }}
-          color="#2E67EA"
-        />
-        {openPopUp && (
-          <AddProductPopUp
-            title={title}
-            allData={allProducts}
-            selectedData={selectedProducts}
-            onAddProduct={handleAddProduct}
-            onRemoveProduct={handleRemoveProduct}
-            onClose={() => setOpenPopUp(false)}
-            isDataLoaded={isDataLoaded}
-            onSave={handleSave}
+        {popUpComponent && (
+          <ButtonWithIcon
+            icon={IconPlusLarge}
+            text="Добавить"
+            onClick={handlePopUpOpen}
+            color="#2E67EA"
           />
         )}
       </div>
+      {isPopUpOpen &&
+        cloneElement(popUpComponent as ReactElement, {
+          onClose: handlePopUpClose,
+        })}
     </div>
   );
 };

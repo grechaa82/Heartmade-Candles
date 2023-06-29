@@ -1,9 +1,20 @@
 import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+
 import MainInfoCandles, { FetchTypeCandles } from "../modules/MainInfoCandles";
 import { CandleDetail } from "../types/CandleDetail";
 import ProductsGrid, { FetchProducts } from "../modules/ProductsGrid";
 import TagsGrid from "../modules/TagsGrid";
+import { Candle } from "../types/Candle";
+import { Decor } from "../types/Decor";
+import { NumberOfLayer } from "../types/NumberOfLayer";
+import { LayerColor } from "../types/LayerColor";
+import { Smell } from "../types/Smell";
+import { Wick } from "../types/Wick";
+import { BaseProduct } from "../types/BaseProduct";
+import { TagData } from "../components/Tag";
+import AddProductPopUp from "../components/PopUp/AddProductPopUp";
+
 import {
   getCandleById,
   getDecors,
@@ -19,16 +30,8 @@ import {
   putCandleSmells,
   putCandleWicks,
 } from "../Api";
-import { Candle } from "../types/Candle";
-import { Decor } from "../types/Decor";
-import { NumberOfLayer } from "../types/NumberOfLayer";
-import { LayerColor } from "../types/LayerColor";
-import { Smell } from "../types/Smell";
-import { Wick } from "../types/Wick";
-import { BaseProduct } from "../types/BaseProduct";
 
 import Style from "./CandleDetailsPage.module.css";
-import { TagData } from "../components/Tag";
 
 type CandleDetailsParams = {
   id: string;
@@ -264,38 +267,66 @@ const CandleDetailsPage: FC = () => {
       )}
       {candleDetailData?.decors && (
         <ProductsGrid
-          data={candleDetailData.decors}
           title="Декоры"
-          fetchProducts={fetchDecors}
-          handleChangesProduct={handleChangesDecors}
-          onSave={updateCandleDecors}
+          data={candleDetailData.decors}
+          popUpComponent={
+            <AddProductPopUp
+              onClose={() => console.log("Popup closed")}
+              title="Свеча и декоры"
+              selectedData={candleDetailData.decors}
+              setSelectedData={handleChangesDecors}
+              fetchAllData={fetchDecors}
+              onSave={updateCandleDecors}
+            />
+          }
         />
       )}
       {candleDetailData?.layerColors && (
         <ProductsGrid
-          data={candleDetailData.layerColors}
           title="Слои"
-          fetchProducts={fetchLayerColors}
-          handleChangesProduct={handleChangesLayerColors}
-          onSave={updateCandleLayerColors}
+          data={candleDetailData.layerColors}
+          popUpComponent={
+            <AddProductPopUp
+              onClose={() => console.log("Popup closed")}
+              title="Свеча и слои"
+              selectedData={candleDetailData.layerColors}
+              setSelectedData={handleChangesLayerColors}
+              fetchAllData={fetchLayerColors}
+              onSave={updateCandleLayerColors}
+            />
+          }
         />
       )}
       {candleDetailData?.smells && (
         <ProductsGrid
-          data={candleDetailData.smells}
           title="Запахи"
-          fetchProducts={fetchSmells}
-          handleChangesProduct={handleChangesSmells}
-          onSave={updateCandleSmells}
+          data={candleDetailData.smells}
+          popUpComponent={
+            <AddProductPopUp
+              onClose={() => console.log("Popup closed")}
+              title="Свеча и запахи"
+              selectedData={candleDetailData.smells}
+              setSelectedData={handleChangesSmells}
+              fetchAllData={fetchSmells}
+              onSave={updateCandleSmells}
+            />
+          }
         />
       )}
       {candleDetailData?.wicks && (
         <ProductsGrid
-          data={candleDetailData.wicks}
           title="Фитили"
-          fetchProducts={fetchWicks}
-          handleChangesProduct={handleChangesWicks}
-          onSave={updateCandleWicks}
+          data={candleDetailData.wicks}
+          popUpComponent={
+            <AddProductPopUp
+              onClose={() => console.log("Popup closed")}
+              title="Свеча и фитили"
+              selectedData={candleDetailData.wicks}
+              setSelectedData={handleChangesWicks}
+              fetchAllData={fetchWicks}
+              onSave={updateCandleWicks}
+            />
+          }
         />
       )}
     </>

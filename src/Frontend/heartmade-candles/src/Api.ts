@@ -174,3 +174,17 @@ export const putCandleWicks = async (
     throw new Error(`Failed to update candleDecor: ${errorText}`);
   }
 };
+
+export const createCandle = async (candle: CandleRequest): Promise<void> => {
+  const url = "/api/admin/candles";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(candle),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to create candle: ${errorText}`);
+  }
+};

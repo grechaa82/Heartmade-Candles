@@ -1,4 +1,5 @@
 import { FC, useState, useEffect } from "react";
+
 import ProductsGrid from "../modules/ProductsGrid";
 import { Candle } from "../types/Candle";
 import { NumberOfLayer } from "../types/NumberOfLayer";
@@ -7,6 +8,10 @@ import TagsGrid from "../modules/TagsGrid";
 import { getCandle, getNumberOfLayers, getTypeCandles } from "../Api";
 import { convertToTagData } from "./CandleDetailsPage";
 import { TagData } from "../components/Tag";
+import CreateProductPopUp from "../components/PopUp/CreateProductPopUp";
+
+import { createCandle } from "../Api";
+import { CandleRequest } from "../types/Requests/CandleRequest";
 
 export interface CandlePageProps {}
 
@@ -17,37 +22,38 @@ const CandlePage: FC<CandlePageProps> = () => {
   );
   const [candlesData, setCandlesData] = useState<Candle[]>([]);
 
+  const handleCreateCandle = async (createdItem: Candle) => {
+    const candleRequest: CandleRequest = {
+      title: createdItem.title,
+      description: createdItem.description,
+      price: createdItem.price,
+      weightGrams: createdItem.weightGrams,
+      imageURL: createdItem.imageURL,
+      typeCandle: createdItem.typeCandle,
+      isActive: createdItem.isActive,
+    };
+    await createCandle(candleRequest);
+    const updatedCandles = await getCandle();
+    setCandlesData(updatedCandles);
+  };
+
   useEffect(() => {
-    async function fetchTypeCandles() {
+    async function fetchData() {
       try {
-        const data = await getTypeCandles();
-        setTypeCandlesData(data);
+        const typeCandles = await getTypeCandles();
+        setTypeCandlesData(typeCandles);
+
+        const numberOfLayers = await getNumberOfLayers();
+        setNumberOfLayersData(numberOfLayers);
+
+        const candles = await getCandle();
+        setCandlesData(candles);
       } catch (error) {
-        console.error("Произошла ошибка при загрузке типов свечей:", error);
+        console.error("Произошла ошибка при загрузке данных:", error);
       }
     }
 
-    async function fetchNumberOfLayers() {
-      try {
-        const data = await getNumberOfLayers();
-        setNumberOfLayersData(data);
-      } catch (error) {
-        console.error("Произошла ошибка при загрузке количества слоев:", error);
-      }
-    }
-
-    async function fetchCandles() {
-      try {
-        const data = await getCandle();
-        setCandlesData(data);
-      } catch (error) {
-        console.error("Произошла ошибка при загрузке свечей:", error);
-      }
-    }
-
-    fetchTypeCandles();
-    fetchNumberOfLayers();
-    fetchCandles();
+    fetchData();
   }, []);
 
   return (
@@ -60,7 +66,19 @@ const CandlePage: FC<CandlePageProps> = () => {
         title="Количество слоев"
         tags={convertToTagData(numberOfLayersData)}
       />
-      <ProductsGrid data={candlesData} title="Свечи" pageUrl="candles" />
+      <ProductsGrid
+        data={candlesData}
+        title="Свечи"
+        pageUrl="candles"
+        popUpComponent={
+          <CreateProductPopUp
+            onClose={() => console.log("Popup closed")}
+            title="Создать свечу"
+            typeCandlesArray={typeCandlesData}
+            onSave={handleCreateCandle}
+          />
+        }
+      />
     </>
   );
 };
@@ -68,17 +86,8 @@ const CandlePage: FC<CandlePageProps> = () => {
 export default CandlePage;
 
 export function convertCandlesToTagData(candles: TypeCandle[]): TagData[] {
-  const tagDataArray: TagData[] = [];
-
-  for (let i = 0; i < candles.length; i++) {
-    const candle = candles[i];
-    const tagData: TagData = {
-      id: candle.id,
-      text: candle.title,
-    };
-
-    tagDataArray.push(tagData);
-  }
-
-  return tagDataArray;
+  return candles.map((candle) => ({
+    id: candle.id,
+    text: candle.title,
+  }));
 }
