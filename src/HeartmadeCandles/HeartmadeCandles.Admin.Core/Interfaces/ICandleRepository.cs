@@ -6,12 +6,12 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
     {
         Task<Candle[]> GetAll();
 
-        Task<CandleDetail> Get(int id);
+        Task<CandleDetail> Get(int candleId);
 
         Task Create(Candle candle);
 
         Task Update(Candle candle);
 
-        Task Delete(int id);
+        Task Delete(int candleId);
     }
 }

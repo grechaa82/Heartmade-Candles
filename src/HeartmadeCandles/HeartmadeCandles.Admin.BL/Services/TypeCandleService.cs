@@ -17,9 +17,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             return await _typeCandleRepository.GetAll();
         }
 
-        public async Task<TypeCandle> Get(int id)
+        public async Task<TypeCandle> Get(int typeCandleId)
         {
-            return await _typeCandleRepository.Get(id);
+            return await _typeCandleRepository.Get(typeCandleId);
         }
 
         public async Task Create(TypeCandle typeCandle)
@@ -32,9 +32,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             await _typeCandleRepository.Update(typeCandle);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int typeCandleId)
         {
-            await _typeCandleRepository.Delete(id);
+            await _typeCandleRepository.Delete(typeCandleId);
         }
     }
 }

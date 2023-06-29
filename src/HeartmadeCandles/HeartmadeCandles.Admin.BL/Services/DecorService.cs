@@ -17,9 +17,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             return await _decorRepository.GetAll();
         }
 
-        public async Task<Decor> Get(int id)
+        public async Task<Decor> Get(int decorId)
         {
-            return await _decorRepository.Get(id);
+            return await _decorRepository.Get(decorId);
         }
 
         public async Task Create(Decor decor)
@@ -32,9 +32,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             await _decorRepository.Update(decor);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int decorId)
         {
-            await _decorRepository.Delete(id);
+            await _decorRepository.Delete(decorId);
         }
     }
 }

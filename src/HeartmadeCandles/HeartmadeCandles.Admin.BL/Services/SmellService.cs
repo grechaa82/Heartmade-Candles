@@ -17,9 +17,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             return await _smellRepository.GetAll();
         }
         
-        public async Task<Smell> Get(int id)
+        public async Task<Smell> Get(int smellId)
         {
-            return await _smellRepository.Get(id);
+            return await _smellRepository.Get(smellId);
         }
         
         public async Task Create(Smell smell)
@@ -32,9 +32,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             await _smellRepository.Update(smell);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int smellId)
         {
-            await _smellRepository.Delete(id);
+            await _smellRepository.Delete(smellId);
         }
     }
 }

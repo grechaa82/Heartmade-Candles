@@ -28,22 +28,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             return result;
         }
 
-        public async Task<NumberOfLayer> Get(int id)
+        public async Task<NumberOfLayer> Get(int numberOfLayerId)
         {
             var item = await _context.NumberOfLayer
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == numberOfLayerId);
 
             var numberOfLayer = NumberOfLayerMapping.MapToNumberOfLayer(item);
 
             return numberOfLayer;
         }
 
-        public async Task<NumberOfLayer[]> GetByIds(int[] ids)
+        public async Task<NumberOfLayer[]> GetByIds(int[] numberOfLayerIds)
         {
             var items = await _context.NumberOfLayer
                 .AsNoTracking()
-                .Where(c => ids.Contains(c.Id))
+                .Where(c => numberOfLayerIds.Contains(c.Id))
                 .ToArrayAsync();
 
             var result = items
@@ -69,9 +69,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int numberOfLayerId)
         {
-            var item = await _context.NumberOfLayer.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.NumberOfLayer.FirstOrDefaultAsync(c => c.Id == numberOfLayerId);
 
             if (item != null)
             {

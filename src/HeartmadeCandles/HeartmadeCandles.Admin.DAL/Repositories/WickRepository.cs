@@ -28,22 +28,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             return result;
         }
 
-        public async Task<Wick> Get(int id)
+        public async Task<Wick> Get(int wickId)
         {
             var item = await _context.Wick
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == wickId);
 
             var wick = WickMapping.MapToWick(item);
 
             return wick;
         }
 
-        public async Task<Wick[]> GetByIds(int[] ids)
+        public async Task<Wick[]> GetByIds(int[] wickIds)
         {
             var items = await _context.Wick
                 .AsNoTracking()
-                .Where(c => ids.Contains(c.Id))
+                .Where(c => wickIds.Contains(c.Id))
                 .ToArrayAsync();
 
             var result = items
@@ -69,9 +69,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int wickId)
         {
-            var item = await _context.Wick.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.Wick.FirstOrDefaultAsync(c => c.Id == wickId);
 
             if (item != null)
             {

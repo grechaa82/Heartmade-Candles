@@ -32,7 +32,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             return result;
         }
 
-        public async Task<CandleDetail> Get(int id)
+        public async Task<CandleDetail> Get(int candleId)
         {
             var candleDetailEntity = await _context.Candle
                 .AsNoTracking()
@@ -42,7 +42,7 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .Include(cn => cn.CandleNumberOfLayer).ThenInclude(n => n.NumberOfLayer)
                 .Include(cs => cs.CandleSmell).ThenInclude(s => s.Smell)
                 .Include(cw => cw.CandleWick).ThenInclude(w => w.Wick)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == candleId);
 
             var typeCandle = TypeCandleMapping.MapToCandleType(candleDetailEntity.TypeCandle);
             var candle = CandleMapping.MapToCandle(candleDetailEntity, typeCandle);
@@ -90,9 +90,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int candleId)
         {
-            var item = await _context.Candle.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.Candle.FirstOrDefaultAsync(c => c.Id == candleId);
 
             if (item != null)
             {

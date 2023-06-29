@@ -9,15 +9,15 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
 
         Task<Candle[]> GetAll();
 
-        Task<CandleDetail> Get(int id);
+        Task<CandleDetail> Get(int candleId);
 
         Task Update(Candle candle);
 
-        Task Delete(int id);
-        Task<Result> UpdateDecor(int id, int[] decorsIds);
-        Task<Result> UpdateLayerColor(int id, int[] layerColorsIds);
-        Task<Result> UpdateNumberOfLayer(int id, int[] numberOfLayersIds);
-        Task<Result> UpdateSmell(int id, int[] smellsIds);
-        Task<Result> UpdateWick(int id, int[] wicksIds);
+        Task Delete(int candleId);
+        Task<Result> UpdateDecor(int candleId, int[] decorIds);
+        Task<Result> UpdateLayerColor(int candleId, int[] layerColorIds);
+        Task<Result> UpdateNumberOfLayer(int candleId, int[] numberOfLayerIds);
+        Task<Result> UpdateSmell(int candleId, int[] smellIds);
+        Task<Result> UpdateWick(int candleId, int[] wickIds);
     }
 }

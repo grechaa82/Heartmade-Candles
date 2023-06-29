@@ -17,9 +17,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             return await _layerColorRepository.GetAll();
         }
 
-        public async Task<LayerColor> Get(int id)
+        public async Task<LayerColor> Get(int layerColorId)
         {
-            return await _layerColorRepository.Get(id);
+            return await _layerColorRepository.Get(layerColorId);
         }
 
         public async Task Create(LayerColor layerColor)
@@ -32,9 +32,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             await _layerColorRepository.Update(layerColor);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int layerColorId)
         {
-            await _layerColorRepository.Delete(id);
+            await _layerColorRepository.Delete(layerColorId);
         }
     }
 }

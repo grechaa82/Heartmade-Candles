@@ -28,22 +28,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             return result;
         }
         
-        public async Task<Smell> Get(int id)
+        public async Task<Smell> Get(int smellId)
         {
             var item = await _context.Smell
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == smellId);
 
             var smell = SmellMapping.MapToSmell(item);
 
             return smell;
         }
 
-        public async Task<Smell[]> GetByIds(int[] ids)
+        public async Task<Smell[]> GetByIds(int[] smellIds)
         {
             var items = await _context.Smell
                 .AsNoTracking()
-                .Where(c => ids.Contains(c.Id))
+                .Where(c => smellIds.Contains(c.Id))
                 .ToArrayAsync();
 
             var result = items
@@ -69,9 +69,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int smellId)
         {
-            var item = await _context.Smell.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.Smell.FirstOrDefaultAsync(c => c.Id == smellId);
 
             if (item != null)
             {

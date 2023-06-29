@@ -28,22 +28,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             return result;
         }
 
-        public async Task<Decor> Get(int id)
+        public async Task<Decor> Get(int decorId)
         {
             var item = await _context.Decor
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == decorId);
 
             var decor = DecorMapping.MapToDecor(item);
 
             return decor;
         }
 
-        public async Task<Decor[]> GetByIds(int[] ids)
+        public async Task<Decor[]> GetByIds(int[] decorIds)
         {
             var items = await _context.Decor
                 .AsNoTracking()
-                .Where(c => ids.Contains(c.Id))
+                .Where(c => decorIds.Contains(c.Id))
                 .ToArrayAsync();
 
             var result = items
@@ -69,9 +69,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int decorId)
         {
-            var item = await _context.Decor.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.Decor.FirstOrDefaultAsync(c => c.Id == decorId);
 
             if (item != null)
             {

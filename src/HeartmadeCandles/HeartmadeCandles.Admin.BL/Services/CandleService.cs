@@ -37,9 +37,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             return await _candleRepository.GetAll();
         }
 
-        public async Task<CandleDetail> Get(int id)
+        public async Task<CandleDetail> Get(int candleId)
         {
-            return await _candleRepository.Get(id);
+            return await _candleRepository.Get(candleId);
         }
 
         public async Task Create(Candle candle)
@@ -52,87 +52,87 @@ namespace HeartmadeCandles.Admin.BL.Services
             await _candleRepository.Update(candle);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int candleId)
         {
-            await _candleRepository.Delete(id);
+            await _candleRepository.Delete(candleId);
         }
 
-        public async Task<Result> UpdateDecor(int id, int[] ids)
+        public async Task<Result> UpdateDecor(int candleId, int[] decorIds)
         {
-            var decors = await _decorRepository.GetByIds(ids);
+            var decors = await _decorRepository.GetByIds(decorIds);
 
-            if (decors.Length != ids.Length)
+            if (decors.Length != decorIds.Length)
             {
-                var missingIds = ids.Except(decors.Select(d => d.Id));
+                var missingIds = decorIds.Except(decors.Select(d => d.Id));
                 var missingIdsString = string.Join(", ", missingIds);
                 return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
             }
 
-            await _decorRepository.UpdateCandleDecor(id, decors);
+            await _decorRepository.UpdateCandleDecor(candleId, decors);
 
             return Result.Success();
         }
 
-        public async Task<Result> UpdateLayerColor(int id, int[] ids)
+        public async Task<Result> UpdateLayerColor(int candleId, int[] layerColorIds)
         {
-            var layerColors = await _layerColorRepository.GetByIds(ids);
+            var layerColors = await _layerColorRepository.GetByIds(layerColorIds);
 
-            if (layerColors.Length != ids.Length)
+            if (layerColors.Length != layerColorIds.Length)
             {
-                var missingIds = ids.Except(layerColors.Select(l => l.Id));
+                var missingIds = layerColorIds.Except(layerColors.Select(l => l.Id));
                 var missingIdsString = string.Join(", ", missingIds);
                 return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
             }
 
-            await _layerColorRepository.UpdateCandleLayerColor(id, layerColors);
+            await _layerColorRepository.UpdateCandleLayerColor(candleId, layerColors);
 
             return Result.Success();
         }
 
-        public async Task<Result> UpdateNumberOfLayer(int id, int[] ids)
+        public async Task<Result> UpdateNumberOfLayer(int candleId, int[] numberOfLayerIds)
         {
-            var numberOfLayers = await _numberOfLayerRepository.GetByIds(ids);
+            var numberOfLayers = await _numberOfLayerRepository.GetByIds(numberOfLayerIds);
 
-            if (numberOfLayers.Length != ids.Length)
+            if (numberOfLayers.Length != numberOfLayerIds.Length)
             {
-                var missingIds = ids.Except(numberOfLayers.Select(l => l.Id));
+                var missingIds = numberOfLayerIds.Except(numberOfLayers.Select(l => l.Id));
                 var missingIdsString = string.Join(", ", missingIds);
                 return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
             }
 
-            await _numberOfLayerRepository.UpdateCandleNumberOfLayer(id, numberOfLayers);
+            await _numberOfLayerRepository.UpdateCandleNumberOfLayer(candleId, numberOfLayers);
 
             return Result.Success();
         }
 
-        public async Task<Result> UpdateSmell(int id, int[] ids)
+        public async Task<Result> UpdateSmell(int candleId, int[] smellIds)
         {
-            var smells = await _smellRepository.GetByIds(ids);
+            var smells = await _smellRepository.GetByIds(smellIds);
 
-            if (smells.Length != ids.Length)
+            if (smells.Length != smellIds.Length)
             {
-                var missingIds = ids.Except(smells.Select(l => l.Id));
+                var missingIds = smellIds.Except(smells.Select(l => l.Id));
                 var missingIdsString = string.Join(", ", missingIds);
                 return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
             }
 
-            await _smellRepository.UpdateCandleSmell(id, smells);
+            await _smellRepository.UpdateCandleSmell(candleId, smells);
 
             return Result.Success();
         }
 
-        public async Task<Result> UpdateWick(int id, int[] ids)
+        public async Task<Result> UpdateWick(int candleId, int[] wickIds)
         {
-            var wicks = await _wickRepository.GetByIds(ids);
+            var wicks = await _wickRepository.GetByIds(wickIds);
 
-            if (wicks.Length != ids.Length)
+            if (wicks.Length != wickIds.Length)
             {
-                var missingIds = ids.Except(wicks.Select(l => l.Id));
+                var missingIds = wickIds.Except(wicks.Select(l => l.Id));
                 var missingIdsString = string.Join(", ", missingIds);
                 return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
             }
 
-            await _wickRepository.UpdateCandleWick(id, wicks);
+            await _wickRepository.UpdateCandleWick(candleId, wicks);
 
             return Result.Success();
         }

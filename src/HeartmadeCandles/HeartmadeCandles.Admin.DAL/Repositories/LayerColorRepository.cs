@@ -28,22 +28,22 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             return result;
         }
 
-        public async Task<LayerColor> Get(int id)
+        public async Task<LayerColor> Get(int layerColorId)
         {
             var item = await _context.LayerColor
                 .AsNoTracking()
-                .FirstOrDefaultAsync(l => l.Id == id);
+                .FirstOrDefaultAsync(l => l.Id == layerColorId);
 
             var layerColor = LayerColorMapping.MapToLayerColor(item);
 
             return layerColor;
         }
 
-        public async Task<LayerColor[]> GetByIds(int[] ids)
+        public async Task<LayerColor[]> GetByIds(int[] layerColorIds)
         {
             var items = await _context.LayerColor
                 .AsNoTracking()
-                .Where(c => ids.Contains(c.Id))
+                .Where(c => layerColorIds.Contains(c.Id))
                 .ToArrayAsync();
 
             var result = items
@@ -69,9 +69,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int layerColorId)
         {
-            var item = await _context.LayerColor.FirstOrDefaultAsync(l => l.Id == id);
+            var item = await _context.LayerColor.FirstOrDefaultAsync(l => l.Id == layerColorId);
 
             if (item != null)
             {

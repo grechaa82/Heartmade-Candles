@@ -17,9 +17,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             return await _numberOfLayerServiceRepository.GetAll();
         }
 
-        public async Task<NumberOfLayer> Get(int id)
+        public async Task<NumberOfLayer> Get(int numberOfLayerId)
         {
-            return await _numberOfLayerServiceRepository.Get(id);
+            return await _numberOfLayerServiceRepository.Get(numberOfLayerId);
         }
 
         public async Task Create(NumberOfLayer numberOfLayer)
@@ -32,9 +32,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             await _numberOfLayerServiceRepository.Update(numberOfLayer);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int numberOfLayerId)
         {
-            await _numberOfLayerServiceRepository.Delete(id);
+            await _numberOfLayerServiceRepository.Delete(numberOfLayerId);
         }
     }
 }

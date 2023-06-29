@@ -28,11 +28,11 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             return result;
         }
 
-        public async Task<TypeCandle> Get(int id)
+        public async Task<TypeCandle> Get(int typeCandleId)
         {
             var item = await _context.TypeCandle
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == typeCandleId);
 
             var typeCandle = TypeCandleMapping.MapToCandleType(item);
 
@@ -55,9 +55,9 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int typeCandleId)
         {
-            var item = await _context.TypeCandle.FirstOrDefaultAsync(c => c.Id == id);
+            var item = await _context.TypeCandle.FirstOrDefaultAsync(c => c.Id == typeCandleId);
 
             if (item != null)
             {

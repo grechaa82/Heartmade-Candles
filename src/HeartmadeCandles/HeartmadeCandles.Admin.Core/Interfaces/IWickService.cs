@@ -5,9 +5,9 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
     public interface IWickService
     {
         Task<Wick[]> GetAll();
-        Task<Wick> Get(int id);
+        Task<Wick> Get(int wickId);
         Task Create(Wick wick);
         Task Update(Wick wick);
-        Task Delete(int id);
+        Task Delete(int wickId);
     }
 }

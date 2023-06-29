@@ -17,9 +17,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             return await _wickRepository.GetAll();
         }
 
-        public async Task<Wick> Get(int id)
+        public async Task<Wick> Get(int wickId)
         {
-            return await _wickRepository.Get(id);
+            return await _wickRepository.Get(wickId);
         }
 
         public async Task Create(Wick wick)
@@ -32,9 +32,9 @@ namespace HeartmadeCandles.Admin.BL.Services
             await _wickRepository.Update(wick);
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(int wickId)
         {
-            await _wickRepository.Delete(id);
+            await _wickRepository.Delete(wickId);
         }
     }
 }

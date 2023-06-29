@@ -5,11 +5,11 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
     public interface IWickRepository
     {
         Task<Wick[]> GetAll();
-        Task<Wick> Get(int id);
-        Task<Wick[]> GetByIds(int[] ids);
+        Task<Wick> Get(int wickId);
+        Task<Wick[]> GetByIds(int[] wickIds);
         Task Create(Wick wick);
         Task Update(Wick wick);
-        Task Delete(int id);
+        Task Delete(int wickId);
         Task UpdateCandleWick(int candleId, Wick[] wicks);
     }
 }

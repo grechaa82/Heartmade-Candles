@@ -5,9 +5,9 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
     public interface ITypeCandleRepository
     {
         Task<TypeCandle[]> GetAll();
-        Task<TypeCandle> Get(int id);
+        Task<TypeCandle> Get(int typeCandleId);
         Task Create(TypeCandle typeCandle);
         Task Update(TypeCandle typeCandle);
-        Task Delete(int id);
+        Task Delete(int typeCandleId);
     }
 }
