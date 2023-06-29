@@ -105,7 +105,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'description' cannot be null", result.Error);
+            Assert.Equal("'description' cannot be null or whitespace", result.Error);
         }
 
         [Fact]
@@ -120,7 +120,6 @@ namespace HeartmadeCandles.Tests.Admin.Core
             // Assert
             Assert.True(result.IsFailure);
             Assert.Equal($"'description' cannot be more than {Decor.MaxDescriptionLenght} characters", result.Error);
-
         }
 
         [Fact]
@@ -134,7 +133,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'price' сannot be 0 or less", result.Error);
+            Assert.Equal("'price' cannot be 0 or less", result.Error);
         }
 
         [Fact]
@@ -155,7 +154,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'title' cannot be null or whitespace, 'description' cannot be null, 'price' сannot be 0 or less", result.Error);
+            Assert.Equal("'title' cannot be null or whitespace, 'description' cannot be null or whitespace, 'price' cannot be 0 or less", result.Error);
         }
 
         private static Result<Decor> Make(

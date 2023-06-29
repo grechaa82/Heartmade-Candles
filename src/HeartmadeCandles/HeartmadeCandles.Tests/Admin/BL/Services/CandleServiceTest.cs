@@ -1,6 +1,4 @@
 ﻿using Bogus;
-using Bogus.DataSets;
-using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.BL.Services;
 using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
@@ -13,14 +11,14 @@ namespace HeartmadeCandles.UnitTests.Admin.BL.Services
         private static Faker _faker = new Faker();
 
         private readonly CandleService _service;
-        
-        private readonly Mock<ICandleRepository> _candleRepositoryMock = new Mock<ICandleRepository>();
-        private readonly Mock<IDecorRepository> _decorRepositoryMock = new Mock<IDecorRepository>();
-        private readonly Mock<ILayerColorRepository> _layerColorRepositoryMock = new Mock<ILayerColorRepository>();
-        private readonly Mock<INumberOfLayerRepository> _numberOfLayerRepositoryMock = new Mock<INumberOfLayerRepository>();
-        private readonly Mock<ISmellRepository> _smellRepositoryMock = new Mock<ISmellRepository>();
-        private readonly Mock<ITypeCandleRepository> _typeCandleRepositoryMock = new Mock<ITypeCandleRepository>();
-        private readonly Mock<IWickRepository> _wickRepositoryMock = new Mock<IWickRepository>();
+
+        private readonly Mock<ICandleRepository> _candleRepositoryMock = new Mock<ICandleRepository>(MockBehavior.Strict);
+        private readonly Mock<IDecorRepository> _decorRepositoryMock = new Mock<IDecorRepository>(MockBehavior.Strict);
+        private readonly Mock<ILayerColorRepository> _layerColorRepositoryMock = new Mock<ILayerColorRepository>(MockBehavior.Strict);
+        private readonly Mock<INumberOfLayerRepository> _numberOfLayerRepositoryMock = new Mock<INumberOfLayerRepository>(MockBehavior.Strict);
+        private readonly Mock<ISmellRepository> _smellRepositoryMock = new Mock<ISmellRepository>(MockBehavior.Strict);
+        private readonly Mock<ITypeCandleRepository> _typeCandleRepositoryMock = new Mock<ITypeCandleRepository>(MockBehavior.Strict);
+        private readonly Mock<IWickRepository> _wickRepositoryMock = new Mock<IWickRepository>(MockBehavior.Strict);
 
         public CandleServiceTest()
         {
@@ -39,10 +37,10 @@ namespace HeartmadeCandles.UnitTests.Admin.BL.Services
         {
             // Arrange
             var id = _faker.Random.Number(1, 100);
-            var ids = new int[] { 1, 2, 3};
+            var ids = new int[] { 1, 2, 3 };
 
             var decors = new Decor[ids.Length];
-            for ( int i = 0; i < ids.Length; i++ )
+            for (int i = 0; i < ids.Length; i++)
             {
                 decors[i] = GenerateDecor(i);
             }
@@ -52,6 +50,7 @@ namespace HeartmadeCandles.UnitTests.Admin.BL.Services
                 .Verifiable();
 
             _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, decors))
+                .Returns(Task.CompletedTask)
                 .Verifiable();
 
             // Act

@@ -2,7 +2,7 @@
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.Core.Models;
 
-namespace HeartmadeCandles.UnitTests.Admin.Core
+namespace HeartmadeCandles.Tests.Admin.Core
 {
     public class LayerColorTest
     {
@@ -92,24 +92,69 @@ namespace HeartmadeCandles.UnitTests.Admin.Core
         [InlineData(null)]
         public void Create_NullOrWhiteSpaceDescription_ShouldReturnFailure(string description)
         {
+            // Arrange
 
+            // Act
+            var result = LayerColor.Create(
+                id: _faker.Random.Number(1, 10000),
+                title: _faker.Random.String(1, LayerColor.MaxTitleLenght),
+                description: description,
+                pricePerGram: _faker.Random.Number(1, 10000),
+                imageURL: _faker.Image.PicsumUrl(),
+                isActive: _faker.Random.Bool());
+
+            // Assert
+            Assert.True(result.IsFailure);
+            Assert.Equal("'description' cannot be null or whitespace", result.Error);
         }
 
         [Fact]
         public void Create_LongDescription_ShouldReturnFailure()
         {
+            // Arrange
+            var description = _faker.Random.String(LayerColor.MaxDescriptionLenght + 1);
 
+            // Act
+            var result = Make(description: description);
+
+            // Assert
+            Assert.True(result.IsFailure);
+            Assert.Equal($"'description' cannot be more than {LayerColor.MaxDescriptionLenght} characters", result.Error);
         }
 
         [Fact]
         public void Create_ZeroOrLessPricePerGram_ShouldReturnFailure()
         {
+            // Arrange
+            var price = _faker.Random.Number(-10000, 0) * _faker.Random.Decimal();
 
+            // Act
+            var result = Make(pricePerGram: price);
+
+            // Assert
+            Assert.True(result.IsFailure);
+            Assert.Equal("'pricePerGram' cannot be 0 or less", result.Error);
         }
 
         [Fact]
         public void Create_InvalidParameters_ShouldReturnFailure()
         {
+            // Arrange
+            var title = "   ";
+            string description = "";
+            var pricePerGram = -10.0m;
+            var imageURL = "";
+
+            // Act
+            var result = Make(
+                title: title,
+                description: description,
+                pricePerGram: pricePerGram,
+                imageURL: imageURL);
+
+            // Assert
+            Assert.True(result.IsFailure);
+            Assert.Equal("'title' cannot be null or whitespace, 'description' cannot be null or whitespace, 'pricePerGram' cannot be 0 or less", result.Error);
 
         }
 

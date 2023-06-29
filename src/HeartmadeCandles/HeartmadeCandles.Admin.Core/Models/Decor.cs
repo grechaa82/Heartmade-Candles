@@ -65,7 +65,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             {
                 result = Result.Combine(
                     result,
-                    Result.Failure<Decor>($"'{nameof(description)}' cannot be null"));
+                    Result.Failure<Decor>($"'{nameof(description)}' cannot be null or whitespace"));
             }
 
             if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
@@ -79,7 +79,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             {
                 result = Result.Combine(
                     result,
-                    Result.Failure<Decor>($"'{nameof(price)}' сannot be 0 or less"));
+                    Result.Failure<Decor>($"'{nameof(price)}' cannot be 0 or less"));
             }
 
             if (result.IsFailure)
