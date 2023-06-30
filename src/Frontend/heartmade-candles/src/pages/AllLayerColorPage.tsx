@@ -3,9 +3,9 @@ import ProductsGrid from "../modules/ProductsGrid";
 import { LayerColor } from "../types/LayerColor";
 import { getLayerColors } from "../Api";
 
-export interface LayerColorPageProps {}
+export interface AllLayerColorPageProps {}
 
-const LayerColorPage: React.FC<LayerColorPageProps> = () => {
+const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
   const [layerColorData, setLayerColorData] = useState<LayerColor[]>([]);
 
   useEffect(() => {
@@ -23,4 +23,4 @@ const LayerColorPage: React.FC<LayerColorPageProps> = () => {
   );
 };
 
-export default LayerColorPage;
+export default AllLayerColorPage;

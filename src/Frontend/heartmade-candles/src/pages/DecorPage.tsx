@@ -1,26 +1,64 @@
-import React, { useState, useEffect } from "react";
-import ProductsGrid from "../modules/ProductsGrid";
+import { FC, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+import MainInfoDecors from "../modules/MainInfoDecors";
 import { Decor } from "../types/Decor";
-import { getDecors } from "../Api";
+import { DecorRequest } from "../types/Requests/DecorRequest";
 
-export interface DecorPageProps {}
+import { getDecorById, putDecor } from "../Api";
 
-const DecorPage: React.FC<DecorPageProps> = () => {
-  const [decorsData, setDecorsData] = useState<Decor[]>([]);
+type DecorParams = {
+  id: string;
+};
+
+const DecorPagePage: FC = () => {
+  const { id } = useParams<DecorParams>();
+  const [decorData, setDecorData] = useState<Decor>();
+
+  const handleChangesDecor = (updatedDecor: Decor) => {
+    setDecorData((prevDecorData) => ({
+      ...prevDecorData,
+      ...updatedDecor,
+    }));
+  };
+
+  const updateDecor = (updatedItem: Decor) => {
+    if (id) {
+      const decorRequest: DecorRequest = {
+        title: updatedItem.title,
+        description: updatedItem.description,
+        price: updatedItem.price,
+        imageURL: updatedItem.imageURL,
+        isActive: updatedItem.isActive,
+      };
+      putDecor(id, decorRequest);
+    }
+  };
 
   useEffect(() => {
     async function fetchDecors() {
-      const data = await getDecors();
-      setDecorsData(data);
+      if (id) {
+        const data = await getDecorById(id);
+        setDecorData(data);
+      }
     }
+
     fetchDecors();
-  }, []);
+  }, [id]);
 
   return (
     <>
-      <ProductsGrid data={decorsData} title="Декоры" pageUrl="decors" />
+      <div className="decors">
+        {decorData && (
+          <MainInfoDecors
+            data={decorData}
+            handleChangesDecor={handleChangesDecor}
+            onSave={updateDecor}
+          />
+        )}
+      </div>
     </>
   );
 };
 
-export default DecorPage;
+export default DecorPagePage;

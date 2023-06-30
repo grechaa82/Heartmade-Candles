@@ -7,6 +7,7 @@ import { Smell } from "./types/Smell";
 import { TypeCandle } from "./types/TypeCandle";
 import { Wick } from "./types/Wick";
 import { CandleRequest } from "./types/Requests/CandleRequest";
+import { DecorRequest } from "./types/Requests/DecorRequest";
 
 type FetchOptions = {
   path: string;
@@ -56,6 +57,11 @@ export const getNumberOfLayers = (): Promise<NumberOfLayer[]> =>
 export const getDecors = (): Promise<Decor[]> =>
   fetchApi<Decor[]>({
     path: "/admin/decors/",
+  });
+
+export const getDecorById = (id: string): Promise<Decor> =>
+  fetchApi<Decor>({
+    path: `/admin/decors/${id}`,
   });
 
 export const getLayerColors = (): Promise<LayerColor[]> =>
@@ -172,6 +178,23 @@ export const putCandleWicks = async (
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Failed to update candleDecor: ${errorText}`);
+  }
+};
+
+export const putDecor = async (
+  id: string,
+  decor: DecorRequest
+): Promise<void> => {
+  const url = `/api/admin/decors/${id}`;
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(decor),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update decor: ${errorText}`);
   }
 };
 

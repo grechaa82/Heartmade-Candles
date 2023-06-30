@@ -3,9 +3,9 @@ import ProductsGrid from "../modules/ProductsGrid";
 import { Smell } from "../types/Smell";
 import { getSmells } from "../Api";
 
-export interface SmellPageProps {}
+export interface AllSmellPageProps {}
 
-const SmellPage: React.FC<SmellPageProps> = () => {
+const AllSmellPage: React.FC<AllSmellPageProps> = () => {
   const [smellsData, setSmellsData] = useState<Smell[]>([]);
 
   useEffect(() => {
@@ -23,4 +23,4 @@ const SmellPage: React.FC<SmellPageProps> = () => {
   );
 };
 
-export default SmellPage;
+export default AllSmellPage;

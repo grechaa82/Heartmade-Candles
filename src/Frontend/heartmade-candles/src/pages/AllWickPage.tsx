@@ -3,9 +3,9 @@ import ProductsGrid from "../modules/ProductsGrid";
 import { Wick } from "../types/Wick";
 import { getWicks } from "../Api";
 
-export interface WickPageProps {}
+export interface AllWickPageProps {}
 
-const WickPage: React.FC<WickPageProps> = () => {
+const AllWickPage: React.FC<AllWickPageProps> = () => {
   const [wicksData, setWicksData] = useState<Wick[]>([]);
 
   useEffect(() => {
@@ -23,4 +23,4 @@ const WickPage: React.FC<WickPageProps> = () => {
   );
 };
 
-export default WickPage;
+export default AllWickPage;

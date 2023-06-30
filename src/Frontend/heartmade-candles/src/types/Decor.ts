@@ -1,5 +1,5 @@
-import { BaseProduct } from './BaseProduct';
+import { BaseProduct } from "./BaseProduct";
 
 export interface Decor extends BaseProduct {
-  pricePerGram: number;
+  price: number;
 }
