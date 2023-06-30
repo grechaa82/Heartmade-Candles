@@ -6,20 +6,20 @@ import Textarea from "../components/Textarea";
 import { Candle } from "../types/Candle";
 import { TypeCandle } from "../types/TypeCandle";
 
-import Style from "./MainInfoCandles.module.css";
+import Style from "./MainInfoCandle.module.css";
 
-export interface MainInfoCandlesProps {
+export interface MainInfoCandleProps {
   data: Candle;
-  fetchTypeCandles: FetchTypeCandles;
+  fetchTypeCandles: FetchTypeCandle;
   handleChangesCandle: (candle: Candle) => void;
   onSave?: (saveCandle: Candle) => void;
 }
 
-export type FetchTypeCandles = () => Promise<TypeCandle[]>;
+export type FetchTypeCandle = () => Promise<TypeCandle[]>;
 
-const MainInfoCandles: FC<MainInfoCandlesProps> = ({
+const MainInfoCandle: FC<MainInfoCandleProps> = ({
   data,
-  fetchTypeCandles,
+  fetchTypeCandles: fetchTypeCandle,
   handleChangesCandle,
   onSave,
 }) => {
@@ -33,11 +33,11 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
 
   useEffect(() => {
     async function getTypeCandles() {
-      const data = await fetchTypeCandles();
+      const data = await fetchTypeCandle();
       setTypesCandle(data);
     }
     getTypeCandles();
-  }, [fetchTypeCandles]);
+  }, [fetchTypeCandle]);
 
   const handleChangeTitle = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCandle((prev) => ({ ...prev, title: event.target.value }));
@@ -155,4 +155,4 @@ const MainInfoCandles: FC<MainInfoCandlesProps> = ({
   );
 };
 
-export default MainInfoCandles;
+export default MainInfoCandle;

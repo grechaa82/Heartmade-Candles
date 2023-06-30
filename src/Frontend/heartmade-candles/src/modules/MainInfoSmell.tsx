@@ -1,59 +1,59 @@
 import { FC, useState, ChangeEvent } from "react";
 
-import { Decor } from "../types/Decor";
+import { Smell } from "../types/Smell";
 import Textarea from "../components/Textarea";
 import CheckboxBlock from "../components/CheckboxBlock";
 
-import Style from "./MainInfoDecors.module.css";
+import Style from "./MainInfoSmell.module.css";
 
-export interface MainInfoDecorsProps {
-  data: Decor;
-  handleChangesDecor: (decor: Decor) => void;
-  onSave?: (saveDecor: Decor) => void;
+export interface MainInfoSmellProps {
+  data: Smell;
+  handleChangesSmell: (smell: Smell) => void;
+  onSave?: (saveSmell: Smell) => void;
 }
 
-const MainInfoDecors: FC<MainInfoDecorsProps> = ({
+const MainInfoSmell: FC<MainInfoSmellProps> = ({
   data,
-  handleChangesDecor,
+  handleChangesSmell,
   onSave,
 }) => {
-  const [decor, setDecor] = useState<Decor>(data);
+  const [smell, setSmell] = useState<Smell>(data);
   const [isModified, setIsModified] = useState(false);
 
   const handleChangeTitle = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setDecor((prev) => ({ ...prev, title: event.target.value }));
-    handleChangesDecor(decor);
+    setSmell((prev) => ({ ...prev, title: event.target.value }));
+    handleChangesSmell(smell);
     setIsModified(true);
   };
 
   const handleChangePrice = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setDecor((prev) => ({
+    setSmell((prev) => ({
       ...prev,
       price: parseFloat(event.target.value),
     }));
-    handleChangesDecor(decor);
+    handleChangesSmell(smell);
     setIsModified(true);
   };
 
   const handleChangeIsActive = (isActive: boolean) => {
-    setDecor((prev) => ({ ...prev, isActive }));
-    handleChangesDecor(decor);
+    setSmell((prev) => ({ ...prev, isActive }));
+    handleChangesSmell(smell);
     setIsModified(true);
   };
 
   const handleChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setDecor((prev) => ({ ...prev, description: event.target.value }));
-    handleChangesDecor(decor);
+    setSmell((prev) => ({ ...prev, description: event.target.value }));
+    handleChangesSmell(smell);
     setIsModified(true);
   };
 
   return (
-    <div className={Style.decorInfo}>
+    <div className={Style.smellInfo}>
       <div className={Style.image}></div>
-      <form className={`${Style.gridContainer} ${Style.formForDecor}`}>
+      <form className={`${Style.gridContainer} ${Style.formForSmell}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea
-            text={decor.title}
+            text={smell.title}
             label="Название"
             limitation={{ limit: 48 }}
             onChange={handleChangeTitle}
@@ -61,7 +61,7 @@ const MainInfoDecors: FC<MainInfoDecorsProps> = ({
         </div>
         <div className={`${Style.formItem} ${Style.itemPrice}`}>
           <Textarea
-            text={decor.price.toString()}
+            text={smell.price.toString()}
             label="Стоимость"
             onChange={handleChangePrice}
           />
@@ -69,13 +69,13 @@ const MainInfoDecors: FC<MainInfoDecorsProps> = ({
         <div className={`${Style.formItem} ${Style.itemActive}`}>
           <CheckboxBlock
             text="Активна"
-            checked={decor.isActive}
+            checked={smell.isActive}
             onChange={handleChangeIsActive}
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemDescription}`}>
           <Textarea
-            text={decor.description}
+            text={smell.description}
             label="Описание"
             height={175}
             limitation={{ limit: 256 }}
@@ -87,7 +87,7 @@ const MainInfoDecors: FC<MainInfoDecorsProps> = ({
             type="button"
             className={Style.saveButton}
             onClick={() => {
-              onSave(decor);
+              onSave(smell);
               setIsModified(false);
             }}
           >
@@ -99,4 +99,4 @@ const MainInfoDecors: FC<MainInfoDecorsProps> = ({
   );
 };
 
-export default MainInfoDecors;
+export default MainInfoSmell;

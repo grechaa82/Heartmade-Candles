@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import MainInfoCandles, { FetchTypeCandles } from "../modules/MainInfoCandles";
+import MainInfoCandle, { FetchTypeCandle } from "../modules/MainInfoCandle";
 import { CandleDetail } from "../types/CandleDetail";
 import ProductsGrid, { FetchProducts } from "../modules/ProductsGrid";
 import TagsGrid from "../modules/TagsGrid";
@@ -42,7 +42,7 @@ const CandleDetailsPage: FC = () => {
   const [candleDetailData, setCandleDetailData] = useState<CandleDetail>();
   const [numberOfLayerTagData, setNumberOfLayerTagData] = useState<TagData[]>();
 
-  const fetchTypeCandles: FetchTypeCandles = async () => {
+  const fetchTypeCandles: FetchTypeCandle = async () => {
     try {
       const data = await getTypeCandles();
       return data;
@@ -248,7 +248,7 @@ const CandleDetailsPage: FC = () => {
     <>
       <div className="candles">
         {candleDetailData && (
-          <MainInfoCandles
+          <MainInfoCandle
             data={candleDetailData.candle}
             fetchTypeCandles={fetchTypeCandles}
             handleChangesCandle={handleChangesCandle}

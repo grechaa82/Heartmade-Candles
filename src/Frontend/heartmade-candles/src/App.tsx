@@ -5,8 +5,11 @@ import CandlePage from "./pages/AllCandlePage";
 import AllDecorsPage from "./pages/AllDecorPage";
 import DecorsPage from "./pages/DecorPage";
 import AllLayerColorPage from "./pages/AllLayerColorPage";
+import LayerColorPage from "./pages/LayerColorPage";
 import AllSmellPage from "./pages/AllSmellPage";
+import SmellPage from "./pages/SmellPage";
 import AllWickPage from "./pages/AllWickPage";
+import WickPage from "./pages/WickPage";
 
 import Style from "./App.module.css";
 
@@ -23,8 +26,11 @@ function App() {
               <Route path="decors" element={<AllDecorsPage />} />
               <Route path="decors/:id" element={<DecorsPage />} />
               <Route path="layerColors" element={<AllLayerColorPage />} />
+              <Route path="layerColors/:id" element={<LayerColorPage />} />
               <Route path="smells" element={<AllSmellPage />} />
+              <Route path="smells/:id" element={<SmellPage />} />
               <Route path="wicks" element={<AllWickPage />} />
+              <Route path="wicks/:id" element={<WickPage />} />
             </Route>
           </Routes>
         </div>

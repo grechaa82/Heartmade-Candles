@@ -8,6 +8,9 @@ import { TypeCandle } from "./types/TypeCandle";
 import { Wick } from "./types/Wick";
 import { CandleRequest } from "./types/Requests/CandleRequest";
 import { DecorRequest } from "./types/Requests/DecorRequest";
+import { LayerColorRequest } from "./types/Requests/LayerColorRequest";
+import { SmellRequest } from "./types/Requests/SmellRequest";
+import { WickRequest } from "./types/Requests/WickRequest";
 
 type FetchOptions = {
   path: string;
@@ -69,14 +72,29 @@ export const getLayerColors = (): Promise<LayerColor[]> =>
     path: "/admin/layerColors/",
   });
 
+export const getLayerColorById = (id: string): Promise<LayerColor> =>
+  fetchApi<LayerColor>({
+    path: `/admin/layerColors/${id}`,
+  });
+
 export const getSmells = (): Promise<Smell[]> =>
   fetchApi<Smell[]>({
     path: "/admin/smells/",
   });
 
+export const getSmellById = (id: string): Promise<Smell> =>
+  fetchApi<Smell>({
+    path: `/admin/smells/${id}`,
+  });
+
 export const getWicks = (): Promise<Wick[]> =>
   fetchApi<Wick[]>({
     path: "/admin/wicks/",
+  });
+
+export const getWickById = (id: string): Promise<Wick> =>
+  fetchApi<Wick>({
+    path: `/admin/wicks/${id}`,
   });
 
 export const putCandle = async (
@@ -190,6 +208,54 @@ export const putDecor = async (
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(decor),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update decor: ${errorText}`);
+  }
+};
+
+export const putLayerColor = async (
+  id: string,
+  layerColor: LayerColorRequest
+): Promise<void> => {
+  const url = `/api/admin/layerColors/${id}`;
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(layerColor),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update decor: ${errorText}`);
+  }
+};
+
+export const putSmell = async (
+  id: string,
+  smell: SmellRequest
+): Promise<void> => {
+  const url = `/api/admin/smells/${id}`;
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(smell),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to update decor: ${errorText}`);
+  }
+};
+
+export const putWick = async (id: string, wick: WickRequest): Promise<void> => {
+  const url = `/api/admin/wicks/${id}`;
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(wick),
   });
 
   if (!response.ok) {

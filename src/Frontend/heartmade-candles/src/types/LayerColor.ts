@@ -1,5 +1,5 @@
-import { BaseProduct } from './BaseProduct';
+import { BaseProduct } from "./BaseProduct";
 
 export interface LayerColor extends BaseProduct {
-  price: number;
+  pricePerGram: number;
 }

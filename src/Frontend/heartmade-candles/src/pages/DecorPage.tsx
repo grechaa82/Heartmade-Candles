@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import MainInfoDecors from "../modules/MainInfoDecors";
+import MainInfoDecor from "../modules/MainInfoDecor";
 import { Decor } from "../types/Decor";
 import { DecorRequest } from "../types/Requests/DecorRequest";
 
@@ -11,7 +11,7 @@ type DecorParams = {
   id: string;
 };
 
-const DecorPagePage: FC = () => {
+const DecorPage: FC = () => {
   const { id } = useParams<DecorParams>();
   const [decorData, setDecorData] = useState<Decor>();
 
@@ -50,7 +50,7 @@ const DecorPagePage: FC = () => {
     <>
       <div className="decors">
         {decorData && (
-          <MainInfoDecors
+          <MainInfoDecor
             data={decorData}
             handleChangesDecor={handleChangesDecor}
             onSave={updateDecor}
@@ -61,4 +61,4 @@ const DecorPagePage: FC = () => {
   );
 };
 
-export default DecorPagePage;
+export default DecorPage;
