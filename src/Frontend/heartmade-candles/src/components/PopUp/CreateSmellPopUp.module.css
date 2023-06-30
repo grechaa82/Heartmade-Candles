@@ -1,0 +1,57 @@
+.smellInfo {
+  align-items: start;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+}
+
+.image {
+  height: 530px;
+  width: 530px;
+  background-color: #eee;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 16px;
+}
+
+.gridContainer > div > .checkboxBlock {
+  height: 100%;
+}
+
+.formForSmell {
+  flex: 1;
+}
+
+.itemTitle,
+.itemDescription {
+  grid-column: span 4;
+}
+
+.itemPrice {
+  grid-column: span 3;
+}
+
+.saveButton {
+  border-radius: 10px;
+  color: #eb5757;
+  background: #fbdddd;
+  border: none;
+  min-height: 58px;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 150%;
+}
+
+.cont {
+  padding: 24px 40px 40px 40px;
+}
+
+.title {
+  color: #777;
+  font-size: 50px;
+  font-weight: 600;
+  line-height: 110%;
+}

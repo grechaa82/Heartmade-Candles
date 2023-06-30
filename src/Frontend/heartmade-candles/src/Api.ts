@@ -277,3 +277,61 @@ export const createCandle = async (candle: CandleRequest): Promise<void> => {
     throw new Error(`Failed to create candle: ${errorText}`);
   }
 };
+
+export const createDecor = async (decor: DecorRequest): Promise<void> => {
+  const url = "/api/admin/decors";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(decor),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to create candle: ${errorText}`);
+  }
+};
+
+export const createLayerColor = async (
+  layerColor: LayerColorRequest
+): Promise<void> => {
+  const url = "/api/admin/layerColors";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(layerColor),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to create candle: ${errorText}`);
+  }
+};
+
+export const createSmell = async (smell: SmellRequest): Promise<void> => {
+  const url = "/api/admin/smells";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(smell),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to create candle: ${errorText}`);
+  }
+};
+
+export const createWick = async (wick: WickRequest): Promise<void> => {
+  const url = "/api/admin/wicks";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(wick),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to create candle: ${errorText}`);
+  }
+};

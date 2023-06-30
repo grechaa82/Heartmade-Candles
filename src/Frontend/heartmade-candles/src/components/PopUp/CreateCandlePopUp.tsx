@@ -1,6 +1,5 @@
 import { FC, useState, ChangeEvent } from "react";
 
-import IconRemoveLarge from "../../UI/IconRemoveLarge";
 import { Candle } from "../../types/Candle";
 import Textarea from "../Textarea";
 import ButtonDropdown, { optionData } from "../ButtonDropdown";
@@ -8,15 +7,15 @@ import { TypeCandle } from "../../types/TypeCandle";
 import CheckboxBlock from "../CheckboxBlock";
 import PopUp, { PopUpProps } from "./PopUp";
 
-import Style from "./CreateProductPopUp.module.css";
+import Style from "./CreateCandlePopUp.module.css";
 
-export interface CreateProductPopUpProps extends PopUpProps {
+export interface CreateCandlePopUpProps extends PopUpProps {
   title: string;
   typeCandlesArray: TypeCandle[];
   onSave: (canlde: Candle) => void;
 }
 
-const CreateProductPopUp: FC<CreateProductPopUpProps> = ({
+const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
   onClose,
   title,
   typeCandlesArray,
@@ -152,4 +151,4 @@ const CreateProductPopUp: FC<CreateProductPopUpProps> = ({
   );
 };
 
-export default CreateProductPopUp;
+export default CreateCandlePopUp;

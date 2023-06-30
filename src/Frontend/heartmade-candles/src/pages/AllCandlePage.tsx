@@ -8,10 +8,10 @@ import TagsGrid from "../modules/TagsGrid";
 import { getCandle, getNumberOfLayers, getTypeCandles } from "../Api";
 import { convertToTagData } from "./CandleDetailsPage";
 import { TagData } from "../components/Tag";
-import CreateProductPopUp from "../components/PopUp/CreateProductPopUp";
+import CreateCandlePopUp from "../components/PopUp/CreateCandlePopUp";
+import { CandleRequest } from "../types/Requests/CandleRequest";
 
 import { createCandle } from "../Api";
-import { CandleRequest } from "../types/Requests/CandleRequest";
 
 export interface CandlePageProps {}
 
@@ -71,7 +71,7 @@ const CandlePage: FC<CandlePageProps> = () => {
         title="Свечи"
         pageUrl="candles"
         popUpComponent={
-          <CreateProductPopUp
+          <CreateCandlePopUp
             onClose={() => console.log("Popup closed")}
             title="Создать свечу"
             typeCandlesArray={typeCandlesData}
