@@ -36,17 +36,18 @@
     transform: rotate(360deg);
   }
 }
-
 .AdminContent {
+  padding: 32px;
+  display: flex;
+  justify-content: center;
 }
 
 .AdminContainer {
   max-width: 1300px;
-  margin: auto;
+  display: flex;
+  flex-direction: column;
+  padding-left: 32px;
 }
 .AdminContainer > div {
-  margin-top: 64px;
-}
-.AdminContainer > div:first-child {
-  margin-top: 32px;
+  margin-bottom: 32px;
 }

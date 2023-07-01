@@ -10,15 +10,16 @@ import AllSmellPage from "./pages/AllSmellPage";
 import SmellPage from "./pages/SmellPage";
 import AllWickPage from "./pages/AllWickPage";
 import WickPage from "./pages/WickPage";
+import Navbar from "./components/Navbar";
 
 import Style from "./App.module.css";
 
 function App() {
   return (
     <>
-      <header></header>
       <div className={Style.AdminContent}>
-        <div className={Style.AdminContainer}>
+        <Navbar />
+        <main className={Style.AdminContainer}>
           <Routes>
             <Route path="admin/">
               <Route path="candles" element={<CandlePage />} />
@@ -33,7 +34,7 @@ function App() {
               <Route path="wicks/:id" element={<WickPage />} />
             </Route>
           </Routes>
-        </div>
+        </main>
       </div>
     </>
   );

@@ -4,13 +4,13 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
-@media screen and (max-width: 990px) {
+@media screen and (max-width: 1320px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media screen and (max-width: 656px) {
+@media screen and (max-width: 990px) {
   .grid {
     grid-template-columns: 1fr;
   }
