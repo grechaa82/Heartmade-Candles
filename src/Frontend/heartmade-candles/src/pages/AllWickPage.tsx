@@ -5,7 +5,7 @@ import { Wick } from "../types/Wick";
 import { WickRequest } from "../types/Requests/WickRequest";
 import CreateWickPopUp from "../components/PopUp/CreateWickPopUp";
 
-import { getWicks, createWick } from "../Api";
+import { getWicks, createWick, deleteWick } from "../Api";
 
 export interface AllWickPageProps {}
 
@@ -23,6 +23,12 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
     await createWick(wickRequest);
     const updatedWicks = await getWicks();
     setWicksData(updatedWicks);
+  };
+
+  const handleDeleteWick = async (id: string) => {
+    deleteWick(id);
+    const updatedCandles = await getWicks();
+    setWicksData(updatedCandles);
   };
 
   useEffect(() => {
@@ -46,6 +52,7 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
             onSave={handleCreateWick}
           />
         }
+        deleteProduct={handleDeleteWick}
       />
     </>
   );

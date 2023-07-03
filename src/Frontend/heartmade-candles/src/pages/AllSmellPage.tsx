@@ -5,7 +5,7 @@ import { Smell } from "../types/Smell";
 import { SmellRequest } from "../types/Requests/SmellRequest";
 import CreateSmellPopUp from "../components/PopUp/CreateSmellPopUp";
 
-import { getSmells, createSmell } from "../Api";
+import { getSmells, createSmell, deleteSmell } from "../Api";
 
 export interface AllSmellPageProps {}
 
@@ -22,6 +22,12 @@ const AllSmellPage: React.FC<AllSmellPageProps> = () => {
     await createSmell(smellRequest);
     const updatedSmells = await getSmells();
     setSmellsData(updatedSmells);
+  };
+
+  const handleDeleteSmell = async (id: string) => {
+    deleteSmell(id);
+    const updatedCandles = await getSmells();
+    setSmellsData(updatedCandles);
   };
 
   useEffect(() => {
@@ -45,6 +51,7 @@ const AllSmellPage: React.FC<AllSmellPageProps> = () => {
             onSave={handleCreateSmell}
           />
         }
+        deleteProduct={handleDeleteSmell}
       />
     </>
   );

@@ -6,13 +6,12 @@ import {
   cloneElement,
   ReactElement,
 } from "react";
-import { Link } from "react-router-dom";
 
 import { BaseProduct } from "../types/BaseProduct";
 import ProductBlock from "../components/ProductBlock";
 import ButtonWithIcon from "../components/ButtonWithIcon";
 import IconPlusLarge from "../UI/IconPlusLarge";
-import PopUp, { PopUpProps } from "../components/PopUp/PopUp";
+import { Action } from "../components/ContextMenu";
 
 import Style from "./ProductsGrid.module.css";
 
@@ -21,6 +20,7 @@ export interface ProductsGridProps<T extends BaseProduct> {
   data: T[];
   pageUrl?: string;
   popUpComponent?: ReactNode;
+  deleteProduct?: (id: string) => void;
 }
 
 export type FetchProducts<T extends BaseProduct> = () => Promise<T[]>;
@@ -30,6 +30,7 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
   data,
   pageUrl,
   popUpComponent,
+  deleteProduct,
 }) => {
   const [products, setProducts] = useState<BaseProduct[]>(data);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
@@ -50,15 +51,23 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
     <div className={Style.candlesGrid}>
       <h2>{title}</h2>
       <div className={Style.grid}>
-        {products.map((item: BaseProduct) =>
-          pageUrl ? (
-            <Link to={`/admin/${pageUrl}/${item.id}`} className={Style.link}>
-              <ProductBlock key={item.id} product={item} />
-            </Link>
-          ) : (
-            <ProductBlock key={item.id} product={item} />
-          )
-        )}
+        {products.map((item: BaseProduct) => (
+          <ProductBlock
+            key={item.id}
+            product={item}
+            pageUrl={pageUrl}
+            actions={
+              deleteProduct
+                ? [
+                    {
+                      label: "Удалить",
+                      onClick: () => deleteProduct(item.id.toString()),
+                    },
+                  ]
+                : []
+            }
+          />
+        ))}
         {popUpComponent && (
           <ButtonWithIcon
             icon={IconPlusLarge}

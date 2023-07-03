@@ -5,7 +5,7 @@ import { Decor } from "../types/Decor";
 import { DecorRequest } from "../types/Requests/DecorRequest";
 import CreateDecorPopUp from "../components/PopUp/CreateDecorPopUp";
 
-import { createDecor, getDecors } from "../Api";
+import { createDecor, getDecors, deleteDecor } from "../Api";
 
 export interface AllDecorPageProps {}
 
@@ -23,6 +23,12 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
     await createDecor(decorRequest);
     const updatedDecors = await getDecors();
     setDecorsData(updatedDecors);
+  };
+
+  const handleDeleteSmell = async (id: string) => {
+    deleteDecor(id);
+    const updatedCandles = await getDecors();
+    setDecorsData(updatedCandles);
   };
 
   useEffect(() => {
@@ -46,6 +52,7 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
             onSave={handleCreateDecor}
           />
         }
+        deleteProduct={handleDeleteSmell}
       />
     </>
   );

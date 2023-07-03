@@ -5,7 +5,7 @@ import { LayerColor } from "../types/LayerColor";
 import { LayerColorRequest } from "../types/Requests/LayerColorRequest";
 import CreateLayerColorPopUp from "../components/PopUp/CreateLayerColorPopUp";
 
-import { getLayerColors, createLayerColor } from "../Api";
+import { getLayerColors, createLayerColor, deleteLayerColor } from "../Api";
 
 export interface AllLayerColorPageProps {}
 
@@ -23,6 +23,12 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
     await createLayerColor(layerColorRequest);
     const updatedLayerColors = await getLayerColors();
     setLayerColorData(updatedLayerColors);
+  };
+
+  const handleDeleteLayerColor = async (id: string) => {
+    deleteLayerColor(id);
+    const updatedCandles = await getLayerColors();
+    setLayerColorData(updatedCandles);
   };
 
   useEffect(() => {
@@ -46,6 +52,7 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
             onSave={handleCreateLayerColor}
           />
         }
+        deleteProduct={handleDeleteLayerColor}
       />
     </>
   );

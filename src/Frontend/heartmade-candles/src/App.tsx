@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 
 import CandleDetailsPage from "./pages/CandleDetailsPage";
-import CandlePage from "./pages/AllCandlePage";
+import AllCandlePage from "./pages/AllCandlePage";
 import AllDecorsPage from "./pages/AllDecorPage";
 import DecorsPage from "./pages/DecorPage";
 import AllLayerColorPage from "./pages/AllLayerColorPage";
@@ -22,7 +22,7 @@ function App() {
         <main className={Style.AdminContainer}>
           <Routes>
             <Route path="admin/">
-              <Route path="candles" element={<CandlePage />} />
+              <Route path="candles" element={<AllCandlePage />} />
               <Route path="candles/:id" element={<CandleDetailsPage />} />
               <Route path="decors" element={<AllDecorsPage />} />
               <Route path="decors/:id" element={<DecorsPage />} />

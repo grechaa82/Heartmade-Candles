@@ -1,0 +1,37 @@
+.contextMenu {
+  padding: 16px 18px 18px 18px;
+  position: absolute;
+  border-radius: 10px;
+  border: 2px solid #eee;
+  background: #fff;
+}
+
+.contextMenuItem {
+  gap: 8px;
+}
+
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.contextMenuItem > button {
+  all: initial;
+}
+.contextMenuItem {
+  color: #222;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 130%;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.contextMenuItem:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.contextMenuItem:hover {
+  color: #2e67ea;
+}

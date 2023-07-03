@@ -5,17 +5,22 @@ import { Candle } from "../types/Candle";
 import { NumberOfLayer } from "../types/NumberOfLayer";
 import { TypeCandle } from "../types/TypeCandle";
 import TagsGrid from "../modules/TagsGrid";
-import { getCandle, getNumberOfLayers, getTypeCandles } from "../Api";
 import { convertToTagData } from "./CandleDetailsPage";
 import { TagData } from "../components/Tag";
 import CreateCandlePopUp from "../components/PopUp/CreateCandlePopUp";
 import { CandleRequest } from "../types/Requests/CandleRequest";
 
-import { createCandle } from "../Api";
+import {
+  getCandle,
+  getNumberOfLayers,
+  getTypeCandles,
+  createCandle,
+  deleteCandle,
+} from "../Api";
 
-export interface CandlePageProps {}
+export interface AllCandlePageProps {}
 
-const CandlePage: FC<CandlePageProps> = () => {
+const AllCandlePage: FC<AllCandlePageProps> = () => {
   const [typeCandlesData, setTypeCandlesData] = useState<TypeCandle[]>([]);
   const [numberOfLayersData, setNumberOfLayersData] = useState<NumberOfLayer[]>(
     []
@@ -33,6 +38,12 @@ const CandlePage: FC<CandlePageProps> = () => {
       isActive: createdItem.isActive,
     };
     await createCandle(candleRequest);
+    const updatedCandles = await getCandle();
+    setCandlesData(updatedCandles);
+  };
+
+  const handleDeleteCandle = async (id: string) => {
+    deleteCandle(id);
     const updatedCandles = await getCandle();
     setCandlesData(updatedCandles);
   };
@@ -78,12 +89,13 @@ const CandlePage: FC<CandlePageProps> = () => {
             onSave={handleCreateCandle}
           />
         }
+        deleteProduct={handleDeleteCandle}
       />
     </>
   );
 };
 
-export default CandlePage;
+export default AllCandlePage;
 
 export function convertCandlesToTagData(candles: TypeCandle[]): TagData[] {
   return candles.map((candle) => ({

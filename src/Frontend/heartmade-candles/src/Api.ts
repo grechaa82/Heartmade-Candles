@@ -335,3 +335,68 @@ export const createWick = async (wick: WickRequest): Promise<void> => {
     throw new Error(`Failed to create candle: ${errorText}`);
   }
 };
+
+export const deleteCandle = async (id: string): Promise<void> => {
+  const url = `/api/admin/candles/${id}`;
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to delete candle: ${errorText}`);
+  }
+};
+
+export const deleteDecor = async (id: string): Promise<void> => {
+  const url = "/api/admin/decors";
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to delete decor: ${errorText}`);
+  }
+};
+
+export const deleteLayerColor = async (id: string): Promise<void> => {
+  const url = "/api/admin/layerColors";
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to delete layerColor: ${errorText}`);
+  }
+};
+
+export const deleteSmell = async (id: string): Promise<void> => {
+  const url = "/api/admin/smells";
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to delete smell: ${errorText}`);
+  }
+};
+
+export const deleteWick = async (id: string): Promise<void> => {
+  const url = "/api/admin/wicks";
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to delete wick: ${errorText}`);
+  }
+};
