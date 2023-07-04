@@ -91,7 +91,9 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
 
   return (
     <div className={Style.candleInfo}>
-      <div className={Style.image}></div>
+      <div className={Style.image}>
+        <img src={candle.imageURL} />
+      </div>
       <form className={`${Style.gridContainer} ${Style.formForCandle}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

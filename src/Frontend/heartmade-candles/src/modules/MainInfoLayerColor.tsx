@@ -49,7 +49,9 @@ const MainInfoLayerColor: FC<MainInfoLayerColorProps> = ({
 
   return (
     <div className={Style.layerColorInfo}>
-      <div className={Style.image}></div>
+      <div className={Style.image}>
+        <img src={layerColor.imageURL} />
+      </div>
       <form className={`${Style.gridContainer} ${Style.formForLayerColor}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

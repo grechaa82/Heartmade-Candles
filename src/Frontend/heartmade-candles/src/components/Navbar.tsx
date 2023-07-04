@@ -14,6 +14,7 @@ const Navbar: FC = () => {
 
   return (
     <nav className={Style.navbar}>
+      <div className={Style.border}></div>
       <NavLink className={navLinkClassName} to="/">
         Статистика
       </NavLink>

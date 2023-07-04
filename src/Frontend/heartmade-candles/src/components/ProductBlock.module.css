@@ -20,8 +20,8 @@
 }
 
 .image {
-  min-width: 108px;
-  min-height: 108px;
+  max-width: 108px;
+  max-height: 108px;
   background: #eee;
   border-radius: 10px;
   margin-right: 16px;
@@ -72,4 +72,14 @@
 .link {
   all: unset;
   cursor: pointer;
+}
+
+.image {
+  overflow: hidden;
+}
+
+.image > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

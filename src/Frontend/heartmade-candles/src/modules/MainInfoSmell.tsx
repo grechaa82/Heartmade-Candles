@@ -49,7 +49,9 @@ const MainInfoSmell: FC<MainInfoSmellProps> = ({
 
   return (
     <div className={Style.smellInfo}>
-      <div className={Style.image}></div>
+      <div className={Style.image}>
+        <img src={smell.imageURL} />
+      </div>
       <form className={`${Style.gridContainer} ${Style.formForSmell}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

@@ -350,7 +350,7 @@ export const deleteCandle = async (id: string): Promise<void> => {
 };
 
 export const deleteDecor = async (id: string): Promise<void> => {
-  const url = "/api/admin/decors";
+  const url = `/api/admin/decors/${id}`;
   const response = await fetch(url, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
@@ -363,7 +363,7 @@ export const deleteDecor = async (id: string): Promise<void> => {
 };
 
 export const deleteLayerColor = async (id: string): Promise<void> => {
-  const url = "/api/admin/layerColors";
+  const url = `/api/admin/layerColors/${id}`;
   const response = await fetch(url, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
@@ -376,7 +376,7 @@ export const deleteLayerColor = async (id: string): Promise<void> => {
 };
 
 export const deleteSmell = async (id: string): Promise<void> => {
-  const url = "/api/admin/smells";
+  const url = `/api/admin/smells/${id}`;
   const response = await fetch(url, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
@@ -389,7 +389,7 @@ export const deleteSmell = async (id: string): Promise<void> => {
 };
 
 export const deleteWick = async (id: string): Promise<void> => {
-  const url = "/api/admin/wicks";
+  const url = `/api/admin/wicks/${id}`;
   const response = await fetch(url, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },

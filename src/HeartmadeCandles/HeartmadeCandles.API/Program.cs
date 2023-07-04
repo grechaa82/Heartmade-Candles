@@ -10,6 +10,7 @@ using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.Text;
@@ -128,6 +129,14 @@ try
         x.WithOrigins().AllowAnyOrigin();
         x.AllowAnyMethod();
     });
+
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath, "StaticFiles")),
+        RequestPath = "/StaticFiles"
+    });
+
 
     app.UseAuthentication();
     app.UseAuthorization();

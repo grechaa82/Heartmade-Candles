@@ -49,7 +49,9 @@ const MainInfoDecor: FC<MainInfoDecorProps> = ({
 
   return (
     <div className={Style.decorInfo}>
-      <div className={Style.image}></div>
+      <div className={Style.image}>
+        <img src={decor.imageURL} />
+      </div>
       <form className={`${Style.gridContainer} ${Style.formForDecor}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

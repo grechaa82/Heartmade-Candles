@@ -49,7 +49,9 @@ const MainInfoWick: FC<MainInfoWickProps> = ({
 
   return (
     <div className={Style.wickInfo}>
-      <div className={Style.image}></div>
+      <div className={Style.image}>
+        <img src={wick.imageURL} />
+      </div>
       <form className={`${Style.gridContainer} ${Style.formForWick}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea
