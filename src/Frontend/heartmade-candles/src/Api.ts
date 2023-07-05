@@ -11,6 +11,8 @@ import { DecorRequest } from "./types/Requests/DecorRequest";
 import { LayerColorRequest } from "./types/Requests/LayerColorRequest";
 import { SmellRequest } from "./types/Requests/SmellRequest";
 import { WickRequest } from "./types/Requests/WickRequest";
+import { TypeCandleRequest } from "./types/Requests/TypeCandleRequest";
+import { NumberOfLayerRequest } from "./types/Requests/NumberOfLayerRequest";
 
 type FetchOptions = {
   path: string;
@@ -336,6 +338,38 @@ export const createWick = async (wick: WickRequest): Promise<void> => {
   }
 };
 
+export const createNumberOfLayer = async (
+  numberOfLayer: NumberOfLayerRequest
+): Promise<void> => {
+  const url = "/api/admin/numberOfLayers";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(numberOfLayer),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to create numberOfLayer: ${errorText}`);
+  }
+};
+
+export const createTypeCandle = async (
+  typeCandle: TypeCandleRequest
+): Promise<void> => {
+  const url = "/api/admin/typeCandles";
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(typeCandle),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to create typeCandle: ${errorText}`);
+  }
+};
+
 export const deleteCandle = async (id: string): Promise<void> => {
   const url = `/api/admin/candles/${id}`;
   const response = await fetch(url, {
@@ -398,5 +432,31 @@ export const deleteWick = async (id: string): Promise<void> => {
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Failed to delete wick: ${errorText}`);
+  }
+};
+
+export const deleteNumberOfLayer = async (id: string): Promise<void> => {
+  const url = `/api/admin/numberOfLayers/${id}`;
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to delete numberOfLayer: ${errorText}`);
+  }
+};
+
+export const deleteTypeCandle = async (id: string): Promise<void> => {
+  const url = `/api/admin/typeCandles/${id}`;
+  const response = await fetch(url, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to delete typeCandle: ${errorText}`);
   }
 };

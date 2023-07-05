@@ -9,6 +9,9 @@ import { convertToTagData } from "./CandleDetailsPage";
 import { TagData } from "../components/Tag";
 import CreateCandlePopUp from "../components/PopUp/CreateCandlePopUp";
 import { CandleRequest } from "../types/Requests/CandleRequest";
+import CreateTagPopUp from "../components/PopUp/CreateTagPopUp";
+import { NumberOfLayerRequest } from "../types/Requests/NumberOfLayerRequest";
+import { TypeCandleRequest } from "../types/Requests/TypeCandleRequest";
 
 import {
   getCandle,
@@ -16,6 +19,10 @@ import {
   getTypeCandles,
   createCandle,
   deleteCandle,
+  createNumberOfLayer,
+  createTypeCandle,
+  deleteNumberOfLayer,
+  deleteTypeCandle,
 } from "../Api";
 
 export interface AllCandlePageProps {}
@@ -48,6 +55,36 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     setCandlesData(updatedCandles);
   };
 
+  const handleCreateNumberOfLayer = async (tag: TagData) => {
+    const numberOfLayerRequest: NumberOfLayerRequest = {
+      number: parseInt(tag.text),
+    };
+    await createNumberOfLayer(numberOfLayerRequest);
+    const updatedNumberOfLayers = await getNumberOfLayers();
+    setNumberOfLayersData(updatedNumberOfLayers);
+  };
+
+  const handleCreateTypeCandle = async (tag: TagData) => {
+    const typeCandleRequest: TypeCandleRequest = {
+      title: tag.text,
+    };
+    await createTypeCandle(typeCandleRequest);
+    const updatedTypeCandles = await getTypeCandles();
+    setTypeCandlesData(updatedTypeCandles);
+  };
+
+  const handleDeleteNumberOfLayer = async (id: string) => {
+    await deleteNumberOfLayer(id);
+    const updatedNumberOfLayers = await getNumberOfLayers();
+    setNumberOfLayersData(updatedNumberOfLayers);
+  };
+
+  const handleDeleteTypeCandle = async (id: string) => {
+    await deleteTypeCandle(id);
+    const updatedTypeCandles = await getTypeCandles();
+    setTypeCandlesData(updatedTypeCandles);
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -72,10 +109,28 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       <TagsGrid
         title="Типы свечей"
         tags={convertCandlesToTagData(typeCandlesData)}
+        popUpComponent={
+          <CreateTagPopUp
+            onClose={() => console.log("Popup closed")}
+            title="Сознать тип свечи"
+            isNumber={true}
+            onSave={handleCreateTypeCandle}
+          />
+        }
+        onDelete={handleDeleteTypeCandle}
       />
       <TagsGrid
         title="Количество слоев"
         tags={convertToTagData(numberOfLayersData)}
+        popUpComponent={
+          <CreateTagPopUp
+            onClose={() => console.log("Popup closed")}
+            title="Сознать количество слоев"
+            isNumber={true}
+            onSave={handleCreateNumberOfLayer}
+          />
+        }
+        onDelete={handleDeleteNumberOfLayer}
       />
       <ProductsGrid
         data={candlesData}

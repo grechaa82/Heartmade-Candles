@@ -1,7 +1,7 @@
 .checkbox {
   position: relative;
 }
-.checkbox > input[type='checkbox'] {
+.checkbox > input[type="checkbox"] {
   width: 24px;
   height: 24px;
   appearance: none;

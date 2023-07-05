@@ -7,9 +7,10 @@ interface InputTagProps {
   tags: TagData[];
   allTags: TagData[];
   onChange: (tags: TagData[]) => void;
+  onDelete?: (id: string) => void;
 }
 
-const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange }) => {
+const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange, onDelete }) => {
   const [inputValue, setInputValue] = React.useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +31,9 @@ const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange }) => {
   };
 
   const handleRemoveTag = (tag: TagData) => {
+    if (onDelete) {
+      onDelete(tag.id.toString());
+    }
     const newSelectedTags = tags.filter((t) => t !== tag);
     onChange(newSelectedTags);
   };

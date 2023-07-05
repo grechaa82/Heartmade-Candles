@@ -11,7 +11,6 @@ import { BaseProduct } from "../types/BaseProduct";
 import ProductBlock from "../components/ProductBlock";
 import ButtonWithIcon from "../components/ButtonWithIcon";
 import IconPlusLarge from "../UI/IconPlusLarge";
-import { Action } from "../components/ContextMenu";
 
 import Style from "./ProductsGrid.module.css";
 

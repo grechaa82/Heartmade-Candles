@@ -7,3 +7,20 @@
   margin: 0 0 24px 0;
   color: #aaa;
 }
+
+.content {
+  display: flex;
+  gap: 16px;
+}
+
+.saveButton {
+  border-radius: 10px;
+  background: #fbdddd;
+  color: #eb5757;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%;
+  border: none;
+  padding: 16px;
+}

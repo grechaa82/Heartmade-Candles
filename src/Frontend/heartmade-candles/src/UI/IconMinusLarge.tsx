@@ -1,9 +1,15 @@
-import React from 'react';
-import { IconProps } from './IconProps';
+import React from "react";
+import { IconProps } from "./IconProps";
 
-const IconMinusLarge: React.FC<IconProps> = ({ color = '#000' }) => {
+const IconMinusLarge: React.FC<IconProps> = ({ color = "#000" }) => {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         fillRule="evenodd"
         clipRule="evenodd"
