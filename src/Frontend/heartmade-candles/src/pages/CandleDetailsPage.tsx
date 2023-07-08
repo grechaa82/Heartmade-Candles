@@ -15,21 +15,13 @@ import { BaseProduct } from "../types/BaseProduct";
 import { TagData } from "../components/Tag";
 import AddProductPopUp from "../components/PopUp/AddProductPopUp";
 
-import {
-  getCandleById,
-  getDecors,
-  getLayerColors,
-  getNumberOfLayers,
-  getSmells,
-  getTypeCandles,
-  getWicks,
-  putCandle,
-  putCandleDecors,
-  putCandleLayerColors,
-  putCandleNumberOfLayer,
-  putCandleSmells,
-  putCandleWicks,
-} from "../Api";
+import { CandlesApi } from "../services/CandlesApi";
+import { DecorsApi } from "../services/DecorsApi";
+import { LayerColorsApi } from "../services/LayerColorsApi";
+import { NumberOfLayersApi } from "../services/NumberOfLayersApi";
+import { SmellsApi } from "../services/SmellsApi";
+import { TypeCandlesApi } from "../services/TypeCandlesApi";
+import { WicksApi } from "../services/WicksApi";
 
 import Style from "./CandleDetailsPage.module.css";
 
@@ -44,7 +36,7 @@ const CandleDetailsPage: FC = () => {
 
   const fetchTypeCandles: FetchTypeCandle = async () => {
     try {
-      const data = await getTypeCandles();
+      const data = await TypeCandlesApi.getAll();
       return data;
     } catch (error) {
       console.error("Произошла ошибка при загрузке типов свечей:", error);
@@ -54,7 +46,7 @@ const CandleDetailsPage: FC = () => {
 
   const fetchDecors: FetchProducts<Decor> = async () => {
     try {
-      const data = await getDecors();
+      const data = await DecorsApi.getAll();
       return data;
     } catch (error) {
       console.error("Произошла ошибка при загрузке типов свечей:", error);
@@ -64,7 +56,7 @@ const CandleDetailsPage: FC = () => {
 
   const fetchLayerColors: FetchProducts<LayerColor> = async () => {
     try {
-      const data = await getLayerColors();
+      const data = await LayerColorsApi.getAll();
       return data;
     } catch (error) {
       console.error("Произошла ошибка при загрузке типов свечей:", error);
@@ -74,7 +66,7 @@ const CandleDetailsPage: FC = () => {
 
   const fetchNumberOfLayer = async (): Promise<NumberOfLayer[]> => {
     try {
-      const data = await getNumberOfLayers();
+      const data = await NumberOfLayersApi.getAll();
       return data;
     } catch (error) {
       console.error("Произошла ошибка при загрузке типов свечей:", error);
@@ -84,7 +76,7 @@ const CandleDetailsPage: FC = () => {
 
   const fetchSmells: FetchProducts<Smell> = async () => {
     try {
-      const data = await getSmells();
+      const data = await SmellsApi.getAll();
       return data;
     } catch (error) {
       console.error("Произошла ошибка при загрузке типов свечей:", error);
@@ -94,7 +86,7 @@ const CandleDetailsPage: FC = () => {
 
   const fetchWicks: FetchProducts<Wick> = async () => {
     try {
-      const data = await getWicks();
+      const data = await WicksApi.getAll();
       return data;
     } catch (error) {
       console.error("Произошла ошибка при загрузке типов свечей:", error);
@@ -172,7 +164,7 @@ const CandleDetailsPage: FC = () => {
     setCandleDetailData(newCandleDetailData);
   };
 
-  const updateCandle = (updatedItem: Candle) => {
+  const updateCandle = async (updatedItem: Candle) => {
     if (id) {
       const candleRequest = {
         title: updatedItem.title,
@@ -183,53 +175,53 @@ const CandleDetailsPage: FC = () => {
         typeCandle: updatedItem.typeCandle,
         isActive: updatedItem.isActive,
       };
-      putCandle(id, candleRequest);
+      await CandlesApi.update(id, candleRequest);
     }
   };
 
-  const updateCandleDecors = (updatedItems: BaseProduct[]) => {
+  const updateCandleDecors = async (updatedItems: BaseProduct[]) => {
     if (id) {
       const updatedDecors = updatedItems as Decor[];
       const ids = updatedDecors.map((d) => d.id);
-      putCandleDecors(id, ids);
+      await CandlesApi.updateDecor(id, ids);
     }
   };
 
-  const updateCandleLayerColors = (updatedItems: BaseProduct[]) => {
+  const updateCandleLayerColors = async (updatedItems: BaseProduct[]) => {
     if (id) {
       const updatedLayerColors = updatedItems as LayerColor[];
       const ids = updatedLayerColors.map((l) => l.id);
-      putCandleLayerColors(id, ids);
+      await CandlesApi.updateLayerColor(id, ids);
     }
   };
 
-  const updateCandleNumberOfLayers = (updatedItems: TagData[]) => {
+  const updateCandleNumberOfLayers = async (updatedItems: TagData[]) => {
     if (id) {
       const ids = updatedItems.map((n) => n.id);
-      putCandleNumberOfLayer(id, ids);
+      await CandlesApi.updateNumberOfLayer(id, ids);
     }
   };
 
-  const updateCandleSmells = (updatedItems: BaseProduct[]) => {
+  const updateCandleSmells = async (updatedItems: BaseProduct[]) => {
     if (id) {
       const updatedSmells = updatedItems as Smell[];
       const ids = updatedSmells.map((s) => s.id);
-      putCandleSmells(id, ids);
+      await CandlesApi.updateSmell(id, ids);
     }
   };
 
-  const updateCandleWicks = (updatedItems: BaseProduct[]) => {
+  const updateCandleWicks = async (updatedItems: BaseProduct[]) => {
     if (id) {
       const updatedWicks = updatedItems as Wick[];
       const ids = updatedWicks.map((w) => w.id);
-      putCandleWicks(id, ids);
+      await CandlesApi.updateWick(id, ids);
     }
   };
 
   useEffect(() => {
     async function fetchCandle() {
       if (id) {
-        const data = await getCandleById(id);
+        const data = await CandlesApi.getById(id);
         setCandleDetailData(data);
       }
     }

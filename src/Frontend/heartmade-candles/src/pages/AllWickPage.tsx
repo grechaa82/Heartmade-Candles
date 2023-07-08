@@ -5,7 +5,7 @@ import { Wick } from "../types/Wick";
 import { WickRequest } from "../types/Requests/WickRequest";
 import CreateWickPopUp from "../components/PopUp/CreateWickPopUp";
 
-import { getWicks, createWick, deleteWick } from "../Api";
+import { WicksApi } from "../services/WicksApi";
 
 export interface AllWickPageProps {}
 
@@ -20,20 +20,20 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
       imageURL: createdItem.imageURL,
       isActive: createdItem.isActive,
     };
-    await createWick(wickRequest);
-    const updatedWicks = await getWicks();
+    await WicksApi.create(wickRequest);
+    const updatedWicks = await WicksApi.getAll();
     setWicksData(updatedWicks);
   };
 
   const handleDeleteWick = async (id: string) => {
-    deleteWick(id);
-    const updatedCandles = await getWicks();
+    WicksApi.delete(id);
+    const updatedCandles = await WicksApi.getAll();
     setWicksData(updatedCandles);
   };
 
   useEffect(() => {
     async function fetchWicks() {
-      const data = await getWicks();
+      const data = await WicksApi.getAll();
       setWicksData(data);
     }
     fetchWicks();

@@ -5,7 +5,7 @@ import MainInfoWick from "../modules/MainInfoWick";
 import { Wick } from "../types/Wick";
 import { WickRequest } from "../types/Requests/WickRequest";
 
-import { getWickById, putWick } from "../Api";
+import { WicksApi } from "../services/WicksApi";
 
 type WickParams = {
   id: string;
@@ -22,7 +22,7 @@ const WickPage: FC = () => {
     }));
   };
 
-  const updateWick = (updatedItem: Wick) => {
+  const updateWick = async (updatedItem: Wick) => {
     if (id) {
       const wickRequest: WickRequest = {
         title: updatedItem.title,
@@ -31,14 +31,14 @@ const WickPage: FC = () => {
         imageURL: updatedItem.imageURL,
         isActive: updatedItem.isActive,
       };
-      putWick(id, wickRequest);
+      await WicksApi.update(id, wickRequest);
     }
   };
 
   useEffect(() => {
     async function fetchWick() {
       if (id) {
-        const data = await getWickById(id);
+        const data = await WicksApi.getById(id);
         setWickData(data);
       }
     }

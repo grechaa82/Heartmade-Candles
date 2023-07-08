@@ -5,7 +5,7 @@ import MainInfoDecor from "../modules/MainInfoDecor";
 import { Decor } from "../types/Decor";
 import { DecorRequest } from "../types/Requests/DecorRequest";
 
-import { getDecorById, putDecor } from "../Api";
+import { DecorsApi } from "../services/DecorsApi";
 
 type DecorParams = {
   id: string;
@@ -22,7 +22,7 @@ const DecorPage: FC = () => {
     }));
   };
 
-  const updateDecor = (updatedItem: Decor) => {
+  const updateDecor = async (updatedItem: Decor) => {
     if (id) {
       const decorRequest: DecorRequest = {
         title: updatedItem.title,
@@ -31,14 +31,14 @@ const DecorPage: FC = () => {
         imageURL: updatedItem.imageURL,
         isActive: updatedItem.isActive,
       };
-      putDecor(id, decorRequest);
+      await DecorsApi.update(id, decorRequest);
     }
   };
 
   useEffect(() => {
     async function fetchDecors() {
       if (id) {
-        const data = await getDecorById(id);
+        const data = await DecorsApi.getById(id);
         setDecorData(data);
       }
     }

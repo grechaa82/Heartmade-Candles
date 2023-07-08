@@ -13,17 +13,9 @@ import CreateTagPopUp from "../components/PopUp/CreateTagPopUp";
 import { NumberOfLayerRequest } from "../types/Requests/NumberOfLayerRequest";
 import { TypeCandleRequest } from "../types/Requests/TypeCandleRequest";
 
-import {
-  getCandle,
-  getNumberOfLayers,
-  getTypeCandles,
-  createCandle,
-  deleteCandle,
-  createNumberOfLayer,
-  createTypeCandle,
-  deleteNumberOfLayer,
-  deleteTypeCandle,
-} from "../Api";
+import { CandlesApi } from "../services/CandlesApi";
+import { NumberOfLayersApi } from "../services/NumberOfLayersApi";
+import { TypeCandlesApi } from "../services/TypeCandlesApi";
 
 export interface AllCandlePageProps {}
 
@@ -44,14 +36,14 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       typeCandle: createdItem.typeCandle,
       isActive: createdItem.isActive,
     };
-    await createCandle(candleRequest);
-    const updatedCandles = await getCandle();
+    await CandlesApi.create(candleRequest);
+    const updatedCandles = await CandlesApi.getAll();
     setCandlesData(updatedCandles);
   };
 
   const handleDeleteCandle = async (id: string) => {
-    deleteCandle(id);
-    const updatedCandles = await getCandle();
+    await CandlesApi.delete(id);
+    const updatedCandles = await CandlesApi.getAll();
     setCandlesData(updatedCandles);
   };
 
@@ -59,8 +51,8 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     const numberOfLayerRequest: NumberOfLayerRequest = {
       number: parseInt(tag.text),
     };
-    await createNumberOfLayer(numberOfLayerRequest);
-    const updatedNumberOfLayers = await getNumberOfLayers();
+    await NumberOfLayersApi.create(numberOfLayerRequest);
+    const updatedNumberOfLayers = await NumberOfLayersApi.getAll();
     setNumberOfLayersData(updatedNumberOfLayers);
   };
 
@@ -68,33 +60,33 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     const typeCandleRequest: TypeCandleRequest = {
       title: tag.text,
     };
-    await createTypeCandle(typeCandleRequest);
-    const updatedTypeCandles = await getTypeCandles();
+    await TypeCandlesApi.create(typeCandleRequest);
+    const updatedTypeCandles = await TypeCandlesApi.getAll();
     setTypeCandlesData(updatedTypeCandles);
   };
 
   const handleDeleteNumberOfLayer = async (id: string) => {
-    await deleteNumberOfLayer(id);
-    const updatedNumberOfLayers = await getNumberOfLayers();
+    await NumberOfLayersApi.delete(id);
+    const updatedNumberOfLayers = await NumberOfLayersApi.getAll();
     setNumberOfLayersData(updatedNumberOfLayers);
   };
 
   const handleDeleteTypeCandle = async (id: string) => {
-    await deleteTypeCandle(id);
-    const updatedTypeCandles = await getTypeCandles();
+    await TypeCandlesApi.delete(id);
+    const updatedTypeCandles = await TypeCandlesApi.getAll();
     setTypeCandlesData(updatedTypeCandles);
   };
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const typeCandles = await getTypeCandles();
+        const typeCandles = await TypeCandlesApi.getAll();
         setTypeCandlesData(typeCandles);
 
-        const numberOfLayers = await getNumberOfLayers();
+        const numberOfLayers = await NumberOfLayersApi.getAll();
         setNumberOfLayersData(numberOfLayers);
 
-        const candles = await getCandle();
+        const candles = await CandlesApi.getAll();
         setCandlesData(candles);
       } catch (error) {
         console.error("Произошла ошибка при загрузке данных:", error);

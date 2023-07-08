@@ -5,7 +5,7 @@ import { LayerColor } from "../types/LayerColor";
 import { LayerColorRequest } from "../types/Requests/LayerColorRequest";
 import CreateLayerColorPopUp from "../components/PopUp/CreateLayerColorPopUp";
 
-import { getLayerColors, createLayerColor, deleteLayerColor } from "../Api";
+import { LayerColorsApi } from "../services/LayerColorsApi";
 
 export interface AllLayerColorPageProps {}
 
@@ -20,20 +20,20 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
       imageURL: createdItem.imageURL,
       isActive: createdItem.isActive,
     };
-    await createLayerColor(layerColorRequest);
-    const updatedLayerColors = await getLayerColors();
+    await LayerColorsApi.create(layerColorRequest);
+    const updatedLayerColors = await LayerColorsApi.getAll();
     setLayerColorData(updatedLayerColors);
   };
 
   const handleDeleteLayerColor = async (id: string) => {
-    deleteLayerColor(id);
-    const updatedCandles = await getLayerColors();
+    LayerColorsApi.delete(id);
+    const updatedCandles = await LayerColorsApi.getAll();
     setLayerColorData(updatedCandles);
   };
 
   useEffect(() => {
     async function fetchLayerColors() {
-      const data = await getLayerColors();
+      const data = await LayerColorsApi.getAll();
       setLayerColorData(data);
     }
     fetchLayerColors();

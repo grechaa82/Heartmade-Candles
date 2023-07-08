@@ -5,7 +5,7 @@ import { Decor } from "../types/Decor";
 import { DecorRequest } from "../types/Requests/DecorRequest";
 import CreateDecorPopUp from "../components/PopUp/CreateDecorPopUp";
 
-import { createDecor, getDecors, deleteDecor } from "../Api";
+import { DecorsApi } from "../services/DecorsApi";
 
 export interface AllDecorPageProps {}
 
@@ -20,20 +20,20 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
       imageURL: createdItem.imageURL,
       isActive: createdItem.isActive,
     };
-    await createDecor(decorRequest);
-    const updatedDecors = await getDecors();
+    await DecorsApi.create(decorRequest);
+    const updatedDecors = await DecorsApi.getAll();
     setDecorsData(updatedDecors);
   };
 
   const handleDeleteSmell = async (id: string) => {
-    deleteDecor(id);
-    const updatedCandles = await getDecors();
+    DecorsApi.delete(id);
+    const updatedCandles = await DecorsApi.getAll();
     setDecorsData(updatedCandles);
   };
 
   useEffect(() => {
     async function fetchDecors() {
-      const data = await getDecors();
+      const data = await DecorsApi.getAll();
       setDecorsData(data);
     }
     fetchDecors();

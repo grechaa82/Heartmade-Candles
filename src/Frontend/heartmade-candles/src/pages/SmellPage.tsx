@@ -5,7 +5,7 @@ import MainInfoSmell from "../modules/MainInfoSmell";
 import { Smell } from "../types/Smell";
 import { SmellRequest } from "../types/Requests/SmellRequest";
 
-import { getSmellById, putSmell } from "../Api";
+import { SmellsApi } from "../services/SmellsApi";
 
 type SmellParams = {
   id: string;
@@ -22,7 +22,7 @@ const SmellPage: FC = () => {
     }));
   };
 
-  const updateSmell = (updatedItem: Smell) => {
+  const updateSmell = async (updatedItem: Smell) => {
     if (id) {
       const smellRequest: SmellRequest = {
         title: updatedItem.title,
@@ -30,14 +30,14 @@ const SmellPage: FC = () => {
         price: updatedItem.price,
         isActive: updatedItem.isActive,
       };
-      putSmell(id, smellRequest);
+      await SmellsApi.update(id, smellRequest);
     }
   };
 
   useEffect(() => {
     async function fetchSmell() {
       if (id) {
-        const data = await getSmellById(id);
+        const data = await SmellsApi.getById(id);
         setSmellData(data);
       }
     }

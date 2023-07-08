@@ -5,7 +5,7 @@ import MainInfoLayerColor from "../modules/MainInfoLayerColor";
 import { LayerColor } from "../types/LayerColor";
 import { LayerColorRequest } from "../types/Requests/LayerColorRequest";
 
-import { getLayerColorById, putLayerColor } from "../Api";
+import { LayerColorsApi } from "../services/LayerColorsApi";
 
 type LayerColorParams = {
   id: string;
@@ -22,7 +22,7 @@ const LayerColorPage: FC = () => {
     }));
   };
 
-  const updateLayerColor = (updatedItem: LayerColor) => {
+  const updateLayerColor = async (updatedItem: LayerColor) => {
     if (id) {
       const layerColorRequest: LayerColorRequest = {
         title: updatedItem.title,
@@ -31,14 +31,14 @@ const LayerColorPage: FC = () => {
         imageURL: updatedItem.imageURL,
         isActive: updatedItem.isActive,
       };
-      putLayerColor(id, layerColorRequest);
+      await LayerColorsApi.update(id, layerColorRequest);
     }
   };
 
   useEffect(() => {
     async function fetchLayerColors() {
       if (id) {
-        const data = await getLayerColorById(id);
+        const data = await LayerColorsApi.getById(id);
         setLayerColorData(data);
       }
     }
