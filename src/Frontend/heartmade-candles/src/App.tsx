@@ -1,16 +1,16 @@
 import { Routes, Route } from "react-router-dom";
 
-import CandleDetailsPage from "./pages/CandleDetailsPage";
-import AllCandlePage from "./pages/AllCandlePage";
-import AllDecorsPage from "./pages/AllDecorPage";
-import DecorsPage from "./pages/DecorPage";
-import AllLayerColorPage from "./pages/AllLayerColorPage";
-import LayerColorPage from "./pages/LayerColorPage";
-import AllSmellPage from "./pages/AllSmellPage";
-import SmellPage from "./pages/SmellPage";
-import AllWickPage from "./pages/AllWickPage";
-import WickPage from "./pages/WickPage";
-import Navbar from "./components/Navbar";
+import CandleDetailsPage from "./pages/admin/CandleDetailsPage";
+import AllCandlePage from "./pages/admin/AllCandlePage";
+import AllDecorsPage from "./pages/admin/AllDecorPage";
+import DecorsPage from "./pages/admin/DecorPage";
+import AllLayerColorPage from "./pages/admin/AllLayerColorPage";
+import LayerColorPage from "./pages/admin/LayerColorPage";
+import AllSmellPage from "./pages/admin/AllSmellPage";
+import SmellPage from "./pages/admin/SmellPage";
+import AllWickPage from "./pages/admin/AllWickPage";
+import WickPage from "./pages/admin/WickPage";
+import Navbar from "./components/admin/Navbar";
 
 import Style from "./App.module.css";
 
