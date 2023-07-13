@@ -1,10 +1,11 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent } from 'react';
 
-import { Smell } from "../../types/Smell";
-import Textarea from "../../components/admin/Textarea";
-import CheckboxBlock from "../../components/admin/CheckboxBlock";
+import { Smell } from '../../types/Smell';
+import Textarea from '../../components/admin/Textarea';
+import CheckboxBlock from '../../components/admin/CheckboxBlock';
+import ImageSlider from '../../components/admin/ImageSlider';
 
-import Style from "./MainInfoSmell.module.css";
+import Style from './MainInfoSmell.module.css';
 
 export interface MainInfoSmellProps {
   data: Smell;
@@ -12,11 +13,7 @@ export interface MainInfoSmellProps {
   onSave?: (saveSmell: Smell) => void;
 }
 
-const MainInfoSmell: FC<MainInfoSmellProps> = ({
-  data,
-  handleChangesSmell,
-  onSave,
-}) => {
+const MainInfoSmell: FC<MainInfoSmellProps> = ({ data, handleChangesSmell, onSave }) => {
   const [smell, setSmell] = useState<Smell>(data);
   const [isModified, setIsModified] = useState(false);
 
@@ -49,9 +46,6 @@ const MainInfoSmell: FC<MainInfoSmellProps> = ({
 
   return (
     <div className={Style.smellInfo}>
-      <div className={Style.image}>
-        <img src={smell.imageURL} />
-      </div>
       <form className={`${Style.gridContainer} ${Style.formForSmell}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea
@@ -62,18 +56,10 @@ const MainInfoSmell: FC<MainInfoSmellProps> = ({
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemPrice}`}>
-          <Textarea
-            text={smell.price.toString()}
-            label="Стоимость"
-            onChange={handleChangePrice}
-          />
+          <Textarea text={smell.price.toString()} label="Стоимость" onChange={handleChangePrice} />
         </div>
         <div className={`${Style.formItem} ${Style.itemActive}`}>
-          <CheckboxBlock
-            text="Активна"
-            checked={smell.isActive}
-            onChange={handleChangeIsActive}
-          />
+          <CheckboxBlock text="Активна" checked={smell.isActive} onChange={handleChangeIsActive} />
         </div>
         <div className={`${Style.formItem} ${Style.itemDescription}`}>
           <Textarea

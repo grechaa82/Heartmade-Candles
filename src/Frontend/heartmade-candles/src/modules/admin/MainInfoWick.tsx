@@ -1,10 +1,11 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent } from 'react';
 
-import { Wick } from "../../types/Wick";
-import Textarea from "../../components/admin/Textarea";
-import CheckboxBlock from "../../components/admin/CheckboxBlock";
+import { Wick } from '../../types/Wick';
+import Textarea from '../../components/admin/Textarea';
+import CheckboxBlock from '../../components/admin/CheckboxBlock';
+import ImageSlider from '../../components/admin/ImageSlider';
 
-import Style from "./MainInfoWick.module.css";
+import Style from './MainInfoWick.module.css';
 
 export interface MainInfoWickProps {
   data: Wick;
@@ -12,11 +13,7 @@ export interface MainInfoWickProps {
   onSave?: (saveWick: Wick) => void;
 }
 
-const MainInfoWick: FC<MainInfoWickProps> = ({
-  data,
-  handleChangesWick,
-  onSave,
-}) => {
+const MainInfoWick: FC<MainInfoWickProps> = ({ data, handleChangesWick, onSave }) => {
   const [wick, setWick] = useState<Wick>(data);
   const [isModified, setIsModified] = useState(false);
 
@@ -49,9 +46,8 @@ const MainInfoWick: FC<MainInfoWickProps> = ({
 
   return (
     <div className={Style.wickInfo}>
-      <div className={Style.image}>
-        <img src={wick.imageURL} />
-      </div>
+      <ImageSlider imageUrls={wick.imageURL.split(',')} />
+
       <form className={`${Style.gridContainer} ${Style.formForWick}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea
@@ -62,18 +58,10 @@ const MainInfoWick: FC<MainInfoWickProps> = ({
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemPrice}`}>
-          <Textarea
-            text={wick.price.toString()}
-            label="Стоимость"
-            onChange={handleChangePrice}
-          />
+          <Textarea text={wick.price.toString()} label="Стоимость" onChange={handleChangePrice} />
         </div>
         <div className={`${Style.formItem} ${Style.itemActive}`}>
-          <CheckboxBlock
-            text="Активна"
-            checked={wick.isActive}
-            onChange={handleChangeIsActive}
-          />
+          <CheckboxBlock text="Активна" checked={wick.isActive} onChange={handleChangeIsActive} />
         </div>
         <div className={`${Style.formItem} ${Style.itemDescription}`}>
           <Textarea

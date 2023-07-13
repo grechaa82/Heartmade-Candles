@@ -1,14 +1,13 @@
-import { FC, useState, useEffect, ChangeEvent } from "react";
+import { FC, useState, useEffect, ChangeEvent } from 'react';
 
-import ButtonDropdown, {
-  optionData,
-} from "../../components/admin/ButtonDropdown";
-import CheckboxBlock from "../../components/admin/CheckboxBlock";
-import Textarea from "../../components/admin/Textarea";
-import { Candle } from "../../types/Candle";
-import { TypeCandle } from "../../types/TypeCandle";
+import ButtonDropdown, { optionData } from '../../components/admin/ButtonDropdown';
+import CheckboxBlock from '../../components/admin/CheckboxBlock';
+import Textarea from '../../components/admin/Textarea';
+import { Candle } from '../../types/Candle';
+import { TypeCandle } from '../../types/TypeCandle';
+import ImageSlider from '../../components/admin/ImageSlider';
 
-import Style from "./MainInfoCandle.module.css";
+import Style from './MainInfoCandle.module.css';
 
 export interface MainInfoCandleProps {
   data: Candle;
@@ -66,9 +65,7 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
   };
 
   const handleChangeTypeCandle = (id: string) => {
-    const selectedTypeCandle = typesCandle.find(
-      (typeCandle) => typeCandle.id.toString() === id
-    );
+    const selectedTypeCandle = typesCandle.find((typeCandle) => typeCandle.id.toString() === id);
     if (selectedTypeCandle) {
       setCandle((prev) => ({
         ...prev,
@@ -93,9 +90,7 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
 
   return (
     <div className={Style.candleInfo}>
-      <div className={Style.image}>
-        <img src={candle.imageURL} />
-      </div>
+      <ImageSlider imageUrls={candle.imageURL.split(',')} />
       <form className={`${Style.gridContainer} ${Style.formForCandle}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea
@@ -106,11 +101,7 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemPrice}`}>
-          <Textarea
-            text={candle.price.toString()}
-            label="Стоимость"
-            onChange={handleChangePrice}
-          />
+          <Textarea text={candle.price.toString()} label="Стоимость" onChange={handleChangePrice} />
         </div>
         <div className={`${Style.formItem} ${Style.itemWeightGrams}`}>
           <Textarea
@@ -127,11 +118,7 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemActive}`}>
-          <CheckboxBlock
-            text="Активна"
-            checked={candle.isActive}
-            onChange={handleChangeIsActive}
-          />
+          <CheckboxBlock text="Активна" checked={candle.isActive} onChange={handleChangeIsActive} />
         </div>
         <div className={`${Style.formItem} ${Style.itemDescription}`}>
           <Textarea

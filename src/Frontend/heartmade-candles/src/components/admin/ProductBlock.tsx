@@ -1,12 +1,12 @@
-import { FC, useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { FC, useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
-import { BaseProduct } from "../../types/BaseProduct";
-import Checkbox from "./Checkbox";
-import IconMoreVertLarge from "../../UI/IconMoreVertLarge";
-import ContextMenu, { Action } from "./ContextMenu";
+import { BaseProduct } from '../../types/BaseProduct';
+import Checkbox from './Checkbox';
+import IconMoreVertLarge from '../../UI/IconMoreVertLarge';
+import ContextMenu, { Action } from './ContextMenu';
 
-import Style from "./ProductBlock.module.css";
+import Style from './ProductBlock.module.css';
 
 export interface ProductBlockProps<T extends BaseProduct> {
   product: T;
@@ -15,14 +15,12 @@ export interface ProductBlockProps<T extends BaseProduct> {
   actions?: Action[];
 }
 
-const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({
-  product,
-  width,
-  pageUrl,
-  actions,
-}) => {
+const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({ product, width, pageUrl, actions }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const images = product.imageURL ? product.imageURL.split(',') : [];
+  const firstImage = images.length > 0 ? images[0] : '';
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -35,9 +33,9 @@ const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -46,14 +44,12 @@ const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({
   };
 
   const getProductLink = (): string => {
-    return pageUrl ? `/admin/${pageUrl}/${product.id}` : "";
+    return pageUrl ? `/admin/${pageUrl}/${product.id}` : '';
   };
 
   return (
     <div className={Style.productBlock} style={productBlockStyle} ref={ref}>
-      <div className={Style.image}>
-        <img src={product.imageURL} />
-      </div>
+      <div className={Style.image}>{firstImage && <img src={firstImage} />}</div>
       <div className={Style.info}>
         <Link to={getProductLink()} className={Style.link}>
           <p className={Style.title}>{product.title}</p>

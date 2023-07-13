@@ -1,10 +1,11 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent } from 'react';
 
-import { LayerColor } from "../../types/LayerColor";
-import Textarea from "../../components/admin/Textarea";
-import CheckboxBlock from "../../components/admin/CheckboxBlock";
+import { LayerColor } from '../../types/LayerColor';
+import Textarea from '../../components/admin/Textarea';
+import CheckboxBlock from '../../components/admin/CheckboxBlock';
+import ImageSlider from '../../components/admin/ImageSlider';
 
-import Style from "./MainInfoLayerColor.module.css";
+import Style from './MainInfoLayerColor.module.css';
 
 export interface MainInfoLayerColorProps {
   data: LayerColor;
@@ -49,9 +50,8 @@ const MainInfoLayerColor: FC<MainInfoLayerColorProps> = ({
 
   return (
     <div className={Style.layerColorInfo}>
-      <div className={Style.image}>
-        <img src={layerColor.imageURL} />
-      </div>
+      <ImageSlider imageUrls={layerColor.imageURL.split(',')} />
+
       <form className={`${Style.gridContainer} ${Style.formForLayerColor}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

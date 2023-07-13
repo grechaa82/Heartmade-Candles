@@ -1,18 +1,11 @@
-import {
-  FC,
-  useState,
-  useEffect,
-  ReactNode,
-  cloneElement,
-  ReactElement,
-} from "react";
+import { FC, useState, useEffect, ReactNode, cloneElement, ReactElement } from 'react';
 
-import { BaseProduct } from "../../types/BaseProduct";
-import ProductBlock from "../../components/admin/ProductBlock";
-import ButtonWithIcon from "../../components/admin/ButtonWithIcon";
-import IconPlusLarge from "../../UI/IconPlusLarge";
+import { BaseProduct } from '../../types/BaseProduct';
+import ProductBlock from '../../components/admin/ProductBlock';
+import ButtonWithIcon from '../../components/admin/ButtonWithIcon';
+import IconPlusLarge from '../../UI/IconPlusLarge';
 
-import Style from "./ProductsGrid.module.css";
+import Style from './ProductsGrid.module.css';
 
 export interface ProductsGridProps<T extends BaseProduct> {
   title: string;
@@ -59,7 +52,7 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
               deleteProduct
                 ? [
                     {
-                      label: "Удалить",
+                      label: 'Удалить',
                       onClick: () => deleteProduct(item.id.toString()),
                     },
                   ]

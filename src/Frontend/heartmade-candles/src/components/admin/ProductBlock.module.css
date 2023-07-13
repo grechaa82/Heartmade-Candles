@@ -8,6 +8,7 @@
   padding-right: 16px;
   min-width: 320px;
   max-width: 500px;
+  min-height: 112px;
 }
 
 .options {
@@ -42,7 +43,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: "..";
+  text-overflow: '..';
   white-space: normal;
   word-wrap: break-word;
 }
