@@ -39,7 +39,7 @@ namespace HeartmadeCandles.Admin.BL.Services
 
         public async Task<CandleDetail> Get(int candleId)
         {
-            return await _candleRepository.Get(candleId);
+            return await _candleRepository.GetCandleDetailById(candleId);
         }
 
         public async Task Create(Candle candle)
@@ -133,6 +133,63 @@ namespace HeartmadeCandles.Admin.BL.Services
             }
 
             await _wickRepository.UpdateCandleWick(candleId, wicks);
+
+            return Result.Success();
+        }
+
+        public async Task<Result> UpdateImageURL(int id, string imagesURL, bool addToExisting)
+        {
+            var candle = await _candleRepository.GetById(id);
+            
+            if(candle == null)
+            {
+                return Result.Failure<int>($"'{id}' this id does not exist");
+            }
+
+            var newImagesURL = imagesURL;
+            if(addToExisting)
+            {
+                newImagesURL = candle.ImageURL + "," + imagesURL;
+            }
+
+            var newCandle = Candle.Create(
+                candle.Title, 
+                candle.Description, 
+                candle.Price, 
+                candle.WeightGrams,
+                newImagesURL, 
+                candle.TypeCandle, 
+                candle.IsActive, 
+                candle.Id, 
+                candle.CreatedAt);
+
+            if (newCandle.IsFailure)
+            {
+                return Result.Failure(newCandle.Error);
+            }
+
+            await _candleRepository.Update(newCandle.Value);
+
+            return Result.Success();
+        }
+
+        public async Task<Result> DeleteImageURL(int id, string[] imagesURL)
+        {
+            var candle = await _candleRepository.GetById(id);
+            
+            if(candle == null)
+            {
+                return Result.Failure<int>($"'{id}' this id does not exist");
+            }
+
+            var newCandle = candle.RemoveURLsFromImageURL(imagesURL);
+
+            if (newCandle.IsFailure)
+            {
+                return Result.Failure(newCandle.Error);
+            }
+
+            await _candleRepository.Update(newCandle.Value);
 
             return Result.Success();
         }

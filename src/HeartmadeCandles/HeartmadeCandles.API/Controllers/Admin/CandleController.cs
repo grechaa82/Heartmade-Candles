@@ -159,5 +159,104 @@ namespace HeartmadeCandles.API.Controllers.Admin
 
             return Ok();
         }
+
+        [HttpPost("{id}/images")]
+        public async Task<IActionResult> UploadImages(int id, [FromForm]List<IFormFile> imagesToUpload)
+        {            
+            foreach (var image in imagesToUpload)
+            {
+                await AddImage(image);
+            }
+
+            var result = await _candleService.UpdateImageURL(id, GetImageURL(imagesToUpload));
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok();
+        }
+
+        [HttpPut("{id}/images")]
+        public async Task<IActionResult> UpdateImages(int id, string[] imagesURL)
+        {            
+            var result = await _candleService.UpdateImageURL(id, GetImageURL(imagesURL), false);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("{id}/images")]
+        public async Task<IActionResult> DeleteImages(int id, string[] imageURL)
+        {
+            foreach (var image in imageURL)
+            {
+                DeleteImage(image);
+            }
+         
+            var result = await _candleService.DeleteImageURL(id, imageURL);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok();
+        }
+
+        private string GetImageURL(List<IFormFile> images)
+        {
+            string result = ""; 
+            
+            foreach (var image in images) 
+            { 
+                result += "http://localhost:5000/StaticFiles/Images/" + image.FileName +  ","; 
+            } 
+            
+            return result.TrimEnd(',');
+        }
+
+        public string GetImageURL(string[] imagesURL)
+        {
+            string result = ""; 
+                    
+            foreach (var image in imagesURL) 
+            { 
+                if (!image.StartsWith("http://localhost:5000/StaticFiles/Images/"))
+                {
+                    result += "http://localhost:5000/StaticFiles/Images/" + image +  ","; 
+                }
+                else
+                {
+                    result += image +  ","; 
+                }
+            } 
+                    
+            return result.TrimEnd(',');
+        }
+
+        private async Task AddImage(IFormFile image)
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles/Images", image.FileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+        }
+
+        private void DeleteImage(string imageUrl)
+        {
+            var imagePath = imageUrl.Replace("http://localhost:5000/", "");
+
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
+        }
     }
 }

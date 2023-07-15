@@ -130,5 +130,33 @@ namespace HeartmadeCandles.Admin.Core.Models
 
             return Result.Success(candle);
         }
+
+        public Result<Candle> RemoveURLsFromImageURL (string[] imageURLToRemove)
+        {
+            var urlsList = _imageURL.Split(',').ToList();
+
+            foreach (string url in imageURLToRemove)
+            {
+                if (urlsList.Contains(url))
+                {
+                    urlsList.Remove(url);
+                }
+            }
+
+            var newImagesURL = string.Join(",", urlsList);
+
+            var candle = new Candle(
+                _id,
+                _title,
+                _description,
+                _price,
+                _weightGrams,
+                newImagesURL,
+                _isActive,
+                _typeCandle,
+                _createdAt);
+
+            return Result.Success(candle);
+        }
     }
 }
