@@ -46,8 +46,8 @@ namespace HeartmadeCandles.Tests.Admin.Core
             {
                 yield return new object[] {
                     faker.Random.Number(1, 10000),
-                    faker.Random.String(1, Candle.MaxTitleLenght),
-                    faker.Random.String(1, Candle.MaxDescriptionLenght),
+                    faker.Random.String(1, Candle.MaxTitleLength),
+                    faker.Random.String(1, Candle.MaxDescriptionLength),
                     faker.Random.Number(1, 10000) * faker.Random.Decimal(),
                     faker.Random.Number(1, 10000),
                     faker.Image.PicsumUrl(),
@@ -70,7 +70,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
             var result = Candle.Create(
                 id: _faker.Random.Number(1, 10000),
                 title: title,
-                description: _faker.Random.String(1, Candle.MaxDescriptionLenght),
+                description: _faker.Random.String(1, Candle.MaxDescriptionLength),
                 price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
                 weightGrams: _faker.Random.Number(1, 10000),
                 imageURL: _faker.Image.PicsumUrl(),
@@ -87,14 +87,14 @@ namespace HeartmadeCandles.Tests.Admin.Core
         public void Create_LongTitle_ShouldReturnFailure()
         {
             // Arrange
-            var title = _faker.Random.String(Candle.MaxTitleLenght + 1);
+            var title = _faker.Random.String(Candle.MaxTitleLength + 1);
 
             // Act
             var result = Make(title: title);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal($"'title' cannot be more than {Candle.MaxTitleLenght} characters", result.Error);
+            Assert.Equal($"'title' cannot be more than {Candle.MaxTitleLength} characters", result.Error);
         }
 
         [Theory]
@@ -108,7 +108,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
             // Act
             var result = Candle.Create(
                 id: _faker.Random.Number(1, 10000),
-                title: _faker.Random.String(1, Candle.MaxTitleLenght),
+                title: _faker.Random.String(1, Candle.MaxTitleLength),
                 description: description,
                 price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
                 weightGrams: _faker.Random.Number(1, 10000),
@@ -126,14 +126,14 @@ namespace HeartmadeCandles.Tests.Admin.Core
         public void Create_LongDescription_ShouldReturnFailure()
         {
             // Arrange
-            var description = _faker.Random.String(Candle.MaxDescriptionLenght + 10);
+            var description = _faker.Random.String(Candle.MaxDescriptionLength + 10);
 
             // Act
             var result = Make(description: description);
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal($"'description' cannot be more than {Candle.MaxDescriptionLenght} characters", result.Error);
+            Assert.Equal($"'description' cannot be more than {Candle.MaxDescriptionLength} characters", result.Error);
         }
 
         [Fact]
@@ -173,8 +173,8 @@ namespace HeartmadeCandles.Tests.Admin.Core
             // Act
             var result = Candle.Create(
                 id: _faker.Random.Number(1, 10000),
-                title: _faker.Random.String(1, Candle.MaxTitleLenght),
-                description: _faker.Random.String(1, Candle.MaxDescriptionLenght),
+                title: _faker.Random.String(1, Candle.MaxTitleLength),
+                description: _faker.Random.String(1, Candle.MaxDescriptionLength),
                 price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
                 weightGrams: _faker.Random.Number(1, 10000),
                 imageURL: _faker.Image.PicsumUrl(),
@@ -203,7 +203,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
             var result = Candle.Create(
                 id: _faker.Random.Number(1, 10000),
                 title: null,
-                description: _faker.Random.String(Candle.MaxDescriptionLenght + 1),
+                description: _faker.Random.String(Candle.MaxDescriptionLength + 1),
                 price: -10m,
                 weightGrams: 0,
                 imageURL: _faker.Image.PicsumUrl(),
@@ -231,8 +231,8 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             return Candle.Create(
                 id: id ?? faker.Random.Number(1, 10000),
-                title: title ?? faker.Random.String(1, Candle.MaxTitleLenght),
-                description: description ?? faker.Random.String(1, Candle.MaxDescriptionLenght),
+                title: title ?? faker.Random.String(1, Candle.MaxTitleLength),
+                description: description ?? faker.Random.String(1, Candle.MaxDescriptionLength),
                 price: price ?? faker.Random.Number(1, 10000) * faker.Random.Decimal(),
                 weightGrams: weightGrams ?? faker.Random.Number(1, 10000),
                 imageURL: imageURL ?? faker.Image.PicsumUrl(),

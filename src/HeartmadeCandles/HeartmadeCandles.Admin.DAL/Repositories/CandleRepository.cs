@@ -32,7 +32,26 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
             return result;
         }
 
-        public async Task<CandleDetail> Get(int candleId)
+        public async Task<Candle?> GetById(int candleId)
+        {
+            var item = await _context.Candle
+                .AsNoTracking()
+                .Include(c => c.TypeCandle)
+                .FirstOrDefaultAsync(c => c.Id == candleId);
+            
+            if (item == null)
+            {
+                return null;
+            }
+
+            var typeCandle = TypeCandleMapping.MapToCandleType(item.TypeCandle);
+            
+            var result = CandleMapping.MapToCandle(item, typeCandle);
+
+            return result;
+        }
+
+        public async Task<CandleDetail> GetCandleDetailById(int candleId)
         {
             var candleDetailEntity = await _context.Candle
                 .AsNoTracking()
@@ -51,10 +70,10 @@ namespace HeartmadeCandles.Admin.DAL.Repositories
                 .Select(cd => DecorMapping.MapToDecor(cd.Decor))
                 .ToList();
             var layerColors = candleDetailEntity.CandleLayerColor
-                .Select(clc => LayerColorMapping.MapToLayerColor(clc.LayerColor))
+                .Select(cl => LayerColorMapping.MapToLayerColor(cl.LayerColor))
                 .ToList();
             var numberOfLayers = candleDetailEntity.CandleNumberOfLayer
-                .Select(cnol => NumberOfLayerMapping.MapToNumberOfLayer(cnol.NumberOfLayer))
+                .Select(cn => NumberOfLayerMapping.MapToNumberOfLayer(cn.NumberOfLayer))
                 .ToList();
             var smells = candleDetailEntity.CandleSmell
                 .Select(cs => SmellMapping.MapToSmell(cs.Smell))

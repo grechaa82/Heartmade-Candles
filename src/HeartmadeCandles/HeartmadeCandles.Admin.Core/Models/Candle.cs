@@ -1,11 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.VisualBasic;
 
 namespace HeartmadeCandles.Admin.Core.Models
 {
     public class Candle
     {
-        public const int MaxTitleLenght = 48;
-        public const int MaxDescriptionLenght = 256;
+        public const int MaxTitleLength = 48;
+        public const int MaxDescriptionLength = 256;
 
         private int _id;
         private string _title;
@@ -69,11 +70,11 @@ namespace HeartmadeCandles.Admin.Core.Models
                    Result.Failure<Candle>($"'{nameof(title)}' cannot be null or whitespace"));
             }
 
-            if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
+            if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLength)
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<Candle>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters"));
+                   Result.Failure<Candle>($"'{nameof(title)}' cannot be more than {MaxTitleLength} characters"));
             }
 
             if (string.IsNullOrWhiteSpace(description))
@@ -83,25 +84,25 @@ namespace HeartmadeCandles.Admin.Core.Models
                    Result.Failure<Candle>($"'{nameof(description)}' cannot be null or whitespace"));
             }
 
-            if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
+            if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLength)
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<Candle>($"'{nameof(description)}' cannot be more than {MaxDescriptionLenght} characters"));
+                   Result.Failure<Candle>($"'{nameof(description)}' cannot be more than {MaxDescriptionLength} characters"));
             }
 
             if (price <= 0)
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<Candle>($"'{nameof(price)}' сannot be 0 or less"));
+                   Result.Failure<Candle>($"'{nameof(price)}' cannot be 0 or less"));
             }
 
             if (weightGrams <= 0)
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<Candle>($"'{nameof(weightGrams)}' сannot be 0 or less"));
+                   Result.Failure<Candle>($"'{nameof(weightGrams)}' cannot be 0 or less"));
             }
 
             if (typeCandle == null)

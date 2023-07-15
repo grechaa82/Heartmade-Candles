@@ -10,10 +10,10 @@ namespace HeartmadeCandles.Admin.DAL.Entities
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), Column("id")]
         public int Id { get; set; }
 
-        [Column("title"), MaxLength(Candle.MaxTitleLenght), Required] 
+        [Column("title"), MaxLength(Candle.MaxTitleLength), Required] 
         public string Title { get; set; }
 
-        [Column("description"), MaxLength(Candle.MaxDescriptionLenght), Required]
+        [Column("description"), MaxLength(Candle.MaxDescriptionLength), Required]
         public string Description { get; set; }
 
         [Column("price")]

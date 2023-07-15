@@ -75,7 +75,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
         public void Create_LongTitle_ShouldReturnFailure()
         {
             // Arrange
-            var title = _faker.Random.String(Candle.MaxTitleLenght + 1);
+            var title = _faker.Random.String(Candle.MaxTitleLength + 1);
 
             // Act
             var result = Make(title: title);
