@@ -44,6 +44,9 @@
     <ProjectReference Include="..\HeartmadeCandles.Admin.DAL\HeartmadeCandles.Admin.DAL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Bot\HeartmadeCandles.Bot.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.BusinessLogic\HeartmadeCandles.BusinessLogic.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Constructor.BL\HeartmadeCandles.Constructor.BL.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Constructor.Core\HeartmadeCandles.Constructor.Core.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Constructor.DAL\HeartmadeCandles.Constructor.DAL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Core\HeartmadeCandles.Core.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.DataAccess.MongoDB\HeartmadeCandles.DataAccess.MongoDB.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Migrations\HeartmadeCandles.Migrations.csproj" />
