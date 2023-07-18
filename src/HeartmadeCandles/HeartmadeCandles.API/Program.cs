@@ -16,6 +16,10 @@ using MongoDB.Driver;
 using System.Text;
 using HeartmadeCandles.Admin.DAL;
 using Serilog;
+using HeartmadeCandles.Constructor.DAL;
+using HeartmadeCandles.Constructor.DAL.Repositories;
+using HeartmadeCandles.Constructor.Core.Interfaces;
+using HeartmadeCandles.Constructor.BL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -88,6 +92,18 @@ try
     builder.Services.AddScoped<INumberOfLayerRepository, NumberOfLayerRepository>();
     builder.Services.AddScoped<ITypeCandleService, TypeCandleService>();
     builder.Services.AddScoped<ITypeCandleRepository, TypeCandleRepository>();
+
+    //Constructor module
+    builder.Services.AddDbContext<ConstructorDbContext>(options =>
+    {
+        options.UseNpgsql(
+            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+            npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
+    });
+
+    builder.Services
+        .AddScoped<IConstructorService, ConstructorService>()
+        .AddScoped<IConstructorRepository, ConstructorRepository>();
 
     builder.Services.AddAuthentication(options =>
     {
