@@ -1,29 +1,27 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect } from 'react';
 
-import ProductsGrid from "../../modules/admin/ProductsGrid";
-import { Candle } from "../../types/Candle";
-import { NumberOfLayer } from "../../types/NumberOfLayer";
-import { TypeCandle } from "../../types/TypeCandle";
-import TagsGrid from "../../modules/admin/TagsGrid";
-import { convertToTagData } from "./CandleDetailsPage";
-import { TagData } from "../../components/admin/Tag";
-import CreateCandlePopUp from "../../components/admin/PopUp/CreateCandlePopUp";
-import { CandleRequest } from "../../types/Requests/CandleRequest";
-import CreateTagPopUp from "../../components/admin/PopUp/CreateTagPopUp";
-import { NumberOfLayerRequest } from "../../types/Requests/NumberOfLayerRequest";
-import { TypeCandleRequest } from "../../types/Requests/TypeCandleRequest";
+import ProductsGrid from '../../modules/admin/ProductsGrid';
+import { Candle } from '../../types/Candle';
+import { NumberOfLayer } from '../../types/NumberOfLayer';
+import { TypeCandle } from '../../types/TypeCandle';
+import TagsGrid from '../../modules/admin/TagsGrid';
+import { convertToTagData } from './CandleDetailsPage';
+import { TagData } from '../../components/admin/Tag';
+import CreateCandlePopUp from '../../components/admin/PopUp/CreateCandlePopUp';
+import { CandleRequest } from '../../types/Requests/CandleRequest';
+import CreateTagPopUp from '../../components/admin/PopUp/CreateTagPopUp';
+import { NumberOfLayerRequest } from '../../types/Requests/NumberOfLayerRequest';
+import { TypeCandleRequest } from '../../types/Requests/TypeCandleRequest';
 
-import { CandlesApi } from "../../services/CandlesApi";
-import { NumberOfLayersApi } from "../../services/NumberOfLayersApi";
-import { TypeCandlesApi } from "../../services/TypeCandlesApi";
+import { CandlesApi } from '../../services/CandlesApi';
+import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
+import { TypeCandlesApi } from '../../services/TypeCandlesApi';
 
 export interface AllCandlePageProps {}
 
 const AllCandlePage: FC<AllCandlePageProps> = () => {
   const [typeCandlesData, setTypeCandlesData] = useState<TypeCandle[]>([]);
-  const [numberOfLayersData, setNumberOfLayersData] = useState<NumberOfLayer[]>(
-    []
-  );
+  const [numberOfLayersData, setNumberOfLayersData] = useState<NumberOfLayer[]>([]);
   const [candlesData, setCandlesData] = useState<Candle[]>([]);
 
   const handleCreateCandle = async (createdItem: Candle) => {
@@ -32,7 +30,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       description: createdItem.description,
       price: createdItem.price,
       weightGrams: createdItem.weightGrams,
-      imageURL: createdItem.imageURL,
+      images: createdItem.images,
       typeCandle: createdItem.typeCandle,
       isActive: createdItem.isActive,
     };
@@ -89,7 +87,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         const candles = await CandlesApi.getAll();
         setCandlesData(candles);
       } catch (error) {
-        console.error("Произошла ошибка при загрузке данных:", error);
+        console.error('Произошла ошибка при загрузке данных:', error);
       }
     }
 
@@ -103,7 +101,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         tags={convertCandlesToTagData(typeCandlesData)}
         popUpComponent={
           <CreateTagPopUp
-            onClose={() => console.log("Popup closed")}
+            onClose={() => console.log('Popup closed')}
             title="Сознать тип свечи"
             isNumber={true}
             onSave={handleCreateTypeCandle}
@@ -116,7 +114,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         tags={convertToTagData(numberOfLayersData)}
         popUpComponent={
           <CreateTagPopUp
-            onClose={() => console.log("Popup closed")}
+            onClose={() => console.log('Popup closed')}
             title="Сознать количество слоев"
             isNumber={true}
             onSave={handleCreateNumberOfLayer}
@@ -130,7 +128,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         pageUrl="candles"
         popUpComponent={
           <CreateCandlePopUp
-            onClose={() => console.log("Popup closed")}
+            onClose={() => console.log('Popup closed')}
             title="Создать свечу"
             typeCandlesArray={typeCandlesData}
             onSave={handleCreateCandle}

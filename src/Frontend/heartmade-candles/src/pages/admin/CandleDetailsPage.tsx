@@ -1,31 +1,29 @@
-import { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { FC, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import MainInfoCandle, {
-  FetchTypeCandle,
-} from "../../modules/admin/MainInfoCandle";
-import { CandleDetail } from "../../types/CandleDetail";
-import ProductsGrid, { FetchProducts } from "../../modules/admin/ProductsGrid";
-import TagsGrid from "../../modules/admin/TagsGrid";
-import { Candle } from "../../types/Candle";
-import { Decor } from "../../types/Decor";
-import { NumberOfLayer } from "../../types/NumberOfLayer";
-import { LayerColor } from "../../types/LayerColor";
-import { Smell } from "../../types/Smell";
-import { Wick } from "../../types/Wick";
-import { BaseProduct } from "../../types/BaseProduct";
-import { TagData } from "../../components/admin/Tag";
-import AddProductPopUp from "../../components/admin/PopUp/AddProductPopUp";
+import MainInfoCandle, { FetchTypeCandle } from '../../modules/admin/MainInfoCandle';
+import { CandleDetail } from '../../types/CandleDetail';
+import ProductsGrid, { FetchProducts } from '../../modules/admin/ProductsGrid';
+import TagsGrid from '../../modules/admin/TagsGrid';
+import { Candle } from '../../types/Candle';
+import { Decor } from '../../types/Decor';
+import { NumberOfLayer } from '../../types/NumberOfLayer';
+import { LayerColor } from '../../types/LayerColor';
+import { Smell } from '../../types/Smell';
+import { Wick } from '../../types/Wick';
+import { BaseProduct } from '../../types/BaseProduct';
+import { TagData } from '../../components/admin/Tag';
+import AddProductPopUp from '../../components/admin/PopUp/AddProductPopUp';
 
-import { CandlesApi } from "../../services/CandlesApi";
-import { DecorsApi } from "../../services/DecorsApi";
-import { LayerColorsApi } from "../../services/LayerColorsApi";
-import { NumberOfLayersApi } from "../../services/NumberOfLayersApi";
-import { SmellsApi } from "../../services/SmellsApi";
-import { TypeCandlesApi } from "../../services/TypeCandlesApi";
-import { WicksApi } from "../../services/WicksApi";
+import { CandlesApi } from '../../services/CandlesApi';
+import { DecorsApi } from '../../services/DecorsApi';
+import { LayerColorsApi } from '../../services/LayerColorsApi';
+import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
+import { SmellsApi } from '../../services/SmellsApi';
+import { TypeCandlesApi } from '../../services/TypeCandlesApi';
+import { WicksApi } from '../../services/WicksApi';
 
-import Style from "./CandleDetailsPage.module.css";
+import Style from './CandleDetailsPage.module.css';
 
 type CandleDetailsParams = {
   id: string;
@@ -41,7 +39,7 @@ const CandleDetailsPage: FC = () => {
       const data = await TypeCandlesApi.getAll();
       return data;
     } catch (error) {
-      console.error("Произошла ошибка при загрузке типов свечей:", error);
+      console.error('Произошла ошибка при загрузке типов свечей:', error);
       return [];
     }
   };
@@ -51,7 +49,7 @@ const CandleDetailsPage: FC = () => {
       const data = await DecorsApi.getAll();
       return data;
     } catch (error) {
-      console.error("Произошла ошибка при загрузке типов свечей:", error);
+      console.error('Произошла ошибка при загрузке типов свечей:', error);
       return [];
     }
   };
@@ -61,7 +59,7 @@ const CandleDetailsPage: FC = () => {
       const data = await LayerColorsApi.getAll();
       return data;
     } catch (error) {
-      console.error("Произошла ошибка при загрузке типов свечей:", error);
+      console.error('Произошла ошибка при загрузке типов свечей:', error);
       return [];
     }
   };
@@ -71,7 +69,7 @@ const CandleDetailsPage: FC = () => {
       const data = await NumberOfLayersApi.getAll();
       return data;
     } catch (error) {
-      console.error("Произошла ошибка при загрузке типов свечей:", error);
+      console.error('Произошла ошибка при загрузке типов свечей:', error);
       return [];
     }
   };
@@ -81,7 +79,7 @@ const CandleDetailsPage: FC = () => {
       const data = await SmellsApi.getAll();
       return data;
     } catch (error) {
-      console.error("Произошла ошибка при загрузке типов свечей:", error);
+      console.error('Произошла ошибка при загрузке типов свечей:', error);
       return [];
     }
   };
@@ -91,7 +89,7 @@ const CandleDetailsPage: FC = () => {
       const data = await WicksApi.getAll();
       return data;
     } catch (error) {
-      console.error("Произошла ошибка при загрузке типов свечей:", error);
+      console.error('Произошла ошибка при загрузке типов свечей:', error);
       return [];
     }
   };
@@ -128,15 +126,11 @@ const CandleDetailsPage: FC = () => {
     setCandleDetailData(newCandleDetailData);
   };
 
-  const handleChangesNumberOfLayers = (
-    updatedNumberOfLayers: TagData[]
-  ): void => {
-    const numberOfLayers: NumberOfLayer[] = updatedNumberOfLayers.map(
-      (tagData) => ({
-        id: tagData.id,
-        number: parseInt(tagData.text),
-      })
-    );
+  const handleChangesNumberOfLayers = (updatedNumberOfLayers: TagData[]): void => {
+    const numberOfLayers: NumberOfLayer[] = updatedNumberOfLayers.map((tagData) => ({
+      id: tagData.id,
+      number: parseInt(tagData.text),
+    }));
 
     const newCandleDetailData: CandleDetail = {
       ...candleDetailData!,
@@ -173,7 +167,7 @@ const CandleDetailsPage: FC = () => {
         description: updatedItem.description,
         price: updatedItem.price,
         weightGrams: updatedItem.weightGrams,
-        imageURL: updatedItem.imageURL,
+        images: updatedItem.images,
         typeCandle: updatedItem.typeCandle,
         isActive: updatedItem.isActive,
       };
@@ -265,7 +259,7 @@ const CandleDetailsPage: FC = () => {
           data={candleDetailData.decors}
           popUpComponent={
             <AddProductPopUp
-              onClose={() => console.log("Popup closed")}
+              onClose={() => console.log('Popup closed')}
               title="Свеча и декоры"
               selectedData={candleDetailData.decors}
               setSelectedData={handleChangesDecors}
@@ -281,7 +275,7 @@ const CandleDetailsPage: FC = () => {
           data={candleDetailData.layerColors}
           popUpComponent={
             <AddProductPopUp
-              onClose={() => console.log("Popup closed")}
+              onClose={() => console.log('Popup closed')}
               title="Свеча и слои"
               selectedData={candleDetailData.layerColors}
               setSelectedData={handleChangesLayerColors}
@@ -297,7 +291,7 @@ const CandleDetailsPage: FC = () => {
           data={candleDetailData.smells}
           popUpComponent={
             <AddProductPopUp
-              onClose={() => console.log("Popup closed")}
+              onClose={() => console.log('Popup closed')}
               title="Свеча и запахи"
               selectedData={candleDetailData.smells}
               setSelectedData={handleChangesSmells}
@@ -313,7 +307,7 @@ const CandleDetailsPage: FC = () => {
           data={candleDetailData.wicks}
           popUpComponent={
             <AddProductPopUp
-              onClose={() => console.log("Popup closed")}
+              onClose={() => console.log('Popup closed')}
               title="Свеча и фитили"
               selectedData={candleDetailData.wicks}
               setSelectedData={handleChangesWicks}

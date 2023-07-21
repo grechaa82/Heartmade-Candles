@@ -2,26 +2,28 @@ import { FC, useState } from 'react';
 
 import IconChevronLeftLarge from '../../UI/IconChevronLeftLarge';
 import IconChevronRightLarge from '../../UI/IconChevronRightLarge';
+import { Image } from '../../types/Image';
 
 import Style from './ImageSlider.module.css';
 
 interface ImageSliderProps {
-  imageUrls: string[];
+  images: Image[];
 }
 
-const ImageSlider: FC<ImageSliderProps> = ({ imageUrls }) => {
+const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
 
   const handleChangeImage = (index: number, moveToIndex?: number) => {
     let current = index;
     if (moveToIndex && moveToIndex == -1) {
       current -= 1;
       if (current < 0) {
-        current = imageUrls.length - 1;
+        current = images.length - 1;
       }
     } else if (moveToIndex && moveToIndex == 1) {
       current += 1;
-      if (current >= imageUrls.length) {
+      if (current >= images.length) {
         current = 0;
       }
     }
@@ -30,7 +32,10 @@ const ImageSlider: FC<ImageSliderProps> = ({ imageUrls }) => {
 
   return (
     <div className={Style.image}>
-      <img src={imageUrls[currentImageIndex]} />
+      <img
+        src={urlToImage + images[currentImageIndex].fileName}
+        alt={images[currentImageIndex].alternativeName}
+      />
       <div className={Style.slider}>
         <button
           className={Style.iconChevronBtn}
@@ -38,10 +43,10 @@ const ImageSlider: FC<ImageSliderProps> = ({ imageUrls }) => {
         >
           <IconChevronLeftLarge color="#777" />
         </button>
-        {imageUrls.map((url, index) => (
+        {images.map((image, index) => (
           <img
             key={index}
-            src={url}
+            src={urlToImage + image.fileName}
             className={Style.sliderImage}
             onClick={() => handleChangeImage(index)}
           />
