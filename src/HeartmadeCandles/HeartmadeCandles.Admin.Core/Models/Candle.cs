@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using Microsoft.VisualBasic;
 
 namespace HeartmadeCandles.Admin.Core.Models
 {
@@ -13,7 +12,7 @@ namespace HeartmadeCandles.Admin.Core.Models
         private string _description;
         private decimal _price;
         private int _weightGrams;
-        private string _imageURL;
+        private Image[] _images;
         private bool _isActive;
         private TypeCandle _typeCandle;
         private DateTime _createdAt;
@@ -24,7 +23,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             string description,
             decimal price,
             int weightGrams,
-            string imageURL,
+            Image[] images,
             bool isActive,
             TypeCandle typeCandle,
             DateTime createdAt)
@@ -34,7 +33,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             _description = description;
             _price = price;
             _weightGrams = weightGrams;
-            _imageURL = imageURL;
+            _images = images;
             _isActive = isActive;
             _typeCandle = typeCandle;
             _createdAt = createdAt;
@@ -45,7 +44,7 @@ namespace HeartmadeCandles.Admin.Core.Models
         public string Description { get => _description; }
         public decimal Price { get => _price; }
         public int WeightGrams { get => _weightGrams; }
-        public string ImageURL { get => _imageURL; }
+        public Image[] Images { get => _images; }
         public bool IsActive { get => _isActive; }
         public TypeCandle TypeCandle { get => _typeCandle; }
         public DateTime CreatedAt { get => _createdAt; }
@@ -55,7 +54,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             string description,
             decimal price,
             int weightGrams,
-            string imageURL,
+            Image[] images,
             TypeCandle typeCandle,
             bool isActive = true,
             int id = 0,
@@ -66,7 +65,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             if (string.IsNullOrWhiteSpace(title))
             {
                 result = Result.Combine(
-                   result, 
+                   result,
                    Result.Failure<Candle>($"'{nameof(title)}' cannot be null or whitespace"));
             }
 
@@ -123,38 +122,10 @@ namespace HeartmadeCandles.Admin.Core.Models
                 description,
                 price,
                 weightGrams,
-                imageURL,
+                images,
                 isActive,
                 typeCandle,
                 createdAt ?? DateTime.UtcNow);
-
-            return Result.Success(candle);
-        }
-
-        public Result<Candle> RemoveURLsFromImageURL (string[] imageURLToRemove)
-        {
-            var urlsList = _imageURL.Split(',').ToList();
-
-            foreach (string url in imageURLToRemove)
-            {
-                if (urlsList.Contains(url))
-                {
-                    urlsList.Remove(url);
-                }
-            }
-
-            var newImagesURL = string.Join(",", urlsList);
-
-            var candle = new Candle(
-                _id,
-                _title,
-                _description,
-                _price,
-                _weightGrams,
-                newImagesURL,
-                _isActive,
-                _typeCandle,
-                _createdAt);
 
             return Result.Success(candle);
         }

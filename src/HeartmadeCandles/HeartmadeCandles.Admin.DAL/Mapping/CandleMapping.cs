@@ -12,7 +12,7 @@ namespace HeartmadeCandles.Admin.DAL.Mapping
                 candleEntity.Description,
                 candleEntity.Price,
                 candleEntity.WeightGrams,
-                candleEntity.ImageURL,
+                ImageMapping.MapToImage(candleEntity.Images),
                 typeCandle,
                 candleEntity.IsActive,
                 candleEntity.Id,
@@ -30,7 +30,7 @@ namespace HeartmadeCandles.Admin.DAL.Mapping
                 Description = candle.Description,
                 Price = candle.Price,
                 WeightGrams = candle.WeightGrams,
-                ImageURL = candle.ImageURL,
+                Images = ImageMapping.MapToImageEntity(candle.Images),
                 IsActive = candle.IsActive,
                 TypeCandleId = candle.TypeCandle.Id,
                 CreatedAt = candle.CreatedAt

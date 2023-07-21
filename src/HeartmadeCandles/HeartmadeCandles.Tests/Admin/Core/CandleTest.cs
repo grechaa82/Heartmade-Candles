@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.Core.Models;
 
@@ -7,7 +8,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
     public class CandleTests
     {
         private static Faker _faker = new Faker("ru");
-        
+
         [Theory, MemberData(nameof(GenerateData))]
         public void Create_ValidParameters_ReturnsSuccess(
             int id,
@@ -15,7 +16,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
             string description,
             decimal price,
             int weightGrams,
-            string imageURL,
+            Image[] images,
             bool isActive,
             TypeCandle typeCandle,
             DateTime createdAt)
@@ -28,7 +29,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 description: description,
                 price: price,
                 weightGrams: weightGrams,
-                imageURL: imageURL,
+                images: images,
                 isActive: isActive,
                 typeCandle: typeCandle,
                 id: id,
@@ -41,7 +42,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
         public static IEnumerable<object[]> GenerateData()
         {
             var faker = new Faker();
-            
+
             for (int i = 0; i < 100; i++)
             {
                 yield return new object[] {
@@ -50,7 +51,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                     faker.Random.String(1, Candle.MaxDescriptionLength),
                     faker.Random.Number(1, 10000) * faker.Random.Decimal(),
                     faker.Random.Number(1, 10000),
-                    faker.Image.PicsumUrl(),
+                    new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
                     faker.Random.Bool(),
                     TypeCandle.Create(faker.Random.String(1, TypeCandle.MaxTitleLenght), faker.Random.Number(1, 10000)).Value,
                     faker.Date.Past(1)
@@ -73,7 +74,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 description: _faker.Random.String(1, Candle.MaxDescriptionLength),
                 price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
                 weightGrams: _faker.Random.Number(1, 10000),
-                imageURL: _faker.Image.PicsumUrl(),
+                images: new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
                 isActive: _faker.Random.Bool(),
                 typeCandle: TypeCandle.Create(_faker.Random.String(1, TypeCandle.MaxTitleLenght), _faker.Random.Number(1, 10000)).Value,
                 createdAt: _faker.Date.Past(1));
@@ -112,7 +113,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 description: description,
                 price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
                 weightGrams: _faker.Random.Number(1, 10000),
-                imageURL: _faker.Image.PicsumUrl(),
+                images: new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
                 isActive: _faker.Random.Bool(),
                 typeCandle: TypeCandle.Create(_faker.Random.String(1, TypeCandle.MaxTitleLenght), _faker.Random.Number(1, 10000)).Value,
                 createdAt: _faker.Date.Past(1));
@@ -147,7 +148,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'price' сannot be 0 or less", result.Error);
+            Assert.Equal("'price' cannot be 0 or less", result.Error);
         }
 
         [Fact]
@@ -161,7 +162,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
 
             // Assert
             Assert.True(result.IsFailure);
-            Assert.Equal("'weightGrams' сannot be 0 or less", result.Error);
+            Assert.Equal("'weightGrams' cannot be 0 or less", result.Error);
         }
 
         [Fact]
@@ -177,7 +178,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 description: _faker.Random.String(1, Candle.MaxDescriptionLength),
                 price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
                 weightGrams: _faker.Random.Number(1, 10000),
-                imageURL: _faker.Image.PicsumUrl(),
+                images: new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
                 isActive: _faker.Random.Bool(),
                 typeCandle: typeCandle,
                 createdAt: _faker.Date.Past(1));
@@ -193,8 +194,8 @@ namespace HeartmadeCandles.Tests.Admin.Core
             // Arrange
             var resultError = "'title' cannot be null or whitespace, " +
                 "'description' cannot be more than 256 characters, " +
-                "'price' сannot be 0 or less, " +
-                "'weightGrams' сannot be 0 or less, " +
+                "'price' cannot be 0 or less, " +
+                "'weightGrams' cannot be 0 or less, " +
                 "'typeCandle' cannot be null";
 
             TypeCandle typeCandle = null;
@@ -206,7 +207,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 description: _faker.Random.String(Candle.MaxDescriptionLength + 1),
                 price: -10m,
                 weightGrams: 0,
-                imageURL: _faker.Image.PicsumUrl(),
+                images: new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
                 isActive: _faker.Random.Bool(),
                 typeCandle: typeCandle,
                 createdAt: _faker.Date.Past(1));
@@ -222,7 +223,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
            string? description = null,
            decimal? price = null,
            int? weightGrams = null,
-           string? imageURL = null,
+           Image[]? images = null,
            bool? isActive = null,
            TypeCandle? typeCandle = null,
            DateTime? createdAt = null)
@@ -235,7 +236,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 description: description ?? faker.Random.String(1, Candle.MaxDescriptionLength),
                 price: price ?? faker.Random.Number(1, 10000) * faker.Random.Decimal(),
                 weightGrams: weightGrams ?? faker.Random.Number(1, 10000),
-                imageURL: imageURL ?? faker.Image.PicsumUrl(),
+                images: images ?? new Image[] { Image.Create(faker.Random.String(1, Image.MaxAlternativeNameLenght), faker.Random.String()).Value },
                 isActive: isActive ?? faker.Random.Bool(),
                 typeCandle: typeCandle ?? TypeCandle.Create(faker.Random.String(1, TypeCandle.MaxTitleLenght), faker.Random.Number(1, 10000)).Value,
                 createdAt: createdAt ?? faker.Date.Past(1));

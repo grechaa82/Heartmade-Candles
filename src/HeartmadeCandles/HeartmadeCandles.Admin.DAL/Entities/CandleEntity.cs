@@ -19,12 +19,11 @@ namespace HeartmadeCandles.Admin.DAL.Entities
         [Column("price")]
         public decimal Price { get; set; }
 
-
         [Column("weightGrams")]
         public int WeightGrams { get; set; }
-        
-        [Column("imageURL")]
-        public string ImageURL { get; set; }
+
+        [Column(name: "images", TypeName = "jsonb")]
+        public ImageEntity[] Images { get; set; }
 
         [Column("isActive")]
         public bool IsActive { get; set; }
