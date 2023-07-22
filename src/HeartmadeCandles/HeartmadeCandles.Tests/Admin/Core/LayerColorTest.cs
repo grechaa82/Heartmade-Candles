@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.Core.Models;
 
@@ -14,7 +15,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
             string title,
             string description,
             decimal pricePerGram,
-            string imageURL,
+            Image[] images,
             bool isActive)
         {
             // Arrange
@@ -25,7 +26,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 title: title,
                 description: description,
                 pricePerGram: pricePerGram,
-                imageURL: imageURL,
+                images: images,
                 isActive: isActive);
 
             // Assert
@@ -43,7 +44,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                     faker.Random.String(1, LayerColor.MaxTitleLenght),
                     faker.Random.String(1, LayerColor.MaxDescriptionLenght),
                     faker.Random.Number(1, 10000),
-                    faker.Image.PicsumUrl(),
+                    new Image[] { Image.Create(faker.Random.String(1, Image.MaxAlternativeNameLenght), faker.Random.String()).Value },
                     faker.Random.Bool()
                 };
             }
@@ -63,7 +64,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 title: title,
                 description: _faker.Random.String(1, LayerColor.MaxDescriptionLenght),
                 pricePerGram: _faker.Random.Number(1, 10000),
-                imageURL: _faker.Image.PicsumUrl(),
+                images: new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
                 isActive: _faker.Random.Bool());
 
             // Assert
@@ -100,7 +101,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 title: _faker.Random.String(1, LayerColor.MaxTitleLenght),
                 description: description,
                 pricePerGram: _faker.Random.Number(1, 10000),
-                imageURL: _faker.Image.PicsumUrl(),
+                images: new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
                 isActive: _faker.Random.Bool());
 
             // Assert
@@ -143,14 +144,14 @@ namespace HeartmadeCandles.Tests.Admin.Core
             var title = "   ";
             string description = "";
             var pricePerGram = -10.0m;
-            var imageURL = "";
+            var images = new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value };
 
             // Act
             var result = Make(
-                title: title,
+            title: title,
                 description: description,
                 pricePerGram: pricePerGram,
-                imageURL: imageURL);
+                images: images);
 
             // Assert
             Assert.True(result.IsFailure);
@@ -163,7 +164,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
             string? title = null,
             string? description = null,
             decimal? pricePerGram = null,
-            string? imageURL = null,
+            Image[]? images = null,
             bool? isActive = null)
         {
             var faker = new Faker();
@@ -173,7 +174,7 @@ namespace HeartmadeCandles.Tests.Admin.Core
                 title: title ??  faker.Random.String(1, LayerColor.MaxTitleLenght),
                 description: description ?? faker.Random.String(1, LayerColor.MaxDescriptionLenght),
                 pricePerGram: pricePerGram ??  faker.Random.Number(1, 10000),
-                imageURL: imageURL ?? faker.Image.PicsumUrl(),
+                images: images ?? new Image[] { Image.Create(faker.Random.String(1, Image.MaxAlternativeNameLenght), faker.Random.String()).Value },
                 isActive: isActive ?? faker.Random.Bool());
         }
     }

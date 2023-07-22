@@ -31,11 +31,26 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(WickRequest wickRequest)
         {
+            var imagesResult = wickRequest.Images
+                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
+                .ToArray();
+
+            if (imagesResult.Any(result => result.IsFailure))
+            {
+                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
+                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
+                return BadRequest(errorMessages);
+            }
+
+            var images = imagesResult
+                .Select(result => result.Value)
+                .ToArray();
+
             var result = Wick.Create(
                 wickRequest.Title,
                 wickRequest.Description,
                 wickRequest.Price,
-                wickRequest.ImageURL,
+                images,
                 wickRequest.IsActive);
 
             if (result.IsFailure)
@@ -51,11 +66,26 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, WickRequest wickRequest)
         {
+            var imagesResult = wickRequest.Images
+                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
+                .ToArray();
+
+            if (imagesResult.Any(result => result.IsFailure))
+            {
+                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
+                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
+                return BadRequest(errorMessages);
+            }
+
+            var images = imagesResult
+                .Select(result => result.Value)
+                .ToArray();
+
             var result = Wick.Create(
                 wickRequest.Title,
                 wickRequest.Description,
                 wickRequest.Price,
-                wickRequest.ImageURL,
+                images,
                 wickRequest.IsActive,
                 id);
 

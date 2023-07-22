@@ -64,12 +64,12 @@ namespace HeartmadeCandles.UnitTests.Admin.BL.Services
         private static Decor GenerateDecor(int id = 0)
         {
             var decor = Decor.Create(
-                   _faker.Random.String(1, Decor.MaxTitleLenght),
-                   _faker.Random.String(1, Decor.MaxDescriptionLenght),
-                   _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
-                   _faker.Image.PicsumUrl(),
-                   _faker.Random.Bool(),
-                   id == 0 ? _faker.Random.Number(1, 10000) : id);
+                _faker.Random.String(1, Decor.MaxTitleLenght),
+                _faker.Random.String(1, Decor.MaxDescriptionLenght),
+                _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+                new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
+                _faker.Random.Bool(),
+                id == 0 ? _faker.Random.Number(1, 10000) : id);
 
             return decor.Value;
         }

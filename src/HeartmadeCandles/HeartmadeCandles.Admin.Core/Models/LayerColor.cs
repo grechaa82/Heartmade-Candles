@@ -11,22 +11,22 @@ namespace HeartmadeCandles.Admin.Core.Models
         private string _title;
         private string _description;
         private decimal _pricePerGram;
-        private string _imageURL;
+        private Image[] _images;
         private bool _isActive;
 
         private LayerColor(
             int id,
             string title, 
             string description, 
-            decimal pricePerGram, 
-            string imageURL, 
+            decimal pricePerGram,
+            Image[] images,
             bool isActive)
         {
             _id = id;
             _title = title;
             _description = description;
             _pricePerGram = pricePerGram;
-            _imageURL = imageURL;
+            _images = images;
             _isActive = isActive;
         }
 
@@ -34,14 +34,14 @@ namespace HeartmadeCandles.Admin.Core.Models
         public string Title { get => _title; }
         public string Description { get => _description; }
         public decimal PricePerGram { get => _pricePerGram; }
-        public string ImageURL { get => _imageURL; }
+        public Image[] Images { get => _images; }
         public bool IsActive { get => _isActive; }
         
         public static Result<LayerColor> Create(
             string title,
             string description,
             decimal pricePerGram,
-            string imageURL,
+            Image[] images,
             bool isActive = true,
             int id = 0)
         {
@@ -92,7 +92,7 @@ namespace HeartmadeCandles.Admin.Core.Models
                 title, 
                 description, 
                 pricePerGram, 
-                imageURL, 
+                images, 
                 isActive);
 
             return Result.Success(layerColor);

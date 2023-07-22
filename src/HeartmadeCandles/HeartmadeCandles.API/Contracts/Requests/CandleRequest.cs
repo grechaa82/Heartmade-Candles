@@ -10,7 +10,7 @@ namespace HeartmadeCandles.API.Contracts.Requests
             string description,
             decimal price,
             int weightGrams, 
-            ImageRequest[] image, 
+            ImageRequest[] images, 
             TypeCandleRequest typeCandle,
             bool isActive)
         {
@@ -18,7 +18,7 @@ namespace HeartmadeCandles.API.Contracts.Requests
             Description = description;
             Price = price;
             WeightGrams = weightGrams;
-            Images = image;
+            Images = images;
             TypeCandle = typeCandle;
             IsActive = isActive;
         }

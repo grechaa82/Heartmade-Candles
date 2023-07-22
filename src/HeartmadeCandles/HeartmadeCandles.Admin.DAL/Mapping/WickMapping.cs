@@ -10,8 +10,8 @@ namespace HeartmadeCandles.Admin.DAL.Mapping
             var wick = Wick.Create(
                 wickEntity.Title, 
                 wickEntity.Description, 
-                wickEntity.Price, 
-                wickEntity.ImageURL, 
+                wickEntity.Price,
+                ImageMapping.MapToImage(wickEntity.Images), 
                 wickEntity.IsActive, 
                 wickEntity.Id);
 
@@ -26,7 +26,7 @@ namespace HeartmadeCandles.Admin.DAL.Mapping
                 Title = wick.Title,
                 Description = wick.Description,
                 Price = wick.Price,
-                ImageURL = wick.ImageURL,
+                Images = ImageMapping.MapToImageEntity(wick.Images),
                 IsActive = wick.IsActive,
 
             }; ;
