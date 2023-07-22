@@ -28,3 +28,16 @@
   border-radius: 6px;
   object-fit: cover;
 }
+.imageNoAvailable {
+  height: 530px;
+  width: 530px;
+  background: #eee;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  color: #777;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+}

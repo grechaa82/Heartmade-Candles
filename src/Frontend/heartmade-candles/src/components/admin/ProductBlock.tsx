@@ -20,7 +20,7 @@ const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({ product, width, page
   const ref = useRef<HTMLDivElement>(null);
   const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
 
-  const firstImage = product.images[0];
+  const firstImage = product.images && product.images.length > 0 ? product.images[0] : null;
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import ProductsGrid from "../../modules/admin/ProductsGrid";
-import { LayerColor } from "../../types/LayerColor";
-import { LayerColorRequest } from "../../types/Requests/LayerColorRequest";
-import CreateLayerColorPopUp from "../../components/admin/PopUp/CreateLayerColorPopUp";
+import ProductsGrid from '../../modules/admin/ProductsGrid';
+import { LayerColor } from '../../types/LayerColor';
+import { LayerColorRequest } from '../../types/Requests/LayerColorRequest';
+import CreateLayerColorPopUp from '../../components/admin/PopUp/CreateLayerColorPopUp';
 
-import { LayerColorsApi } from "../../services/LayerColorsApi";
+import { LayerColorsApi } from '../../services/LayerColorsApi';
 
 export interface AllLayerColorPageProps {}
 
@@ -17,7 +17,7 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
       title: createdItem.title,
       description: createdItem.description,
       pricePerGram: createdItem.pricePerGram,
-      imageURL: createdItem.imageURL,
+      images: createdItem.images,
       isActive: createdItem.isActive,
     };
     await LayerColorsApi.create(layerColorRequest);
@@ -47,7 +47,7 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
         pageUrl="layerColors"
         popUpComponent={
           <CreateLayerColorPopUp
-            onClose={() => console.log("Popup closed")}
+            onClose={() => console.log('Popup closed')}
             title="Создать слой"
             onSave={handleCreateLayerColor}
           />

@@ -1,27 +1,23 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent } from 'react';
 
-import { Wick } from "../../../types/Wick";
-import Textarea from "../Textarea";
-import CheckboxBlock from "../CheckboxBlock";
-import PopUp, { PopUpProps } from "./PopUp";
+import { Wick } from '../../../types/Wick';
+import Textarea from '../Textarea';
+import CheckboxBlock from '../CheckboxBlock';
+import PopUp, { PopUpProps } from './PopUp';
 
-import Style from "./CreateWickPopUp.module.css";
+import Style from './CreateWickPopUp.module.css';
 
 export interface CreateWickPopUpProps extends PopUpProps {
   title: string;
   onSave: (wick: Wick) => void;
 }
 
-const CreateWickPopUp: FC<CreateWickPopUpProps> = ({
-  onClose,
-  title,
-  onSave,
-}) => {
+const CreateWickPopUp: FC<CreateWickPopUpProps> = ({ onClose, title, onSave }) => {
   const [wick, setWick] = useState<Wick>({
     id: 0,
-    title: "",
-    description: "",
-    imageURL: "",
+    title: '',
+    description: '',
+    images: [],
     isActive: false,
     price: 0,
   });
@@ -64,18 +60,10 @@ const CreateWickPopUp: FC<CreateWickPopUpProps> = ({
             />
           </div>
           <div className={`${Style.formItem} ${Style.itemPrice}`}>
-            <Textarea
-              text={wick.price.toString()}
-              label="Стоимость"
-              onChange={handleChangePrice}
-            />
+            <Textarea text={wick.price.toString()} label="Стоимость" onChange={handleChangePrice} />
           </div>
           <div className={`${Style.formItem} ${Style.itemActive}`}>
-            <CheckboxBlock
-              text="Активна"
-              checked={wick.isActive}
-              onChange={handleChangeIsActive}
-            />
+            <CheckboxBlock text="Активна" checked={wick.isActive} onChange={handleChangeIsActive} />
           </div>
           <div className={`${Style.formItem} ${Style.itemDescription}`}>
             <Textarea

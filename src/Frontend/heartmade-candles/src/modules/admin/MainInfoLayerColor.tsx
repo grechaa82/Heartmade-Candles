@@ -50,7 +50,7 @@ const MainInfoLayerColor: FC<MainInfoLayerColorProps> = ({
 
   return (
     <div className={Style.layerColorInfo}>
-      <ImageSlider imageUrls={layerColor.imageURL.split(',')} />
+      <ImageSlider images={layerColor.images} />
 
       <form className={`${Style.gridContainer} ${Style.formForLayerColor}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>

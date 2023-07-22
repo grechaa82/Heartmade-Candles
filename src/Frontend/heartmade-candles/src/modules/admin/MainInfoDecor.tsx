@@ -46,7 +46,7 @@ const MainInfoDecor: FC<MainInfoDecorProps> = ({ data, handleChangesDecor, onSav
 
   return (
     <div className={Style.decorInfo}>
-      <ImageSlider imageUrls={decor.imageURL.split(',')} />
+      <ImageSlider images={decor.images} />
       <form className={`${Style.gridContainer} ${Style.formForDecor}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

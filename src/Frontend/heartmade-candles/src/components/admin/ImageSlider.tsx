@@ -30,6 +30,14 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
     setCurrentImageIndex(current);
   };
 
+  if (images.length === 0) {
+    return (
+      <div className={Style.image}>
+        <div className={Style.imageNoAvailable}>Изображение отсутствует</div>
+      </div>
+    );
+  }
+
   return (
     <div className={Style.image}>
       <img

@@ -1,27 +1,23 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent } from 'react';
 
-import { Decor } from "../../../types/Decor";
-import Textarea from "../Textarea";
-import CheckboxBlock from "../CheckboxBlock";
-import PopUp, { PopUpProps } from "./PopUp";
+import { Decor } from '../../../types/Decor';
+import Textarea from '../Textarea';
+import CheckboxBlock from '../CheckboxBlock';
+import PopUp, { PopUpProps } from './PopUp';
 
-import Style from "./CreateDecorPopUp.module.css";
+import Style from './CreateDecorPopUp.module.css';
 
 export interface CreateDecorPopUpProps extends PopUpProps {
   title: string;
   onSave: (decor: Decor) => void;
 }
 
-const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
-  onClose,
-  title,
-  onSave,
-}) => {
+const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({ onClose, title, onSave }) => {
   const [decor, setDecor] = useState<Decor>({
     id: 0,
-    title: "",
-    description: "",
-    imageURL: "",
+    title: '',
+    description: '',
+    images: [],
     isActive: false,
     price: 0,
   });

@@ -1,27 +1,23 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent } from 'react';
 
-import { LayerColor } from "../../../types/LayerColor";
-import Textarea from "../Textarea";
-import CheckboxBlock from "../CheckboxBlock";
-import PopUp, { PopUpProps } from "./PopUp";
+import { LayerColor } from '../../../types/LayerColor';
+import Textarea from '../Textarea';
+import CheckboxBlock from '../CheckboxBlock';
+import PopUp, { PopUpProps } from './PopUp';
 
-import Style from "./CreateLayerColorPopUp.module.css";
+import Style from './CreateLayerColorPopUp.module.css';
 
 export interface CreateLayerColorPopUpProps extends PopUpProps {
   title: string;
   onSave: (layerColor: LayerColor) => void;
 }
 
-const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
-  onClose,
-  title,
-  onSave,
-}) => {
+const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({ onClose, title, onSave }) => {
   const [LayerColor, setLayerColor] = useState<LayerColor>({
     id: 0,
-    title: "",
-    description: "",
-    imageURL: "",
+    title: '',
+    description: '',
+    images: [],
     isActive: false,
     pricePerGram: 0,
   });
@@ -32,9 +28,7 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
     setIsModified(true);
   };
 
-  const handleChangePricePerGram = (
-    event: ChangeEvent<HTMLTextAreaElement>
-  ) => {
+  const handleChangePricePerGram = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setLayerColor((prev) => ({
       ...prev,
       pricePerGram: parseFloat(event.target.value),
