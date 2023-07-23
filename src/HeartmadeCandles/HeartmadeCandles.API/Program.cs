@@ -1,6 +1,4 @@
-using HeartmadeCandles.Bot;
 using HeartmadeCandles.BusinessLogic.Services;
-using HeartmadeCandles.Core.Interfaces;
 using HeartmadeCandles.Core.Interfaces.Repositories;
 using HeartmadeCandles.Core.Interfaces.Services;
 using HeartmadeCandles.DataAccess.MongoDB;
@@ -41,7 +39,10 @@ try
         options.AddDefaultPolicy(
             policy =>
             {
-                policy.WithOrigins("http://localhost:3000");
+                policy.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
             });
     });
 

@@ -1,8 +1,8 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode } from 'react';
 
-import IconRemoveLarge from "../../../UI/IconRemoveLarge";
+import IconRemoveLarge from '../../../UI/IconRemoveLarge';
 
-import Style from "./PopUp.module.css";
+import Style from './PopUp.module.css';
 
 export interface PopUpProps {
   onClose: () => void;

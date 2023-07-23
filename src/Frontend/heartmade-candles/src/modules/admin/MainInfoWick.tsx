@@ -46,7 +46,7 @@ const MainInfoWick: FC<MainInfoWickProps> = ({ data, handleChangesWick, onSave }
 
   return (
     <div className={Style.wickInfo}>
-      <ImageSlider images={wick.images} />
+      {/* <ImageSlider images={wick.images} /> */}
       <form className={`${Style.gridContainer} ${Style.formForWick}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

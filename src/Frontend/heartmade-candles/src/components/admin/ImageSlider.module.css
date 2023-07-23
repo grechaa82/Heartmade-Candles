@@ -1,5 +1,6 @@
 .image {
   overflow: hidden;
+  position: relative;
 }
 .image > img {
   height: 530px;
@@ -40,4 +41,25 @@
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
+}
+.changesImages {
+  display: flex;
+  position: absolute;
+  gap: 8px;
+  top: 24px;
+  right: 24px;
+}
+.iconChangeImages {
+  border-radius: 6px;
+  background: var(--color-light-green, #e9fdf1);
+  width: 40px;
+  height: 40px;
+  border: none;
+}
+.iconUploadImages {
+  border-radius: 6px;
+  background: var(--color-light-green, #e9fdf1);
+  width: 40px;
+  height: 40px;
+  border: none;
 }

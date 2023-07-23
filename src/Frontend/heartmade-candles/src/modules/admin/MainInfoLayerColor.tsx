@@ -50,8 +50,7 @@ const MainInfoLayerColor: FC<MainInfoLayerColorProps> = ({
 
   return (
     <div className={Style.layerColorInfo}>
-      <ImageSlider images={layerColor.images} />
-
+      {/* <ImageSlider images={layerColor.images} /> */}
       <form className={`${Style.gridContainer} ${Style.formForLayerColor}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

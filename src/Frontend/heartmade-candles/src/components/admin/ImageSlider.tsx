@@ -2,17 +2,24 @@ import { FC, useState } from 'react';
 
 import IconChevronLeftLarge from '../../UI/IconChevronLeftLarge';
 import IconChevronRightLarge from '../../UI/IconChevronRightLarge';
+import IconDownloadLarge from '../../UI/IconDownloadLarge';
+import IconViewListLarge from '../../UI/IconViewListLarge';
 import { Image } from '../../types/Image';
+import AddImagesPopUp from './PopUp/AddImagesPopUp';
+
+import { ImagesApi } from '../../services/ImagesApi';
 
 import Style from './ImageSlider.module.css';
 
 interface ImageSliderProps {
   images: Image[];
+  updateImages: (images: Image[]) => void;
 }
 
-const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
+const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
   const handleChangeImage = (index: number, moveToIndex?: number) => {
     let current = index;
@@ -28,6 +35,14 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
       }
     }
     setCurrentImageIndex(current);
+  };
+
+  const handlePopUpOpen = () => {
+    setIsPopUpOpen(true);
+  };
+
+  const handlePopUpClose = () => {
+    setIsPopUpOpen(false);
   };
 
   if (images.length === 0) {
@@ -66,6 +81,21 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
           <IconChevronRightLarge color="#777" />
         </button>
       </div>
+      <div className={Style.changesImages}>
+        <button className={Style.iconChangeImages} onClick={handlePopUpOpen}>
+          <IconViewListLarge color="#6FCF97" />
+        </button>
+        <button className={Style.iconUploadImages} onClick={handlePopUpOpen}>
+          <IconDownloadLarge color="#6FCF97" />
+        </button>
+      </div>
+      {isPopUpOpen && (
+        <AddImagesPopUp
+          onClose={handlePopUpClose}
+          uploadImages={ImagesApi.uploadImages}
+          updateImages={updateImages}
+        />
+      )}
     </div>
   );
 };
