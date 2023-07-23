@@ -1,11 +1,11 @@
-import { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { FC, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import MainInfoLayerColor from "../../modules/admin/MainInfoLayerColor";
-import { LayerColor } from "../../types/LayerColor";
-import { LayerColorRequest } from "../../types/Requests/LayerColorRequest";
+import MainInfoLayerColor from '../../modules/admin/MainInfoLayerColor';
+import { LayerColor } from '../../types/LayerColor';
+import { LayerColorRequest } from '../../types/Requests/LayerColorRequest';
 
-import { LayerColorsApi } from "../../services/LayerColorsApi";
+import { LayerColorsApi } from '../../services/LayerColorsApi';
 
 type LayerColorParams = {
   id: string;
@@ -28,7 +28,7 @@ const LayerColorPage: FC = () => {
         title: updatedItem.title,
         description: updatedItem.description,
         pricePerGram: updatedItem.pricePerGram,
-        imageURL: updatedItem.imageURL,
+        images: updatedItem.images,
         isActive: updatedItem.isActive,
       };
       await LayerColorsApi.update(id, layerColorRequest);

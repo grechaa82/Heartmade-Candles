@@ -10,8 +10,8 @@ namespace HeartmadeCandles.Admin.DAL.Mapping
             var layerColor = LayerColor.Create(
                 layerColorEntity.Title, 
                 layerColorEntity.Description, 
-                layerColorEntity.PricePerGram, 
-                layerColorEntity.ImageURL, 
+                layerColorEntity.PricePerGram,
+                ImageMapping.MapToImage(layerColorEntity.Images), 
                 layerColorEntity.IsActive, 
                 layerColorEntity.Id);
 
@@ -26,7 +26,7 @@ namespace HeartmadeCandles.Admin.DAL.Mapping
                 Title = layerColor.Title,
                 Description = layerColor.Description,
                 PricePerGram = layerColor.PricePerGram,
-                ImageURL = layerColor.ImageURL,
+                Images = ImageMapping.MapToImageEntity(layerColor.Images),
                 IsActive = layerColor.IsActive,
             };
 

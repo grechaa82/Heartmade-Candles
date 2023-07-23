@@ -1,7 +1,9 @@
+import { Image } from '../Image';
+
 export interface LayerColorRequest {
   title: string;
   description: string;
   pricePerGram: number;
-  imageURL: string;
+  images: Image[];
   isActive: boolean;
 }

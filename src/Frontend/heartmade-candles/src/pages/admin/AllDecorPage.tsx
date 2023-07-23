@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import ProductsGrid from "../../modules/admin/ProductsGrid";
-import { Decor } from "../../types/Decor";
-import { DecorRequest } from "../../types/Requests/DecorRequest";
-import CreateDecorPopUp from "../../components/admin/PopUp/CreateDecorPopUp";
+import ProductsGrid from '../../modules/admin/ProductsGrid';
+import { Decor } from '../../types/Decor';
+import { DecorRequest } from '../../types/Requests/DecorRequest';
+import CreateDecorPopUp from '../../components/admin/PopUp/CreateDecorPopUp';
 
-import { DecorsApi } from "../../services/DecorsApi";
+import { DecorsApi } from '../../services/DecorsApi';
 
 export interface AllDecorPageProps {}
 
@@ -17,7 +17,7 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
       title: createdItem.title,
       description: createdItem.description,
       price: createdItem.price,
-      imageURL: createdItem.imageURL,
+      images: createdItem.images,
       isActive: createdItem.isActive,
     };
     await DecorsApi.create(decorRequest);
@@ -47,7 +47,7 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
         pageUrl="decors"
         popUpComponent={
           <CreateDecorPopUp
-            onClose={() => console.log("Popup closed")}
+            onClose={() => console.log('Popup closed')}
             title="Создать декор"
             onSave={handleCreateDecor}
           />

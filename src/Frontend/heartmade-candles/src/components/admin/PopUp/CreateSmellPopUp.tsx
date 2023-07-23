@@ -1,27 +1,23 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent } from 'react';
 
-import { Smell } from "../../../types/Smell";
-import Textarea from "../Textarea";
-import CheckboxBlock from "../CheckboxBlock";
-import PopUp, { PopUpProps } from "./PopUp";
+import { Smell } from '../../../types/Smell';
+import Textarea from '../Textarea';
+import CheckboxBlock from '../CheckboxBlock';
+import PopUp, { PopUpProps } from './PopUp';
 
-import Style from "./CreateSmellPopUp.module.css";
+import Style from './CreateSmellPopUp.module.css';
 
 export interface CreateSmellPopUpProps extends PopUpProps {
   title: string;
   onSave: (smell: Smell) => void;
 }
 
-const CreateSmellPopUp: FC<CreateSmellPopUpProps> = ({
-  onClose,
-  title,
-  onSave,
-}) => {
+const CreateSmellPopUp: FC<CreateSmellPopUpProps> = ({ onClose, title, onSave }) => {
   const [smell, setSmell] = useState<Smell>({
     id: 0,
-    title: "",
-    description: "",
-    imageURL: "",
+    title: '',
+    description: '',
+    images: [],
     isActive: false,
     price: 0,
   });

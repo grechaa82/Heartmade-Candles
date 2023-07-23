@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import ProductsGrid from "../../modules/admin/ProductsGrid";
-import { Wick } from "../../types/Wick";
-import { WickRequest } from "../../types/Requests/WickRequest";
-import CreateWickPopUp from "../../components/admin/PopUp/CreateWickPopUp";
+import ProductsGrid from '../../modules/admin/ProductsGrid';
+import { Wick } from '../../types/Wick';
+import { WickRequest } from '../../types/Requests/WickRequest';
+import CreateWickPopUp from '../../components/admin/PopUp/CreateWickPopUp';
 
-import { WicksApi } from "../../services/WicksApi";
+import { WicksApi } from '../../services/WicksApi';
 
 export interface AllWickPageProps {}
 
@@ -17,7 +17,7 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
       title: createdItem.title,
       description: createdItem.description,
       price: createdItem.price,
-      imageURL: createdItem.imageURL,
+      images: createdItem.images,
       isActive: createdItem.isActive,
     };
     await WicksApi.create(wickRequest);
@@ -47,7 +47,7 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
         pageUrl="wicks"
         popUpComponent={
           <CreateWickPopUp
-            onClose={() => console.log("Popup closed")}
+            onClose={() => console.log('Popup closed')}
             title="Создать фитиль"
             onSave={handleCreateWick}
           />

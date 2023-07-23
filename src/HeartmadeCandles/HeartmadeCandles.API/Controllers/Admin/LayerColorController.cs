@@ -31,11 +31,26 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(LayerColorRequest layerColorRequest)
         {
+            var imagesResult = layerColorRequest.Images
+                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
+                .ToArray();
+
+            if (imagesResult.Any(result => result.IsFailure))
+            {
+                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
+                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
+                return BadRequest(errorMessages);
+            }
+
+            var images = imagesResult
+                .Select(result => result.Value)
+                .ToArray();
+
             var result = LayerColor.Create(
                 layerColorRequest.Title,
                 layerColorRequest.Description,
                 layerColorRequest.PricePerGram,
-                layerColorRequest.ImageURL,
+                images,
                 layerColorRequest.IsActive);
 
             if (result.IsFailure)
@@ -51,11 +66,26 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, LayerColorRequest layerColorRequest)
         {
+            var imagesResult = layerColorRequest.Images
+                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
+                .ToArray();
+
+            if (imagesResult.Any(result => result.IsFailure))
+            {
+                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
+                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
+                return BadRequest(errorMessages);
+            }
+
+            var images = imagesResult
+                .Select(result => result.Value)
+                .ToArray();
+
             var result = LayerColor.Create(
                 layerColorRequest.Title,
                 layerColorRequest.Description,
                 layerColorRequest.PricePerGram,
-                layerColorRequest.ImageURL,
+                images,
                 layerColorRequest.IsActive,
                 id);
 

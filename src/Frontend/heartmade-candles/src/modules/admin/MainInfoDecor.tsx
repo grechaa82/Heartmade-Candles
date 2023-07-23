@@ -1,11 +1,12 @@
-import { FC, useState, ChangeEvent } from 'react';
+import { FC, useState, ChangeEvent } from "react";
 
-import { Decor } from '../../types/Decor';
-import Textarea from '../../components/admin/Textarea';
-import CheckboxBlock from '../../components/admin/CheckboxBlock';
-import ImageSlider from '../../components/admin/ImageSlider';
+import { Decor } from "../../types/Decor";
+import Textarea from "../../components/admin/Textarea";
+import CheckboxBlock from "../../components/admin/CheckboxBlock";
+import ImageSlider from "../../components/admin/ImageSlider";
+import { Image } from "../../types/Image";
 
-import Style from './MainInfoDecor.module.css';
+import Style from "./MainInfoDecor.module.css";
 
 export interface MainInfoDecorProps {
   data: Decor;
@@ -13,7 +14,11 @@ export interface MainInfoDecorProps {
   onSave?: (saveDecor: Decor) => void;
 }
 
-const MainInfoDecor: FC<MainInfoDecorProps> = ({ data, handleChangesDecor, onSave }) => {
+const MainInfoDecor: FC<MainInfoDecorProps> = ({
+  data,
+  handleChangesDecor,
+  onSave,
+}) => {
   const [decor, setDecor] = useState<Decor>(data);
   const [isModified, setIsModified] = useState(false);
 
@@ -44,9 +49,15 @@ const MainInfoDecor: FC<MainInfoDecorProps> = ({ data, handleChangesDecor, onSav
     setIsModified(true);
   };
 
+  const handleChangeImages = (images: Image[]) => {
+    setDecor((prev) => ({ ...prev, images: [...prev.images, ...images] }));
+    handleChangesDecor(decor);
+    setIsModified(true);
+  };
+
   return (
     <div className={Style.decorInfo}>
-      <ImageSlider imageUrls={decor.imageURL.split(',')} />
+      <ImageSlider images={decor.images} updateImages={handleChangeImages} />
       <form className={`${Style.gridContainer} ${Style.formForDecor}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea
@@ -57,10 +68,18 @@ const MainInfoDecor: FC<MainInfoDecorProps> = ({ data, handleChangesDecor, onSav
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemPrice}`}>
-          <Textarea text={decor.price.toString()} label="Стоимость" onChange={handleChangePrice} />
+          <Textarea
+            text={decor.price.toString()}
+            label="Стоимость"
+            onChange={handleChangePrice}
+          />
         </div>
         <div className={`${Style.formItem} ${Style.itemActive}`}>
-          <CheckboxBlock text="Активна" checked={decor.isActive} onChange={handleChangeIsActive} />
+          <CheckboxBlock
+            text="Активна"
+            checked={decor.isActive}
+            onChange={handleChangeIsActive}
+          />
         </div>
         <div className={`${Style.formItem} ${Style.itemDescription}`}>
           <Textarea

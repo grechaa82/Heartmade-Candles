@@ -18,9 +18,9 @@ export interface ProductBlockProps<T extends BaseProduct> {
 const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({ product, width, pageUrl, actions }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
 
-  const images = product.imageURL ? product.imageURL.split(',') : [];
-  const firstImage = images.length > 0 ? images[0] : '';
+  const firstImage = product.images && product.images.length > 0 ? product.images[0] : null;
 
   const handleMenuToggle = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -49,7 +49,11 @@ const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({ product, width, page
 
   return (
     <div className={Style.productBlock} style={productBlockStyle} ref={ref}>
-      <div className={Style.image}>{firstImage && <img src={firstImage} />}</div>
+      <div className={Style.image}>
+        {firstImage && (
+          <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
+        )}
+      </div>
       <div className={Style.info}>
         <Link to={getProductLink()} className={Style.link}>
           <p className={Style.title}>{product.title}</p>

@@ -1,11 +1,11 @@
-import { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { FC, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import MainInfoWick from "../../modules/admin/MainInfoWick";
-import { Wick } from "../../types/Wick";
-import { WickRequest } from "../../types/Requests/WickRequest";
+import MainInfoWick from '../../modules/admin/MainInfoWick';
+import { Wick } from '../../types/Wick';
+import { WickRequest } from '../../types/Requests/WickRequest';
 
-import { WicksApi } from "../../services/WicksApi";
+import { WicksApi } from '../../services/WicksApi';
 
 type WickParams = {
   id: string;
@@ -28,7 +28,7 @@ const WickPage: FC = () => {
         title: updatedItem.title,
         description: updatedItem.description,
         price: updatedItem.price,
-        imageURL: updatedItem.imageURL,
+        images: updatedItem.images,
         isActive: updatedItem.isActive,
       };
       await WicksApi.update(id, wickRequest);
@@ -50,11 +50,7 @@ const WickPage: FC = () => {
     <>
       <div className="wicks">
         {wickData && (
-          <MainInfoWick
-            data={wickData}
-            handleChangesWick={handleChangesWick}
-            onSave={updateWick}
-          />
+          <MainInfoWick data={wickData} handleChangesWick={handleChangesWick} onSave={updateWick} />
         )}
       </div>
     </>

@@ -10,8 +10,8 @@ namespace HeartmadeCandles.Admin.DAL.Mapping
             var decor = Decor.Create(
                 decorEntity.Title, 
                 decorEntity.Description, 
-                decorEntity.Price, 
-                decorEntity.ImageURL, 
+                decorEntity.Price,
+                ImageMapping.MapToImage(decorEntity.Images), 
                 decorEntity.IsActive, 
                 decorEntity.Id);
 
@@ -26,7 +26,7 @@ namespace HeartmadeCandles.Admin.DAL.Mapping
                 Title = decor.Title,
                 Description = decor.Description,
                 Price = decor.Price,
-                ImageURL = decor.ImageURL,
+                Images = ImageMapping.MapToImageEntity(decor.Images),
                 IsActive = decor.IsActive,
             };
 

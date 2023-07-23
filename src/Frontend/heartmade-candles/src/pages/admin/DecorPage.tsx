@@ -1,11 +1,11 @@
-import { FC, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { FC, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
-import MainInfoDecor from "../../modules/admin/MainInfoDecor";
-import { Decor } from "../../types/Decor";
-import { DecorRequest } from "../../types/Requests/DecorRequest";
+import MainInfoDecor from '../../modules/admin/MainInfoDecor';
+import { Decor } from '../../types/Decor';
+import { DecorRequest } from '../../types/Requests/DecorRequest';
 
-import { DecorsApi } from "../../services/DecorsApi";
+import { DecorsApi } from '../../services/DecorsApi';
 
 type DecorParams = {
   id: string;
@@ -28,7 +28,7 @@ const DecorPage: FC = () => {
         title: updatedItem.title,
         description: updatedItem.description,
         price: updatedItem.price,
-        imageURL: updatedItem.imageURL,
+        images: updatedItem.images,
         isActive: updatedItem.isActive,
       };
       await DecorsApi.update(id, decorRequest);

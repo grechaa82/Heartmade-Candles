@@ -1,5 +1,5 @@
-import React, { FC } from "react";
-import Style from "./Button.module.css";
+import { FC } from 'react';
+import Style from './Button.module.css';
 
 export interface ButtonProps {
   text: string;
@@ -12,13 +12,7 @@ export interface ButtonDefaultProps extends ButtonProps {
   onClick: () => void;
 }
 
-const Button: React.FC<ButtonDefaultProps> = ({
-  text,
-  color = "#000",
-  height,
-  width,
-  onClick,
-}) => {
+const Button: FC<ButtonDefaultProps> = ({ text, color = '#000', height, width, onClick }) => {
   return (
     <button
       className={Style.button}

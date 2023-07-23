@@ -6,6 +6,7 @@ import Textarea from '../../components/admin/Textarea';
 import { Candle } from '../../types/Candle';
 import { TypeCandle } from '../../types/TypeCandle';
 import ImageSlider from '../../components/admin/ImageSlider';
+import { Image } from '../../types/Image';
 
 import Style from './MainInfoCandle.module.css';
 
@@ -88,9 +89,15 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
     setIsModified(true);
   };
 
+  const handleChangeImages = (images: Image[]) => {
+    setCandle((prev) => ({ ...prev, images: [...prev.images, ...images] }));
+    handleChangesCandle(candle);
+    setIsModified(true);
+  };
+
   return (
     <div className={Style.candleInfo}>
-      <ImageSlider imageUrls={candle.imageURL.split(',')} />
+      <ImageSlider images={candle.images} updateImages={handleChangeImages} />
       <form className={`${Style.gridContainer} ${Style.formForCandle}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

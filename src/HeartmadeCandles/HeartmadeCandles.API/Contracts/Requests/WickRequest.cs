@@ -8,21 +8,21 @@ namespace HeartmadeCandles.API.Contracts.Requests
         public WickRequest(
             string title, 
             string description, 
-            decimal price, 
-            string imageURL, 
+            decimal price,
+            ImageRequest[] images,
             bool isActive)
         {
             Title = title;
             Description = description;
             Price = price;
-            ImageURL = imageURL;
+            Images = images;
             IsActive = isActive;
         }
 
         public string Title { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public string ImageURL { get; set; }
+        public ImageRequest[] Images { get; set; }
         public bool IsActive { get; set; }
     }
 }

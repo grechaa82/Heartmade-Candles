@@ -19,7 +19,5 @@ namespace HeartmadeCandles.Admin.Core.Interfaces
         Task<Result> UpdateNumberOfLayer(int candleId, int[] numberOfLayerIds);
         Task<Result> UpdateSmell(int candleId, int[] smellIds);
         Task<Result> UpdateWick(int candleId, int[] wickIds);
-        Task<Result> UpdateImageURL(int id, string imagesURL, bool addToExisting = true);
-        Task<Result> DeleteImageURL(int id, string[] imagesURL);
     }
 }

@@ -11,22 +11,22 @@ namespace HeartmadeCandles.Admin.Core.Models
         private string _title;
         private string _description;
         private decimal _price;
-        private string _imageURL;
+        private Image[] _images;
         private bool _isActive;
 
         private Wick( 
             int id,
             string title, 
             string description, 
-            decimal price, 
-            string imageURL, 
+            decimal price,
+            Image[] images,
             bool isActive)
         {
             _id = id;
             _title = title;
             _description = description;
             _price = price;
-            _imageURL = imageURL;
+            _images = images;
             _isActive = isActive;
         }
 
@@ -34,14 +34,14 @@ namespace HeartmadeCandles.Admin.Core.Models
         public string Title { get => _title; }
         public string Description { get => _description; }
         public decimal Price { get => _price; }
-        public string ImageURL { get => _imageURL; }
+        public Image[] Images { get => _images; }
         public bool IsActive { get => _isActive; }
         
         public static Result<Wick> Create(
             string title,
             string description,
             decimal price,
-            string imageURL,
+            Image[] images,
             bool isActive,
             int id = 0)
         {
@@ -79,7 +79,7 @@ namespace HeartmadeCandles.Admin.Core.Models
             {
                 result = Result.Combine(
                    result,
-                   Result.Failure<Wick>($"'{nameof(price)}' сannot be 0 or less"));
+                   Result.Failure<Wick>($"'{nameof(price)}' cannot be 0 or less"));
             }
 
             if (result.IsFailure)
@@ -92,7 +92,7 @@ namespace HeartmadeCandles.Admin.Core.Models
                 title, 
                 description, 
                 price, 
-                imageURL, 
+                images, 
                 isActive);
 
             return Result.Success(wick);

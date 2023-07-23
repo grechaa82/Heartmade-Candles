@@ -1,6 +1,7 @@
-﻿using HeartmadeCandles.API.Contracts.Requests;
+﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
+using HeartmadeCandles.API.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers.Admin
@@ -38,12 +39,27 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 return BadRequest(typeCandleResult.Error);
             }
 
+            var imagesResult = candleRequest.Images
+                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
+                .ToArray();
+
+            if (imagesResult.Any(result => result.IsFailure))
+            {
+                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
+                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
+                return BadRequest(errorMessages);
+            }
+
+            var images = imagesResult
+                .Select(result => result.Value)
+                .ToArray();
+
             var candleResult = Candle.Create(
                 candleRequest.Title,
                 candleRequest.Description,
                 candleRequest.Price,
                 candleRequest.WeightGrams,
-                candleRequest.ImageURL,
+                images,
                 typeCandleResult.Value,
                 candleRequest.IsActive);
 
@@ -67,12 +83,27 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 return BadRequest(typeCandleResult.Error);
             }
 
+            var imagesResult = candleRequest.Images
+                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
+                .ToArray();
+
+            if (imagesResult.Any(result => result.IsFailure))
+            {
+                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
+                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
+                return BadRequest(errorMessages);
+            }
+
+            var images = imagesResult
+                .Select(result => result.Value)
+                .ToArray();
+
             var candleResult = Candle.Create(
                 candleRequest.Title,
                 candleRequest.Description,
                 candleRequest.Price,
                 candleRequest.WeightGrams,
-                candleRequest.ImageURL,
+                images,
                 typeCandleResult.Value,
                 candleRequest.IsActive,
                 id);
@@ -99,8 +130,8 @@ namespace HeartmadeCandles.API.Controllers.Admin
         public async Task<IActionResult> UpdateDecor(int id, int[] decorsIds)
         {
             var result = await _candleService.UpdateDecor(id, decorsIds);
-            
-            if(result.IsFailure)
+
+            if (result.IsFailure)
             {
                 return BadRequest(result.Error);
             }
@@ -158,105 +189,6 @@ namespace HeartmadeCandles.API.Controllers.Admin
             }
 
             return Ok();
-        }
-
-        [HttpPost("{id}/images")]
-        public async Task<IActionResult> UploadImages(int id, [FromForm]List<IFormFile> imagesToUpload)
-        {            
-            foreach (var image in imagesToUpload)
-            {
-                await AddImage(image);
-            }
-
-            var result = await _candleService.UpdateImageURL(id, GetImageURL(imagesToUpload));
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
-        }
-
-        [HttpPut("{id}/images")]
-        public async Task<IActionResult> UpdateImages(int id, string[] imagesURL)
-        {            
-            var result = await _candleService.UpdateImageURL(id, GetImageURL(imagesURL), false);
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
-        }
-
-        [HttpDelete("{id}/images")]
-        public async Task<IActionResult> DeleteImages(int id, string[] imageURL)
-        {
-            foreach (var image in imageURL)
-            {
-                DeleteImage(image);
-            }
-         
-            var result = await _candleService.DeleteImageURL(id, imageURL);
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
-        }
-
-        private string GetImageURL(List<IFormFile> images)
-        {
-            string result = ""; 
-            
-            foreach (var image in images) 
-            { 
-                result += "http://localhost:5000/StaticFiles/Images/" + image.FileName +  ","; 
-            } 
-            
-            return result.TrimEnd(',');
-        }
-
-        public string GetImageURL(string[] imagesURL)
-        {
-            string result = ""; 
-                    
-            foreach (var image in imagesURL) 
-            { 
-                if (!image.StartsWith("http://localhost:5000/StaticFiles/Images/"))
-                {
-                    result += "http://localhost:5000/StaticFiles/Images/" + image +  ","; 
-                }
-                else
-                {
-                    result += image +  ","; 
-                }
-            } 
-                    
-            return result.TrimEnd(',');
-        }
-
-        private async Task AddImage(IFormFile image)
-        {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles/Images", image.FileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await image.CopyToAsync(stream);
-            }
-        }
-
-        private void DeleteImage(string imageUrl)
-        {
-            var imagePath = imageUrl.Replace("http://localhost:5000/", "");
-
-            if (System.IO.File.Exists(imagePath))
-            {
-                System.IO.File.Delete(imagePath);
-            }
         }
     }
 }

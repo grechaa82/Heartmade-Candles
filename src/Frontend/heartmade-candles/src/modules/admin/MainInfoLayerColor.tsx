@@ -1,11 +1,12 @@
-import { FC, useState, ChangeEvent } from 'react';
+import { FC, useState, ChangeEvent } from "react";
 
-import { LayerColor } from '../../types/LayerColor';
-import Textarea from '../../components/admin/Textarea';
-import CheckboxBlock from '../../components/admin/CheckboxBlock';
-import ImageSlider from '../../components/admin/ImageSlider';
+import { LayerColor } from "../../types/LayerColor";
+import Textarea from "../../components/admin/Textarea";
+import CheckboxBlock from "../../components/admin/CheckboxBlock";
+import ImageSlider from "../../components/admin/ImageSlider";
+import { Image } from "../../types/Image";
 
-import Style from './MainInfoLayerColor.module.css';
+import Style from "./MainInfoLayerColor.module.css";
 
 export interface MainInfoLayerColorProps {
   data: LayerColor;
@@ -48,10 +49,18 @@ const MainInfoLayerColor: FC<MainInfoLayerColorProps> = ({
     setIsModified(true);
   };
 
+  const handleChangeImages = (images: Image[]) => {
+    setLayerColor((prev) => ({ ...prev, images: [...prev.images, ...images] }));
+    handleChangesLayerColor(layerColor);
+    setIsModified(true);
+  };
+
   return (
     <div className={Style.layerColorInfo}>
-      <ImageSlider imageUrls={layerColor.imageURL.split(',')} />
-
+      <ImageSlider
+        images={layerColor.images}
+        updateImages={handleChangeImages}
+      />
       <form className={`${Style.gridContainer} ${Style.formForLayerColor}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea

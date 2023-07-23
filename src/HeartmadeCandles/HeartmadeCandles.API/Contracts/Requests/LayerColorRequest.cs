@@ -8,21 +8,21 @@ namespace HeartmadeCandles.API.Contracts.Requests
         public LayerColorRequest(
             string title, 
             string description, 
-            decimal pricePerGram, 
-            string imageURL, 
+            decimal pricePerGram,
+            ImageRequest[] images, 
             bool isActive)
         {
             Title = title;
             Description = description;
             PricePerGram = pricePerGram;
-            ImageURL = imageURL;
+            Images = images;
             IsActive = isActive;
         }
 
         public string Title { get; set; }
         public string Description { get; set; }
         public decimal PricePerGram { get; set; }
-        public string ImageURL { get; set; }
+        public ImageRequest[] Images { get; set; }
         public bool IsActive { get; set; }
     }
 }

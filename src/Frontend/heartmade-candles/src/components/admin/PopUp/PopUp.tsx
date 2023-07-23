@@ -11,7 +11,7 @@ export interface PopUpProps {
 
 const PopUp: FC<PopUpProps> = ({ onClose, children }) => {
   return (
-    <div className={Style.overlay}>
+    <div className={Style.overlay} onClick={onClose}>
       <div className={Style.popUp}>
         <button className={Style.closeButton} onClick={onClose}>
           <IconRemoveLarge color="#777" />

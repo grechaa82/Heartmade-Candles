@@ -1,13 +1,13 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent } from 'react';
 
-import { Candle } from "../../../types/Candle";
-import Textarea from "../Textarea";
-import ButtonDropdown, { optionData } from "../ButtonDropdown";
-import { TypeCandle } from "../../../types/TypeCandle";
-import CheckboxBlock from "../CheckboxBlock";
-import PopUp, { PopUpProps } from "./PopUp";
+import { Candle } from '../../../types/Candle';
+import Textarea from '../Textarea';
+import ButtonDropdown, { optionData } from '../ButtonDropdown';
+import { TypeCandle } from '../../../types/TypeCandle';
+import CheckboxBlock from '../CheckboxBlock';
+import PopUp, { PopUpProps } from './PopUp';
 
-import Style from "./CreateCandlePopUp.module.css";
+import Style from './CreateCandlePopUp.module.css';
 
 export interface CreateCandlePopUpProps extends PopUpProps {
   title: string;
@@ -23,9 +23,9 @@ const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
 }) => {
   const [candle, setCandle] = useState<Candle>({
     id: 0,
-    title: "",
-    description: "",
-    imageURL: "",
+    title: '',
+    description: '',
+    images: [],
     isActive: false,
     price: 0,
     weightGrams: 0,
@@ -62,7 +62,7 @@ const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
 
   const handleChangeTypeCandle = (id: string) => {
     const selectedTypeCandle = typeCandlesArray.find(
-      (typeCandle) => typeCandle.id.toString() === id
+      (typeCandle) => typeCandle.id.toString() === id,
     );
     if (selectedTypeCandle) {
       setCandle((prev) => ({
