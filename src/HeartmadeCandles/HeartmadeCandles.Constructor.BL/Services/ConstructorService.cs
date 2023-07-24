@@ -1,5 +1,7 @@
-﻿using HeartmadeCandles.Constructor.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Constructor.Core.Interfaces;
 using HeartmadeCandles.Constructor.Core.Models;
+using System.Diagnostics;
 
 namespace HeartmadeCandles.Constructor.BL.Services
 {
@@ -12,9 +14,15 @@ namespace HeartmadeCandles.Constructor.BL.Services
             _constructorRepository = constructorRepository;
         }
 
-        public async Task<CandleTypeWithCandles[]> GetAll()
+        public async Task<CandleTypeWithCandles[]> GetCandles()
         {
-            return await _constructorRepository.GetAll();
+            return await _constructorRepository.GetCandles();
+        }
+
+        public async Task<Result<CandleDetail>> GetCandleDetailById(int candleId)
+        {
+            return await _constructorRepository.GetCandleById(candleId)
+                .ToResult($"Candle with id '{candleId}' not found");
         }
     }
 }

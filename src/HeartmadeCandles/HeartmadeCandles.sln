@@ -29,11 +29,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.UnitTests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Constructor", "Constructor", "{E3A74DAF-F847-4A0A-98E9-666165BCB82C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Constructor.DAL", "HeartmadeCandles.Constructor.DAL\HeartmadeCandles.Constructor.DAL.csproj", "{19392349-0446-4399-B95B-391CF3F575DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Constructor.DAL", "HeartmadeCandles.Constructor.DAL\HeartmadeCandles.Constructor.DAL.csproj", "{19392349-0446-4399-B95B-391CF3F575DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Constructor.Core", "HeartmadeCandles.Constructor.Core\HeartmadeCandles.Constructor.Core.csproj", "{43FCF5C4-F652-4B38-9C65-99CD9E46F2B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Constructor.Core", "HeartmadeCandles.Constructor.Core\HeartmadeCandles.Constructor.Core.csproj", "{43FCF5C4-F652-4B38-9C65-99CD9E46F2B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Constructor.BL", "HeartmadeCandles.Constructor.BL\HeartmadeCandles.Constructor.BL.csproj", "{24AC836C-1278-4FAC-81C0-1FDAD41B6278}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Constructor.BL", "HeartmadeCandles.Constructor.BL\HeartmadeCandles.Constructor.BL.csproj", "{24AC836C-1278-4FAC-81C0-1FDAD41B6278}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

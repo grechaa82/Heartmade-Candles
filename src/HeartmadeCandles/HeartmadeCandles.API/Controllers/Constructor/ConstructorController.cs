@@ -15,9 +15,22 @@ namespace HeartmadeCandles.API.Controllers.Constructor
         }
 
         [HttpGet("candles")]
-        public async Task<IActionResult> GetCandle()
+        public async Task<IActionResult> GetCandles()
         {
-            return Ok(await _constructorService.GetAll());
+            return Ok(await _constructorService.GetCandles());
+        }
+
+        [HttpGet("candles/{candleId}")]
+        public async Task<IActionResult> GetCandleById(int candleId)
+        {
+            var result = await _constructorService.GetCandleDetailById(candleId);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+            
+            return Ok(result.Value);
         }
     }
 }

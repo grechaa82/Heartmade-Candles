@@ -1,18 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 namespace HeartmadeCandles.Constructor.DAL.Entities
 {
     [Table("Candle")]
     public class CandleEntity
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), Column("id")]
+        [Column("id")]
         public int Id { get; set; }
 
-        [Column("title"), Required]
+        [Column("title")]
         public string Title { get; set; }
 
-        [Column("description"), Required]
+        [Column("description")]
         public string Description { get; set; }
 
         [Column("price")]
@@ -21,8 +20,8 @@ namespace HeartmadeCandles.Constructor.DAL.Entities
         [Column("weightGrams")]
         public int WeightGrams { get; set; }
 
-        [Column("imageURL")]
-        public string ImageURL { get; set; }
+        [Column(name: "images", TypeName = "jsonb")]
+        public ImageEntity[] Images { get; set; }
 
         [Column("typeCandleId")]
         public int TypeCandleId { get; set; }
@@ -31,5 +30,15 @@ namespace HeartmadeCandles.Constructor.DAL.Entities
         public bool IsActive { get; set; }
 
         public virtual TypeCandleEntity TypeCandle { get; set; }
+
+        public virtual ICollection<CandleEntityDecorEntity> CandleDecor { get; set; }
+
+        public virtual ICollection<CandleEntityLayerColorEntity> CandleLayerColor { get; set; }
+
+        public virtual ICollection<CandleEntityNumberOfLayerEntity> CandleNumberOfLayer { get; set; }
+
+        public virtual ICollection<CandleEntitySmellEntity> CandleSmell { get; set; }
+
+        public virtual ICollection<CandleEntityWickEntity> CandleWick { get; set; }
     }
 }
