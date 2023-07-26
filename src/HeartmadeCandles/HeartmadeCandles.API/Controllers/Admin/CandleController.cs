@@ -2,6 +2,7 @@
 using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
+using HeartmadeCandles.API.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers.Admin
@@ -39,27 +40,19 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 return BadRequest(typeCandleResult.Error);
             }
 
-            var imagesResult = candleRequest.Images
-                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
-                .ToArray();
+            var imagesResult = ImageValidator.ValidateImages(candleRequest.Images);
 
-            if (imagesResult.Any(result => result.IsFailure))
+            if (imagesResult.IsFailure)
             {
-                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
-                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
-                return BadRequest(errorMessages);
+                return BadRequest(imagesResult.Error);
             }
-
-            var images = imagesResult
-                .Select(result => result.Value)
-                .ToArray();
 
             var candleResult = Candle.Create(
                 candleRequest.Title,
                 candleRequest.Description,
                 candleRequest.Price,
                 candleRequest.WeightGrams,
-                images,
+                imagesResult.Value,
                 typeCandleResult.Value,
                 candleRequest.IsActive);
 
@@ -83,27 +76,19 @@ namespace HeartmadeCandles.API.Controllers.Admin
                 return BadRequest(typeCandleResult.Error);
             }
 
-            var imagesResult = candleRequest.Images
-                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
-                .ToArray();
+            var imagesResult = ImageValidator.ValidateImages(candleRequest.Images);
 
-            if (imagesResult.Any(result => result.IsFailure))
+            if (imagesResult.IsFailure)
             {
-                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
-                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
-                return BadRequest(errorMessages);
+                return BadRequest(imagesResult.Error);
             }
-
-            var images = imagesResult
-                .Select(result => result.Value)
-                .ToArray();
 
             var candleResult = Candle.Create(
                 candleRequest.Title,
                 candleRequest.Description,
                 candleRequest.Price,
                 candleRequest.WeightGrams,
-                images,
+                imagesResult.Value,
                 typeCandleResult.Value,
                 candleRequest.IsActive,
                 id);

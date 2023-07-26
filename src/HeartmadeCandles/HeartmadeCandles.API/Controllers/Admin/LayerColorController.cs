@@ -1,6 +1,7 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
+using HeartmadeCandles.API.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers.Admin
@@ -31,26 +32,18 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPost]
         public async Task<IActionResult> Create(LayerColorRequest layerColorRequest)
         {
-            var imagesResult = layerColorRequest.Images
-                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
-                .ToArray();
+            var imagesResult = ImageValidator.ValidateImages(layerColorRequest.Images);
 
-            if (imagesResult.Any(result => result.IsFailure))
+            if (imagesResult.IsFailure)
             {
-                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
-                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
-                return BadRequest(errorMessages);
+                return BadRequest(imagesResult.Error);
             }
-
-            var images = imagesResult
-                .Select(result => result.Value)
-                .ToArray();
 
             var result = LayerColor.Create(
                 layerColorRequest.Title,
                 layerColorRequest.Description,
                 layerColorRequest.PricePerGram,
-                images,
+                imagesResult.Value,
                 layerColorRequest.IsActive);
 
             if (result.IsFailure)
@@ -66,26 +59,18 @@ namespace HeartmadeCandles.API.Controllers.Admin
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, LayerColorRequest layerColorRequest)
         {
-            var imagesResult = layerColorRequest.Images
-                .Select(imageRequest => Image.Create(imageRequest.FileName, imageRequest.AlternativeName))
-                .ToArray();
+            var imagesResult = ImageValidator.ValidateImages(layerColorRequest.Images);
 
-            if (imagesResult.Any(result => result.IsFailure))
+            if (imagesResult.IsFailure)
             {
-                var failedImagesResult = imagesResult.Where(result => result.IsFailure).ToArray();
-                var errorMessages = string.Join(", ", failedImagesResult.Select(result => result.Error));
-                return BadRequest(errorMessages);
+                return BadRequest(imagesResult.Error);
             }
-
-            var images = imagesResult
-                .Select(result => result.Value)
-                .ToArray();
 
             var result = LayerColor.Create(
                 layerColorRequest.Title,
                 layerColorRequest.Description,
                 layerColorRequest.PricePerGram,
-                images,
+                imagesResult.Value,
                 layerColorRequest.IsActive,
                 id);
 
