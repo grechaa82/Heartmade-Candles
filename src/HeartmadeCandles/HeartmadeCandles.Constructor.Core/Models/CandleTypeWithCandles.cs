@@ -2,7 +2,7 @@
 {
     public class CandleTypeWithCandles
     {
-        public string Type { get; set; }
-        public Candle[] Candles { get; set; }
+        public string Type { get; init; }
+        public Candle[] Candles { get; init; }
     }
 }

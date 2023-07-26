@@ -2,11 +2,11 @@
 {
     public class Candle
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public int WeightGrams { get; set; }
-        public Image[] Images { get; set; }
+        public int Id { get; init; }
+        public string Title { get; init; }
+        public string Description { get; init; }
+        public decimal Price { get; init; }
+        public int WeightGrams { get; init; }
+        public Image[] Images { get; init; }
     }
 }

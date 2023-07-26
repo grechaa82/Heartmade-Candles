@@ -2,7 +2,7 @@
 {
     public class NumberOfLayer
     {
-        public int Id { get; set; }
-        public int Number { get; set; }
+        public int Id { get; init; }
+        public int Number { get; init; }
     }
 }

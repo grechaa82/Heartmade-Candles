@@ -2,7 +2,7 @@
 {
     public class Image
     {
-        public string FileName { get; set; }
-        public string AlternativeName { get; set; }
+        public string FileName { get; init; }
+        public string AlternativeName { get; init; }
     }
 }

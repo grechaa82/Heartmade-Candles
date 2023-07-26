@@ -2,11 +2,11 @@
 {
     public class CandleDetail
     {
-        public Candle Candle { get; set; }
-        public Decor[] Decors { get; set; }
-        public LayerColor[] LayerColors { get; set; }
-        public NumberOfLayer[] NumberOfLayers { get; set; }
-        public Smell[] Smells { get; set; }
-        public Wick[] Wicks { get; set; }
+        public Candle Candle { get; init; }
+        public Decor[] Decors { get; init; }
+        public LayerColor[] LayerColors { get; init; }
+        public NumberOfLayer[] NumberOfLayers { get; init; }
+        public Smell[] Smells { get; init; }
+        public Wick[] Wicks { get; init; }
     }
 }
