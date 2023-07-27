@@ -37,12 +37,17 @@ namespace HeartmadeCandles.Constructor.DAL.Repositories
             var candleDetailEntity = await _context.Candle
                 .AsNoTracking()
                 .Include(t => t.TypeCandle)
-                .Include(cd => cd.CandleDecor).ThenInclude(d => d.Decor)
-                .Include(cl => cl.CandleLayerColor).ThenInclude(l => l.LayerColor)
-                .Include(cn => cn.CandleNumberOfLayer).ThenInclude(n => n.NumberOfLayer)
-                .Include(cs => cs.CandleSmell).ThenInclude(s => s.Smell)
-                .Include(cw => cw.CandleWick).ThenInclude(w => w.Wick)
-                .FirstOrDefaultAsync(c => c.Id == candleId);
+                .Include(cd => cd.CandleDecor.Where(d => d.Decor.IsActive))
+                    .ThenInclude(d => d.Decor)
+                .Include(cl => cl.CandleLayerColor.Where(l => l.LayerColor.IsActive))
+                    .ThenInclude(l => l.LayerColor)
+                .Include(cn => cn.CandleNumberOfLayer)
+                    .ThenInclude(n => n.NumberOfLayer)
+                .Include(cs => cs.CandleSmell.Where(s => s.Smell.IsActive))
+                    .ThenInclude(s => s.Smell)
+                .Include(cw => cw.CandleWick.Where(w => w.Wick.IsActive))
+                    .ThenInclude(w => w.Wick)
+                .FirstOrDefaultAsync(c => c.Id == candleId && c.IsActive);
 
             if (candleDetailEntity == null)
             {
@@ -88,15 +93,6 @@ namespace HeartmadeCandles.Constructor.DAL.Repositories
                 Price = candleEntity.Price,
                 WeightGrams = candleEntity.WeightGrams,
                 Images = MapToImage(candleEntity.Images)
-            };
-        }
-
-        private TypeCandle MapToCandleType(TypeCandleEntity typeCandleEntity)
-        {
-            return new TypeCandle()
-            {
-                Id = typeCandleEntity.Id,
-                Title = typeCandleEntity.Title
             };
         }
 
