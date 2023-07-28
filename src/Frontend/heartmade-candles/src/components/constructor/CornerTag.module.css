@@ -1,0 +1,19 @@
+.cornerTag {
+  padding: 2px 4px;
+  justify-content: center;
+  align-items: center;
+  background: #d5e6fb;
+}
+.leftCornerTag {
+  border-radius: 10px 0px;
+}
+.rightCornerTag {
+  border-radius: 0px 10px;
+}
+.cornerTag > span {
+  color: #2e67ea;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 130%;
+}
