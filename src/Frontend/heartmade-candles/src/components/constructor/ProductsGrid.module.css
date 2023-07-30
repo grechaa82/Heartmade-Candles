@@ -1,0 +1,19 @@
+.productGrid {
+  margin-bottom: 48px;
+}
+.productGrid > h2 {
+  display: inline-block;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 130%;
+  color: #505050;
+  margin: 0 0 16px 0;
+  padding: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-gap: 8px;
+  justify-content: start;
+}

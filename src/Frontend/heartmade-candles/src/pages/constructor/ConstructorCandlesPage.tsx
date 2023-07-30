@@ -1,18 +1,20 @@
 import { FC, useEffect, useState } from 'react';
 
-import Product from '../../components/constructor/Product';
-import { Candle } from '../../types/Candle';
+import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
+import { CandleTypeWithCandles } from '../../typesV2/CandleTypeWithCandles';
 
-import { CandlesApi } from '../../services/CandlesApi';
+import Style from './ConstructorCandlesPage.module.css';
+
+import { ConstructorApi } from '../../services/ConstructorApi';
 
 const ConstructorCandlesPage: FC = () => {
-  const [candles, setCandles] = useState<Candle[]>();
+  const [candleTypeWithCandles, setCandleTypeWithCandles] = useState<CandleTypeWithCandles[]>();
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const candles = await CandlesApi.getAll();
-        setCandles(candles);
+        const candles = await ConstructorApi.getCandles();
+        setCandleTypeWithCandles(candles);
       } catch (error) {
         console.error('Произошла ошибка при загрузке данных:', error);
       }
@@ -23,8 +25,13 @@ const ConstructorCandlesPage: FC = () => {
 
   return (
     <>
-      <div>ConstructorPage</div>
-      {candles && candles.map((item: Candle) => <Product key={item.id} product={item} />)}
+      <div className={Style.container}>
+        <div className={Style.leftPanel}></div>
+        <div className={Style.imagePanel}></div>
+        <div className={Style.rightPanel}>
+          {candleTypeWithCandles && <CandleSelectionPanel data={candleTypeWithCandles} />}
+        </div>
+      </div>
     </>
   );
 };

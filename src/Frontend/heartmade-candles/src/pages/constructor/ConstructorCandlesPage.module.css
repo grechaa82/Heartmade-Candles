@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 32px;
+}
+.leftPanel {
+  height: 500px;
+  width: 132px;
+  border-right: 4px solid #eee;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+.imagePanel {
+  margin-left: auto;
+  margin-right: auto;
+  width: 826px;
+  height: 826px;
+  border-radius: 10px;
+  background: #eee;
+}
+.rightPanel {
+  flex-shrink: 0;
+}
