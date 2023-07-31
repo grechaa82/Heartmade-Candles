@@ -1,4 +1,4 @@
-import { CandleDetail } from '../types/CandleDetail';
+import { CandleDetail } from '../typesV2/BaseProduct';
 import { CandleTypeWithCandles } from '../typesV2/CandleTypeWithCandles';
 
 const apiUrl = 'http://localhost:5000/api/constructor/candles';

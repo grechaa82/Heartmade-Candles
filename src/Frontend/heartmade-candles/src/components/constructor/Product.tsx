@@ -9,9 +9,10 @@ import Style from './Product.module.css';
 export interface ProductProps {
   product: ImageProduct;
   pageUrl?: string;
+  handleSelectProduct?: (product: ImageProduct) => void;
 }
 
-const Product: FC<ProductProps> = ({ product, pageUrl }) => {
+const Product: FC<ProductProps> = ({ product, pageUrl, handleSelectProduct }) => {
   const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
   const firstImage = product.images && product.images.length > 0 ? product.images[0] : null;
 
@@ -21,13 +22,28 @@ const Product: FC<ProductProps> = ({ product, pageUrl }) => {
 
   return (
     <div className={Style.product}>
-      <Link to={getProductLink()} className={Style.link}>
-        <div className={Style.image}>
-          {firstImage && (
-            <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
-          )}
-        </div>
-      </Link>
+      {handleSelectProduct ? (
+        <button
+          className={Style.selectBtn}
+          type="button"
+          onClick={() => handleSelectProduct(product)}
+        >
+          <div className={Style.image}>
+            {firstImage && (
+              <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
+            )}
+          </div>
+        </button>
+      ) : (
+        <Link to={getProductLink()} className={Style.link}>
+          <div className={Style.image}>
+            {firstImage && (
+              <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
+            )}
+          </div>
+        </Link>
+      )}
+
       <div className={Style.price}>{<CornerTag number={product.price} type="price" />}</div>
     </div>
   );

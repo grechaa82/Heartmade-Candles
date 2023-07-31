@@ -8,9 +8,14 @@ import Style from './ProductsGrid.module.css';
 export interface ProductsGridProps<ImageProduct> {
   title: string;
   data: ImageProduct[];
+  handleSelectProduct?: (product: ImageProduct) => void;
 }
 
-const ProductsGrid: FC<ProductsGridProps<ImageProduct>> = ({ title, data }) => {
+const ProductsGrid: FC<ProductsGridProps<ImageProduct>> = ({
+  title,
+  data,
+  handleSelectProduct,
+}) => {
   const [products, setProducts] = useState<ImageProduct[]>(data);
 
   return (
@@ -18,7 +23,12 @@ const ProductsGrid: FC<ProductsGridProps<ImageProduct>> = ({ title, data }) => {
       <h2>{title}</h2>
       <div className={Style.grid}>
         {products.map((product) => (
-          <Product key={product.id} product={product} pageUrl="candles" />
+          <Product
+            key={product.id}
+            product={product}
+            pageUrl="candles"
+            handleSelectProduct={handleSelectProduct}
+          />
         ))}
       </div>
     </div>
