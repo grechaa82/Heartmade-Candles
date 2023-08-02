@@ -1,4 +1,12 @@
-.productGrid > h2 {
+.tagGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.selectedTag > h2 {
   display: inline-block;
   font-size: 28px;
   font-style: normal;
@@ -7,10 +15,4 @@
   color: #505050;
   margin: 0 0 16px 0;
   padding: 0;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(3, auto);
-  grid-gap: 8px;
-  justify-content: start;
 }

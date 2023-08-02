@@ -1,18 +1,11 @@
-import {
-  FC,
-  useState,
-  useEffect,
-  ReactNode,
-  cloneElement,
-  ReactElement,
-} from "react";
+import { FC, useState, useEffect, ReactNode, cloneElement, ReactElement } from 'react';
 
-import InputTag from "../../components/admin/InputTag";
-import { TagData } from "../../components/admin/Tag";
-import ButtonWithIcon from "../../components/admin/ButtonWithIcon";
-import IconPlusLarge from "../../UI/IconPlusLarge";
+import InputTag from '../../components/admin/InputTag';
+import { TagData } from '../../components/shared/Tag';
+import ButtonWithIcon from '../../components/admin/ButtonWithIcon';
+import IconPlusLarge from '../../UI/IconPlusLarge';
 
-import Style from "./TagsGrid.module.css";
+import Style from './TagsGrid.module.css';
 
 export interface TagsGridProps {
   title: string;
@@ -78,11 +71,7 @@ const TagsGrid: FC<TagsGridProps> = ({
           onDelete={onDelete}
         />
         {onSave && isModified && !popUpComponent && (
-          <button
-            type="button"
-            className={Style.saveButton}
-            onClick={handleOnSave}
-          >
+          <button type="button" className={Style.saveButton} onClick={handleOnSave}>
             Сохранить
           </button>
         )}

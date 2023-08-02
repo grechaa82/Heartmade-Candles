@@ -23,7 +23,7 @@ export interface Decor extends ImageProduct {}
 
 export interface LayerColor extends ImageProduct {}
 
-export interface Smell extends ImageProduct {}
+export interface Smell extends PriceProduct {}
 
 export interface Wick extends ImageProduct {}
 

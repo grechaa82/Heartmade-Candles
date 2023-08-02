@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 
-import ProductsGrid from '../../components/constructor/ProductsGrid';
+import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
 import { CandleTypeWithCandles } from '../../typesV2/CandleTypeWithCandles';
 
 import Style from './CandleSelectionPanel.module.css';
@@ -16,7 +16,7 @@ const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({ data }) => {
     <div className={Style.content}>
       {candleTypeWithCandles &&
         candleTypeWithCandles.map((item, index) => (
-          <ProductsGrid key={index} title={item.type} data={item.candles} />
+          <ProductsGridSelector key={index} title={item.type} data={item.candles} />
         ))}
     </div>
   );

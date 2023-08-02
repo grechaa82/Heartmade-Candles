@@ -12,7 +12,7 @@ import { LayerColor } from '../../types/LayerColor';
 import { Smell } from '../../types/Smell';
 import { Wick } from '../../types/Wick';
 import { BaseProduct } from '../../types/BaseProduct';
-import { TagData } from '../../components/admin/Tag';
+import { TagData } from '../../components/shared/Tag';
 import AddProductPopUp from '../../components/admin/PopUp/AddProductPopUp';
 
 import { CandlesApi } from '../../services/CandlesApi';

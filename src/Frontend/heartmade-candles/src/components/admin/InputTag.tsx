@@ -1,7 +1,7 @@
-import React, { FC } from "react";
-import Tag, { TagData } from "./Tag";
+import React, { FC } from 'react';
+import Tag, { TagData } from '../shared/Tag';
 
-import Style from "./InputTag.module.css";
+import Style from './InputTag.module.css';
 
 interface InputTagProps {
   tags: TagData[];
@@ -11,14 +11,14 @@ interface InputTagProps {
 }
 
 const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange, onDelete }) => {
-  const [inputValue, setInputValue] = React.useState("");
+  const [inputValue, setInputValue] = React.useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       if (allTags) {
         const tag = allTags.find((tag) => tag.text === inputValue);
 
@@ -26,7 +26,7 @@ const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange, onDelete }) => {
           onChange([...tags, tag]);
         }
       }
-      setInputValue("");
+      setInputValue('');
     }
   };
 
@@ -44,12 +44,7 @@ const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange, onDelete }) => {
         <Tag key={tag.id} tag={tag} onRemove={() => handleRemoveTag(tag)} />
       ))}
       <div className={Style.inputContainer}>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-        />
+        <input type="text" value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} />
       </div>
     </div>
   );

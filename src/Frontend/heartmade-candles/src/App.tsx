@@ -21,7 +21,7 @@ function App() {
     <>
       <Routes>
         <Route
-          path="admin/"
+          path="admin/*"
           element={
             <div className={Style.AdminContent}>
               <Navbar />

@@ -11,7 +11,7 @@ export interface ProductsGridProps<ImageProduct> {
   handleSelectProduct?: (product: ImageProduct) => void;
 }
 
-const ProductsGrid: FC<ProductsGridProps<ImageProduct>> = ({
+const ProductsGridSelector: FC<ProductsGridProps<ImageProduct>> = ({
   title,
   data,
   handleSelectProduct,
@@ -35,4 +35,4 @@ const ProductsGrid: FC<ProductsGridProps<ImageProduct>> = ({
   );
 };
 
-export default ProductsGrid;
+export default ProductsGridSelector;
