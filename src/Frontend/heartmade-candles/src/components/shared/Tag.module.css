@@ -4,25 +4,83 @@
   align-items: center;
   gap: 8px;
   box-sizing: border-box;
-  border: 2px solid #6fcf97;
-  border-radius: 10px;
-  background-color: #6fcf97;
+  border: 2px solid #eee;
+  border-radius: 6px;
   padding: 8px 12px;
 }
-
-.tag > p {
+.title {
   margin: 0;
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
   line-height: 130%;
-  color: #ffffff;
+  color: #222;
 }
-
-.tag > button {
+.removeIcon {
   all: unset;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+}
+.removeIcon > svg path {
+  fill: #222;
+}
+
+.grey {
+  background-color: #eee;
+  border: 2px solid #eee;
+}
+.grey > .title {
+  color: #c9c9c9;
+}
+.grey > .removeIcon > svg path {
+  fill: #c9c9c9;
+}
+
+.outline {
+  background-color: transparent;
+  border: 2px solid #6fcf97;
+}
+.outline > .title {
+  color: #6fcf97;
+}
+.outline > .removeIcon > svg path {
+  fill: #6fcf97;
+}
+.outline:hover {
+  background-color: #e9fdf1;
+  border: 2px solid #e9fdf1;
+}
+.outline:active {
+  background-color: #6fcf97;
+  border: 2px solid #6fcf97;
+}
+.outline:active > .title {
+  color: #fff;
+}
+.outline:active > .removeIcon > svg path {
+  fill: #fff;
+}
+
+.secondary {
+  background-color: #e9fdf1;
+  border: 2px solid #e9fdf1;
+}
+.secondary > .title {
+  color: #6fcf97;
+}
+.secondary > .removeIcon > svg path {
+  fill: #6fcf97;
+}
+
+.primary {
+  background-color: #6fcf97;
+  border: 2px solid #6fcf97;
+}
+.primary > .title {
+  color: #fff;
+}
+.primary > .removeIcon > svg path {
+  fill: #fff;
 }

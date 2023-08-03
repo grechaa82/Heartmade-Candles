@@ -41,7 +41,12 @@ const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange, onDelete }) => {
   return (
     <div className={Style.inputTag}>
       {tags.map((tag) => (
-        <Tag key={tag.id} tag={tag} onRemove={() => handleRemoveTag(tag)} />
+        <Tag
+          key={tag.id}
+          tag={tag}
+          onRemove={() => handleRemoveTag(tag)}
+          appearanceTag="secondary"
+        />
       ))}
       <div className={Style.inputContainer}>
         <input type="text" value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} />

@@ -8,32 +8,30 @@ export interface TagData {
   text: string;
 }
 
+type AppearanceTag = 'grey' | 'outline' | 'secondary' | 'primary';
+
 export interface TagProps {
   tag: TagData;
   onRemove?: () => void;
   handleSelectTag?: (tag: TagData) => void;
+  appearanceTag?: AppearanceTag;
 }
 
-const Tag: FC<TagProps> = ({ tag, onRemove, handleSelectTag }) => {
-  const handleRemoveClick = () => {
-    if (onRemove) {
-      onRemove();
+const Tag: FC<TagProps> = ({ tag, onRemove, handleSelectTag, appearanceTag = 'outline' }) => {
+  const handleClick = () => {
+    if (handleSelectTag) {
+      handleSelectTag(tag);
     }
   };
 
-  if (handleSelectTag) {
-    return (
-      <button className={Style.tag} onClick={() => handleSelectTag(tag)}>
-        <p>{tag.text}</p>
-      </button>
-    );
-  }
+  const tagClassName = `${Style.tag} ${Style[appearanceTag]}`;
+
   return (
-    <div className={Style.tag}>
-      <p>{tag.text}</p>
+    <div className={tagClassName} onClick={handleClick}>
+      <p className={Style.title}>{tag.text}</p>
       {onRemove && (
-        <button onClick={handleRemoveClick}>
-          <IconRemoveLarge color="#fff" />
+        <button onClick={onRemove} className={Style.removeIcon}>
+          <IconRemoveLarge />
         </button>
       )}
     </div>
