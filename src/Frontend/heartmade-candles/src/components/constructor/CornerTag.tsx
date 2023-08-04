@@ -12,7 +12,7 @@ export interface CornerTagProps {
 
 const CornerTag: FC<CornerTagProps> = ({ number, type, isLeft = true }) => {
   const cornerTagStyle = isLeft ? Style.leftCornerTag : Style.rightCornerTag;
-  const cornerTagContent = type === 'coutner' ? 'шт' : type === 'price' ? 'р' : null;
+  const cornerTagContent = type === 'coutner' ? '' : type === 'price' ? 'р' : null;
 
   return (
     <div className={`${Style.cornerTag} ${cornerTagStyle}`}>

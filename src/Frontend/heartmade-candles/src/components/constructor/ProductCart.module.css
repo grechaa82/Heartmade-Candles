@@ -1,0 +1,37 @@
+.productCart {
+  display: flex;
+}
+
+.imageBlock {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+.image {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  border-radius: 10px;
+  margin-right: 16px;
+  display: block;
+}
+.image > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.quantity {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.quantityManagement {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 4px;
+}
+.iconBtn {
+  all: unset;
+}
