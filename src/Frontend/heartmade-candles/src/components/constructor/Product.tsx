@@ -9,10 +9,18 @@ import Style from './Product.module.css';
 export interface ProductProps {
   product: ImageProduct;
   pageUrl?: string;
-  handleSelectProduct?: (product: ImageProduct) => void;
+  onSelectProduct?: (product: ImageProduct) => void;
+  onDeselectProduct?: (product: ImageProduct) => void;
+  isSelected?: boolean;
 }
 
-const Product: FC<ProductProps> = ({ product, pageUrl, handleSelectProduct }) => {
+const Product: FC<ProductProps> = ({
+  product,
+  pageUrl,
+  onSelectProduct,
+  onDeselectProduct,
+  isSelected = false,
+}) => {
   const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
   const firstImage = product.images && product.images.length > 0 ? product.images[0] : null;
 
@@ -20,13 +28,21 @@ const Product: FC<ProductProps> = ({ product, pageUrl, handleSelectProduct }) =>
     return pageUrl ? `/constructor/${pageUrl}/${product.id}` : '';
   };
 
+  const handleSelectProduct = () => {
+    if (isSelected) {
+      onDeselectProduct && onDeselectProduct(product);
+    } else {
+      onSelectProduct && onSelectProduct(product);
+    }
+  };
+
   return (
     <div className={Style.product}>
-      {handleSelectProduct ? (
+      {onSelectProduct ? (
         <button
-          className={Style.selectBtn}
+          className={`${Style.selectBtn} ${isSelected ? Style.selected : ''}`}
           type="button"
-          onClick={() => handleSelectProduct(product)}
+          onClick={() => handleSelectProduct()}
         >
           <div className={Style.image}>
             {firstImage && (
@@ -43,7 +59,6 @@ const Product: FC<ProductProps> = ({ product, pageUrl, handleSelectProduct }) =>
           </div>
         </Link>
       )}
-
       <div className={Style.price}>{<CornerTag number={product.price} type="price" />}</div>
     </div>
   );

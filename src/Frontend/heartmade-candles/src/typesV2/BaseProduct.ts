@@ -50,3 +50,13 @@ export interface CandleDetail {
   smells?: Smell[];
   wicks?: Wick[];
 }
+
+export interface CandleDetailWithQuantity {
+  candle: Candle;
+  decors?: Decor[];
+  layerColors?: LayerColor[];
+  numberOfLayers?: NumberOfLayer[];
+  smells?: Smell[];
+  wicks?: Wick[];
+  quantity: number;
+}

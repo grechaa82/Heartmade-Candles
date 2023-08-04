@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import Product from '../../components/constructor/Product';
 import { ImageProduct } from '../../typesV2/BaseProduct';
@@ -8,26 +8,38 @@ import Style from './ProductsGrid.module.css';
 export interface ProductsGridProps<ImageProduct> {
   title: string;
   data: ImageProduct[];
-  handleSelectProduct?: (product: ImageProduct) => void;
+  selectedData?: ImageProduct[];
+  onSelectProduct?: (product: ImageProduct) => void;
+  onDeselectProduct?: (product: ImageProduct) => void;
 }
 
 const ProductsGridSelector: FC<ProductsGridProps<ImageProduct>> = ({
   title,
   data,
-  handleSelectProduct,
+  selectedData,
+  onSelectProduct,
+  onDeselectProduct,
 }) => {
-  const [products, setProducts] = useState<ImageProduct[]>(data);
+  const [selectedProducts, setSelectedProducts] = useState<ImageProduct[]>([]);
+
+  useEffect(() => {
+    if (selectedData) {
+      setSelectedProducts(selectedData);
+    }
+  }, [selectedData]);
 
   return (
     <div className={Style.productGrid}>
       <h2>{title}</h2>
       <div className={Style.grid}>
-        {products.map((product) => (
+        {data.map((product) => (
           <Product
             key={product.id}
             product={product}
             pageUrl="candles"
-            handleSelectProduct={handleSelectProduct}
+            onSelectProduct={onSelectProduct}
+            onDeselectProduct={onDeselectProduct}
+            isSelected={selectedProducts.includes(product)}
           />
         ))}
       </div>

@@ -11,8 +11,7 @@ import SmellPage from './pages/admin/SmellPage';
 import AllWickPage from './pages/admin/AllWickPage';
 import WickPage from './pages/admin/WickPage';
 import Navbar from './components/admin/Navbar';
-import ConstructorCandlesPage from './pages/constructor/ConstructorCandlesPage';
-import ConstructorCandleByIdPage from './pages/constructor/ConstructorCandleByIdPage';
+import ConstructorPage from './pages/constructor/ConstructorPage';
 
 import Style from './App.module.css';
 
@@ -42,10 +41,7 @@ function App() {
             </div>
           }
         />
-        <Route path="constructor/">
-          <Route path="candles" element={<ConstructorCandlesPage />} />
-          <Route path="candles/:id" element={<ConstructorCandleByIdPage />} />
-        </Route>
+        <Route path="constructor/" element={<ConstructorPage />} />
       </Routes>
     </>
   );

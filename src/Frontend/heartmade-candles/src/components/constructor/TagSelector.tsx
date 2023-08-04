@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState, useEffect } from 'react';
 
 import Tag, { TagData } from '../shared/Tag';
 
@@ -6,17 +6,39 @@ import Style from './TagSelector.module.css';
 
 interface TagSelectorProps {
   title: string;
-  tags: TagData[];
-  handleSelectTag?: (product: TagData) => void;
+  data: TagData[];
+  selectedData?: TagData[];
+  onSelectTag?: (product: TagData) => void;
+  onDeselectTag?: (product: TagData) => void;
 }
 
-const TagSelector: FC<TagSelectorProps> = ({ title, tags, handleSelectTag }) => {
+const TagSelector: FC<TagSelectorProps> = ({
+  title,
+  data,
+  selectedData,
+  onSelectTag,
+  onDeselectTag,
+}) => {
+  const [selectedProducts, setSelectedProducts] = useState<TagData[]>([]);
+
+  useEffect(() => {
+    if (selectedData) {
+      setSelectedProducts(selectedData);
+    }
+  }, [selectedData]);
+
   return (
     <div className={Style.selectedTag}>
       <h2>{title}</h2>
       <div className={Style.tagGrid}>
-        {tags.map((tag) => (
-          <Tag key={tag.id} tag={tag} handleSelectTag={handleSelectTag} />
+        {data.map((tag) => (
+          <Tag
+            key={tag.id}
+            tag={tag}
+            onSelectTag={onSelectTag}
+            onDeselectTag={onDeselectTag}
+            isSelected={selectedProducts.some((selectedTag) => selectedTag.id === tag.id)}
+          />
         ))}
       </div>
     </div>

@@ -27,3 +27,13 @@
   width: 100%;
   height: 100%;
 }
+.selected:before {
+  content: '';
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+  border: 4px solid #6fcf97;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+}

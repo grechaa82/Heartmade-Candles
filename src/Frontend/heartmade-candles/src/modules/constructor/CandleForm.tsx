@@ -1,11 +1,10 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import {
   CandleDetail,
   Decor,
   LayerColor,
   NumberOfLayer,
-  PriceProduct,
   Smell,
   Wick,
 } from '../../typesV2/BaseProduct';
@@ -25,34 +24,50 @@ const CandleForm: FC<CandleFormProps> = ({ candleDetailData }) => {
   const [candleDetailState, setCandleDetailState] = useState<CandleDetail>({
     candle: candleDetailData.candle,
   });
-  console.log('CandleForm fassssssss', candleDetailState);
 
   const handleNumberOfLayerState = (selectedNumberOfLayer: TagData) => {
-    console.log('handleNumberOfLayerState', selectedNumberOfLayer);
     const newCandleDetailState: CandleDetail = {
       ...candleDetailState,
-      numberOfLayers: [
-        ...(candleDetailState?.numberOfLayers || []),
-        convertTagDataToNumberOfLayer(selectedNumberOfLayer),
-      ],
+      layerColors: [],
+      numberOfLayers: [convertTagDataToNumberOfLayer(selectedNumberOfLayer)],
     };
     setCandleDetailState(newCandleDetailState);
   };
 
   const handleLayerColorState = (selectedLayerColor: ImageProduct) => {
-    const newCandleDetailState: CandleDetail = {
-      ...candleDetailState,
-      layerColors: [...(candleDetailState?.layerColors || []), selectedLayerColor as LayerColor],
-    };
-    setCandleDetailState(newCandleDetailState);
+    const numberOfLayers = candleDetailState.numberOfLayers;
+    const layerColors = candleDetailState.layerColors || [];
+
+    if (numberOfLayers && numberOfLayers[0]?.number === layerColors.length) {
+      const newLayerColors = [...layerColors];
+      newLayerColors[newLayerColors.length - 1] = selectedLayerColor as LayerColor;
+      setCandleDetailState({ ...candleDetailState, layerColors: newLayerColors });
+    } else {
+      setCandleDetailState({
+        ...candleDetailState,
+        layerColors: [...layerColors, selectedLayerColor as LayerColor],
+      });
+    }
+  };
+
+  const handleDeselectLayerColorState = (deselectedLayerColor: ImageProduct) => {
+    const updatedLayerColors = candleDetailState.layerColors?.filter(
+      (layerColor) => layerColor !== deselectedLayerColor,
+    );
+    setCandleDetailState({ ...candleDetailState, layerColors: updatedLayerColors });
   };
 
   const handleDecorState = (selectedDecor: ImageProduct) => {
     const newCandleDetailState: CandleDetail = {
       ...candleDetailState,
-      decors: [...(candleDetailState?.decors || []), selectedDecor as Decor],
+      decors: [selectedDecor as Decor],
     };
     setCandleDetailState(newCandleDetailState);
+  };
+
+  const handleDeselectDecorState = (deselectedDecor: ImageProduct) => {
+    const updatedDecors = candleDetailState.decors?.filter((decor) => decor !== deselectedDecor);
+    setCandleDetailState({ ...candleDetailState, decors: updatedDecors });
   };
 
   const handleSmellState = (selectedSmell: TagData) => {
@@ -60,7 +75,7 @@ const CandleForm: FC<CandleFormProps> = ({ candleDetailData }) => {
     if (selected) {
       const newCandleDetailState: CandleDetail = {
         ...candleDetailState,
-        smells: [...(candleDetailState?.smells || []), selected],
+        smells: [selected],
       };
       setCandleDetailState(newCandleDetailState);
     }
@@ -69,7 +84,7 @@ const CandleForm: FC<CandleFormProps> = ({ candleDetailData }) => {
   const handleWickState = (selectedWick: ImageProduct) => {
     const newCandleDetailState: CandleDetail = {
       ...candleDetailState,
-      wicks: [...(candleDetailState?.wicks || []), selectedWick as Wick],
+      wicks: [selectedWick as Wick],
     };
     setCandleDetailState(newCandleDetailState);
   };
@@ -79,30 +94,41 @@ const CandleForm: FC<CandleFormProps> = ({ candleDetailData }) => {
       <div className={Style.candleFrom}>
         <TagSelector
           title="Количество слоев"
-          tags={convertNumberOfLayerToTagData(
+          data={convertNumberOfLayerToTagData(
             candleDetail.numberOfLayers ? candleDetail.numberOfLayers : [],
           )}
-          handleSelectTag={handleNumberOfLayerState}
+          selectedData={convertNumberOfLayerToTagData(
+            candleDetailState.numberOfLayers ? candleDetailState.numberOfLayers : [],
+          )}
+          onSelectTag={handleNumberOfLayerState}
         />
         <ProductsGridSelector
           title={'Восковые слои'}
           data={candleDetail.layerColors ? candleDetail.layerColors : []}
-          handleSelectProduct={handleLayerColorState}
+          selectedData={candleDetailState.layerColors ? candleDetailState.layerColors : []}
+          onSelectProduct={handleLayerColorState}
+          onDeselectProduct={handleDeselectLayerColorState}
         />
         <ProductsGridSelector
           title={'Декоры'}
           data={candleDetail.decors ? candleDetail.decors : []}
-          handleSelectProduct={handleDecorState}
+          selectedData={candleDetailState.decors ? candleDetailState.decors : []}
+          onSelectProduct={handleDecorState}
+          onDeselectProduct={handleDeselectDecorState}
         />
         <TagSelector
           title="Запахи"
-          tags={convertSmellToTagData(candleDetail.smells ? candleDetail.smells : [])}
-          handleSelectTag={handleSmellState}
+          data={convertSmellToTagData(candleDetail.smells ? candleDetail.smells : [])}
+          selectedData={convertSmellToTagData(
+            candleDetailState.smells ? candleDetailState.smells : [],
+          )}
+          onSelectTag={handleSmellState}
         />
         <ProductsGridSelector
           title={'Фитили'}
           data={candleDetail.wicks ? candleDetail.wicks : []}
-          handleSelectProduct={handleWickState}
+          selectedData={candleDetailState.wicks ? candleDetailState.wicks : []}
+          onSelectProduct={handleWickState}
         />
       </div>
     </>
