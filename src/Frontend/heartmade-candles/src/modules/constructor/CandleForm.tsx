@@ -108,6 +108,7 @@ const CandleForm: FC<CandleFormProps> = ({ candleDetailData }) => {
           selectedData={candleDetailState.layerColors ? candleDetailState.layerColors : []}
           onSelectProduct={handleLayerColorState}
           onDeselectProduct={handleDeselectLayerColorState}
+          withIndex={true}
         />
         <ProductsGridSelector
           title={'Декоры'}

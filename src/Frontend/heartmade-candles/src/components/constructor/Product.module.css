@@ -37,3 +37,8 @@
   top: -6px;
   right: -6px;
 }
+.indexTag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+}

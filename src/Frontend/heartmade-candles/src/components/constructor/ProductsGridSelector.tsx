@@ -11,6 +11,7 @@ export interface ProductsGridProps<ImageProduct> {
   selectedData?: ImageProduct[];
   onSelectProduct?: (product: ImageProduct) => void;
   onDeselectProduct?: (product: ImageProduct) => void;
+  withIndex?: boolean;
 }
 
 const ProductsGridSelector: FC<ProductsGridProps<ImageProduct>> = ({
@@ -19,6 +20,7 @@ const ProductsGridSelector: FC<ProductsGridProps<ImageProduct>> = ({
   selectedData,
   onSelectProduct,
   onDeselectProduct,
+  withIndex = false,
 }) => {
   const [selectedProducts, setSelectedProducts] = useState<ImageProduct[]>([]);
 
@@ -32,16 +34,28 @@ const ProductsGridSelector: FC<ProductsGridProps<ImageProduct>> = ({
     <div className={Style.productGrid}>
       <h2>{title}</h2>
       <div className={Style.grid}>
-        {data.map((product) => (
-          <Product
-            key={product.id}
-            product={product}
-            pageUrl="candles"
-            onSelectProduct={onSelectProduct}
-            onDeselectProduct={onDeselectProduct}
-            isSelected={selectedProducts.includes(product)}
-          />
-        ))}
+        {withIndex
+          ? data.map((product) => (
+              <Product
+                key={product.id}
+                product={product}
+                pageUrl="candles"
+                onSelectProduct={onSelectProduct}
+                onDeselectProduct={onDeselectProduct}
+                isSelected={selectedProducts.includes(product)}
+                index={selectedProducts.indexOf(product) + 1}
+              />
+            ))
+          : data.map((product) => (
+              <Product
+                key={product.id}
+                product={product}
+                pageUrl="candles"
+                onSelectProduct={onSelectProduct}
+                onDeselectProduct={onDeselectProduct}
+                isSelected={selectedProducts.includes(product)}
+              />
+            ))}
       </div>
     </div>
   );
