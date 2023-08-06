@@ -89,6 +89,8 @@ const CandleForm: FC<CandleFormProps> = ({ candleDetailData }) => {
     setCandleDetailState(newCandleDetailState);
   };
 
+  console.log('CandleForm candleDetail', candleDetail);
+
   return (
     <>
       <div className={Style.candleFrom}>
@@ -161,7 +163,7 @@ export function convertSmellToTagData(smells: Smell[]): TagData[] {
     const smell = smells[i];
     const tagData: TagData = {
       id: smell.id,
-      text: smell.title,
+      text: smell.title + ' ' + smell.price + ' р',
     };
 
     tagDataArray.push(tagData);
@@ -181,8 +183,9 @@ export function convertTagDataToSmell(
   tagData: TagData,
   candleDetail: CandleDetail,
 ): Smell | undefined {
+  const splitTitle = tagData.text.split(' ');
   const matchingSmell = candleDetail?.smells?.find(
-    (smell) => smell.id === tagData.id && smell.title === tagData.text,
+    (smell) => smell.id === tagData.id && smell.title === splitTitle[0],
   );
   return matchingSmell;
 }

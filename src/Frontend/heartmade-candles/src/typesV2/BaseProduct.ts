@@ -2,7 +2,6 @@ export interface BaseProduct {
   id: number;
   title: string;
   description: string;
-  isActive: boolean;
 }
 
 export interface PriceProduct extends BaseProduct {
@@ -59,4 +58,17 @@ export interface CandleDetailWithQuantity {
   smells?: Smell[];
   wicks?: Wick[];
   quantity: number;
+}
+
+export interface CandleDetailRequest {
+  candle: Candle;
+  decors?: Decor[];
+  layerColors?: LayerColorRequest[];
+  numberOfLayers?: NumberOfLayer[];
+  smells?: Smell[];
+  wicks?: Wick[];
+}
+
+export interface LayerColorRequest extends ImageProduct {
+  pricePerGram: number;
 }

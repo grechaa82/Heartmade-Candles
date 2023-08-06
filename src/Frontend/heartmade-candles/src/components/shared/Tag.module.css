@@ -6,6 +6,7 @@
   box-sizing: border-box;
   border-radius: 6px;
   padding: 8px 12px;
+  cursor: pointer;
 }
 .title {
   margin: 0;

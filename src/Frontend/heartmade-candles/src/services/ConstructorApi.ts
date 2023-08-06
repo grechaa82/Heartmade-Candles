@@ -1,4 +1,4 @@
-import { CandleDetail } from '../typesV2/BaseProduct';
+import { CandleDetail, CandleDetailRequest, LayerColor } from '../typesV2/BaseProduct';
 import { CandleTypeWithCandles } from '../typesV2/CandleTypeWithCandles';
 
 const apiUrl = 'http://localhost:5000/api/constructor/candles';
@@ -16,6 +16,20 @@ export const ConstructorApi = {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
-    return (await response.json()) as CandleDetail;
+    const responseData = (await response.json()) as CandleDetailRequest;
+
+    const candleDetail: CandleDetail = {
+      candle: responseData.candle,
+      decors: responseData.decors,
+      layerColors: responseData.layerColors?.map((layerColor) => ({
+        ...layerColor,
+        price: layerColor.pricePerGram,
+      })),
+      numberOfLayers: responseData.numberOfLayers,
+      smells: responseData.smells,
+      wicks: responseData.wicks,
+    };
+
+    return candleDetail;
   },
 };
