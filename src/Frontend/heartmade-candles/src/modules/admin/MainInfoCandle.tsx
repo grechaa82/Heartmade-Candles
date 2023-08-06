@@ -1,6 +1,6 @@
 import { FC, useState, useEffect, ChangeEvent } from 'react';
 
-import ButtonDropdown, { optionData } from '../../components/admin/ButtonDropdown';
+import ButtonDropdown, { optionData } from '../../components/shared/ButtonDropdown';
 import CheckboxBlock from '../../components/admin/CheckboxBlock';
 import Textarea from '../../components/admin/Textarea';
 import { Candle } from '../../types/Candle';

@@ -2,7 +2,7 @@ import { FC, useState, useEffect, ReactNode, cloneElement, ReactElement } from '
 
 import InputTag from '../../components/admin/InputTag';
 import { TagData } from '../../components/shared/Tag';
-import ButtonWithIcon from '../../components/admin/ButtonWithIcon';
+import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 
 import Style from './TagsGrid.module.css';

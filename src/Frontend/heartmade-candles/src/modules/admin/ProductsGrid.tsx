@@ -2,7 +2,7 @@ import { FC, useState, useEffect, ReactNode, cloneElement, ReactElement } from '
 
 import { BaseProduct } from '../../types/BaseProduct';
 import ProductBlock from '../../components/admin/ProductBlock';
-import ButtonWithIcon from '../../components/admin/ButtonWithIcon';
+import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 
 import Style from './ProductsGrid.module.css';

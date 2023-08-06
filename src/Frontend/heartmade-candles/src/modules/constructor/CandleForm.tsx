@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 import {
   CandleDetail,
@@ -12,18 +12,22 @@ import ProductsGridSelector from '../../components/constructor/ProductsGridSelec
 import { ImageProduct } from '../../typesV2/BaseProduct';
 import TagSelector from '../../components/constructor/TagSelector';
 import { TagData } from '../../components/shared/Tag';
+import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
+import IconPlusLarge from '../../UI/IconPlusLarge';
 
 import Style from './CandleForm.module.css';
 
 export interface CandleFormProps {
   candleDetailData: CandleDetail;
+  addCandleDetail: (candleDetail: CandleDetail, price: number) => void;
 }
 
-const CandleForm: FC<CandleFormProps> = ({ candleDetailData }) => {
+const CandleForm: FC<CandleFormProps> = ({ candleDetailData, addCandleDetail }) => {
   const [candleDetail, setCandleDetail] = useState<CandleDetail>(candleDetailData);
   const [candleDetailState, setCandleDetailState] = useState<CandleDetail>({
     candle: candleDetailData.candle,
   });
+  const [price, setPrice] = useState<number>();
 
   const handleNumberOfLayerState = (selectedNumberOfLayer: TagData) => {
     const newCandleDetailState: CandleDetail = {
@@ -89,7 +93,45 @@ const CandleForm: FC<CandleFormProps> = ({ candleDetailData }) => {
     setCandleDetailState(newCandleDetailState);
   };
 
-  console.log('CandleForm candleDetail', candleDetail);
+  const calculatePrice = (): number => {
+    let totalPrice: number = candleDetailState.candle.price;
+
+    if (candleDetailState.decors) {
+      for (const decor of candleDetailState.decors) {
+        totalPrice += decor.price;
+      }
+    }
+
+    if (candleDetailState.numberOfLayers && candleDetailState.layerColors) {
+      const numberOfLayer = candleDetailState.numberOfLayers[0].number;
+      const weightGrams = candleDetailState.candle.weightGrams;
+      const gramsInLayer = weightGrams / numberOfLayer;
+
+      for (const layerColor of candleDetailState.layerColors) {
+        totalPrice += gramsInLayer * layerColor.price;
+      }
+    }
+
+    if (candleDetailState.smells) {
+      for (const smell of candleDetailState.smells) {
+        totalPrice += smell.price;
+      }
+    }
+
+    if (candleDetailState.wicks) {
+      for (const wick of candleDetailState.wicks) {
+        totalPrice += wick.price;
+      }
+    }
+
+    setPrice(totalPrice);
+    return totalPrice;
+  };
+
+  const handleAddCandleDetail = () => {
+    const price = calculatePrice();
+    addCandleDetail(candleDetailState, price);
+  };
 
   return (
     <>
@@ -132,6 +174,11 @@ const CandleForm: FC<CandleFormProps> = ({ candleDetailData }) => {
           data={candleDetail.wicks ? candleDetail.wicks : []}
           selectedData={candleDetailState.wicks ? candleDetailState.wicks : []}
           onSelectProduct={handleWickState}
+        />
+        <ButtonWithIcon
+          text="Добавить свечу"
+          icon={IconPlusLarge}
+          onClick={() => handleAddCandleDetail()}
         />
       </div>
     </>

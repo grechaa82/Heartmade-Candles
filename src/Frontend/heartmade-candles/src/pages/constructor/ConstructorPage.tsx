@@ -16,6 +16,7 @@ const ConstructorPage: FC = () => {
     CandleDetailWithQuantity[]
   >([]);
   const [candleTypeWithCandles, setCandleTypeWithCandles] = useState<CandleTypeWithCandles[]>();
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   async function showCandleForm(candleId: number) {
     try {
@@ -30,7 +31,19 @@ const ConstructorPage: FC = () => {
     setCandleDetail(undefined);
   }
 
-  function addCandleToListProductsCart() {}
+  const addCandleToListProductsCart = (candleDetail: CandleDetail, price: number) => {
+    const newCandleDetailWithQuantity: CandleDetailWithQuantity = {
+      candle: candleDetail.candle,
+      decors: candleDetail.decors,
+      layerColors: candleDetail.layerColors,
+      numberOfLayers: candleDetail.numberOfLayers,
+      smells: candleDetail.smells,
+      wicks: candleDetail.wicks,
+      quantity: 1,
+    };
+    setTotalPrice(totalPrice + price);
+    setCandleDetailWithQuantity([...candleDetailWithQuantity, newCandleDetailWithQuantity]);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -65,11 +78,13 @@ const ConstructorPage: FC = () => {
         <div className={Style.imagePanel}>
           <button onClick={() => showCandleForm(2)}>showCandleForm</button>
           <button onClick={() => hideCandleForm()}>hideCandleForm</button>
-          <button onClick={() => addCandleToListProductsCart()}>addCandleToListProductsCart</button>
         </div>
         {candleDetail ? (
           <div className={Style.rightPanel}>
-            <CandleForm candleDetailData={candleDetail} />
+            <CandleForm
+              candleDetailData={candleDetail}
+              addCandleDetail={addCandleToListProductsCart}
+            />
           </div>
         ) : (
           candleTypeWithCandles && (
