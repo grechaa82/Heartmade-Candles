@@ -29,5 +29,5 @@ export const calculatePrice = (candleDetail: CandleDetail): number => {
     }
   }
 
-  return Number(totalPrice.toFixed(2));
+  return Number(totalPrice.toFixed());
 };

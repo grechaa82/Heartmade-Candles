@@ -2,11 +2,18 @@ import { FC, useState, useEffect } from 'react';
 
 import ListProductsCart from '../../modules/constructor/ListProductsCart';
 import CandleForm from '../../modules/constructor/CandleForm';
-import { CandleDetail, CandleDetailWithQuantity, ImageProduct } from '../../typesV2/BaseProduct';
+import {
+  CandleDetail,
+  CandleDetailWithQuantity,
+  ImageProduct,
+  NumberOfLayer,
+  LayerColor,
+} from '../../typesV2/BaseProduct';
 import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
 import { CandleTypeWithCandles } from '../../typesV2/CandleTypeWithCandles';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import { calculatePrice } from '../../helpers/CalculatePrice';
+import ErrorPopUp from '../../components/constructor/ErrorPopUp';
 
 import Style from './ConstructorPage.module.css';
 
@@ -27,6 +34,9 @@ const ConstructorPage: FC = () => {
       ? candleDetail?.candle.images[0]
       : null;
 
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
   async function showCandleForm(candleId: number) {
     try {
       const candleDetail = await ConstructorApi.getCandleById(candleId.toString());
@@ -40,7 +50,14 @@ const ConstructorPage: FC = () => {
     setCandleDetail(undefined);
   }
 
-  const addCandleToListProductsCart = (candleDetail: CandleDetail) => {
+  const addCandleToListProductsCart = (candleDetail: CandleDetail): void => {
+    const validCandleDetail = checkCandleDetail(candleDetail);
+    if (validCandleDetail) {
+      setErrorMessage(validCandleDetail);
+      setShowError(true);
+      return;
+    }
+
     const newCandleDetailWithQuantity: CandleDetailWithQuantity = {
       candle: candleDetail.candle,
       decors: candleDetail.decors,
@@ -50,8 +67,41 @@ const ConstructorPage: FC = () => {
       wicks: candleDetail.wicks,
       quantity: 1,
     };
+
     setCandleDetailWithQuantity([...candleDetailWithQuantity, newCandleDetailWithQuantity]);
     setCandleDetail(undefined);
+  };
+
+  const checkCandleDetail = (candleDetail: CandleDetail): string | undefined => {
+    const errorMessageParts: string[] = [];
+
+    if (!candleDetail.numberOfLayers) {
+      errorMessageParts.push('количество слоев');
+    }
+    if (!candleDetail.layerColors) {
+      errorMessageParts.push('восковые слои');
+    }
+    if (!candleDetail.wicks) {
+      errorMessageParts.push('фитиль');
+    }
+
+    if (errorMessageParts.length > 0) {
+      const errorMessage = `Не выбрано следующее обязательное поле(я): ${errorMessageParts.join(
+        ', ',
+      )}`;
+      return errorMessage;
+    }
+
+    if (candleDetail.numberOfLayers && candleDetail.layerColors) {
+      const numberOfLayer: NumberOfLayer = candleDetail.numberOfLayers[0];
+      const layerColors: LayerColor[] = candleDetail.layerColors;
+
+      if (numberOfLayer.number !== layerColors.length) {
+        return 'Количество слоев не совпадает с количеством выбранных слоев';
+      }
+    }
+
+    return undefined;
   };
 
   useEffect(() => {}, [candleDetailWithQuantity]);
@@ -91,11 +141,18 @@ const ConstructorPage: FC = () => {
     setPrice(calculatePrice(candleDetail));
   };
 
+  const closeErrorPopUp = () => {
+    setShowError(false);
+  };
+
   const createOrder = () => {};
 
   return (
     <>
       <div className={Style.container}>
+        <div className={Style.popUpNotification}>
+          {showError && <ErrorPopUp message={errorMessage} onClose={closeErrorPopUp} />}
+        </div>
         <div className={Style.leftPanel}>
           <ListProductsCart
             products={candleDetailWithQuantity}

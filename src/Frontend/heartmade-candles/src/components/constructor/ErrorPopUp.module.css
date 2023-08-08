@@ -1,0 +1,18 @@
+.errorPopUp {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+  gap: 16px;
+  background-color: #fbdddd;
+  border: 2px solid #fbdddd;
+  border-radius: 10px;
+  color: #eb5757;
+}
+.errorPopUp > span {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 130%;
+}
+.closeButton {
+  all: unset;
+}
