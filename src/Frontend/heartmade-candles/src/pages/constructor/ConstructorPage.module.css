@@ -8,7 +8,7 @@
 .leftPanel {
   width: 132px;
   border-right: 4px solid #eee;
-  height: 100vh;
+  padding: 16px;
 }
 
 .rightPanel {

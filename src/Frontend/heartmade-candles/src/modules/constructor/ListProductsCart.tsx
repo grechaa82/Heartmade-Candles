@@ -1,7 +1,6 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 
 import ProductCart from '../../components/constructor/ProductCart';
-import { ImageProduct } from '../../typesV2/BaseProduct';
 import { CandleDetailWithQuantity } from '../../typesV2/BaseProduct';
 
 import Style from './ListProductsCart.module.css';
@@ -15,21 +14,18 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
   products,
   onChangeCandleDetailWithQuantity,
 }) => {
-  const [candleDetailWithQuantity, setCandleDetailWithQuantity] =
-    useState<CandleDetailWithQuantity[]>(products);
-
   const handleChangingQuantityProduct = (newQuantity: number, index: number) => {
     const updatedCandleDetailWithQuantity = [...products];
     if (updatedCandleDetailWithQuantity[index]) {
-      updatedCandleDetailWithQuantity[index].quantity = newQuantity;
-      setCandleDetailWithQuantity(updatedCandleDetailWithQuantity);
-      onChangeCandleDetailWithQuantity(candleDetailWithQuantity);
+      if (newQuantity <= 0) {
+        updatedCandleDetailWithQuantity.splice(index, 1);
+        console.log('updatedCandleDetailWithQuantity', updatedCandleDetailWithQuantity);
+      } else {
+        updatedCandleDetailWithQuantity[index].quantity = newQuantity;
+      }
+      onChangeCandleDetailWithQuantity(updatedCandleDetailWithQuantity);
     }
   };
-
-  useEffect(() => {
-    setCandleDetailWithQuantity(products);
-  }, [products]);
 
   return (
     <>

@@ -50,9 +50,11 @@ const ConstructorPage: FC = () => {
       wicks: candleDetail.wicks,
       quantity: 1,
     };
-    setTotalPrice(totalPrice + price);
     setCandleDetailWithQuantity([...candleDetailWithQuantity, newCandleDetailWithQuantity]);
+    setCandleDetail(undefined);
   };
+
+  useEffect(() => {}, [candleDetailWithQuantity]);
 
   useEffect(() => {
     async function fetchData() {
@@ -66,6 +68,15 @@ const ConstructorPage: FC = () => {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    let newTotalPrice: number = 0;
+    for (let i = 0; i < candleDetailWithQuantity.length; i++) {
+      newTotalPrice +=
+        calculatePrice(candleDetailWithQuantity[i]) * candleDetailWithQuantity[i].quantity;
+    }
+    setTotalPrice(newTotalPrice);
+  }, [candleDetailWithQuantity, totalPrice]);
 
   const handleChangeCandleDetailWithQuantity = (products: CandleDetailWithQuantity[]) => {
     setCandleDetailWithQuantity(products);

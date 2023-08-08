@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { Link } from 'react-router-dom';
 
 import CornerTag from './CornerTag';
 import { ImageProduct } from '../../typesV2/BaseProduct';
