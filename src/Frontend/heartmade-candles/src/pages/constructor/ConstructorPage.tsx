@@ -5,6 +5,8 @@ import CandleForm from '../../modules/constructor/CandleForm';
 import { CandleDetail, CandleDetailWithQuantity, ImageProduct } from '../../typesV2/BaseProduct';
 import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
 import { CandleTypeWithCandles } from '../../typesV2/CandleTypeWithCandles';
+import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
+import { calculatePrice } from '../../helpers/CalculatePrice';
 
 import Style from './ConstructorPage.module.css';
 
@@ -16,7 +18,14 @@ const ConstructorPage: FC = () => {
     CandleDetailWithQuantity[]
   >([]);
   const [candleTypeWithCandles, setCandleTypeWithCandles] = useState<CandleTypeWithCandles[]>();
+  const [price, setPrice] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+
+  const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
+  const firstImage =
+    candleDetail?.candle.images && candleDetail?.candle.images.length > 0
+      ? candleDetail?.candle.images[0]
+      : null;
 
   async function showCandleForm(candleId: number) {
     try {
@@ -31,7 +40,7 @@ const ConstructorPage: FC = () => {
     setCandleDetail(undefined);
   }
 
-  const addCandleToListProductsCart = (candleDetail: CandleDetail, price: number) => {
+  const addCandleToListProductsCart = (candleDetail: CandleDetail) => {
     const newCandleDetailWithQuantity: CandleDetailWithQuantity = {
       candle: candleDetail.candle,
       decors: candleDetail.decors,
@@ -64,7 +73,14 @@ const ConstructorPage: FC = () => {
 
   const handleSelectCandle = (candle: ImageProduct) => {
     showCandleForm(candle.id);
+    setPrice(0);
   };
+
+  const calculatePriceCandleDetail = (candleDetail: CandleDetail) => {
+    setPrice(calculatePrice(candleDetail));
+  };
+
+  const createOrder = () => {};
 
   return (
     <>
@@ -76,22 +92,51 @@ const ConstructorPage: FC = () => {
           />
         </div>
         <div className={Style.imagePanel}>
-          <button onClick={() => showCandleForm(2)}>showCandleForm</button>
-          <button onClick={() => hideCandleForm()}>hideCandleForm</button>
+          {candleDetail && (
+            <div className={Style.image}>
+              {firstImage && (
+                <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
+              )}
+            </div>
+          )}
+          {candleDetail && (
+            <div className={Style.hideCandleForm}>
+              <button onClick={() => hideCandleForm()}>
+                <IconArrowLeftLarge color="#777" />
+              </button>
+            </div>
+          )}
+          {candleDetail && (
+            <div className={Style.priceCandle}>
+              <span>{price} р</span>
+            </div>
+          )}
+          <div className={Style.orderInfo}>
+            <div className={Style.orderBtn}>
+              <button onClick={() => createOrder()}>Заказать</button>
+            </div>
+            <div className={Style.totalPrice}>
+              <span className={Style.title}>Итого </span>
+              <span className={Style.price}>{totalPrice} р</span>
+            </div>
+          </div>
         </div>
         {candleDetail ? (
           <div className={Style.rightPanel}>
             <CandleForm
               candleDetailData={candleDetail}
               addCandleDetail={addCandleToListProductsCart}
+              calculatePriceCandleDetail={calculatePriceCandleDetail}
             />
           </div>
         ) : (
           candleTypeWithCandles && (
-            <CandleSelectionPanel
-              data={candleTypeWithCandles}
-              onSelectCandle={handleSelectCandle}
-            />
+            <div className={Style.rightPanel}>
+              <CandleSelectionPanel
+                data={candleTypeWithCandles}
+                onSelectCandle={handleSelectCandle}
+              />
+            </div>
           )
         )}
       </div>
