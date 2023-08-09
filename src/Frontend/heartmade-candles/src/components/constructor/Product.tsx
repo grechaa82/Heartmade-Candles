@@ -1,9 +1,10 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import CornerTag from './CornerTag';
 import { ImageProduct } from '../../typesV2/BaseProduct';
 import Tag, { TagData } from '../shared/Tag';
+import IconAlertCircleLarge from '../../UI/IconAlertCircleLarge';
 
 import Style from './Product.module.css';
 
@@ -24,6 +25,8 @@ const Product: FC<ProductProps> = ({
   isSelected = false,
   index,
 }) => {
+  const [isDescriptionMenuOpen, setIsDescriptionMenuOpen] = useState(false);
+
   const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
   const firstImage = product.images && product.images.length > 0 ? product.images[0] : null;
 
@@ -46,8 +49,23 @@ const Product: FC<ProductProps> = ({
     };
   }
 
+  const handleDescriptionMenuToggle = () => {
+    setIsDescriptionMenuOpen(!isDescriptionMenuOpen);
+  };
+
   return (
     <div className={Style.product}>
+      <div className={Style.descriptionWrapper}>
+        <button className={Style.descriptionBtn} onClick={handleDescriptionMenuToggle}>
+          <IconAlertCircleLarge color="#aaa" />
+        </button>
+        {isDescriptionMenuOpen && (
+          <div className={Style.descriptionMenu}>
+            <p className={Style.descriptionMenuTitle}>{product.title}</p>
+            <p className={Style.descriptionMenuDescription}>{product.description}</p>
+          </div>
+        )}
+      </div>
       {onSelectProduct ? (
         <button
           className={`${Style.selectBtn} ${isSelected ? Style.selected : ''}`}

@@ -40,6 +40,8 @@
   border-radius: 10px;
   display: block;
   aspect-ratio: 1 / 1;
+  width: 90dvh;
+  margin: 32px;
 }
 .image > img {
   width: 100%;
