@@ -1,48 +1,51 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect } from "react";
 
-import ListProductsCart from '../../modules/constructor/ListProductsCart';
-import CandleForm from '../../modules/constructor/CandleForm';
+import ListProductsCart from "../../modules/constructor/ListProductsCart";
+import CandleForm from "../../modules/constructor/CandleForm";
 import {
   CandleDetail,
   CandleDetailWithQuantity,
   ImageProduct,
   NumberOfLayer,
   LayerColor,
-} from '../../typesV2/BaseProduct';
-import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
-import { CandleTypeWithCandles } from '../../typesV2/CandleTypeWithCandles';
-import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
-import { calculatePrice } from '../../helpers/CalculatePrice';
-import ErrorPopUp from '../../components/constructor/ErrorPopUp';
+} from "../../typesV2/BaseProduct";
+import CandleSelectionPanel from "../../modules/constructor/CandleSelectionPanel";
+import { CandleTypeWithCandles } from "../../typesV2/CandleTypeWithCandles";
+import IconArrowLeftLarge from "../../UI/IconArrowLeftLarge";
+import { calculatePrice } from "../../helpers/CalculatePrice";
+import ErrorPopUp from "../../components/constructor/ErrorPopUp";
 
-import Style from './ConstructorPage.module.css';
+import Style from "./ConstructorPage.module.css";
 
-import { ConstructorApi } from '../../services/ConstructorApi';
+import { ConstructorApi } from "../../services/ConstructorApi";
 
 const ConstructorPage: FC = () => {
   const [candleDetail, setCandleDetail] = useState<CandleDetail>();
   const [candleDetailWithQuantity, setCandleDetailWithQuantity] = useState<
     CandleDetailWithQuantity[]
   >([]);
-  const [candleTypeWithCandles, setCandleTypeWithCandles] = useState<CandleTypeWithCandles[]>();
+  const [candleTypeWithCandles, setCandleTypeWithCandles] =
+    useState<CandleTypeWithCandles[]>();
   const [price, setPrice] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
+  const urlToImage = "http://localhost:5000/StaticFiles/Images/";
   const firstImage =
     candleDetail?.candle.images && candleDetail?.candle.images.length > 0
       ? candleDetail?.candle.images[0]
       : null;
 
   const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function showCandleForm(candleId: number) {
     try {
-      const candleDetail = await ConstructorApi.getCandleById(candleId.toString());
+      const candleDetail = await ConstructorApi.getCandleById(
+        candleId.toString()
+      );
       setCandleDetail(candleDetail);
     } catch (error) {
-      console.error('Произошла ошибка при загрузке данных:', error);
+      console.error("Произошла ошибка при загрузке данных:", error);
     }
   }
 
@@ -68,26 +71,31 @@ const ConstructorPage: FC = () => {
       quantity: 1,
     };
 
-    setCandleDetailWithQuantity([...candleDetailWithQuantity, newCandleDetailWithQuantity]);
+    setCandleDetailWithQuantity([
+      ...candleDetailWithQuantity,
+      newCandleDetailWithQuantity,
+    ]);
     setCandleDetail(undefined);
   };
 
-  const checkCandleDetail = (candleDetail: CandleDetail): string | undefined => {
+  const checkCandleDetail = (
+    candleDetail: CandleDetail
+  ): string | undefined => {
     const errorMessageParts: string[] = [];
 
     if (!candleDetail.numberOfLayers) {
-      errorMessageParts.push('количество слоев');
+      errorMessageParts.push("количество слоев");
     }
     if (!candleDetail.layerColors) {
-      errorMessageParts.push('восковые слои');
+      errorMessageParts.push("восковые слои");
     }
     if (!candleDetail.wicks) {
-      errorMessageParts.push('фитиль');
+      errorMessageParts.push("фитиль");
     }
 
     if (errorMessageParts.length > 0) {
       const errorMessage = `Не выбрано следующее обязательное поле(я): ${errorMessageParts.join(
-        ', ',
+        ", "
       )}`;
       return errorMessage;
     }
@@ -97,7 +105,7 @@ const ConstructorPage: FC = () => {
       const layerColors: LayerColor[] = candleDetail.layerColors;
 
       if (numberOfLayer.number !== layerColors.length) {
-        return 'Количество слоев не совпадает с количеством выбранных слоев';
+        return "Количество слоев не совпадает с количеством выбранных слоев";
       }
     }
 
@@ -112,7 +120,7 @@ const ConstructorPage: FC = () => {
         const candles = await ConstructorApi.getCandles();
         setCandleTypeWithCandles(candles);
       } catch (error) {
-        console.error('Произошла ошибка при загрузке данных:', error);
+        console.error("Произошла ошибка при загрузке данных:", error);
       }
     }
 
@@ -123,12 +131,15 @@ const ConstructorPage: FC = () => {
     let newTotalPrice: number = 0;
     for (let i = 0; i < candleDetailWithQuantity.length; i++) {
       newTotalPrice +=
-        calculatePrice(candleDetailWithQuantity[i]) * candleDetailWithQuantity[i].quantity;
+        calculatePrice(candleDetailWithQuantity[i]) *
+        candleDetailWithQuantity[i].quantity;
     }
     setTotalPrice(newTotalPrice);
   }, [candleDetailWithQuantity, totalPrice]);
 
-  const handleChangeCandleDetailWithQuantity = (products: CandleDetailWithQuantity[]) => {
+  const handleChangeCandleDetailWithQuantity = (
+    products: CandleDetailWithQuantity[]
+  ) => {
     setCandleDetailWithQuantity(products);
   };
 
@@ -151,19 +162,26 @@ const ConstructorPage: FC = () => {
     <>
       <div className={Style.container}>
         <div className={Style.popUpNotification}>
-          {showError && <ErrorPopUp message={errorMessage} onClose={closeErrorPopUp} />}
+          {showError && (
+            <ErrorPopUp message={errorMessage} onClose={closeErrorPopUp} />
+          )}
         </div>
         <div className={Style.leftPanel}>
           <ListProductsCart
             products={candleDetailWithQuantity}
-            onChangeCandleDetailWithQuantity={handleChangeCandleDetailWithQuantity}
+            onChangeCandleDetailWithQuantity={
+              handleChangeCandleDetailWithQuantity
+            }
           />
         </div>
         <div className={Style.imagePanel}>
           {candleDetail && (
             <div className={Style.image}>
               {firstImage && (
-                <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
+                <img
+                  src={urlToImage + firstImage.fileName}
+                  alt={firstImage.alternativeName}
+                />
               )}
             </div>
           )}
