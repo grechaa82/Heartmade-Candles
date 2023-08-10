@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect } from 'react';
 
 import {
   CandleDetail,
@@ -7,15 +7,15 @@ import {
   NumberOfLayer,
   Smell,
   Wick,
-} from "../../typesV2/BaseProduct";
-import ProductsGridSelector from "../../components/constructor/ProductsGridSelector";
-import { ImageProduct } from "../../typesV2/BaseProduct";
-import TagSelector from "../../components/constructor/TagSelector";
-import { TagData } from "../../components/shared/Tag";
-import ButtonWithIcon from "../../components/shared/ButtonWithIcon";
-import IconPlusLarge from "../../UI/IconPlusLarge";
+} from '../../typesV2/BaseProduct';
+import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
+import { ImageProduct } from '../../typesV2/BaseProduct';
+import TagSelector from '../../components/constructor/TagSelector';
+import { TagData } from '../../components/shared/Tag';
+import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
+import IconPlusLarge from '../../UI/IconPlusLarge';
 
-import Style from "./CandleForm.module.css";
+import Style from './CandleForm.module.css';
 
 export interface CandleFormProps {
   candleDetailData: CandleDetail;
@@ -28,8 +28,7 @@ const CandleForm: FC<CandleFormProps> = ({
   addCandleDetail,
   calculatePriceCandleDetail,
 }) => {
-  const [candleDetail, setCandleDetail] =
-    useState<CandleDetail>(candleDetailData);
+  const [candleDetail, setCandleDetail] = useState<CandleDetail>(candleDetailData);
   const [candleDetailState, setCandleDetailState] = useState<CandleDetail>({
     candle: candleDetailData.candle,
   });
@@ -47,12 +46,10 @@ const CandleForm: FC<CandleFormProps> = ({
   const handleLayerColorState = (selectedLayerColor: ImageProduct) => {
     if (
       candleDetailState.numberOfLayers &&
-      candleDetailState.numberOfLayers[0].number ===
-        candleDetailState.layerColors?.length
+      candleDetailState.numberOfLayers[0].number === candleDetailState.layerColors?.length
     ) {
       const newLayerColors = [...candleDetailState.layerColors];
-      newLayerColors[newLayerColors.length - 1] =
-        selectedLayerColor as LayerColor;
+      newLayerColors[newLayerColors.length - 1] = selectedLayerColor as LayerColor;
       setCandleDetailState({
         ...candleDetailState,
         layerColors: newLayerColors,
@@ -70,11 +67,9 @@ const CandleForm: FC<CandleFormProps> = ({
     calculatePriceCandleDetail(candleDetailState);
   };
 
-  const handleDeselectLayerColorState = (
-    deselectedLayerColor: ImageProduct
-  ) => {
+  const handleDeselectLayerColorState = (deselectedLayerColor: ImageProduct) => {
     const updatedLayerColors = candleDetailState.layerColors?.filter(
-      (layerColor) => layerColor !== deselectedLayerColor
+      (layerColor) => layerColor !== deselectedLayerColor,
     );
     setCandleDetailState({
       ...candleDetailState,
@@ -93,9 +88,7 @@ const CandleForm: FC<CandleFormProps> = ({
   };
 
   const handleDeselectDecorState = (deselectedDecor: ImageProduct) => {
-    const updatedDecors = candleDetailState.decors?.filter(
-      (decor) => decor !== deselectedDecor
-    );
+    const updatedDecors = candleDetailState.decors?.filter((decor) => decor !== deselectedDecor);
     setCandleDetailState({ ...candleDetailState, decors: updatedDecors });
     calculatePriceCandleDetail(candleDetailState);
   };
@@ -108,10 +101,9 @@ const CandleForm: FC<CandleFormProps> = ({
         smells: [selected],
       };
       setCandleDetailState(newCandleDetailState);
-      calculatePriceCandleDetail(candleDetailState);
+      calculatePriceCandleDetail(newCandleDetailState);
     }
   };
-
   const handleWickState = (selectedWick: ImageProduct) => {
     const newCandleDetailState: CandleDetail = {
       ...candleDetailState,
@@ -136,46 +128,38 @@ const CandleForm: FC<CandleFormProps> = ({
         <TagSelector
           title="Количество слоев"
           data={convertNumberOfLayerToTagData(
-            candleDetail.numberOfLayers ? candleDetail.numberOfLayers : []
+            candleDetail.numberOfLayers ? candleDetail.numberOfLayers : [],
           )}
           selectedData={convertNumberOfLayerToTagData(
-            candleDetailState.numberOfLayers
-              ? candleDetailState.numberOfLayers
-              : []
+            candleDetailState.numberOfLayers ? candleDetailState.numberOfLayers : [],
           )}
           onSelectTag={handleNumberOfLayerState}
         />
         <ProductsGridSelector
-          title={"Восковые слои"}
+          title={'Восковые слои'}
           data={candleDetail.layerColors ? candleDetail.layerColors : []}
-          selectedData={
-            candleDetailState.layerColors ? candleDetailState.layerColors : []
-          }
+          selectedData={candleDetailState.layerColors ? candleDetailState.layerColors : []}
           onSelectProduct={handleLayerColorState}
           onDeselectProduct={handleDeselectLayerColorState}
           withIndex={true}
         />
         <ProductsGridSelector
-          title={"Декоры"}
+          title={'Декоры'}
           data={candleDetail.decors ? candleDetail.decors : []}
-          selectedData={
-            candleDetailState.decors ? candleDetailState.decors : []
-          }
+          selectedData={candleDetailState.decors ? candleDetailState.decors : []}
           onSelectProduct={handleDecorState}
           onDeselectProduct={handleDeselectDecorState}
         />
         <TagSelector
           title="Запахи"
-          data={convertSmellToTagData(
-            candleDetail.smells ? candleDetail.smells : []
-          )}
+          data={convertSmellToTagData(candleDetail.smells ? candleDetail.smells : [])}
           selectedData={convertSmellToTagData(
-            candleDetailState.smells ? candleDetailState.smells : []
+            candleDetailState.smells ? candleDetailState.smells : [],
           )}
           onSelectTag={handleSmellState}
         />
         <ProductsGridSelector
-          title={"Фитили"}
+          title={'Фитили'}
           data={candleDetail.wicks ? candleDetail.wicks : []}
           selectedData={candleDetailState.wicks ? candleDetailState.wicks : []}
           onSelectProduct={handleWickState}
@@ -195,9 +179,7 @@ const CandleForm: FC<CandleFormProps> = ({
 
 export default CandleForm;
 
-export function convertNumberOfLayerToTagData(
-  numberOfLayers: NumberOfLayer[]
-): TagData[] {
+export function convertNumberOfLayerToTagData(numberOfLayers: NumberOfLayer[]): TagData[] {
   const tagDataArray: TagData[] = [];
 
   for (let i = 0; i < numberOfLayers.length; i++) {
@@ -220,7 +202,7 @@ export function convertSmellToTagData(smells: Smell[]): TagData[] {
     const smell = smells[i];
     const tagData: TagData = {
       id: smell.id,
-      text: smell.title + " " + smell.price + " р",
+      text: smell.title + ' ' + smell.price + ' р',
     };
 
     tagDataArray.push(tagData);
@@ -238,11 +220,8 @@ export function convertTagDataToNumberOfLayer(tagData: TagData): NumberOfLayer {
 
 export function convertTagDataToSmell(
   tagData: TagData,
-  candleDetail: CandleDetail
+  candleDetail: CandleDetail,
 ): Smell | undefined {
-  const splitTitle = tagData.text.split(" ");
-  const matchingSmell = candleDetail?.smells?.find(
-    (smell) => smell.id === tagData.id && smell.title === splitTitle[0]
-  );
+  const matchingSmell = candleDetail?.smells?.find((smell) => smell.id === tagData.id);
   return matchingSmell;
 }

@@ -15,18 +15,10 @@ interface TagSelectorProps {
 const TagSelector: FC<TagSelectorProps> = ({
   title,
   data,
-  selectedData,
+  selectedData = [],
   onSelectTag,
   onDeselectTag,
 }) => {
-  const [selectedProducts, setSelectedProducts] = useState<TagData[]>([]);
-
-  useEffect(() => {
-    if (selectedData) {
-      setSelectedProducts(selectedData);
-    }
-  }, [selectedData]);
-
   return (
     <div className={Style.selectedTag}>
       <h2>{title}</h2>
@@ -37,7 +29,7 @@ const TagSelector: FC<TagSelectorProps> = ({
             tag={tag}
             onSelectTag={onSelectTag}
             onDeselectTag={onDeselectTag}
-            isSelected={selectedProducts.some((selectedTag) => selectedTag.id === tag.id)}
+            isSelected={selectedData.some((selectedData) => selectedData.id === tag.id)}
           />
         ))}
       </div>

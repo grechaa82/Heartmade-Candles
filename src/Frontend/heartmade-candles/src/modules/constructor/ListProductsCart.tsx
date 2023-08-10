@@ -19,7 +19,6 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
     if (updatedCandleDetailWithQuantity[index]) {
       if (newQuantity <= 0) {
         updatedCandleDetailWithQuantity.splice(index, 1);
-        console.log('updatedCandleDetailWithQuantity', updatedCandleDetailWithQuantity);
       } else {
         updatedCandleDetailWithQuantity[index].quantity = newQuantity;
       }
