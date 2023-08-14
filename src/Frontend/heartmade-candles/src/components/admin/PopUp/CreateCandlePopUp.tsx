@@ -2,7 +2,7 @@ import { FC, useState, ChangeEvent } from 'react';
 
 import { Candle } from '../../../types/Candle';
 import Textarea from '../Textarea';
-import ButtonDropdown, { optionData } from '../ButtonDropdown';
+import ButtonDropdown, { optionData } from '../../shared/ButtonDropdown';
 import { TypeCandle } from '../../../types/TypeCandle';
 import CheckboxBlock from '../CheckboxBlock';
 import PopUp, { PopUpProps } from './PopUp';

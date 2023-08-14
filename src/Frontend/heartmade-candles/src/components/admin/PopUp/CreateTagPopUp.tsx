@@ -1,10 +1,10 @@
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent } from 'react';
 
-import Textarea from "../Textarea";
-import PopUp, { PopUpProps } from "./PopUp";
-import { TagData } from "../Tag";
+import Textarea from '../Textarea';
+import PopUp, { PopUpProps } from './PopUp';
+import { TagData } from '../../shared/Tag';
 
-import Style from "./CreateTagPopUp.module.css";
+import Style from './CreateTagPopUp.module.css';
 
 export interface CreateTagPopUpProps extends PopUpProps {
   title: string;
@@ -12,15 +12,10 @@ export interface CreateTagPopUpProps extends PopUpProps {
   onSave: (tag: TagData) => void;
 }
 
-const CreateTagPopUp: FC<CreateTagPopUpProps> = ({
-  onClose,
-  title,
-  isNumber = false,
-  onSave,
-}) => {
+const CreateTagPopUp: FC<CreateTagPopUpProps> = ({ onClose, title, isNumber = false, onSave }) => {
   const [tag, setTag] = useState<TagData>({
     id: 0,
-    text: "",
+    text: '',
   });
   const [isModified, setIsModified] = useState(false);
 

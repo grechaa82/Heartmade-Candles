@@ -1,8 +1,8 @@
-import { FC, ReactNode } from "react";
+import { FC, ReactNode } from 'react';
 
-import IconRemoveLarge from "../../../UI/IconRemoveLarge";
+import IconRemoveLarge from '../../../UI/IconRemoveLarge';
 
-import Style from "./PopUp.module.css";
+import Style from './PopUp.module.css';
 
 export interface PopUpProps {
   onClose: () => void;
@@ -11,7 +11,7 @@ export interface PopUpProps {
 
 const PopUp: FC<PopUpProps> = ({ onClose, children }) => {
   return (
-    <div className={Style.overlay} onClick={onClose}>
+    <div className={Style.overlay}>
       <div className={Style.popUp}>
         <button className={Style.closeButton} onClick={onClose}>
           <IconRemoveLarge color="#777" />

@@ -1,15 +1,15 @@
-import { FC, useState } from "react";
+import { FC, useState } from 'react';
 
-import IconChevronLeftLarge from "../../UI/IconChevronLeftLarge";
-import IconChevronRightLarge from "../../UI/IconChevronRightLarge";
-import IconDownloadLarge from "../../UI/IconDownloadLarge";
-import IconViewListLarge from "../../UI/IconViewListLarge";
-import { Image } from "../../types/Image";
-import AddImagesPopUp from "./PopUp/AddImagesPopUp";
+import IconChevronLeftLarge from '../../UI/IconChevronLeftLarge';
+import IconChevronRightLarge from '../../UI/IconChevronRightLarge';
+import IconDownloadLarge from '../../UI/IconDownloadLarge';
+import IconViewListLarge from '../../UI/IconViewListLarge';
+import { Image } from '../../types/Image';
+import AddImagesPopUp from './PopUp/AddImagesPopUp';
 
-import { ImagesApi } from "../../services/ImagesApi";
+import { ImagesApi } from '../../services/ImagesApi';
 
-import Style from "./ImageSlider.module.css";
+import Style from './ImageSlider.module.css';
 
 interface ImageSliderProps {
   images: Image[];
@@ -18,7 +18,7 @@ interface ImageSliderProps {
 
 const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const urlToImage = "http://localhost:5000/StaticFiles/Images/";
+  const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
   const handleChangeImage = (index: number, moveToIndex?: number) => {
@@ -48,7 +48,6 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages }) => {
   if (images.length === 0) {
     return (
       <div className={Style.image}>
-        <div className={Style.imageNoAvailable}>Изображение отсутствует</div>
         <div className={Style.changesImages}>
           <button className={Style.iconChangeImages} onClick={handlePopUpOpen}>
             <IconViewListLarge color="#6FCF97" />
@@ -57,6 +56,7 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages }) => {
             <IconDownloadLarge color="#6FCF97" />
           </button>
         </div>
+        <div className={Style.imageNoAvailable}>Изображение отсутствует</div>
         {isPopUpOpen && (
           <AddImagesPopUp
             onClose={handlePopUpClose}
