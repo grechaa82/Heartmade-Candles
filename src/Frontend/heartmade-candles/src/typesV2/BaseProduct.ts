@@ -72,3 +72,13 @@ export interface CandleDetailRequest {
 export interface LayerColorRequest extends ImageProduct {
   pricePerGram: number;
 }
+
+export interface CandleDetailIdsWithQuantity {
+  candleId: number;
+  decorIds?: number[];
+  layerColorIds?: number[];
+  numberOfLayerIds?: number[];
+  smellIds?: number[];
+  wickIds?: number[];
+  quantity: number;
+}
