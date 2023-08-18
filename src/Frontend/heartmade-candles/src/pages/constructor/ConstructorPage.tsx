@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import ListProductsCart from '../../modules/constructor/ListProductsCart';
 import CandleForm from '../../modules/constructor/CandleForm';
@@ -30,6 +30,7 @@ const ConstructorPage: FC = () => {
   const [price, setPrice] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
   const firstImage =
@@ -71,8 +72,57 @@ const ConstructorPage: FC = () => {
       quantity: 1,
     };
 
+    addQueryString(convertToCandleString(newCandleDetailWithQuantity));
+
     setCandleDetailWithQuantity([...candleDetailWithQuantity, newCandleDetailWithQuantity]);
     setCandleDetail(undefined);
+  };
+
+  function convertToCandleString(candleDetail: CandleDetailWithQuantity): string {
+    const { candle, decors, layerColors, numberOfLayers, smells, wicks, quantity } = candleDetail;
+
+    const candleStr = `c-${candle.id}`;
+    const numberOfLayersStr = numberOfLayers
+      ? `n-${numberOfLayers.map((item) => item.number).join('_')}`
+      : '';
+    const layerColorsStr = layerColors ? `l-${layerColors.map((item) => item.id).join('_')}` : '';
+    const decorStr = decors ? `d-${decors.map((item) => item.id).join('_')}` : '';
+    const smellStr = smells ? `s-${smells.map((item) => item.id).join('_')}` : '';
+    const wickStr = wicks ? `w-${wicks.map((item) => item.id).join('_')}` : '';
+    const quantityStr = `q-${quantity}`;
+
+    const result = [
+      candleStr,
+      numberOfLayersStr,
+      layerColorsStr,
+      decorStr,
+      smellStr,
+      wickStr,
+      quantityStr,
+    ]
+      .filter((str) => str !== '')
+      .join('~');
+
+    return result;
+  }
+
+  const addQueryString = (queryString: string) => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    let currentQueryString = urlSearchParams.toString();
+
+    if (!currentQueryString) {
+      currentQueryString = queryString;
+    } else {
+      const lastCharacter = currentQueryString.slice(-1);
+
+      if (lastCharacter !== '.') {
+        currentQueryString += '.' + queryString;
+      } else {
+        currentQueryString += queryString;
+      }
+    }
+
+    navigate(`?${currentQueryString}`);
   };
 
   const checkCandleDetail = (candleDetail: CandleDetail): string | undefined => {
@@ -212,7 +262,7 @@ const ConstructorPage: FC = () => {
     const invalidStrings: string[] = [];
 
     for (const str of strArray) {
-      const components = str.split(',');
+      const components = str.split('~');
 
       const validTypes = ['c', 'n', 'l', 'w', 'q', 'd', 's'];
 
@@ -254,7 +304,7 @@ const ConstructorPage: FC = () => {
         quantity: 0,
       };
 
-      const components = str.split(',');
+      const components = str.split('~');
 
       for (const component of components) {
         const [type, value] = component.split('-');
@@ -382,6 +432,11 @@ const ConstructorPage: FC = () => {
   }
 
   const handleChangeCandleDetailWithQuantity = (products: CandleDetailWithQuantity[]) => {
+    navigate('');
+    products.forEach((product) => {
+      const queryString = convertToCandleString(product);
+      addQueryString(queryString);
+    });
     setCandleDetailWithQuantity(products);
   };
 
