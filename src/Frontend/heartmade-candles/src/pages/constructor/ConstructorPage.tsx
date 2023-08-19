@@ -63,18 +63,16 @@ const ConstructorPage: FC = () => {
     }
 
     const newCandleDetailWithQuantity: CandleDetailWithQuantity = {
-      candle: candleDetail.candle,
-      decors: candleDetail.decors,
-      layerColors: candleDetail.layerColors,
-      numberOfLayers: candleDetail.numberOfLayers,
-      smells: candleDetail.smells,
-      wicks: candleDetail.wicks,
+      ...candleDetail,
       quantity: 1,
     };
 
     addQueryString(convertToCandleString(newCandleDetailWithQuantity));
 
-    setCandleDetailWithQuantity([...candleDetailWithQuantity, newCandleDetailWithQuantity]);
+    setCandleDetailWithQuantity((prevCandleDetailWithQuantity) => [
+      ...prevCandleDetailWithQuantity,
+      newCandleDetailWithQuantity,
+    ]);
     setCandleDetail(undefined);
   };
 
@@ -115,14 +113,13 @@ const ConstructorPage: FC = () => {
     } else {
       const lastCharacter = currentQueryString.slice(-1);
 
-      if (lastCharacter !== '.') {
-        currentQueryString += '.' + queryString;
-      } else {
-        currentQueryString += queryString;
-      }
+      currentQueryString += (lastCharacter !== '.' ? '.' : '') + queryString;
     }
 
-    navigate(`?${currentQueryString}`);
+    const newUrlSearchParams = new URLSearchParams(`?${currentQueryString}`);
+    const newQueryString = newUrlSearchParams.toString();
+
+    navigate(`?${newQueryString}`);
   };
 
   const checkCandleDetail = (candleDetail: CandleDetail): string | undefined => {
@@ -139,19 +136,14 @@ const ConstructorPage: FC = () => {
     }
 
     if (errorMessageParts.length > 0) {
-      const errorMessage = `Не выбрано следующее обязательное поле(я): ${errorMessageParts.join(
-        ', ',
-      )}`;
-      return errorMessage;
+      return `Не выбрано следующее обязательное поле(я): ${errorMessageParts.join(', ')}`;
     }
 
-    if (candleDetail.numberOfLayers && candleDetail.layerColors) {
-      const numberOfLayer: NumberOfLayer = candleDetail.numberOfLayers[0];
-      const layerColors: LayerColor[] = candleDetail.layerColors;
+    const numberOfLayers = candleDetail.numberOfLayers?.[0];
+    const layerColors = candleDetail.layerColors;
 
-      if (numberOfLayer.number !== layerColors.length) {
-        return 'Количество слоев не совпадает с количеством выбранных слоев';
-      }
+    if (numberOfLayers && layerColors && numberOfLayers.number !== layerColors.length) {
+      return 'Количество слоев не совпадает с количеством выбранных слоев';
     }
 
     return undefined;
@@ -182,25 +174,6 @@ const ConstructorPage: FC = () => {
   }, [candleDetailWithQuantity, totalPrice]);
 
   useEffect(() => {
-    /*  
-    1 - привести url к массиву строк состояний свечей
-
-    2 - проверить валидна ли эта строка 
-
-    3 - приводим к типу CandleDetailIdsWithQuantity
-
-    4 - вытянуть свечу с сервера по id из CandleDetailIdsWithQuantity
-
-    5 - проверяем если все ли такие элементы из CandleDetailIdsWithQuantity есть в CadndleDetail, 
-    который с сервера
-
-    6 - создать новый CandleDetailIdsWithQuantityState, 
-    добавить в него все выбранные элементы из CandleDetailIdsWithQuantity и CadndleDetail
-
-    7 - добавить CandleDetailIdsWithQuantityState в candleDetailWithQuantity, 
-    которое поле, которое для ListProductsCart
-    */
-
     const searchParams = new URLSearchParams(location.search);
     let queryString = searchParams.toString().replace(/=$/, '');
 
@@ -209,6 +182,7 @@ const ConstructorPage: FC = () => {
     const isValidArrayCandleDetailIdsWithQuantityString = validateCandleDetailIdsWithQuantityString(
       arrayCandleDetailIdsWithQuantityString,
     );
+
     if (isValidArrayCandleDetailIdsWithQuantityString.length > 0) {
       console.log('что-то не так');
     }
@@ -216,52 +190,22 @@ const ConstructorPage: FC = () => {
     const arrayCandleDetailIdsWithQuantity: CandleDetailIdsWithQuantity[] =
       parseCandleDetailIdsWithQuantityString(arrayCandleDetailIdsWithQuantityString);
 
-    const processCandleDetail = async () => {
-      let newCandleDetailWithQuantity: CandleDetailWithQuantity[] = [];
-
-      for (const candleDetailIdsWithQuantity of arrayCandleDetailIdsWithQuantity) {
-        const candleDetail = await ConstructorApi.getCandleById(
-          candleDetailIdsWithQuantity.candleId.toString(),
-        );
-
-        const isValid = checkCandleComponentsExist(candleDetail, candleDetailIdsWithQuantity);
-        if (isValid) {
-          const candleDetailWithQuantityState = createCandleDetailWithQuantity(
-            candleDetail,
-            candleDetailIdsWithQuantity,
-          );
-          if (
-            !candleDetailWithQuantity.find(
-              (item) =>
-                item.candle === candleDetailWithQuantityState.candle &&
-                item.decors === candleDetailWithQuantityState.decors &&
-                item.numberOfLayers === candleDetailWithQuantityState.numberOfLayers &&
-                item.layerColors === candleDetailWithQuantityState.layerColors &&
-                item.smells === candleDetailWithQuantityState.smells &&
-                item.wicks === candleDetailWithQuantityState.wicks,
-            )
-          ) {
-            newCandleDetailWithQuantity.push(candleDetailWithQuantityState);
-          }
-        } else {
-          console.log('что-то не так');
-        }
-      }
-
-      setCandleDetailWithQuantity(newCandleDetailWithQuantity);
-    };
-
-    processCandleDetail();
+    processCandleDetail(arrayCandleDetailIdsWithQuantity);
   }, [location.search]);
 
   function getCandleStatusStrings(queryString: string): string[] {
-    return decodeURIComponent(queryString).split('.');
+    return queryString.split('.').map(decodeURIComponent);
   }
 
   function validateCandleDetailIdsWithQuantityString(strArray: string[]): string[] {
     const invalidStrings: string[] = [];
 
     for (const str of strArray) {
+      console.log(str);
+      if (str === '') {
+        continue;
+      }
+
       const components = str.split('~');
 
       const validTypes = ['c', 'n', 'l', 'w', 'q', 'd', 's'];
@@ -276,13 +220,13 @@ const ConstructorPage: FC = () => {
         if (type === 'l') {
           const layers = value.split('_');
           for (const layerValue of layers) {
-            if (isNaN(Number(layerValue)) || Number(layerValue) < 0) {
+            if (isNaN(Number(layerValue)) || Number(layerValue) <= 0) {
               invalidStrings.push(
                 `Невалидное значение для компонента в строке '${str}': ${type}: ${layerValue}`,
               );
             }
           }
-        } else if (isNaN(Number(value)) || Number(value) < 0) {
+        } else if (isNaN(Number(value)) || Number(value) <= 0) {
           invalidStrings.push(
             `Невалидное значение для компонента в строке '${str}': ${type}: ${value}`,
           );
@@ -299,6 +243,10 @@ const ConstructorPage: FC = () => {
     const candleDetailIdsWithQuantities: CandleDetailIdsWithQuantity[] = [];
 
     for (const str of strings) {
+      if (str === '') {
+        continue;
+      }
+
       const candleDetailIdsWithQuantity: CandleDetailIdsWithQuantity = {
         candleId: 0,
         quantity: 0,
@@ -314,19 +262,19 @@ const ConstructorPage: FC = () => {
             candleDetailIdsWithQuantity.candleId = parseInt(value);
             break;
           case 'd':
-            candleDetailIdsWithQuantity.decorIds = value.split('_').map(Number);
+            candleDetailIdsWithQuantity.decorIds = mapParseToInt(value);
             break;
           case 'l':
-            candleDetailIdsWithQuantity.layerColorIds = value.split('_').map(Number);
+            candleDetailIdsWithQuantity.layerColorIds = mapParseToInt(value);
             break;
           case 'n':
-            candleDetailIdsWithQuantity.numberOfLayerIds = value.split('_').map(Number);
+            candleDetailIdsWithQuantity.numberOfLayerIds = mapParseToInt(value);
             break;
           case 's':
-            candleDetailIdsWithQuantity.smellIds = value.split('_').map(Number);
+            candleDetailIdsWithQuantity.smellIds = mapParseToInt(value);
             break;
           case 'w':
-            candleDetailIdsWithQuantity.wickIds = value.split('_').map(Number);
+            candleDetailIdsWithQuantity.wickIds = mapParseToInt(value);
             break;
           case 'q':
             candleDetailIdsWithQuantity.quantity = parseInt(value);
@@ -335,55 +283,66 @@ const ConstructorPage: FC = () => {
       }
       candleDetailIdsWithQuantities.push(candleDetailIdsWithQuantity);
     }
+
     return candleDetailIdsWithQuantities;
+  }
+
+  function mapParseToInt(value: string): number[] {
+    return value.split('_').map(Number);
   }
 
   function checkCandleComponentsExist(
     candleDetail: CandleDetail,
     candleDetailIdsWithQuantity: CandleDetailIdsWithQuantity,
   ): boolean {
-    if (candleDetail.decors && candleDetailIdsWithQuantity.decorIds) {
-      for (const decorId of candleDetailIdsWithQuantity.decorIds) {
-        if (!candleDetail.decors.find((decor) => decor.id === decorId)) {
-          return false;
-        }
-      }
+    if (
+      candleDetail.decors &&
+      candleDetailIdsWithQuantity.decorIds &&
+      !candleDetailIdsWithQuantity.decorIds.every((decorId) =>
+        candleDetail.decors?.find((decor) => decor.id === decorId),
+      )
+    ) {
+      return false;
     }
 
-    if (candleDetail.layerColors && candleDetailIdsWithQuantity.layerColorIds) {
-      for (const layerColorId of candleDetailIdsWithQuantity.layerColorIds) {
-        if (!candleDetail.layerColors.find((layerColor) => layerColor.id === layerColorId)) {
-          return false;
-        }
-      }
+    if (
+      candleDetail.layerColors &&
+      candleDetailIdsWithQuantity.layerColorIds &&
+      !candleDetailIdsWithQuantity.layerColorIds.every((layerColorId) =>
+        candleDetail.layerColors?.some((layerColor) => layerColor.id === layerColorId),
+      )
+    ) {
+      return false;
     }
 
-    if (candleDetail.numberOfLayers && candleDetailIdsWithQuantity.numberOfLayerIds) {
-      for (const numberOfLayerId of candleDetailIdsWithQuantity.numberOfLayerIds) {
-        if (
-          !candleDetail.numberOfLayers.find(
-            (numberOfLayers) => numberOfLayers.id === numberOfLayerId,
-          )
-        ) {
-          return false;
-        }
-      }
+    if (
+      candleDetail.numberOfLayers &&
+      candleDetailIdsWithQuantity.numberOfLayerIds &&
+      !candleDetailIdsWithQuantity.numberOfLayerIds.every((numberOfLayerId) =>
+        candleDetail.numberOfLayers?.some((numberOfLayer) => numberOfLayer.id === numberOfLayerId),
+      )
+    ) {
+      return false;
     }
 
-    if (candleDetail.smells && candleDetailIdsWithQuantity.smellIds) {
-      for (const smellId of candleDetailIdsWithQuantity.smellIds) {
-        if (!candleDetail.smells.find((smell) => smell.id === smellId)) {
-          return false;
-        }
-      }
+    if (
+      candleDetail.smells &&
+      candleDetailIdsWithQuantity.smellIds &&
+      !candleDetailIdsWithQuantity.smellIds.every((smellId) =>
+        candleDetail.smells?.some((smell) => smell.id === smellId),
+      )
+    ) {
+      return false;
     }
 
-    if (candleDetail.wicks && candleDetailIdsWithQuantity.wickIds) {
-      for (const wickId of candleDetailIdsWithQuantity.wickIds) {
-        if (!candleDetail.wicks.find((wick) => wick.id === wickId)) {
-          return false;
-        }
-      }
+    if (
+      candleDetail.wicks &&
+      candleDetailIdsWithQuantity.wickIds &&
+      !candleDetailIdsWithQuantity.wickIds.every((wickId) =>
+        candleDetail.wicks?.some((wick) => wick.id === wickId),
+      )
+    ) {
+      return false;
     }
 
     return true;
@@ -392,43 +351,85 @@ const ConstructorPage: FC = () => {
   function createCandleDetailWithQuantity(
     candleDetail: CandleDetail,
     candleDetailIdsWithQuantity: CandleDetailIdsWithQuantity,
-  ): CandleDetailWithQuantity {
-    const candleWithQuantity: CandleDetailWithQuantity = {
+  ) {
+    const candleDetailWithQuantity: CandleDetailWithQuantity = {
       candle: candleDetail.candle,
       quantity: candleDetailIdsWithQuantity.quantity,
     };
 
     if (candleDetail.decors && candleDetailIdsWithQuantity.decorIds) {
-      candleWithQuantity.decors = candleDetail.decors.filter((decor) =>
+      candleDetailWithQuantity.decors = candleDetail.decors.filter((decor) =>
         candleDetailIdsWithQuantity.decorIds?.includes(decor.id),
       );
     }
 
     if (candleDetail.layerColors && candleDetailIdsWithQuantity.layerColorIds) {
-      candleWithQuantity.layerColors = candleDetail.layerColors.filter((layerColor) =>
+      candleDetailWithQuantity.layerColors = candleDetail.layerColors.filter((layerColor) =>
         candleDetailIdsWithQuantity.layerColorIds?.includes(layerColor.id),
       );
     }
 
     if (candleDetail.numberOfLayers && candleDetailIdsWithQuantity.numberOfLayerIds) {
-      candleWithQuantity.numberOfLayers = candleDetail.numberOfLayers.filter((numberOfLayer) =>
-        candleDetailIdsWithQuantity.numberOfLayerIds?.includes(numberOfLayer.id),
+      candleDetailWithQuantity.numberOfLayers = candleDetail.numberOfLayers.filter(
+        (numberOfLayer) => candleDetailIdsWithQuantity.numberOfLayerIds?.includes(numberOfLayer.id),
       );
     }
 
     if (candleDetail.smells && candleDetailIdsWithQuantity.smellIds) {
-      candleWithQuantity.smells = candleDetail.smells.filter((smell) =>
+      candleDetailWithQuantity.smells = candleDetail.smells.filter((smell) =>
         candleDetailIdsWithQuantity.smellIds?.includes(smell.id),
       );
     }
 
     if (candleDetail.wicks && candleDetailIdsWithQuantity.wickIds) {
-      candleWithQuantity.wicks = candleDetail.wicks.filter((wick) =>
+      candleDetailWithQuantity.wicks = candleDetail.wicks.filter((wick) =>
         candleDetailIdsWithQuantity.wickIds?.includes(wick.id),
       );
     }
 
-    return candleWithQuantity;
+    return candleDetailWithQuantity;
+  }
+
+  async function processCandleDetail(
+    arrayCandleDetailIdsWithQuantity: CandleDetailIdsWithQuantity[],
+  ) {
+    const newCandleDetailWithQuantity = [];
+
+    for (const candleDetailIdsWithQuantity of arrayCandleDetailIdsWithQuantity) {
+      const candleDetail = await ConstructorApi.getCandleById(
+        candleDetailIdsWithQuantity.candleId.toString(),
+      );
+
+      if (checkCandleComponentsExist(candleDetail, candleDetailIdsWithQuantity)) {
+        const candleDetailWithQuantityState = createCandleDetailWithQuantity(
+          candleDetail,
+          candleDetailIdsWithQuantity,
+        );
+
+        if (
+          !candleDetailWithQuantityExists(candleDetailWithQuantity, candleDetailWithQuantityState)
+        ) {
+          newCandleDetailWithQuantity.push(candleDetailWithQuantityState);
+        }
+      }
+    }
+
+    setCandleDetailWithQuantity(newCandleDetailWithQuantity);
+  }
+
+  function candleDetailWithQuantityExists(
+    candleDetailWithQuantity: CandleDetailWithQuantity[],
+    candleDetailWithQuantityState: CandleDetailWithQuantity,
+  ) {
+    return candleDetailWithQuantity.some(
+      (item) =>
+        item.candle === candleDetailWithQuantityState.candle &&
+        item.decors === candleDetailWithQuantityState.decors &&
+        item.numberOfLayers === candleDetailWithQuantityState.numberOfLayers &&
+        item.layerColors === candleDetailWithQuantityState.layerColors &&
+        item.wicks === candleDetailWithQuantityState.wicks &&
+        item.smells === candleDetailWithQuantityState.smells,
+    );
   }
 
   const handleChangeCandleDetailWithQuantity = (products: CandleDetailWithQuantity[]) => {
