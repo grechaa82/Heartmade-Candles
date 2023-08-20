@@ -15,7 +15,7 @@ import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel
 import { CandleTypeWithCandles } from '../../typesV2/CandleTypeWithCandles';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import { calculatePrice } from '../../helpers/CalculatePrice';
-import ErrorPopUp from '../../components/constructor/ErrorPopUp';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import Style from './ConstructorPage.module.css';
 
@@ -38,8 +38,7 @@ const ConstructorPage: FC = () => {
       ? candleDetail?.candle.images[0]
       : null;
 
-  const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   async function showCandleForm(candleId: number) {
     try {
@@ -51,14 +50,14 @@ const ConstructorPage: FC = () => {
   }
 
   function hideCandleForm() {
+    setErrorMessage([]);
     setCandleDetail(undefined);
   }
 
   const addCandleToListProductsCart = (candleDetail: CandleDetail): void => {
-    const validCandleDetail = checkCandleDetail(candleDetail);
-    if (validCandleDetail) {
-      setErrorMessage(validCandleDetail);
-      setShowError(true);
+    const validCandleDetail: string[] = checkCandleDetail(candleDetail);
+    if (validCandleDetail.length > 0) {
+      setErrorMessage((prev) => [...prev, ...validCandleDetail.flat()]);
       return;
     }
 
@@ -73,6 +72,7 @@ const ConstructorPage: FC = () => {
       ...prevCandleDetailWithQuantity,
       newCandleDetailWithQuantity,
     ]);
+    setErrorMessage([]);
     setCandleDetail(undefined);
   };
 
@@ -122,9 +122,10 @@ const ConstructorPage: FC = () => {
     navigate(`?${newQueryString}`);
   };
 
-  const checkCandleDetail = (candleDetail: CandleDetail): string | undefined => {
-    const errorMessageParts: string[] = [];
+  const checkCandleDetail = (candleDetail: CandleDetail): string[] => {
+    const errorMessageInCandleDetail: string[] = [];
 
+    const errorMessageParts: string[] = [];
     if (!candleDetail.numberOfLayers) {
       errorMessageParts.push('количество слоев');
     }
@@ -136,17 +137,21 @@ const ConstructorPage: FC = () => {
     }
 
     if (errorMessageParts.length > 0) {
-      return `Не выбрано следующее обязательное поле(я): ${errorMessageParts.join(', ')}`;
+      errorMessageInCandleDetail.push(
+        `Не выбрано следующее обязательное поле(я): ${errorMessageParts.join(', ')}`,
+      );
     }
 
     const numberOfLayers = candleDetail.numberOfLayers?.[0];
     const layerColors = candleDetail.layerColors;
 
     if (numberOfLayers && layerColors && numberOfLayers.number !== layerColors.length) {
-      return 'Количество слоев не совпадает с количеством выбранных слоев';
+      errorMessageInCandleDetail.push(
+        'Количество слоев не совпадает с количеством выбранных слоев',
+      );
     }
 
-    return undefined;
+    return errorMessageInCandleDetail;
   };
 
   useEffect(() => {}, [candleDetailWithQuantity]);
@@ -450,17 +455,13 @@ const ConstructorPage: FC = () => {
     setPrice(calculatePrice(candleDetail));
   };
 
-  const closeErrorPopUp = () => {
-    setShowError(false);
-  };
-
   const createOrder = () => {};
 
   return (
     <>
       <div className={Style.container}>
         <div className={Style.popUpNotification}>
-          {showError && <ErrorPopUp message={errorMessage} onClose={closeErrorPopUp} />}
+          <ListErrorPopUp messages={errorMessage} />
         </div>
         <div className={Style.leftPanel}>
           <ListProductsCart
