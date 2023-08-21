@@ -117,7 +117,58 @@ const ConstructorPage: FC = () => {
     }
 
     const newUrlSearchParams = new URLSearchParams(`?${currentQueryString}`);
-    const newQueryString = newUrlSearchParams.toString();
+    const newQueryString = newUrlSearchParams.toString().replace('=', '');
+
+    navigate(`?${newQueryString}`);
+  };
+
+  const addQueryStringFromCandleDetailWithQuantity = (
+    arrayCandleDetailWithQuantity: CandleDetailWithQuantity[],
+  ) => {
+    let newQueryString = '';
+
+    for (let i = 0; i < arrayCandleDetailWithQuantity.length; i++) {
+      const candleDetail = arrayCandleDetailWithQuantity[i];
+      const candle = candleDetail.candle;
+      const decors = candleDetail.decors?.map((decor) => decor.id).join('_');
+      const layerColors = candleDetail.layerColors?.map((layerColor) => layerColor.id).join('_');
+      const numberOfLayers = candleDetail.numberOfLayers
+        ?.map((numberOfLayer) => numberOfLayer.id)
+        .join('_');
+      const smells = candleDetail.smells?.map((smell) => smell.id).join('_');
+      const wicks = candleDetail.wicks?.map((wick) => wick.id).join('_');
+      const quantity = candleDetail.quantity;
+
+      let queryString = `c-${candle.id}`;
+
+      if (decors) {
+        queryString += `~d-${decors}`;
+      }
+
+      if (layerColors) {
+        queryString += `~l-${layerColors}`;
+      }
+
+      if (numberOfLayers) {
+        queryString += `~n-${numberOfLayers}`;
+      }
+
+      if (smells) {
+        queryString += `~s-${smells}`;
+      }
+
+      if (wicks) {
+        queryString += `~w-${wicks}`;
+      }
+
+      queryString += `~q-${quantity}`;
+
+      newQueryString += queryString;
+
+      if (i < arrayCandleDetailWithQuantity.length - 1) {
+        newQueryString += '.';
+      }
+    }
 
     navigate(`?${newQueryString}`);
   };
@@ -184,16 +235,19 @@ const ConstructorPage: FC = () => {
 
     const arrayCandleDetailIdsWithQuantityString: string[] = getCandleStatusStrings(queryString);
 
-    const isValidArrayCandleDetailIdsWithQuantityString = validateCandleDetailIdsWithQuantityString(
-      arrayCandleDetailIdsWithQuantityString,
-    );
+    const validArrayCandleDetailIdsWithQuantityString: string[] =
+      validateCandleDetailIdsWithQuantityString(arrayCandleDetailIdsWithQuantityString);
 
-    if (isValidArrayCandleDetailIdsWithQuantityString.length > 0) {
-      console.log('что-то не так');
+    if (
+      validArrayCandleDetailIdsWithQuantityString.length !==
+      arrayCandleDetailIdsWithQuantityString.length
+    ) {
+      const newQueryString = validArrayCandleDetailIdsWithQuantityString.join('.');
+      navigate(`?${newQueryString}`);
     }
 
     const arrayCandleDetailIdsWithQuantity: CandleDetailIdsWithQuantity[] =
-      parseCandleDetailIdsWithQuantityString(arrayCandleDetailIdsWithQuantityString);
+      parseCandleDetailIdsWithQuantityString(validArrayCandleDetailIdsWithQuantityString);
 
     processCandleDetail(arrayCandleDetailIdsWithQuantity);
   }, [location.search]);
@@ -203,43 +257,55 @@ const ConstructorPage: FC = () => {
   }
 
   function validateCandleDetailIdsWithQuantityString(strArray: string[]): string[] {
-    const invalidStrings: string[] = [];
+    const validStrings: string[] = [...strArray];
+    const errorMessageInvalidStrings: string[] = [];
+
+    const validTypes = ['c', 'n', 'l', 'w', 'q', 'd', 's'];
 
     for (const str of strArray) {
-      console.log(str);
-      if (str === '') {
+      if (str === '' || str === '=') {
         continue;
       }
 
       const components = str.split('~');
-
-      const validTypes = ['c', 'n', 'l', 'w', 'q', 'd', 's'];
+      let removeString = false;
 
       for (const component of components) {
         const [type, value] = component.split('-');
 
         if (!validTypes.includes(type)) {
-          invalidStrings.push(`Невалидный тип компонента в строке '${str}': ${type}`);
+          errorMessageInvalidStrings.push(`Невалидный тип компонента в строке '${str}': ${type}`);
+          removeString = true;
         }
 
         if (type === 'l') {
           const layers = value.split('_');
           for (const layerValue of layers) {
             if (isNaN(Number(layerValue)) || Number(layerValue) <= 0) {
-              invalidStrings.push(
+              errorMessageInvalidStrings.push(
                 `Невалидное значение для компонента в строке '${str}': ${type}: ${layerValue}`,
               );
+              removeString = true;
             }
           }
         } else if (isNaN(Number(value)) || Number(value) <= 0) {
-          invalidStrings.push(
+          errorMessageInvalidStrings.push(
             `Невалидное значение для компонента в строке '${str}': ${type}: ${value}`,
           );
+          removeString = true;
+        }
+      }
+
+      if (removeString) {
+        const index = validStrings.indexOf(str);
+        if (index > -1) {
+          validStrings.splice(index, 1);
         }
       }
     }
 
-    return invalidStrings;
+    setErrorMessage((prev) => [...prev, ...errorMessageInvalidStrings]);
+    return validStrings;
   }
 
   function parseCandleDetailIdsWithQuantityString(
@@ -300,6 +366,9 @@ const ConstructorPage: FC = () => {
     candleDetail: CandleDetail,
     candleDetailIdsWithQuantity: CandleDetailIdsWithQuantity,
   ): boolean {
+    const errorMessageInvalidCandleComponents: string[] = [];
+    let isValid = true;
+
     if (
       candleDetail.decors &&
       candleDetailIdsWithQuantity.decorIds &&
@@ -307,7 +376,10 @@ const ConstructorPage: FC = () => {
         candleDetail.decors?.find((decor) => decor.id === decorId),
       )
     ) {
-      return false;
+      errorMessageInvalidCandleComponents.push(
+        `У свечи '${candleDetail.candle.title}' нет декора: ${candleDetailIdsWithQuantity.decorIds}`,
+      );
+      isValid = false;
     }
 
     if (
@@ -317,7 +389,10 @@ const ConstructorPage: FC = () => {
         candleDetail.layerColors?.some((layerColor) => layerColor.id === layerColorId),
       )
     ) {
-      return false;
+      errorMessageInvalidCandleComponents.push(
+        `У свечи '${candleDetail.candle.title}' нет слоя: ${candleDetailIdsWithQuantity.layerColorIds}`,
+      );
+      isValid = false;
     }
 
     if (
@@ -327,7 +402,10 @@ const ConstructorPage: FC = () => {
         candleDetail.numberOfLayers?.some((numberOfLayer) => numberOfLayer.id === numberOfLayerId),
       )
     ) {
-      return false;
+      errorMessageInvalidCandleComponents.push(
+        `У свечи '${candleDetail.candle.title}' нет количество слоев: ${candleDetailIdsWithQuantity.numberOfLayerIds}`,
+      );
+      isValid = false;
     }
 
     if (
@@ -337,7 +415,10 @@ const ConstructorPage: FC = () => {
         candleDetail.smells?.some((smell) => smell.id === smellId),
       )
     ) {
-      return false;
+      errorMessageInvalidCandleComponents.push(
+        `У свечи '${candleDetail.candle.title}' нет запаха: ${candleDetailIdsWithQuantity.smellIds}`,
+      );
+      isValid = false;
     }
 
     if (
@@ -347,10 +428,17 @@ const ConstructorPage: FC = () => {
         candleDetail.wicks?.some((wick) => wick.id === wickId),
       )
     ) {
-      return false;
+      errorMessageInvalidCandleComponents.push(
+        `У свечи '${candleDetail.candle.title}' нет фитиля: ${candleDetailIdsWithQuantity.wickIds}`,
+      );
+      isValid = false;
     }
 
-    return true;
+    if (!isValid) {
+      setErrorMessage((prev) => [...prev, ...errorMessageInvalidCandleComponents]);
+    }
+
+    return isValid;
   }
 
   function createCandleDetailWithQuantity(
@@ -398,7 +486,7 @@ const ConstructorPage: FC = () => {
   async function processCandleDetail(
     arrayCandleDetailIdsWithQuantity: CandleDetailIdsWithQuantity[],
   ) {
-    const newCandleDetailWithQuantity = [];
+    const newCandleDetailWithQuantity: CandleDetailWithQuantity[] = [];
 
     for (const candleDetailIdsWithQuantity of arrayCandleDetailIdsWithQuantity) {
       const candleDetail = await ConstructorApi.getCandleById(
@@ -419,6 +507,7 @@ const ConstructorPage: FC = () => {
       }
     }
 
+    addQueryStringFromCandleDetailWithQuantity(newCandleDetailWithQuantity);
     setCandleDetailWithQuantity(newCandleDetailWithQuantity);
   }
 
@@ -458,67 +547,65 @@ const ConstructorPage: FC = () => {
   const createOrder = () => {};
 
   return (
-    <>
-      <div className={Style.container}>
-        <div className={Style.popUpNotification}>
-          <ListErrorPopUp messages={errorMessage} />
+    <div className={Style.container}>
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
+      </div>
+      <div className={Style.leftPanel}>
+        <ListProductsCart
+          products={candleDetailWithQuantity}
+          onChangeCandleDetailWithQuantity={handleChangeCandleDetailWithQuantity}
+        />
+      </div>
+      <div className={Style.imagePanel}>
+        {candleDetail && (
+          <div className={Style.image}>
+            {firstImage && (
+              <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
+            )}
+          </div>
+        )}
+        {candleDetail && (
+          <div className={Style.hideCandleForm}>
+            <button onClick={() => hideCandleForm()}>
+              <IconArrowLeftLarge color="#777" />
+            </button>
+          </div>
+        )}
+        {candleDetail && (
+          <div className={Style.priceCandle}>
+            <span>{price} р</span>
+          </div>
+        )}
+        <div className={Style.orderInfo}>
+          <div className={Style.orderBtn}>
+            <button onClick={() => createOrder()}>Заказать</button>
+          </div>
+          <div className={Style.totalPrice}>
+            <span className={Style.title}>Итого </span>
+            <span className={Style.price}>{totalPrice} р</span>
+          </div>
         </div>
-        <div className={Style.leftPanel}>
-          <ListProductsCart
-            products={candleDetailWithQuantity}
-            onChangeCandleDetailWithQuantity={handleChangeCandleDetailWithQuantity}
+      </div>
+      {candleDetail ? (
+        <div className={Style.rightPanel}>
+          <CandleForm
+            candleDetailData={candleDetail}
+            addCandleDetail={addCandleToListProductsCart}
+            calculatePriceCandleDetail={calculatePriceCandleDetail}
           />
         </div>
-        <div className={Style.imagePanel}>
-          {candleDetail && (
-            <div className={Style.image}>
-              {firstImage && (
-                <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
-              )}
-            </div>
-          )}
-          {candleDetail && (
-            <div className={Style.hideCandleForm}>
-              <button onClick={() => hideCandleForm()}>
-                <IconArrowLeftLarge color="#777" />
-              </button>
-            </div>
-          )}
-          {candleDetail && (
-            <div className={Style.priceCandle}>
-              <span>{price} р</span>
-            </div>
-          )}
-          <div className={Style.orderInfo}>
-            <div className={Style.orderBtn}>
-              <button onClick={() => createOrder()}>Заказать</button>
-            </div>
-            <div className={Style.totalPrice}>
-              <span className={Style.title}>Итого </span>
-              <span className={Style.price}>{totalPrice} р</span>
-            </div>
-          </div>
-        </div>
-        {candleDetail ? (
+      ) : (
+        candleTypeWithCandles && (
           <div className={Style.rightPanel}>
-            <CandleForm
-              candleDetailData={candleDetail}
-              addCandleDetail={addCandleToListProductsCart}
-              calculatePriceCandleDetail={calculatePriceCandleDetail}
+            <CandleSelectionPanel
+              data={candleTypeWithCandles}
+              onSelectCandle={handleSelectCandle}
             />
           </div>
-        ) : (
-          candleTypeWithCandles && (
-            <div className={Style.rightPanel}>
-              <CandleSelectionPanel
-                data={candleTypeWithCandles}
-                onSelectCandle={handleSelectCandle}
-              />
-            </div>
-          )
-        )}
-      </div>
-    </>
+        )
+      )}
+    </div>
   );
 };
 
