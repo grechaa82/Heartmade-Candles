@@ -7,8 +7,6 @@ import {
   CandleDetail,
   CandleDetailWithQuantity,
   ImageProduct,
-  NumberOfLayer,
-  LayerColor,
   CandleDetailIdsWithQuantity,
 } from '../../typesV2/BaseProduct';
 import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
@@ -16,6 +14,7 @@ import { CandleTypeWithCandles } from '../../typesV2/CandleTypeWithCandles';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import { calculatePrice } from '../../helpers/CalculatePrice';
 import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ImageSlider from '../../components/constructor/ImageSlider';
 
 import Style from './ConstructorPage.module.css';
 
@@ -31,12 +30,6 @@ const ConstructorPage: FC = () => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const location = useLocation();
   const navigate = useNavigate();
-
-  const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
-  const firstImage =
-    candleDetail?.candle.images && candleDetail?.candle.images.length > 0
-      ? candleDetail?.candle.images[0]
-      : null;
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
@@ -558,13 +551,7 @@ const ConstructorPage: FC = () => {
         />
       </div>
       <div className={Style.imagePanel}>
-        {candleDetail && (
-          <div className={Style.image}>
-            {firstImage && (
-              <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
-            )}
-          </div>
-        )}
+        {candleDetail && <ImageSlider images={candleDetail.candle.images} />}
         {candleDetail && (
           <div className={Style.hideCandleForm}>
             <button onClick={() => hideCandleForm()}>
