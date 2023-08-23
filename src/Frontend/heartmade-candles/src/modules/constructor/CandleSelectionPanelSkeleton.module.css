@@ -1,0 +1,36 @@
+.contentSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: fit-content;
+}
+.productGridSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.titleSkeleton {
+  border-radius: 10px;
+  height: 36px;
+  background-color: #eee;
+  animation: skeleton 1s ease infinite alternate;
+}
+.gridSkeleton {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  grid-gap: 8px;
+  justify-content: start;
+}
+.productSkeleton {
+  border-radius: 10px;
+  width: 146px;
+  height: 146px;
+  background-color: #eee;
+  animation: skeleton 1s ease infinite alternate;
+}
+
+@keyframes skeleton {
+  to {
+    opacity: 0.5;
+  }
+}

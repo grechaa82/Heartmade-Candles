@@ -2,6 +2,7 @@ import { FC, useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import ListProductsCart from '../../modules/constructor/ListProductsCart';
+import ListProductsCartSkeleton from '../../modules/constructor/ListProductsCartSkeleton';
 import CandleForm from '../../modules/constructor/CandleForm';
 import {
   CandleDetail,
@@ -10,6 +11,7 @@ import {
   CandleDetailIdsWithQuantity,
 } from '../../typesV2/BaseProduct';
 import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
+import CandleSelectionPanelSkeleton from '../../modules/constructor/CandleSelectionPanelSkeleton';
 import { CandleTypeWithCandles } from '../../typesV2/CandleTypeWithCandles';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import { calculatePrice } from '../../helpers/CalculatePrice';
@@ -25,6 +27,7 @@ const ConstructorPage: FC = () => {
   const [candleDetailWithQuantity, setCandleDetailWithQuantity] = useState<
     CandleDetailWithQuantity[]
   >([]);
+  const [isCandleDetailWithQuantityLoading, setIsCandleDetailWithQuantityLoading] = useState(true);
   const [candleTypeWithCandles, setCandleTypeWithCandles] = useState<CandleTypeWithCandles[]>();
   const [price, setPrice] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -223,6 +226,7 @@ const ConstructorPage: FC = () => {
   }, [candleDetailWithQuantity, totalPrice]);
 
   useEffect(() => {
+    setIsCandleDetailWithQuantityLoading(true);
     const searchParams = new URLSearchParams(location.search);
     let queryString = searchParams.toString().replace(/=$/, '');
 
@@ -243,6 +247,7 @@ const ConstructorPage: FC = () => {
       parseCandleDetailIdsWithQuantityString(validArrayCandleDetailIdsWithQuantityString);
 
     processCandleDetail(arrayCandleDetailIdsWithQuantity);
+    setIsCandleDetailWithQuantityLoading(false);
   }, [location.search]);
 
   function getCandleStatusStrings(queryString: string): string[] {
@@ -545,10 +550,14 @@ const ConstructorPage: FC = () => {
         <ListErrorPopUp messages={errorMessage} />
       </div>
       <div className={Style.leftPanel}>
-        <ListProductsCart
-          products={candleDetailWithQuantity}
-          onChangeCandleDetailWithQuantity={handleChangeCandleDetailWithQuantity}
-        />
+        {isCandleDetailWithQuantityLoading ? (
+          <ListProductsCartSkeleton />
+        ) : (
+          <ListProductsCart
+            products={candleDetailWithQuantity}
+            onChangeCandleDetailWithQuantity={handleChangeCandleDetailWithQuantity}
+          />
+        )}
       </div>
       <div className={Style.imagePanel}>
         {candleDetail && <ImageSlider images={candleDetail.candle.images} />}
@@ -582,15 +591,14 @@ const ConstructorPage: FC = () => {
             calculatePriceCandleDetail={calculatePriceCandleDetail}
           />
         </div>
+      ) : !candleTypeWithCandles ? (
+        <div className={Style.rightPanel}>
+          <CandleSelectionPanelSkeleton />
+        </div>
       ) : (
-        candleTypeWithCandles && (
-          <div className={Style.rightPanel}>
-            <CandleSelectionPanel
-              data={candleTypeWithCandles}
-              onSelectCandle={handleSelectCandle}
-            />
-          </div>
-        )
+        <div className={Style.rightPanel}>
+          <CandleSelectionPanel data={candleTypeWithCandles} onSelectCandle={handleSelectCandle} />
+        </div>
       )}
     </div>
   );

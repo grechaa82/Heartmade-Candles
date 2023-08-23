@@ -1,11 +1,11 @@
 import { FC, useEffect, useState } from 'react';
 
-import Product from '../../components/constructor/Product';
+import Product from './Product';
 import { ImageProduct } from '../../typesV2/BaseProduct';
 
-import Style from './ProductsGrid.module.css';
+import Style from './ProductsGridSelector.module.css';
 
-export interface ProductsGridProps<ImageProduct> {
+export interface ProductsGridSelectorProps<ImageProduct> {
   title: string;
   data: ImageProduct[];
   selectedData?: ImageProduct[];
@@ -14,7 +14,7 @@ export interface ProductsGridProps<ImageProduct> {
   withIndex?: boolean;
 }
 
-const ProductsGridSelector: FC<ProductsGridProps<ImageProduct>> = ({
+const ProductsGridSelector: FC<ProductsGridSelectorProps<ImageProduct>> = ({
   title,
   data,
   selectedData,
