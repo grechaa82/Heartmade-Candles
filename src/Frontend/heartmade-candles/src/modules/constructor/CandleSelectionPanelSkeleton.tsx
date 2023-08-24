@@ -1,5 +1,7 @@
 import { FC } from 'react';
 
+import Skeleton from '../../components/shared/skeleton';
+
 import Style from './CandleSelectionPanelSkeleton.module.css';
 
 const CandleSelectionPanelSkeleton: FC = () => {
@@ -8,10 +10,14 @@ const CandleSelectionPanelSkeleton: FC = () => {
 
   const productsGridSelectorSkeleton = (
     <div className={Style.productGridSkeleton}>
-      <div className={Style.titleSkeleton}></div>
+      <div className={Style.titleSkeleton}>
+        <Skeleton />
+      </div>
       <div className={Style.gridSkeleton}>
         {countProductsSkeleton.map(() => (
-          <div className={Style.productSkeleton}></div>
+          <div className={Style.gridItem}>
+            <Skeleton />
+          </div>
         ))}
       </div>
     </div>

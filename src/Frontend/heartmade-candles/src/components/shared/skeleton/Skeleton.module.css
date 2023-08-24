@@ -1,0 +1,13 @@
+.skeleton {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background-color: #eee;
+  animation: skeleton 1s ease infinite alternate;
+}
+
+@keyframes skeleton {
+  to {
+    opacity: 0.5;
+  }
+}

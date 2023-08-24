@@ -10,9 +10,6 @@
 .imageSkeleton {
   width: 72px;
   height: 72px;
-  border-radius: 10px;
-  background-color: #eee;
-  animation: skeleton 1s ease infinite alternate;
 }
 .quantityManagementSkeleton {
   display: flex;
@@ -24,13 +21,4 @@
 .iconBtnSkeleton {
   width: 24px;
   height: 24px;
-  border-radius: 10px;
-  background-color: #eee;
-  animation: skeleton 1s ease infinite alternate;
-}
-
-@keyframes skeleton {
-  to {
-    opacity: 0.5;
-  }
 }
