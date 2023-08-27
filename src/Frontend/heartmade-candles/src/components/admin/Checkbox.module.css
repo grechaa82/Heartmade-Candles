@@ -1,22 +1,22 @@
 .checkbox {
   position: relative;
 }
-.checkbox > input[type="checkbox"] {
+.checkbox > input[type='checkbox'] {
   width: 24px;
   height: 24px;
   appearance: none;
-  border-radius: 6px;
-  border: 2px solid #e9fdf1;
-  background-color: #e9fdf1;
+  border-radius: var(--border-radius-secondary);
+  border: 2px solid var(--color-light-green);
+  background-color: var(--color-light-green);
   outline: none;
   cursor: pointer;
   display: block;
 }
 .checkbox > input:checked + .checkboxIcon {
   visibility: visible;
-  border-radius: 6px;
-  background-color: #6fcf97;
-  border-color: #6fcf97;
+  border-radius: var(--border-radius-secondary);
+  background-color: var(--color-green);
+  border-color: var(--color-green);
 }
 .checkboxIcon {
   visibility: collapse;

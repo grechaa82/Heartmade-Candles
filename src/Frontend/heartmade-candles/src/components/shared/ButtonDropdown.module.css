@@ -13,15 +13,15 @@
   position: relative;
   display: flex;
   padding-left: 14px;
-  border-inline-start: 2px solid #eeeeee;
+  border-inline-start: 2px solid var(--color-eee);
 }
 .dropdownMenu {
   position: absolute;
-  background: #fff;
+  background: var(--color-fff);
   padding: 16px;
-  background: #fff;
-  border: 2px solid #eee;
-  border-radius: 10px;
+  background: var(--color-fff);
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
   z-index: 5;
   top: 63px;
 }
@@ -31,11 +31,11 @@
 }
 .dropdownMenu > ul > li {
   padding: 0;
-  font-weight: 400;
+  font-weight: var(--font-weight-400);
   margin-bottom: 12px;
-  font-size: 20px;
-  line-height: 130%;
-  color: #222;
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-standart);
+  color: var(--color-222);
   cursor: pointer;
   list-style-type: none;
 }

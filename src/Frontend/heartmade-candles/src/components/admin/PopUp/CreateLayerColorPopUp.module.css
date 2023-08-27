@@ -8,7 +8,7 @@
 .image {
   height: 530px;
   width: 530px;
-  background-color: #eee;
+  background-color: var(--color-eee);
 }
 
 .gridContainer {
@@ -35,14 +35,14 @@
 }
 
 .saveButton {
-  border-radius: 10px;
-  color: #eb5757;
-  background: #fbdddd;
+  border-radius: var(--border-radius-primary);
+  color: var(--color-red);
+  background: var(--color-light-red);
   border: none;
   min-height: 58px;
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 150%;
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-much-text);
 }
 
 .cont {
@@ -50,8 +50,8 @@
 }
 
 .title {
-  color: #777;
-  font-size: 50px;
-  font-weight: 600;
-  line-height: 110%;
+  color: var(--color-777);
+  font-size: var(--font-size-heading-2);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-110);
 }

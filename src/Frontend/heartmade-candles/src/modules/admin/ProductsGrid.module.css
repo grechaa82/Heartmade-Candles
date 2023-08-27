@@ -17,9 +17,9 @@
 }
 
 .candlesGrid > h2 {
-  font-weight: 600;
-  font-size: 50px;
-  line-height: 110%;
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-heading-2);
+  line-height: var(--line-height-110);
   margin: 0 0 24px 0;
-  color: #aaa;
+  color: var(--color-aaa);
 }

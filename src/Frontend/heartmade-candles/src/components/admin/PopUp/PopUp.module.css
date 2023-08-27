@@ -12,11 +12,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #fff;
+  background-color: var(--color-fff);
   width: 80%;
   height: 80%;
   z-index: 101;
-  border-radius: 40px;
+  border-radius: var(--border-radius-primary);
 }
 .closeButton {
   position: absolute;

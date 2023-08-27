@@ -4,8 +4,8 @@
   align-items: center;
   gap: 24px;
   box-sizing: border-box;
-  border: 2px solid #eeeeee;
-  border-radius: 10px;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
   background: none;
   padding: 14px 16px 16px 16px;
   height: 100%;
@@ -13,7 +13,7 @@
 .checkboxBlock > p {
   margin: 0;
   font-style: normal;
-  font-weight: 400;
-  font-size: 20px;
-  color: #222;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-l);
+  color: var(--color-222);
 }

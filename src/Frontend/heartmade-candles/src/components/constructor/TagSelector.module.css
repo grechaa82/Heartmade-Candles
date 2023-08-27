@@ -8,11 +8,11 @@
 }
 .selectedTag > h2 {
   display: inline-block;
-  font-size: 28px;
+  font-size: var(--font-size-xl);
   font-style: normal;
-  font-weight: 600;
-  line-height: 130%;
-  color: #505050;
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-standart);
+  color: var(--color-505050);
   margin: 0 0 16px 0;
   padding: 0;
 }

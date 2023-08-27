@@ -1,9 +1,9 @@
 .popUp > h2 {
   margin: 30px 0 0 40px;
-  font-weight: 600;
-  font-size: 50px;
-  line-height: 110%;
-  color: #aaa;
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-heading-2);
+  line-height: var(--line-height-110);
+  color: var(--color-aaa);
 }
 .popUpGrid {
   display: grid;
@@ -27,19 +27,19 @@
   right: 0;
   position: absolute;
   width: 50%;
-  border-radius: 40px 0;
-  color: #eb5757;
-  font-size: 28px;
-  font-weight: 600;
-  background: #fbdddd;
-  line-height: 130%;
+  border-radius: var(--border-radius-primary) 0;
+  color: var(--color-red);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-600);
+  background: var(--color-light-red);
+  line-height: var(--line-height-standart);
   border: none;
   min-height: 66px;
 }
 
 @media screen and (max-width: 1350px) {
   .popUp {
-    border-radius: 20px;
+    border-radius: var(--border-radius-primary);
   }
   .popUp > h2 {
     margin: 20px 0 0 20px;
@@ -66,8 +66,8 @@
 }
 
 .title {
-  color: #777;
-  font-size: 50px;
-  font-weight: 600;
-  line-height: 110%;
+  color: var(--color-777);
+  font-size: var(--font-size-heading-2);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-standart);
 }

@@ -1,11 +1,11 @@
 .tabsInput {
 }
 .tabsInput > h2 {
-  font-weight: 600;
-  font-size: 50px;
-  line-height: 110%;
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-heading-2);
+  line-height: var(--line-height-110);
   margin: 0 0 24px 0;
-  color: #aaa;
+  color: var(--color-aaa);
 }
 
 .content {
@@ -14,13 +14,13 @@
 }
 
 .saveButton {
-  border-radius: 10px;
-  background: #fbdddd;
-  color: #eb5757;
-  font-size: 20px;
+  border-radius: var(--border-radius-primary);
+  background: var(--color-light-red);
+  color: var(--color-red);
+  font-size: var(--font-size-l);
   font-style: normal;
-  font-weight: 600;
-  line-height: 130%;
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-standart);
   border: none;
   padding: 16px;
 }

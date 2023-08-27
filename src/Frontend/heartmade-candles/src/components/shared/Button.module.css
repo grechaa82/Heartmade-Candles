@@ -1,7 +1,7 @@
 .button {
   box-sizing: border-box;
-  border: 2px solid #eeeeee;
-  border-radius: 10px;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
   background: none;
   display: flex;
   justify-content: center;
@@ -14,7 +14,7 @@ button:hover {
 }
 .button > p {
   font-style: normal;
-  font-weight: 400;
-  font-size: 20px;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-l);
   margin: 0px;
 }

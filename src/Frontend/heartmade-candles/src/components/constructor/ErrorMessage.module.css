@@ -1,15 +1,15 @@
 .errorMessage {
   padding: 10px 12px 8px 12px;
-  background-color: #fbdddd;
-  border: 2px solid #fbdddd;
-  border-radius: 10px;
-  color: #eb5757;
+  background-color: var(--color-light-red);
+  border: 2px solid var(--color-light-red);
+  border-radius: var(--border-radius-primary);
+  color: var(--color-red);
   gap: 8px;
 }
 .errorMessage > span {
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 130%;
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-standart);
 }
 .closeButton {
   all: unset;

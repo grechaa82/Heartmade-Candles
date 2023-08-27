@@ -5,7 +5,7 @@
 .image > img {
   height: 530px;
   width: 530px;
-  border-radius: 10px;
+  border-radius: var(--border-radius-primary);
   object-fit: cover;
 }
 .slider {
@@ -26,21 +26,21 @@
   cursor: pointer;
   width: 60px;
   height: 60px;
-  border-radius: 6px;
+  border-radius: var(--border-radius-secondary);
   object-fit: cover;
 }
 .imageNoAvailable {
   height: 530px;
   width: 530px;
-  background: #eee;
+  background: var(--color-eee);
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
-  color: #777;
+  border-radius: var(--border-radius-primary);
+  color: var(--color-777);
   font-style: normal;
-  font-weight: 400;
-  font-size: 20px;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-l);
 }
 .changesImages {
   display: flex;
@@ -50,15 +50,15 @@
   right: 24px;
 }
 .iconChangeImages {
-  border-radius: 6px;
-  background: var(--color-light-green, #e9fdf1);
+  border-radius: var(--border-radius-secondary);
+  background: var(--color-light-green);
   width: 40px;
   height: 40px;
   border: none;
 }
 .iconUploadImages {
-  border-radius: 6px;
-  background: var(--color-light-green, #e9fdf1);
+  border-radius: var(--border-radius-secondary);
+  background: var(--color-light-green);
   width: 40px;
   height: 40px;
   border: none;

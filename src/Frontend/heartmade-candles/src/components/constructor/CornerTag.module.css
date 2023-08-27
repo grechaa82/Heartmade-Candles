@@ -2,18 +2,18 @@
   padding: 2px 4px;
   justify-content: center;
   align-items: center;
-  background: #d5e6fb;
+  background: var(--color-ligth-blue);
 }
 .leftCornerTag {
-  border-radius: 10px 0px;
+  border-radius: var(--border-radius-primary) 0px;
 }
 .rightCornerTag {
-  border-radius: 0px 10px;
+  border-radius: 0px var(--border-radius-primary);
 }
 .cornerTag > span {
-  color: #2e67ea;
-  font-size: 20px;
+  color: var(--color-blue);
+  font-size: var(--font-size-l);
   font-style: normal;
-  font-weight: 700;
-  line-height: 130%;
+  font-weight: var(--font-weight-700);
+  line-height: var(--line-height-standart);
 }

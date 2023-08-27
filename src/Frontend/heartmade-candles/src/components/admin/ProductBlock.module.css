@@ -3,8 +3,8 @@
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
-  border: 2px solid #eee;
-  border-radius: 10px;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
   padding-right: 16px;
   min-width: 320px;
   max-width: 500px;
@@ -23,8 +23,8 @@
 .image {
   max-width: 108px;
   max-height: 108px;
-  background: #eee;
-  border-radius: 10px;
+  background: var(--color-eee);
+  border-radius: var(--border-radius-primary);
   margin-right: 16px;
   display: block;
 }
@@ -35,10 +35,10 @@
 }
 
 .title {
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 130%;
-  color: #222;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-standart);
+  color: var(--color-222);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -54,10 +54,10 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 130%;
-  color: #aaa;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-m);
+  line-height: var(--line-height-standart);
+  color: var(--color-aaa);
 }
 
 .contextMenuBtn {

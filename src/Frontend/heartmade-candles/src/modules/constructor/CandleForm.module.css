@@ -7,11 +7,11 @@
 .addBtn {
 }
 .addBtn > button {
-  background: #d5e6fb;
+  background: var(--color-ligth-blue);
   width: 100%;
-  border: 2px solid #d5e6fb;
+  border: 2px solid var(--color-ligth-blue);
 }
 .addBtn > button > p {
-  font-weight: 500;
-  line-height: 130%;
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-standart);
 }

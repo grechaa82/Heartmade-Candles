@@ -5,13 +5,13 @@
 
 .textarea > textarea {
   font-family: 'Inter', sans-serif;
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 150%;
-  color: #222222;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-much-text);
+  color: var(--color-222);
   padding: 34px 16px 16px 16px;
-  border: 2px solid #eeeeee;
-  border-radius: 10px;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
   width: 100%;
   box-sizing: border-box;
   resize: none;
@@ -19,19 +19,19 @@
 }
 
 .textarea > label {
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 130%;
-  color: #c9c9c9;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-m);
+  line-height: var(--line-height-standart);
+  color: var(--color-d9d9d9);
   position: absolute;
   top: 12px;
   left: 16px;
 }
 .textarea > p {
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 130%;
-  color: #c9c9c9;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-s);
+  line-height: var(--line-height-standart);
+  color: var(--color-d9d9d9);
   position: absolute;
   margin: 0;
   bottom: 8px;

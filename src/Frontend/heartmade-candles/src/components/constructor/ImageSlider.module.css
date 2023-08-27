@@ -1,6 +1,6 @@
 .imageBlock {
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: var(--border-radius-primary);
   display: block;
   aspect-ratio: 1 / 1;
   width: 90dvh;
@@ -10,7 +10,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: var(--border-radius-primary);
 }
 .slider {
   display: flex;
@@ -35,8 +35,8 @@
   content: '';
   width: 54px;
   height: 54px;
-  border-radius: 12px;
-  border: 4px solid #fff;
+  border-radius: var(--border-radius-secondary-large);
+  border: 4px solid var(--color-fff);
   position: absolute;
   top: -6px;
   right: -6px;
@@ -45,8 +45,8 @@
   overflow: hidden;
   width: 100%;
   height: 100%;
-  background: #eee;
-  border-radius: 10px;
+  background: var(--color-eee);
+  border-radius: var(--border-radius-primary);
   margin-right: 16px;
   display: block;
 }

@@ -5,8 +5,8 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  border: 2px solid #eee;
-  border-radius: 10px;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
   background-color: transparent;
   box-sizing: border-box;
   width: 100%;

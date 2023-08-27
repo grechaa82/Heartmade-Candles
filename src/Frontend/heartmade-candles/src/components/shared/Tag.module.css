@@ -4,17 +4,17 @@
   align-items: center;
   gap: 8px;
   box-sizing: border-box;
-  border-radius: 6px;
+  border-radius: var(--border-radius-secondary);
   padding: 8px 12px;
   cursor: pointer;
 }
 .title {
   margin: 0;
   font-style: normal;
-  font-weight: 500;
-  font-size: 20px;
-  line-height: 130%;
-  color: #222;
+  font-weight: var(--font-weight-500);
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-standart);
+  color: var(--color-222);
 }
 .removeIcon {
   all: unset;
@@ -24,63 +24,63 @@
   cursor: pointer;
 }
 .removeIcon > svg path {
-  fill: #222;
+  fill: var(--color-222);
 }
 
 .grey {
-  background-color: #eee;
-  border: 2px solid #eee;
+  background-color: var(--color-eee);
+  border: 2px solid var(--color-eee);
 }
 .grey > .title {
-  color: #c9c9c9;
+  color: var(-color-d9d9d9);
 }
 .grey > .removeIcon > svg path {
-  fill: #c9c9c9;
+  fill: var(-color-d9d9d9);
 }
 
 .outline {
   background-color: transparent;
-  border: 2px solid #6fcf97;
+  border: 2px solid var(--color-green);
 }
 .outline > .title {
-  color: #6fcf97;
+  color: var(--color-green);
 }
 .outline > .removeIcon > svg path {
-  fill: #6fcf97;
+  fill: var(--color-green);
 }
 .outline:hover {
-  background-color: #e9fdf1;
-  border: 2px solid #e9fdf1;
+  background-color: var(--color-light-green);
+  border: 2px solid var(--color-light-green);
 }
 .outline.selected {
-  background-color: #6fcf97;
-  border: 2px solid #6fcf97;
+  background-color: var(--color-green);
+  border: 2px solid var(--color-green);
 }
 .outline.selected > .title {
-  color: #fff;
+  color: var(-color-fff);
 }
 .outline.selected > .removeIcon > svg path {
-  fill: #fff;
+  fill: var(-color-fff);
 }
 
 .secondary {
-  background-color: #e9fdf1;
-  border: 2px solid #e9fdf1;
+  background-color: var(--color-light-green);
+  border: 2px solid var(--color-light-green);
 }
 .secondary > .title {
-  color: #6fcf97;
+  color: var(--color-green);
 }
 .secondary > .removeIcon > svg path {
-  fill: #6fcf97;
+  fill: var(--color-green);
 }
 
 .primary {
-  background-color: #6fcf97;
-  border: 2px solid #6fcf97;
+  background-color: var(--color-green);
+  border: 2px solid var(--color-green);
 }
 .primary > .title {
-  color: #fff;
+  color: var(-color-fff);
 }
 .primary > .removeIcon > svg path {
-  fill: #fff;
+  fill: var(-color-fff);
 }
