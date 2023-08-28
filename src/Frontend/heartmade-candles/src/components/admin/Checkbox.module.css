@@ -19,18 +19,13 @@
   border-color: var(--color-green);
 }
 .checkboxIcon {
-  visibility: collapse;
   position: absolute;
+  display: flex;
   top: 0;
   right: 0;
-  bottom: 0;
-  left: 0;
+  justify-content: center;
+  align-items: center;
 }
 
 .checkboxIcon > svg {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
 }

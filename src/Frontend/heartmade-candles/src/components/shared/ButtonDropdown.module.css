@@ -18,7 +18,7 @@
 .dropdownMenu {
   position: absolute;
   background: var(--color-fff);
-  padding: 16px;
+  width: 100%;
   background: var(--color-fff);
   border: 2px solid var(--color-eee);
   border-radius: var(--border-radius-primary);
@@ -26,7 +26,7 @@
   top: 63px;
 }
 .dropdownMenu > ul {
-  padding: 0;
+  padding: 16px;
   margin: 0;
 }
 .dropdownMenu > ul > li {

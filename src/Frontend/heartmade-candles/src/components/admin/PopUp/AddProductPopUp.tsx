@@ -1,13 +1,12 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from 'react';
 
-import { BaseProduct } from "../../../types/BaseProduct";
-import ProductBlock from "../ProductBlock";
-import PopUp, { PopUpProps } from "./PopUp";
+import { BaseProduct } from '../../../types/BaseProduct';
+import ProductBlock from '../ProductBlock';
+import PopUp, { PopUpProps } from './PopUp';
 
-import Style from "./AddProductPopUp.module.css";
+import Style from './AddProductPopUp.module.css';
 
-export interface AddProductPopUpProps<T extends BaseProduct>
-  extends PopUpProps {
+export interface AddProductPopUpProps<T extends BaseProduct> extends PopUpProps {
   title: string;
   selectedData: T[];
   setSelectedData: (data: T[]) => void;
@@ -55,17 +54,15 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
 
   return (
     <PopUp onClose={onClose}>
-      <div className={Style.cont}>
-        <h2 className={Style.title}>{title}</h2>
+      <div className={Style.container}>
+        <p className={Style.title}>{title}</p>
         {isDataLoaded ? (
           <div className={Style.popUpGrid}>
             {allData.map((item: BaseProduct) => (
               <button
                 key={item.id}
                 className={`${Style.productButton} ${
-                  selectedData.some((p) => p.id === item.id)
-                    ? Style.selectedButton
-                    : ""
+                  selectedData.some((p) => p.id === item.id) ? Style.selectedButton : ''
                 }`}
                 onClick={() =>
                   selectedData.some((p) => p.id === item.id)
@@ -80,10 +77,10 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
         ) : (
           <div>Loading...</div>
         )}
-        {onSave && isModified && (
+        {onSave && (
           <button
             type="button"
-            className={Style.saveButton}
+            className={`${Style.saveButton} ${isModified && Style.activeSaveButton}`}
             onClick={() => {
               onSave(selectedData);
               onClose();

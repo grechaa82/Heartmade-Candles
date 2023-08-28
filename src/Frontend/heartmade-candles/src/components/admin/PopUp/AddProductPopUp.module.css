@@ -1,14 +1,18 @@
-.popUp > h2 {
-  margin: 30px 0 0 40px;
+.container {
+  padding: 32px;
+}
+.title {
+  color: var(--color-777);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-600);
-  font-size: var(--font-size-heading-2);
   line-height: var(--line-height-110);
-  color: var(--color-aaa);
+  margin: 0;
+  margin-bottom: 16px;
 }
 .popUpGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 8px;
 }
 .productButton {
   background: none;
@@ -18,30 +22,43 @@
   border: none;
 }
 .selectedButton {
-  padding: 10px;
-  border: 2px solid black;
+  all: unset;
+  position: relative;
 }
-
-.saveButton {
-  bottom: 0;
-  right: 0;
+.selectedButton:before {
+  content: '';
+  width: 100%;
+  height: 100%;
+  padding: 2px;
+  border-radius: var(--border-radius-secondary-large);
+  border: 4px solid var(--color-green);
   position: absolute;
-  width: 50%;
-  border-radius: var(--border-radius-primary) 0;
-  color: var(--color-red);
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-600);
-  background: var(--color-light-red);
-  line-height: var(--line-height-standart);
+  top: -6px;
+  right: -6px;
+}
+.saveButton {
+  padding: 0;
+  border-radius: var(--border-radius-primary);
+  color: var(--color-d9d9d9);
+  background: var(--color-f5f5f5);
   border: none;
-  min-height: 66px;
+  min-height: 58px;
+  font-weight: var(--font-weight-600);
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-much-text);
+  width: 100%;
+  margin-top: 16px;
+}
+.activeSaveButton {
+  color: var(--color-red);
+  background: var(--color-light-red);
 }
 
 @media screen and (max-width: 1350px) {
   .popUp {
     border-radius: var(--border-radius-primary);
   }
-  .popUp > h2 {
+  .title {
     margin: 20px 0 0 20px;
   }
   .popUp > button {
@@ -53,21 +70,9 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
-
 @media screen and (max-width: 940px) {
   .popUpGrid {
     padding: 24px 20px 20px 20px;
     grid-template-columns: 1fr;
   }
-}
-
-.cont {
-  padding: 24px 40px 40px 40px;
-}
-
-.title {
-  color: var(--color-777);
-  font-size: var(--font-size-heading-2);
-  font-weight: var(--font-weight-600);
-  line-height: var(--line-height-standart);
 }

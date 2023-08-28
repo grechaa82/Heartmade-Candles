@@ -46,9 +46,7 @@
   top: 8px;
   left: 8px;
 }
-
 .descriptionWrapper {
-  display: none;
   position: absolute;
   top: 8px;
   right: 8px;
@@ -57,15 +55,22 @@
   all: unset;
 }
 .descriptionMenu {
-  padding: 16px 18px 18px 18px;
+  display: none;
+}
+.descriptionWrapper:hover .descriptionMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  min-width: 240px;
   position: absolute;
+  top: 24px;
+  right: 0;
+  transform: translate(50%, 0%);
   border-radius: var(--border-radius-primary);
   border: 2px solid var(--color-eee);
   background: var(--color-fff);
   z-index: 101;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 .descriptionMenu > p {
   padding: 0;

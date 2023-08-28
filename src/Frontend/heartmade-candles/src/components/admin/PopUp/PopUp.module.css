@@ -13,8 +13,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: var(--color-fff);
-  width: 80%;
-  height: 80%;
+  min-width: 600px;
   z-index: 101;
   border-radius: var(--border-radius-primary);
 }
@@ -22,8 +21,8 @@
   position: absolute;
   top: 0;
   right: 0;
-  margin-top: 40px;
-  margin-right: 40px;
+  margin-top: 24px;
+  margin-right: 24px;
   padding: 0;
   border: none;
   font: inherit;

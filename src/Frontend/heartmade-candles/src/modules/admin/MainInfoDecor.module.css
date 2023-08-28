@@ -37,4 +37,6 @@
   font-weight: var(--font-weight-600);
   font-size: var(--font-size-l);
   line-height: var(--line-height-much-text);
+  padding: 0;
+  grid-column: span 4;
 }

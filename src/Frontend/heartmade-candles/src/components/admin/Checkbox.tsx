@@ -1,6 +1,8 @@
-import { ChangeEvent, FC, useState } from "react";
-import IconCheckLarge from "../../UI/IconCheckLarge";
-import Style from "./Checkbox.module.css";
+import { ChangeEvent, FC, useState } from 'react';
+
+import IconCheckLarge from '../../UI/IconCheckLarge';
+
+import Style from './Checkbox.module.css';
 
 interface CheckboxProps {
   checked?: boolean;
@@ -20,7 +22,7 @@ const Checkbox: FC<CheckboxProps> = ({ checked = false, onChange }) => {
 
   return (
     <label className={Style.checkbox}>
-      <input type="checkbox" checked={isChecked} onChange={handleChange} />
+      <input type="checkbox" checked={isChecked} onChange={handleChange} placeholder="" />
       <div className={Style.checkboxIcon}>
         <IconCheckLarge color="#fff" />
       </div>

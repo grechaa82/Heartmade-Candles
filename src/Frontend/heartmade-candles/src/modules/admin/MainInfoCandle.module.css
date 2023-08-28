@@ -44,4 +44,5 @@
   font-weight: var(--font-weight-600);
   font-size: var(--font-size-l);
   line-height: var(--line-height-much-text);
+  grid-column: span 4;
 }

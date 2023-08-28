@@ -48,8 +48,8 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({ onClose, title, onSave })
 
   return (
     <PopUp onClose={onClose}>
-      <div className={Style.cont}>
-        <h2 className={Style.title}>{title}</h2>
+      <div className={Style.container}>
+        <p className={Style.title}>{title}</p>
         <form className={`${Style.gridContainer} ${Style.formForDecor}`}>
           <div className={`${Style.formItem} ${Style.itemTitle}`}>
             <Textarea
@@ -82,10 +82,10 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({ onClose, title, onSave })
               onChange={handleChangeDescription}
             />
           </div>
-          {onSave && isModified && (
+          {onSave && (
             <button
               type="button"
-              className={Style.saveButton}
+              className={`${Style.saveButton} ${isModified && Style.activeSaveButton}`}
               onClick={() => {
                 onSave(decor);
                 onClose();

@@ -85,8 +85,8 @@ const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
 
   return (
     <PopUp onClose={onClose}>
-      <div className={Style.cont}>
-        <h2 className={Style.title}>{title}</h2>
+      <div className={Style.container}>
+        <p className={Style.title}>{title}</p>
         <form className={`${Style.gridContainer} ${Style.formForCandle}`}>
           <div className={`${Style.formItem} ${Style.itemTitle}`}>
             <Textarea
@@ -133,10 +133,10 @@ const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
               onChange={handleChangeDescription}
             />
           </div>
-          {onSave && isModified && (
+          {onSave && (
             <button
               type="button"
-              className={Style.saveButton}
+              className={`${Style.saveButton} ${isModified && Style.activeSaveButton}`}
               onClick={() => {
                 onSave(candle);
                 onClose();

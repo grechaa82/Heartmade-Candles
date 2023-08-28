@@ -4,54 +4,53 @@
   justify-content: center;
   gap: 32px;
 }
-
 .image {
   height: 530px;
   width: 530px;
   background-color: var(--color-eee);
 }
-
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 16px;
 }
-
 .gridContainer > div > .checkboxBlock {
   height: 100%;
 }
-
 .formForLayerColor {
   flex: 1;
 }
-
 .itemTitle,
 .itemDescription {
   grid-column: span 4;
 }
-
 .itemPrice {
   grid-column: span 3;
 }
-
 .saveButton {
+  padding: 0;
   border-radius: var(--border-radius-primary);
-  color: var(--color-red);
-  background: var(--color-light-red);
+  color: var(--color-d9d9d9);
+  background: var(--color-f5f5f5);
   border: none;
   min-height: 58px;
   font-weight: var(--font-weight-600);
   font-size: var(--font-size-l);
   line-height: var(--line-height-much-text);
+  grid-column: span 4;
 }
-
-.cont {
-  padding: 24px 40px 40px 40px;
+.activeSaveButton {
+  color: var(--color-red);
+  background: var(--color-light-red);
 }
-
+.container {
+  padding: 32px;
+}
 .title {
   color: var(--color-777);
-  font-size: var(--font-size-heading-2);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-600);
   line-height: var(--line-height-110);
+  margin: 0;
+  margin-bottom: 16px;
 }

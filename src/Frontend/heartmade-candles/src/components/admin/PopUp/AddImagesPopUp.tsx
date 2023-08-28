@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 
-import PopUp, { PopUpProps } from './PopUp';
+import { PopUpProps } from './PopUp';
 import ButtonWithIcon from '../../shared/ButtonWithIcon';
 import IconPlusLarge from '../../../UI/IconPlusLarge';
 import { Image } from '../../../types/Image';
@@ -53,7 +53,7 @@ const AddImagesPopUp: FC<AddImagesPopUpProps> = ({ onClose, uploadImages, update
         <button className={Style.closeButton} onClick={onClose}>
           <IconRemoveLarge color="#777" />
         </button>
-        <div className={Style.cont}>
+        <div className={Style.container}>
           <div className={Style.divImage}>
             <input
               className={Style.inputImage}
@@ -72,6 +72,7 @@ const AddImagesPopUp: FC<AddImagesPopUpProps> = ({ onClose, uploadImages, update
               updateImages(images);
               onClose();
             }}
+            color="#2e67ea"
           />
         </div>
       </div>

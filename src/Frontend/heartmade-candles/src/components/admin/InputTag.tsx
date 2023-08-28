@@ -48,9 +48,14 @@ const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange, onDelete }) => {
           appearanceTag="secondary"
         />
       ))}
-      <div className={Style.inputContainer}>
-        <input type="text" value={inputValue} onChange={handleChange} onKeyDown={handleKeyDown} />
-      </div>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        placeholder="Введите новое значение"
+        className={Style.input}
+      />
     </div>
   );
 };

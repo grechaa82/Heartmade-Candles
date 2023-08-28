@@ -25,8 +25,6 @@ const Product: FC<ProductProps> = ({
   isSelected = false,
   index,
 }) => {
-  const [isDescriptionMenuOpen, setIsDescriptionMenuOpen] = useState(false);
-
   const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
   const firstImage = product.images && product.images.length > 0 ? product.images[0] : null;
 
@@ -42,29 +40,16 @@ const Product: FC<ProductProps> = ({
     }
   };
 
-  if (index) {
-    const tagIndex: TagData = {
-      id: index,
-      text: index.toString(),
-    };
-  }
-
-  const handleDescriptionMenuToggle = () => {
-    setIsDescriptionMenuOpen(!isDescriptionMenuOpen);
-  };
-
   return (
     <div className={Style.product}>
       <div className={Style.descriptionWrapper}>
-        <button className={Style.descriptionBtn} onClick={handleDescriptionMenuToggle}>
+        <button className={Style.descriptionBtn}>
           <IconAlertCircleLarge color="#aaa" />
         </button>
-        {isDescriptionMenuOpen && (
-          <div className={Style.descriptionMenu}>
-            <p className={Style.descriptionMenuTitle}>{product.title}</p>
-            <p className={Style.descriptionMenuDescription}>{product.description}</p>
-          </div>
-        )}
+        <div className={Style.descriptionMenu}>
+          <p className={Style.descriptionMenuTitle}>{product.title}</p>
+          <p className={Style.descriptionMenuDescription}>{product.description}</p>
+        </div>
       </div>
       {onSelectProduct ? (
         <button

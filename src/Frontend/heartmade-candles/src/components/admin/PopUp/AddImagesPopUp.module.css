@@ -22,8 +22,8 @@
   position: absolute;
   top: 0;
   right: 0;
-  margin-top: 40px;
-  margin-right: 40px;
+  margin-top: 24px;
+  margin-right: 24px;
   padding: 0;
   border: none;
   font: inherit;
@@ -35,8 +35,9 @@
   position: relative;
   height: 100%;
 }
-.cont {
-  padding: 80px 40px 40px 40px;
+.container {
+  padding: 32px;
+  padding-top: 48px;
   height: -webkit-fill-available;
   display: flex;
   flex-direction: column;
@@ -49,7 +50,7 @@
   border: 2px dashed var(--color-eee);
   height: 100%;
 }
-.cont > button {
+.container > button {
   margin-top: 16px;
   width: 100%;
 }

@@ -26,8 +26,8 @@ const CreateTagPopUp: FC<CreateTagPopUpProps> = ({ onClose, title, isNumber = fa
 
   return (
     <PopUp onClose={onClose}>
-      <div className={Style.cont}>
-        <h2 className={Style.title}>{title}</h2>
+      <div className={Style.container}>
+        <p className={Style.title}>{title}</p>
         <form className={`${Style.gridContainer} ${Style.formForTag}`}>
           <div className={`${Style.formItem} ${Style.itemTitle}`}>
             <Textarea
@@ -37,10 +37,10 @@ const CreateTagPopUp: FC<CreateTagPopUpProps> = ({ onClose, title, isNumber = fa
               onChange={handleChangeTitle}
             />
           </div>
-          {onSave && isModified && (
+          {onSave && (
             <button
               type="button"
-              className={Style.saveButton}
+              className={`${Style.saveButton} ${isModified && Style.activeSaveButton}`}
               onClick={() => {
                 onSave(tag);
                 onClose();

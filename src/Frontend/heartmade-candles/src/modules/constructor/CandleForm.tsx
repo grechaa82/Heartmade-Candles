@@ -136,7 +136,7 @@ const CandleForm: FC<CandleFormProps> = ({
           onSelectTag={handleNumberOfLayerState}
         />
         <ProductsGridSelector
-          title={'Восковые слои'}
+          title={'Цвета слоев'}
           data={candleDetail.layerColors ? candleDetail.layerColors : []}
           selectedData={candleDetailState.layerColors ? candleDetailState.layerColors : []}
           onSelectProduct={handleLayerColorState}
@@ -144,14 +144,14 @@ const CandleForm: FC<CandleFormProps> = ({
           withIndex={true}
         />
         <ProductsGridSelector
-          title={'Декоры'}
+          title={'Декор'}
           data={candleDetail.decors ? candleDetail.decors : []}
           selectedData={candleDetailState.decors ? candleDetailState.decors : []}
           onSelectProduct={handleDecorState}
           onDeselectProduct={handleDeselectDecorState}
         />
         <TagSelector
-          title="Запахи"
+          title="Запах"
           data={convertSmellToTagData(candleDetail.smells ? candleDetail.smells : [])}
           selectedData={convertSmellToTagData(
             candleDetailState.smells ? candleDetailState.smells : [],
@@ -159,7 +159,7 @@ const CandleForm: FC<CandleFormProps> = ({
           onSelectTag={handleSmellState}
         />
         <ProductsGridSelector
-          title={'Фитили'}
+          title={'Фитиль'}
           data={candleDetail.wicks ? candleDetail.wicks : []}
           selectedData={candleDetailState.wicks ? candleDetailState.wicks : []}
           onSelectProduct={handleWickState}

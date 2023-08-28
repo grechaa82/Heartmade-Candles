@@ -3,8 +3,8 @@
   border-radius: var(--border-radius-primary);
   display: block;
   aspect-ratio: 1 / 1;
-  width: 90dvh;
   margin: 32px;
+  position: relative;
 }
 .mainImage {
   width: 100%;
@@ -14,12 +14,12 @@
 }
 .slider {
   display: flex;
-  gap: 16px;
+  gap: 8px;
   align-items: center;
   position: absolute;
-  bottom: 51px;
+  bottom: 24px;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0%);
 }
 .imageSliderBlock {
   position: relative;

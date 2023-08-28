@@ -1,9 +1,10 @@
-import { ChangeEvent, FC, useState } from "react";
-import { ButtonProps } from "./Button";
-import IconChevronDownLarge from "../../UI/IconChevronDownLarge";
+import { FC, useState } from 'react';
 
-import StyleButton from "./Button.module.css";
-import Style from "./ButtonDropdown.module.css";
+import { ButtonProps } from './Button';
+import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
+
+import StyleButton from './Button.module.css';
+import Style from './ButtonDropdown.module.css';
 
 export interface optionData {
   id: string;
@@ -19,7 +20,7 @@ const ButtonDropdown: FC<ButtonDropdownProps> = ({
   options,
   onClick,
   text,
-  color = "#000",
+  color = '#000',
   height,
   width,
 }) => {
