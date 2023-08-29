@@ -50,7 +50,7 @@ const WickPage: FC = () => {
     <>
       <div className="wicks">
         {wickData && (
-          <MainInfoWick data={wickData} handleChangesWick={handleChangesWick} onSave={updateWick} />
+          <MainInfoWick data={wickData} onChangesWick={handleChangesWick} onSave={updateWick} />
         )}
       </div>
     </>

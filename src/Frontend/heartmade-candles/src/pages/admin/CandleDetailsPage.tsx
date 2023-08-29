@@ -239,7 +239,7 @@ const CandleDetailsPage: FC = () => {
           <MainInfoCandle
             data={candleDetailData.candle}
             fetchTypeCandles={fetchTypeCandles}
-            handleChangesCandle={handleChangesCandle}
+            onChangesCandle={handleChangesCandle}
             onSave={updateCandle}
           />
         )}

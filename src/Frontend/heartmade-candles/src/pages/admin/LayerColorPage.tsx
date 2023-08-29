@@ -52,7 +52,7 @@ const LayerColorPage: FC = () => {
         {layerColorData && (
           <MainInfoLayerColor
             data={layerColorData}
-            handleChangesLayerColor={handleChangesLayerColor}
+            onChangesLayerColor={handleChangesLayerColor}
             onSave={updateLayerColor}
           />
         )}

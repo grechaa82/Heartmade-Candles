@@ -52,7 +52,7 @@ const DecorPage: FC = () => {
         {decorData && (
           <MainInfoDecor
             data={decorData}
-            handleChangesDecor={handleChangesDecor}
+            onChangesDecor={handleChangesDecor}
             onSave={updateDecor}
           />
         )}

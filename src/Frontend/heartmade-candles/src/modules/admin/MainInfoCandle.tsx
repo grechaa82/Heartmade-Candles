@@ -13,7 +13,7 @@ import Style from './MainInfoCandle.module.css';
 export interface MainInfoCandleProps {
   data: Candle;
   fetchTypeCandles: FetchTypeCandle;
-  handleChangesCandle: (candle: Candle) => void;
+  onChangesCandle: (candle: Candle) => void;
   onSave?: (saveCandle: Candle) => void;
 }
 
@@ -22,7 +22,7 @@ export type FetchTypeCandle = () => Promise<TypeCandle[]>;
 const MainInfoCandle: FC<MainInfoCandleProps> = ({
   data,
   fetchTypeCandles: fetchTypeCandle,
-  handleChangesCandle,
+  onChangesCandle,
   onSave,
 }) => {
   const [candle, setCandle] = useState<Candle>(data);
@@ -43,7 +43,7 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
 
   const handleChangeTitle = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCandle((prev) => ({ ...prev, title: event.target.value }));
-    handleChangesCandle(candle);
+    onChangesCandle(candle);
     setIsModified(true);
   };
 
@@ -52,7 +52,7 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
       ...prev,
       price: parseFloat(event.target.value),
     }));
-    handleChangesCandle(candle);
+    onChangesCandle(candle);
     setIsModified(true);
   };
 
@@ -61,7 +61,7 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
       ...prev,
       weightGrams: parseFloat(event.target.value),
     }));
-    handleChangesCandle(candle);
+    onChangesCandle(candle);
     setIsModified(true);
   };
 
@@ -72,32 +72,45 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
         ...prev,
         typeCandle: selectedTypeCandle,
       }));
-      handleChangesCandle(candle);
+      onChangesCandle(candle);
       setIsModified(true);
     }
   };
 
   const handleChangeIsActive = (isActive: boolean) => {
     setCandle((prev) => ({ ...prev, isActive }));
-    handleChangesCandle(candle);
+    onChangesCandle(candle);
     setIsModified(true);
   };
 
   const handleChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setCandle((prev) => ({ ...prev, description: event.target.value }));
-    handleChangesCandle(candle);
+    onChangesCandle(candle);
     setIsModified(true);
   };
 
   const handleChangeImages = (images: Image[]) => {
     setCandle((prev) => ({ ...prev, images: [...prev.images, ...images] }));
-    handleChangesCandle(candle);
+    onChangesCandle(candle);
     setIsModified(true);
+  };
+
+  const handleSetNewImages = (images: Image[]) => {
+    const newCandle: Candle = { ...candle, images: images };
+    setCandle(newCandle);
+    onChangesCandle(newCandle);
+    if (onSave) {
+      onSave(newCandle);
+    }
   };
 
   return (
     <div className={Style.candleInfo}>
-      <ImageSlider images={candle.images} updateImages={handleChangeImages} />
+      <ImageSlider
+        images={candle.images}
+        updateImages={handleSetNewImages}
+        addImages={handleChangeImages}
+      />
       <form className={`${Style.gridContainer} ${Style.formForCandle}`}>
         <div className={`${Style.formItem} ${Style.itemTitle}`}>
           <Textarea
