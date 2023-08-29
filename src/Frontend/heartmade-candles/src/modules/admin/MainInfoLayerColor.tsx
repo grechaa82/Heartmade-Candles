@@ -46,9 +46,12 @@ const MainInfoLayerColor: FC<MainInfoLayerColorProps> = ({ data, onChangesLayerC
   };
 
   const handleChangeImages = (images: Image[]) => {
-    setLayerColor((prev) => ({ ...prev, images: [...prev.images, ...images] }));
-    onChangesLayerColor(layerColor);
-    setIsModified(true);
+    const newLayerColor: LayerColor = { ...layerColor, images: [...layerColor.images, ...images] };
+    setLayerColor(newLayerColor);
+    onChangesLayerColor(newLayerColor);
+    if (onSave) {
+      onSave(newLayerColor);
+    }
   };
 
   const handleSetNewImages = (images: Image[]) => {

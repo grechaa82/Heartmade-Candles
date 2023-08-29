@@ -46,9 +46,12 @@ const MainInfoWick: FC<MainInfoWickProps> = ({ data, onChangesWick, onSave }) =>
   };
 
   const handleChangeImages = (images: Image[]) => {
-    setWick((prev) => ({ ...prev, images: [...prev.images, ...images] }));
-    onChangesWick(wick);
-    setIsModified(true);
+    const newWick: Wick = { ...wick, images: [...wick.images, ...images] };
+    setWick(newWick);
+    onChangesWick(newWick);
+    if (onSave) {
+      onSave(newWick);
+    }
   };
 
   const handleSetNewImages = (images: Image[]) => {

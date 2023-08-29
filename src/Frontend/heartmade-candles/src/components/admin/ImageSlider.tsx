@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import IconChevronLeftLarge from '../../UI/IconChevronLeftLarge';
 import IconChevronRightLarge from '../../UI/IconChevronRightLarge';
@@ -6,6 +6,7 @@ import IconDownloadLarge from '../../UI/IconDownloadLarge';
 import IconViewListLarge from '../../UI/IconViewListLarge';
 import { Image } from '../../types/Image';
 import AddImagesPopUp from './PopUp/AddImagesPopUp';
+import ChangeImagesPopUp from './PopUp/ChangeImagesPopUp';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -14,12 +15,14 @@ import Style from './ImageSlider.module.css';
 interface ImageSliderProps {
   images: Image[];
   updateImages: (images: Image[]) => void;
+  addImages: (images: Image[]) => void;
 }
 
-const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages }) => {
+const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
-  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [isAddImagesPopUpOpen, setIsAddImagesPopUpOpen] = useState(false);
+  const [isChangeImagesPopUpOpen, setIsChangeImagesPopUpOpen] = useState(false);
 
   const handleChangeImage = (index: number, moveToIndex?: number) => {
     let current = index;
@@ -37,31 +40,45 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages }) => {
     setCurrentImageIndex(current);
   };
 
-  const handlePopUpOpen = () => {
-    setIsPopUpOpen(true);
+  const handleAddImagesPopUpOpen = () => {
+    setIsAddImagesPopUpOpen(true);
   };
 
-  const handlePopUpClose = () => {
-    setIsPopUpOpen(false);
+  const handleAddImagesPopUpClose = () => {
+    setIsAddImagesPopUpOpen(false);
+  };
+
+  const handleChangeImagesPopUpOpen = () => {
+    setIsChangeImagesPopUpOpen(true);
+  };
+
+  const handleChangeImagesPopUpClose = () => {
+    setIsChangeImagesPopUpOpen(false);
+  };
+
+  const handleRemoveImage = async (image: Image) => {
+    let fileNames: string[] = [];
+    fileNames.push(image.fileName);
+    await ImagesApi.deleteImages(fileNames);
+
+    const newImagesState: Image[] = images.filter((i) => i.fileName !== image.fileName);
+    updateImages(newImagesState);
   };
 
   if (images.length === 0) {
     return (
       <div className={Style.image}>
         <div className={Style.changesImages}>
-          <button className={Style.iconChangeImages} onClick={handlePopUpOpen}>
-            <IconViewListLarge color="#6FCF97" />
-          </button>
-          <button className={Style.iconUploadImages} onClick={handlePopUpOpen}>
+          <button className={Style.iconUploadImages} onClick={handleAddImagesPopUpOpen}>
             <IconDownloadLarge color="#6FCF97" />
           </button>
         </div>
         <div className={Style.imageNoAvailable}>Изображение отсутствует</div>
-        {isPopUpOpen && (
+        {isAddImagesPopUpOpen && (
           <AddImagesPopUp
-            onClose={handlePopUpClose}
+            onClose={handleAddImagesPopUpClose}
             uploadImages={ImagesApi.uploadImages}
-            updateImages={updateImages}
+            updateImages={addImages}
           />
         )}
       </div>
@@ -97,17 +114,25 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages }) => {
         </button>
       </div>
       <div className={Style.changesImages}>
-        <button className={Style.iconChangeImages} onClick={handlePopUpOpen}>
+        <button className={Style.iconChangeImages} onClick={handleChangeImagesPopUpOpen}>
           <IconViewListLarge color="#6FCF97" />
         </button>
-        <button className={Style.iconUploadImages} onClick={handlePopUpOpen}>
+        <button className={Style.iconUploadImages} onClick={handleAddImagesPopUpOpen}>
           <IconDownloadLarge color="#6FCF97" />
         </button>
       </div>
-      {isPopUpOpen && (
+      {isAddImagesPopUpOpen && (
         <AddImagesPopUp
-          onClose={handlePopUpClose}
+          onClose={handleAddImagesPopUpClose}
           uploadImages={ImagesApi.uploadImages}
+          updateImages={addImages}
+        />
+      )}
+      {isChangeImagesPopUpOpen && (
+        <ChangeImagesPopUp
+          images={images}
+          onClose={handleChangeImagesPopUpClose}
+          onRemove={handleRemoveImage}
           updateImages={updateImages}
         />
       )}

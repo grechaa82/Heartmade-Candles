@@ -90,9 +90,12 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
   };
 
   const handleChangeImages = (images: Image[]) => {
-    setCandle((prev) => ({ ...prev, images: [...prev.images, ...images] }));
-    onChangesCandle(candle);
-    setIsModified(true);
+    const newCandle: Candle = { ...candle, images: [...candle.images, ...images] };
+    setCandle(newCandle);
+    onChangesCandle(newCandle);
+    if (onSave) {
+      onSave(newCandle);
+    }
   };
 
   const handleSetNewImages = (images: Image[]) => {

@@ -46,9 +46,12 @@ const MainInfoDecor: FC<MainInfoDecorProps> = ({ data, onChangesDecor, onSave })
   };
 
   const handleChangeImages = (images: Image[]) => {
-    setDecor((prev) => ({ ...prev, images: [...prev.images, ...images] }));
-    onChangesDecor(decor);
-    setIsModified(true);
+    const newDecor: Decor = { ...decor, images: [...decor.images, ...images] };
+    setDecor(newDecor);
+    onChangesDecor(newDecor);
+    if (onSave) {
+      onSave(newDecor);
+    }
   };
 
   const handleSetNewImages = (images: Image[]) => {
