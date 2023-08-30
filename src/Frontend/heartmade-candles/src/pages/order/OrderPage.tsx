@@ -1,15 +1,11 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { CandleDetailWithQuantity } from '../../typesV2/BaseProduct';
-import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
+import ListProductsCart from '../../modules/order/ListProductsCart';
 
 import Style from './OrderPage.module.css';
 
 const OrderPage: FC = () => {
-  const [showMoreInfo, setShowMoreInfo] = useState(false);
-
-  const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
-
   const fakeData: CandleDetailWithQuantity[] = [
     {
       candle: {
@@ -98,78 +94,7 @@ const OrderPage: FC = () => {
 
   return (
     <div className={Style.container}>
-      Order
-      <div className={Style.orderList}>
-        <div className={Style.orderItem}>
-          <div className={Style.mainInfo}>
-            <div className={Style.image}>
-              <img
-                src={urlToImage + fakeData[0].candle.images[0].fileName}
-                alt={fakeData[0].candle.images[0].alternativeName}
-              />
-            </div>
-            <div className={Style.info}>
-              <div className={Style.titleBlock}>
-                <p className={Style.title}>{fakeData[0].candle.title}</p>
-                <button
-                  className={Style.showMoreInfoBtn}
-                  type="button"
-                  onClick={() => setShowMoreInfo(!showMoreInfo)}
-                >
-                  Показать настройки
-                  <IconChevronDownLarge color="#2e67ea" />
-                </button>
-              </div>
-              <p className={Style.quantity}>{fakeData[0].quantity}</p>
-              <p className={Style.price}>N?</p>
-            </div>
-          </div>
-          {showMoreInfo && (
-            <div className={Style.paramsBlock}>
-              <div className={Style.params}>
-                <p className={Style.paramsTitle}>Количество слоев</p>
-                {fakeData[0].numberOfLayers && (
-                  <p className={Style.paramsInfo}>{fakeData[0].numberOfLayers[0].number}</p>
-                )}
-              </div>
-              <span className={Style.separator} />
-              <div className={Style.params}>
-                <p className={Style.paramsTitle}>Цвета слоев</p>
-                <div className={Style.paramsListInfo}>
-                  {fakeData[0].layerColors?.map((layerColor, index) => (
-                    <div className={Style.paramsListInfoItem}>
-                      <span>{index + 1}</span>
-                      <p className={Style.paramsInfo}>{layerColor.title}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <span className={Style.separator} />
-              <div className={Style.params}>
-                <p className={Style.paramsTitle}>Декор</p>
-                {fakeData[0].decors && (
-                  <p className={Style.paramsInfo}>{fakeData[0].decors[0].title}</p>
-                )}
-              </div>
-              <span className={Style.separator} />
-              <div className={Style.params}>
-                <p className={Style.paramsTitle}>Запах</p>
-                {fakeData[0].smells && (
-                  <p className={Style.paramsInfo}>{fakeData[0].smells[0].title}</p>
-                )}
-              </div>
-              <span className={Style.separator} />
-              <div className={Style.params}>
-                <p className={Style.paramsTitle}>Фитиль</p>
-                {fakeData[0].wicks && (
-                  <p className={Style.paramsInfo}>{fakeData[0].wicks[0].title}</p>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      <div>{JSON.stringify(fakeData)}</div>
+      <ListProductsCart products={fakeData} />
     </div>
   );
 };
