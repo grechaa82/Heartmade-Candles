@@ -12,6 +12,7 @@ import AllWickPage from './pages/admin/AllWickPage';
 import WickPage from './pages/admin/WickPage';
 import Navbar from './components/admin/Navbar';
 import ConstructorPage from './pages/constructor/ConstructorPage';
+import OrderPage from './pages/order/OrderPage';
 
 import Style from './App.module.css';
 
@@ -42,6 +43,7 @@ function App() {
           }
         />
         <Route path="constructor/" element={<ConstructorPage />} />
+        <Route path="order/" element={<OrderPage />} />
       </Routes>
     </>
   );
