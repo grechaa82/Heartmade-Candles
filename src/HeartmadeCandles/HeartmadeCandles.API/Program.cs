@@ -1,11 +1,8 @@
 using HeartmadeCandles.Admin.BL.Services;
 using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.DAL.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using HeartmadeCandles.Admin.DAL;
 using Serilog;
 using HeartmadeCandles.Constructor.DAL;
