@@ -1,0 +1,12 @@
+.title {
+  color: var(--color-222);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-standart);
+  margin-bottom: 24px;
+}
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}

@@ -1,0 +1,38 @@
+.selectorWithInput {
+  position: relative;
+  display: flex;
+  padding: 12px 16px 16px 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: var(--border-radius-primary);
+  border: 2px solid var(--color-eee);
+  gap: 16px;
+}
+.title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.icon {
+}
+.selectedBlock {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--border-radius-secondary-large);
+  border: 2px solid var(--color-eee);
+  top: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.selected {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--border-radius-secondary-large);
+  background: var(--color-green);
+}
+.inputBlock {
+  width: 100%;
+}

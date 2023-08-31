@@ -2,6 +2,9 @@ import { FC } from 'react';
 
 import { CandleDetailWithQuantity } from '../../typesV2/BaseProduct';
 import ListProductsCart from '../../modules/order/ListProductsCart';
+import FormPersonalData from '../../modules/order/FormPersonalData';
+import FormFeedback from '../../modules/order/FormFeedback';
+import TotalPricePanel from '../../modules/order/TotalPricePanel';
 
 import Style from './OrderPage.module.css';
 
@@ -95,6 +98,11 @@ const OrderPage: FC = () => {
   return (
     <div className={Style.container}>
       <ListProductsCart products={fakeData} />
+      <FormPersonalData />
+      <FormFeedback />
+      <div className={Style.rightPanelTotalPrice}>
+        <TotalPricePanel totalPrice={10000} totalQuantityProduct={10} />
+      </div>
     </div>
   );
 };
