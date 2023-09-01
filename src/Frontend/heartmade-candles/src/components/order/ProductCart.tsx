@@ -1,37 +1,32 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 
-import { CandleDetailWithQuantity } from '../../typesV2/BaseProduct';
+import { CandleDetailWithQuantityAndPrice } from '../../typesV2/BaseProduct';
 import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
-import { calculatePrice } from '../../helpers/CalculatePrice';
 
 import Style from './ProductCart.module.css';
 
 export interface ProductCartProps {
-  product: CandleDetailWithQuantity;
+  product: CandleDetailWithQuantityAndPrice;
 }
 
 const ProductCart: FC<ProductCartProps> = ({ product }) => {
   const [showMoreInfo, setShowMoreInfo] = useState(false);
-  const [price, setPrice] = useState(0);
-
-  useEffect(() => {
-    setPrice(calculatePrice(product) * product.quantity);
-  }, []);
 
   const urlToImage = 'http://localhost:5000/StaticFiles/Images/';
+  const firstImage =
+    product.candleDetail.candle.images.length > 0 ? product.candleDetail.candle.images[0] : null;
 
   return (
     <div className={Style.orderItem}>
       <div className={Style.mainInfo}>
         <div className={Style.image}>
-          <img
-            src={urlToImage + product.candle.images[0].fileName}
-            alt={product.candle.images[0].alternativeName}
-          />
+          {firstImage && (
+            <img src={urlToImage + firstImage.fileName} alt={firstImage.alternativeName} />
+          )}
         </div>
         <div className={Style.info}>
           <div className={Style.titleBlock}>
-            <p className={Style.title}>{product.candle.title}</p>
+            <p className={Style.title}>{product.candleDetail.candle.title}</p>
             <button
               className={Style.showMoreInfoBtn}
               type="button"
@@ -42,23 +37,21 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
             </button>
           </div>
           <p className={Style.quantity}>{product.quantity} шт</p>
-          <p className={Style.price}>{price} p</p>
+          <p className={Style.price}>{product.price} p</p>
         </div>
       </div>
       {showMoreInfo && (
         <div className={Style.paramsBlock}>
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Количество слоев</p>
-            {product.numberOfLayers && (
-              <p className={Style.paramsInfo}>{product.numberOfLayers[0].number}</p>
-            )}
+            <p className={Style.paramsInfo}>{product.candleDetail.numberOfLayer.number}</p>
           </div>
           <span className={Style.separator} />
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Цвета слоев</p>
             <div className={Style.paramsListInfo}>
-              {product.layerColors?.map((layerColor, index) => (
-                <div className={Style.paramsListInfoItem}>
+              {product.candleDetail.layerColors?.map((layerColor, index) => (
+                <div className={Style.paramsListInfoItem} key={index}>
                   <span>{index + 1}</span>
                   <p className={Style.paramsInfo}>{layerColor.title}</p>
                 </div>
@@ -68,17 +61,23 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
           <span className={Style.separator} />
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Декор</p>
-            {product.decors && <p className={Style.paramsInfo}>{product.decors[0].title}</p>}
+            {product.candleDetail.decor && (
+              <p className={Style.paramsInfo}>{product.candleDetail.decor.title}</p>
+            )}
           </div>
           <span className={Style.separator} />
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Запах</p>
-            {product.smells && <p className={Style.paramsInfo}>{product.smells[0].title}</p>}
+            {product.candleDetail.smell && (
+              <p className={Style.paramsInfo}>{product.candleDetail.smell.title}</p>
+            )}
           </div>
           <span className={Style.separator} />
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Фитиль</p>
-            {product.wicks && <p className={Style.paramsInfo}>{product.wicks[0].title}</p>}
+            {product.candleDetail.wick && (
+              <p className={Style.paramsInfo}>{product.candleDetail.wick.title}</p>
+            )}
           </div>
         </div>
       )}

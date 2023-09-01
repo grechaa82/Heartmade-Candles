@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 
 import {
-  CandleDetail,
+  CandleDetails,
   Decor,
   LayerColor,
   NumberOfLayer,
@@ -18,9 +18,9 @@ import IconPlusLarge from '../../UI/IconPlusLarge';
 import Style from './CandleForm.module.css';
 
 export interface CandleFormProps {
-  candleDetailData: CandleDetail;
-  addCandleDetail: (candleDetail: CandleDetail) => void;
-  calculatePriceCandleDetail: (candleDetail: CandleDetail) => void;
+  candleDetailData: CandleDetails;
+  addCandleDetail: (candleDetail: CandleDetails) => void;
+  calculatePriceCandleDetail: (candleDetail: CandleDetails) => void;
 }
 
 const CandleForm: FC<CandleFormProps> = ({
@@ -28,13 +28,13 @@ const CandleForm: FC<CandleFormProps> = ({
   addCandleDetail,
   calculatePriceCandleDetail,
 }) => {
-  const [candleDetail, setCandleDetail] = useState<CandleDetail>(candleDetailData);
-  const [candleDetailState, setCandleDetailState] = useState<CandleDetail>({
+  const [candleDetail, setCandleDetail] = useState<CandleDetails>(candleDetailData);
+  const [candleDetailState, setCandleDetailState] = useState<CandleDetails>({
     candle: candleDetailData.candle,
   });
 
   const handleNumberOfLayerState = (selectedNumberOfLayer: TagData) => {
-    const newCandleDetailState: CandleDetail = {
+    const newCandleDetailState: CandleDetails = {
       ...candleDetailState,
       layerColors: [],
       numberOfLayers: [convertTagDataToNumberOfLayer(selectedNumberOfLayer)],
@@ -79,7 +79,7 @@ const CandleForm: FC<CandleFormProps> = ({
   };
 
   const handleDecorState = (selectedDecor: ImageProduct) => {
-    const newCandleDetailState: CandleDetail = {
+    const newCandleDetailState: CandleDetails = {
       ...candleDetailState,
       decors: [selectedDecor as Decor],
     };
@@ -96,7 +96,7 @@ const CandleForm: FC<CandleFormProps> = ({
   const handleSmellState = (selectedSmell: TagData) => {
     const selected = convertTagDataToSmell(selectedSmell, candleDetail);
     if (selected) {
-      const newCandleDetailState: CandleDetail = {
+      const newCandleDetailState: CandleDetails = {
         ...candleDetailState,
         smells: [selected],
       };
@@ -105,7 +105,7 @@ const CandleForm: FC<CandleFormProps> = ({
     }
   };
   const handleWickState = (selectedWick: ImageProduct) => {
-    const newCandleDetailState: CandleDetail = {
+    const newCandleDetailState: CandleDetails = {
       ...candleDetailState,
       wicks: [selectedWick as Wick],
     };
@@ -220,7 +220,7 @@ export function convertTagDataToNumberOfLayer(tagData: TagData): NumberOfLayer {
 
 export function convertTagDataToSmell(
   tagData: TagData,
-  candleDetail: CandleDetail,
+  candleDetail: CandleDetails,
 ): Smell | undefined {
   const matchingSmell = candleDetail?.smells?.find((smell) => smell.id === tagData.id);
   return matchingSmell;

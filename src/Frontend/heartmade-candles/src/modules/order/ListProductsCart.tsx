@@ -1,12 +1,12 @@
 import { FC } from 'react';
 
 import ProductCart from '../../components/order/ProductCart';
-import { CandleDetailWithQuantity } from '../../typesV2/BaseProduct';
+import { CandleDetailWithQuantityAndPrice } from '../../typesV2/BaseProduct';
 
 import Style from './ListProductsCart.module.css';
 
 export interface ListProductsCartProps {
-  products: CandleDetailWithQuantity[];
+  products: CandleDetailWithQuantityAndPrice[];
 }
 
 const ListProductsCart: FC<ListProductsCartProps> = ({ products }) => {

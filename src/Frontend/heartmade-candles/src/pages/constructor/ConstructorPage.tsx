@@ -5,7 +5,7 @@ import ListProductsCart from '../../modules/constructor/ListProductsCart';
 import ListProductsCartSkeleton from '../../modules/constructor/ListProductsCartSkeleton';
 import CandleForm from '../../modules/constructor/CandleForm';
 import {
-  CandleDetail,
+  CandleDetails,
   CandleDetailWithQuantity,
   ImageProduct,
   CandleDetailIdsWithQuantity,
@@ -23,7 +23,7 @@ import Style from './ConstructorPage.module.css';
 import { ConstructorApi } from '../../services/ConstructorApi';
 
 const ConstructorPage: FC = () => {
-  const [candleDetail, setCandleDetail] = useState<CandleDetail>();
+  const [candleDetail, setCandleDetail] = useState<CandleDetails>();
   const [candleDetailWithQuantity, setCandleDetailWithQuantity] = useState<
     CandleDetailWithQuantity[]
   >([]);
@@ -35,6 +35,10 @@ const ConstructorPage: FC = () => {
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
+
+  ///
+  //console.log(JSON.stringify(candleDetailWithQuantity));
+  ///
 
   async function showCandleForm(candleId: number) {
     try {
@@ -50,7 +54,7 @@ const ConstructorPage: FC = () => {
     setCandleDetail(undefined);
   }
 
-  const addCandleToListProductsCart = (candleDetail: CandleDetail): void => {
+  const addCandleToListProductsCart = (candleDetail: CandleDetails): void => {
     const validCandleDetail: string[] = checkCandleDetail(candleDetail);
     if (validCandleDetail.length > 0) {
       setErrorMessage((prev) => [...prev, ...validCandleDetail.flat()]);
@@ -169,7 +173,7 @@ const ConstructorPage: FC = () => {
     navigate(`?${newQueryString}`);
   };
 
-  const checkCandleDetail = (candleDetail: CandleDetail): string[] => {
+  const checkCandleDetail = (candleDetail: CandleDetails): string[] => {
     const errorMessageInCandleDetail: string[] = [];
 
     const errorMessageParts: string[] = [];
@@ -361,7 +365,7 @@ const ConstructorPage: FC = () => {
   }
 
   function checkCandleComponentsExist(
-    candleDetail: CandleDetail,
+    candleDetail: CandleDetails,
     candleDetailIdsWithQuantity: CandleDetailIdsWithQuantity,
   ): boolean {
     const errorMessageInvalidCandleComponents: string[] = [];
@@ -440,7 +444,7 @@ const ConstructorPage: FC = () => {
   }
 
   function createCandleDetailWithQuantity(
-    candleDetail: CandleDetail,
+    candleDetail: CandleDetails,
     candleDetailIdsWithQuantity: CandleDetailIdsWithQuantity,
   ) {
     const candleDetailWithQuantity: CandleDetailWithQuantity = {
@@ -538,7 +542,7 @@ const ConstructorPage: FC = () => {
     setPrice(0);
   };
 
-  const calculatePriceCandleDetail = (candleDetail: CandleDetail) => {
+  const calculatePriceCandleDetail = (candleDetail: CandleDetails) => {
     setPrice(calculatePrice(candleDetail));
   };
 

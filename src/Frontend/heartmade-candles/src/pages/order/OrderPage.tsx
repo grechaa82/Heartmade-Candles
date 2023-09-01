@@ -1,12 +1,16 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 
-import { CandleDetailWithQuantity } from '../../typesV2/BaseProduct';
+import {
+  CandleDetailWithQuantity,
+  CandleDetailWithQuantityAndPrice,
+} from '../../typesV2/BaseProduct';
 import ListProductsCart from '../../modules/order/ListProductsCart';
 import FormPersonalData from '../../modules/order/FormPersonalData';
 import FormFeedback from '../../modules/order/FormFeedback';
 import TotalPricePanel from '../../modules/order/TotalPricePanel';
 
 import Style from './OrderPage.module.css';
+import { OrderApi } from '../../services/OrderApi';
 
 const OrderPage: FC = () => {
   const fakeData: CandleDetailWithQuantity[] = [
@@ -95,13 +99,46 @@ const OrderPage: FC = () => {
     },
   ];
 
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [arrayCandleDetailWithQuantityAndPrice, setArrayCandleDetailWithQuantityAndPrice] =
+    useState<CandleDetailWithQuantityAndPrice[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const arrayCandleDetailWithQuantityAndPrice = await OrderApi.index(
+          'c-2~l-1_4_5~n-3~w-1~q-2.c-2~d-2~l-1_2_3_5~n-4~s-3~w-1~q-1.c-1~l-2~n-1~s-1~w-1~q-1.c-3~l-1_8~n-2~w-1~q-1',
+        );
+        setArrayCandleDetailWithQuantityAndPrice(arrayCandleDetailWithQuantityAndPrice);
+      } catch (error) {
+        console.error('Произошла ошибка при загрузке данных:', error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  function calculatePrice(arrayCandleDetails: CandleDetailWithQuantityAndPrice[]) {
+    let price = 0;
+    arrayCandleDetailWithQuantityAndPrice.map((item) => (price += item.price));
+    return price;
+  }
+
+  function calculateTotalQuantity(arrayCandleDetails: CandleDetailWithQuantityAndPrice[]) {
+    let totalQuantity = 0;
+    arrayCandleDetails.map((item) => (totalQuantity += item.quantity));
+    return totalQuantity;
+  }
+
   return (
     <div className={Style.container}>
-      <ListProductsCart products={fakeData} />
+      <ListProductsCart products={arrayCandleDetailWithQuantityAndPrice} />
       <FormPersonalData />
       <FormFeedback />
       <div className={Style.rightPanelTotalPrice}>
-        <TotalPricePanel totalPrice={10000} totalQuantityProduct={10} />
+        <TotalPricePanel
+          totalPrice={calculatePrice(arrayCandleDetailWithQuantityAndPrice)}
+          totalQuantityProduct={calculateTotalQuantity(arrayCandleDetailWithQuantityAndPrice)}
+        />
       </div>
     </div>
   );

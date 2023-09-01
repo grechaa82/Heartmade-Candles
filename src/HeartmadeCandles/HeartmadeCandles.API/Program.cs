@@ -9,6 +9,10 @@ using HeartmadeCandles.Constructor.DAL;
 using HeartmadeCandles.Constructor.DAL.Repositories;
 using HeartmadeCandles.Constructor.Core.Interfaces;
 using HeartmadeCandles.Constructor.BL.Services;
+using HeartmadeCandles.Order.Core.Interfaces;
+using HeartmadeCandles.Order.DAL.Repositories;
+using HeartmadeCandles.Order.BL.Services;
+using HeartmadeCandles.Order.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,6 +82,18 @@ try
     builder.Services
         .AddScoped<IConstructorService, ConstructorService>()
         .AddScoped<IConstructorRepository, ConstructorRepository>();
+
+    //Order module
+    builder.Services.AddDbContext<OrderDbContext>(options =>
+    {
+        options.UseNpgsql(
+            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
+            npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
+    });
+
+    builder.Services
+        .AddScoped<IOrderService, OrderService>()
+        .AddScoped<IOrderRepository, OrderRepository>();
 
     builder.Services.AddControllers().AddNewtonsoftJson();
     builder.Services.AddEndpointsApiExplorer();

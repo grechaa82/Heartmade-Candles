@@ -1,4 +1,4 @@
-import { CandleDetail, CandleDetailRequest, LayerColor } from '../typesV2/BaseProduct';
+import { CandleDetails, CandleDetailRequest, LayerColor } from '../typesV2/BaseProduct';
 import { CandleTypeWithCandles } from '../typesV2/CandleTypeWithCandles';
 
 const apiUrl = 'http://localhost:5000/api/constructor/candles';
@@ -11,14 +11,14 @@ export const ConstructorApi = {
     });
     return (await response.json()) as CandleTypeWithCandles[];
   },
-  async getCandleById(candleId: string): Promise<CandleDetail> {
+  async getCandleById(candleId: string): Promise<CandleDetails> {
     const response = await fetch(`${apiUrl}/${candleId}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });
     const responseData = (await response.json()) as CandleDetailRequest;
 
-    const candleDetail: CandleDetail = {
+    const candleDetail: CandleDetails = {
       candle: responseData.candle,
       decors: responseData.decors,
       layerColors: responseData.layerColors?.map((layerColor) => ({

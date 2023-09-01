@@ -41,7 +41,7 @@ export interface Image {
   alternativeName: string;
 }
 
-export interface CandleDetail {
+export interface CandleDetails {
   candle: Candle;
   decors?: Decor[];
   layerColors?: LayerColor[];
@@ -81,4 +81,37 @@ export interface CandleDetailIdsWithQuantity {
   smellIds?: number[];
   wickIds?: number[];
   quantity: number;
+}
+
+export interface CandleDetail {
+  candle: Candle;
+  decor: Decor;
+  layerColors?: LayerColor[];
+  numberOfLayer: NumberOfLayer;
+  smell?: Smell;
+  wick: Wick;
+}
+
+export interface CandleDetailWithQuantityAndPrice {
+  candleDetail: CandleDetail;
+  quantity: number;
+  price: number;
+}
+
+export interface User {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email?: string;
+}
+
+export interface Feedback {
+  typeFeedback: string;
+  userName: string;
+}
+
+export interface OrderCreaterRequest {
+  configuredCandlesString: string;
+  user: User;
+  feedback: Feedback;
 }
