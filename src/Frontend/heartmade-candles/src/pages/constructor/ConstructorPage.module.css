@@ -65,10 +65,10 @@
   border: 2px solid var(--color-light-green);
   background: var(--color-light-green);
   width: fit-content;
-}
-.orderBtn > button {
-  all: unset;
   padding: 14px 16px 16px 16px;
+}
+.orderBtn > a {
+  all: unset;
   font-size: var(--font-size-l);
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-standart);

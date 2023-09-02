@@ -1,5 +1,5 @@
 import { FC, useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import ListProductsCart from '../../modules/constructor/ListProductsCart';
 import ListProductsCartSkeleton from '../../modules/constructor/ListProductsCartSkeleton';
@@ -546,7 +546,10 @@ const ConstructorPage: FC = () => {
     setPrice(calculatePrice(candleDetail));
   };
 
-  const createOrder = () => {};
+  const getCreateOrderLink = (): string => {
+    var configuredCandlesString = location.search;
+    return `/order${configuredCandlesString}`;
+  };
 
   return (
     <div className={Style.container}>
@@ -578,8 +581,12 @@ const ConstructorPage: FC = () => {
           </div>
         )}
         <div className={Style.orderInfo}>
+          {/* <Link to={getProductLink()} className={Style.link}>
+            <p className={Style.title}>{product.title}</p>
+            <p className={Style.description}>{product.description}</p>
+          </Link> */}
           <div className={Style.orderBtn}>
-            <button onClick={() => createOrder()}>Заказать</button>
+            <Link to={getCreateOrderLink()}>Заказать</Link>
           </div>
           <div className={Style.totalPrice}>
             <span className={Style.title}>Итого </span>

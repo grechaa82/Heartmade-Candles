@@ -5,9 +5,14 @@ import Style from './TotalPricePanel.module.css';
 export interface TotalPricePanelProps {
   totalPrice: number;
   totalQuantityProduct: number;
+  onCreateOrder: () => void;
 }
 
-const TotalPricePanel: FC<TotalPricePanelProps> = ({ totalPrice, totalQuantityProduct }) => {
+const TotalPricePanel: FC<TotalPricePanelProps> = ({
+  totalPrice,
+  totalQuantityProduct,
+  onCreateOrder,
+}) => {
   return (
     <div className={Style.panel}>
       <div className={Style.totalPriceBlock}>
@@ -17,7 +22,9 @@ const TotalPricePanel: FC<TotalPricePanelProps> = ({ totalPrice, totalQuantityPr
         </p>
       </div>
       <div className={Style.totalQuantityBlock}>{totalQuantityProduct} свечей</div>
-      <button className={Style.createOrder}>Оформить заказ</button>
+      <button className={Style.createOrder} onClick={onCreateOrder}>
+        Оформить заказ
+      </button>
     </div>
   );
 };

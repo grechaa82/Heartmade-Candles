@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import SelectorWithInput from '../../components/order/SelectorWithInput';
 import Input from '../../components/order/Input';
@@ -6,27 +6,24 @@ import IconTrashLarge from '../../UI/IconTrashLarge';
 
 import Style from './FormFeedback.module.css';
 
-export interface FormFeedbackProps {}
+export interface ItemFormFeedback {
+  title: string;
+  label: string;
+  value: string;
+  onChangeSelectedForm: (value: string) => void;
+  onChangeUsername: (value: string) => void;
+  isRequired: boolean;
+  isSelected: boolean;
+  validation: (value: string) => boolean;
+}
 
-type FeedbackForm = 'Telegram' | 'Instagram' | 'Whatsapp';
+export interface FormFeedbackProps {
+  itemsFormFeedbacks: ItemFormFeedback[];
+}
 
-const FormFeedback: FC<FormFeedbackProps> = ({}) => {
-  const [selectedForm, setSelectedForm] = useState<string>('');
-  const [username, setUsername] = useState<string>('');
-
-  const validateTelegramAndInstagram = (value: string) => {
-    const regex = /@[a-zA-Z0-9_]{1,32}$/;
-    return regex.test(value);
-  };
-
-  const validatePhoneNumber = (value: string) => {
-    return /^((8|\+7|7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?\d{3}[\- ]?\d{2}[\- ]?\d{2}?$/.test(value);
-  };
-
-  const handleSelectorClick = (form: FeedbackForm) => {
-    setUsername('');
-    setSelectedForm(form);
-  };
+const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
+  const evenItems = itemsFormFeedbacks.filter((_, index) => index % 2 === 0);
+  const oddItems = itemsFormFeedbacks.filter((_, index) => index % 2 !== 0);
 
   return (
     <div>
@@ -36,53 +33,44 @@ const FormFeedback: FC<FormFeedbackProps> = ({}) => {
       </div>
       <form action="" className={Style.form}>
         <div className={Style.column}>
-          <SelectorWithInput
-            title="Telegram"
-            icon={IconTrashLarge}
-            isSelected={selectedForm === 'Telegram' ? true : false}
-            onSelected={() => handleSelectorClick('Telegram')}
-            input={
-              <Input
-                label="Введите ваше имя пользователя"
-                required
-                value={username}
-                onChange={setUsername}
-                validation={validateTelegramAndInstagram}
-              />
-            }
-          />
-          <SelectorWithInput
-            title="Instagram"
-            icon={IconTrashLarge}
-            isSelected={selectedForm === 'Instagram' ? true : false}
-            onSelected={() => handleSelectorClick('Instagram')}
-            input={
-              <Input
-                label="Введите ваше имя пользователя"
-                required
-                value={username}
-                onChange={setUsername}
-                validation={validateTelegramAndInstagram}
-              />
-            }
-          />
+          {evenItems.map((item, index) => (
+            <SelectorWithInput
+              title={item.title}
+              icon={IconTrashLarge}
+              isSelected={item.isSelected}
+              onSelected={() => item.onChangeSelectedForm(item.title)}
+              input={
+                <Input
+                  label="Введите ваше имя пользователя"
+                  required
+                  value={item.value}
+                  onChange={item.onChangeUsername}
+                  validation={item.validation}
+                />
+              }
+              key={index}
+            />
+          ))}
         </div>
         <div className={Style.column}>
-          <SelectorWithInput
-            title="Whatsapp"
-            icon={IconTrashLarge}
-            isSelected={selectedForm === 'Whatsapp' ? true : false}
-            onSelected={() => handleSelectorClick('Whatsapp')}
-            input={
-              <Input
-                label="Введите ваше имя пользователя"
-                required
-                value={username}
-                onChange={setUsername}
-                validation={validatePhoneNumber}
-              />
-            }
-          />
+          {oddItems.map((item, index) => (
+            <SelectorWithInput
+              title={item.title}
+              icon={IconTrashLarge}
+              isSelected={item.isSelected}
+              onSelected={() => item.onChangeSelectedForm(item.title)}
+              input={
+                <Input
+                  label="Введите ваше имя пользователя"
+                  required
+                  value={item.value}
+                  onChange={item.onChangeUsername}
+                  validation={item.validation}
+                />
+              }
+              key={index}
+            />
+          ))}
         </div>
       </form>
     </div>
