@@ -36,6 +36,11 @@ try
         loggingBuilder.AddSerilog(logger, true);
     });
 
+    if (!Directory.Exists("StaticFiles/"))
+    {
+        Directory.CreateDirectory("StaticFiles/Images");
+    }
+
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowCors", policy =>
