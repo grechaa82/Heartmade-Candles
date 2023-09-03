@@ -45,7 +45,7 @@ try
     {
         options.AddPolicy("AllowCors", policy =>
         {
-            policy.WithOrigins("http://localhost:3000")
+            policy.WithOrigins("http://localhost:3000", "http://client:3000")
                 .WithHeaders().AllowAnyHeader()
                 .WithMethods().AllowAnyMethod()
                 .AllowCredentials()
