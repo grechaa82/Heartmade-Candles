@@ -1,6 +1,6 @@
-import { CandleDetail } from "../typesV2/BaseProduct";
+import { CandleDetails } from '../typesV2/BaseProduct';
 
-export const calculatePrice = (candleDetail: CandleDetail): number => {
+export const calculatePrice = (candleDetail: CandleDetails): number => {
   let totalPrice: number = candleDetail.candle.price;
 
   if (candleDetail.decors) {
@@ -15,8 +15,7 @@ export const calculatePrice = (candleDetail: CandleDetail): number => {
     candleDetail.layerColors &&
     candleDetail.layerColors.length > 0
   ) {
-    const gramsInLayer =
-      candleDetail.candle.weightGrams / candleDetail.numberOfLayers[0].number;
+    const gramsInLayer = candleDetail.candle.weightGrams / candleDetail.numberOfLayers[0].number;
 
     for (const layerColor of candleDetail.layerColors) {
       totalPrice += gramsInLayer * layerColor.price;

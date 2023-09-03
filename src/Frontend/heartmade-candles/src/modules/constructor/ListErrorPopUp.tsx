@@ -9,7 +9,6 @@ export interface ListErrorPopUpProps {
 }
 
 const ListErrorPopUp: FC<ListErrorPopUpProps> = ({ messages }) => {
-  console.log(messages);
   return (
     <div className={Style.listErrorPopUp}>
       {messages.map((message, index) => (

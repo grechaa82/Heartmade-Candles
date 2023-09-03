@@ -1,7 +1,7 @@
 import { FC, ReactElement } from 'react';
 
 import { IconProps } from '../../UI/IconProps';
-import { InputProps } from './Input';
+import { InputProps } from '../shared/Input';
 
 import Style from './SelectorWithInput.module.css';
 
