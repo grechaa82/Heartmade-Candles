@@ -1,12 +1,15 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace HeartmadeCandles.API.Controllers.Admin
 {
     [ApiController]
     [Route("api/admin/typeCandles")]
+    [Authorize(Roles = "Admin")]
     public class TypeCandleController : Controller
     {
         private readonly ITypeCandleService _typeCandleService;

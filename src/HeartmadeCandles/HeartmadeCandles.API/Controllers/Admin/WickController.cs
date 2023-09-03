@@ -2,12 +2,14 @@
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers.Admin
 {
     [ApiController]
     [Route("api/admin/wicks")]
+    [Authorize(Roles = "Admin")]
     public class WickController : Controller
     {
         private readonly IWickService _wickService;

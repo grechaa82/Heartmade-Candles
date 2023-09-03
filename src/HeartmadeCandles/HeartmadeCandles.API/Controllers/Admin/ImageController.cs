@@ -1,11 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace HeartmadeCandles.API.Controllers.Admin
 {
 
     [ApiController]
     [Route("api/admin/images")]
+    [Authorize(Roles = "Admin")]
     public class ImageController : Controller
     {
         private readonly string _staticFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles/Images");

@@ -1,14 +1,15 @@
-﻿using CSharpFunctionalExtensions;
-using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers.Admin
 {
     [ApiController]
     [Route("api/admin/candles")]
+    [Authorize(Roles = "Admin")]
     public class CandleController : Controller
     {
         private readonly ICandleService _candleService;

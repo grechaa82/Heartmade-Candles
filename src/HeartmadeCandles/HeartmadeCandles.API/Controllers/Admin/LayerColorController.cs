@@ -2,12 +2,15 @@
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.API.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace HeartmadeCandles.API.Controllers.Admin
 {
     [ApiController]
     [Route("api/admin/layerColors")]
+    [Authorize(Roles = "Admin")]
     public class LayerColorController : Controller
     {
         private readonly ILayerColorService _layerColorService;

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\HeartmadeCandles.Auth.Core\HeartmadeCandles.Auth.Core.csproj" />
+  </ItemGroup>
+
+</Project>

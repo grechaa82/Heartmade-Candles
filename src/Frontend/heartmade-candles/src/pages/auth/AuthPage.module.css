@@ -1,0 +1,28 @@
+.container {
+  max-width: 440px;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100dvh;
+  align-items: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.loginBtn {
+  all: unset;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--border-radius-primary);
+  border: 2px solid var(--color-ligth-blue);
+  color: var(--color-blue);
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-standart);
+  padding-top: 30px;
+  padding-bottom: 34px;
+}
