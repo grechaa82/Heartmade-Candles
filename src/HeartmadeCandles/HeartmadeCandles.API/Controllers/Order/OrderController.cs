@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -34,13 +35,23 @@ namespace HeartmadeCandles.API.Controllers.Order
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(OrderCreator orderCreater)
+        public async Task<IActionResult> CreateOrder(OrderRequest orderRequest)
         {
-            var arrayCandleDetailIdsWithQuantity = GetSplitetConfiguredCandlesString(orderCreater.ConfiguredCandlesString)
+            var arrayCandleDetailIdsWithQuantity = GetSplitetConfiguredCandlesString(orderRequest.ConfiguredCandlesString)
                 .Select(item => ParseUrlStringToOrderItemIds(item))
                 .ToArray();
 
-            var result = await _orderService.CreateOrder(arrayCandleDetailIdsWithQuantity, orderCreater.User, orderCreater.Feedback);
+            var result = await _orderService.CreateOrder(
+                orderRequest.ConfiguredCandlesString, 
+                arrayCandleDetailIdsWithQuantity,
+                new User(
+                    orderRequest.User.FirstName, 
+                    orderRequest.User.LastName, 
+                    orderRequest.User.Phone,
+                    orderRequest.User.Email),
+                new Feedback(
+                    orderRequest.Feedback.TypeFeedback, 
+                    orderRequest.Feedback.UserName));
 
             if (result.IsFailure)
             {
@@ -96,13 +107,6 @@ namespace HeartmadeCandles.API.Controllers.Order
                 smellId,
                 wickId,
                 quantity);
-        }
-
-        public class OrderCreator
-        {
-            public string ConfiguredCandlesString { get; set; }
-            public User User { get; set; }
-            public Feedback Feedback { get; set; }
         }
     }
 }

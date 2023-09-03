@@ -18,5 +18,15 @@
         public CandleDetailWithQuantityAndPrice[] Candles { get; private set; }
         public User User { get; private set; }
         public Feedback Feedback { get; private set; }
+
+        public decimal GetTotalPrice()
+        {
+            return Candles.Sum(c => c.Price);
+        }
+
+        public int GetTotalQuantity()
+        {
+            return Candles.Sum(c => c.Quantity);
+        }
     }
 }

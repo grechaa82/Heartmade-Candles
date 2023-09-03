@@ -6,6 +6,6 @@ namespace HeartmadeCandles.Order.Core.Interfaces
     public interface IOrderService
     {
         Task<Result<CandleDetailWithQuantityAndPrice[]>> Get(CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity);
-        Task<Result> CreateOrder(CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity, User user, Feedback feedback);
+        Task<Result> CreateOrder(string configuredCandlesString, CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity, User user, Feedback feedback);
     }
 }

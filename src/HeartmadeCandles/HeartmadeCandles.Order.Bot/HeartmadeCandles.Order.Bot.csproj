@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	
+  <ItemGroup>
+    <PackageReference Include="Telegram.Bot" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\HeartmadeCandles.Order.Core\HeartmadeCandles.Order.Core.csproj" />
+  </ItemGroup>
+	
+</Project>

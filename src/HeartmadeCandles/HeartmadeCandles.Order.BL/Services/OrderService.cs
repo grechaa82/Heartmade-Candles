@@ -7,10 +7,12 @@ namespace HeartmadeCandles.Order.BL.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IOrderNotificationHandler _orderNotificationHandler;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IOrderNotificationHandler orderNotificationHandler)
         {
             _orderRepository = orderRepository;
+            _orderNotificationHandler = orderNotificationHandler;
         }
 
         public async Task<Result<CandleDetailWithQuantityAndPrice[]>> Get(CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity)
@@ -34,25 +36,34 @@ namespace HeartmadeCandles.Order.BL.Services
             return candleDetailWithQuantityAndPriceResult.Value;
         }
 
-        public async Task<Result> CreateOrder(CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity, User user, Feedback feedback)
+        public async Task<Result> CreateOrder(
+            string configuredCandlesString, 
+            CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity, 
+            User user, 
+            Feedback feedback)
         {
             var result = Result.Success();
 
             var candleDetailWithQuantityAndPriceResult = await _orderRepository.Get(arrayCandleDetailIdsWithQuantity);
-
             if (candleDetailWithQuantityAndPriceResult.IsFailure)
             {
                 return candleDetailWithQuantityAndPriceResult;
             }
 
             result = await ProcessCandleDetails(candleDetailWithQuantityAndPriceResult.Value, arrayCandleDetailIdsWithQuantity, result);
-
             if (result.IsFailure)
             {
                 return Result.Failure<CandleDetailWithQuantityAndPrice[]>(result.Error);
             }
 
-            return result;
+            var order = new Core.Models.Order(configuredCandlesString, candleDetailWithQuantityAndPriceResult.Value, user, feedback);
+            var isMessageSend = await _orderNotificationHandler.OnCreateOrder(order);
+            if(isMessageSend.IsFailure)
+            {
+                return Result.Failure(result.Error);
+            }
+
+            return Result.Success();
         }
 
         private async Task<Result> ProcessCandleDetails(

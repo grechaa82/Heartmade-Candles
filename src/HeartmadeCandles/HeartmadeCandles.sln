@@ -29,11 +29,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Constructo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Order", "Order", "{65ABB28C-423F-4E5D-80E0-84127B943BAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Order.Core", "HeartmadeCandles.Order.Core\HeartmadeCandles.Order.Core.csproj", "{CAEC8358-0134-49F8-94A4-9CD5870F3227}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Order.Core", "HeartmadeCandles.Order.Core\HeartmadeCandles.Order.Core.csproj", "{CAEC8358-0134-49F8-94A4-9CD5870F3227}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Order.DAL", "HeartmadeCandles.Order.DAL\HeartmadeCandles.Order.DAL.csproj", "{DE33FEAD-D6AD-4443-9645-0678E04FE61E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Order.DAL", "HeartmadeCandles.Order.DAL\HeartmadeCandles.Order.DAL.csproj", "{DE33FEAD-D6AD-4443-9645-0678E04FE61E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Order.BL", "HeartmadeCandles.Order.BL\HeartmadeCandles.Order.BL.csproj", "{429F5C99-493F-4CF6-8B0B-94D69F5293FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Order.BL", "HeartmadeCandles.Order.BL\HeartmadeCandles.Order.BL.csproj", "{429F5C99-493F-4CF6-8B0B-94D69F5293FE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Auth", "Auth", "{4B25FE1B-A2E3-4E58-A6F0-5BD967DBDA06}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Auth.Core", "HeartmadeCandles.Auth.Core\HeartmadeCandles.Auth.Core.csproj", "{D5879607-0957-4B93-A367-039EEF70E779}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Auth.BL", "HeartmadeCandles.Auth.BL\HeartmadeCandles.Auth.BL.csproj", "{8A5CA9BD-C0BB-46A2-B18C-6DB2E686C600}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Order.Bot", "HeartmadeCandles.Order.Bot\HeartmadeCandles.Order.Bot.csproj", "{339B79E1-12AA-4447-B3DE-85C36B79AB74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +101,18 @@ Global
 		{429F5C99-493F-4CF6-8B0B-94D69F5293FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{429F5C99-493F-4CF6-8B0B-94D69F5293FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{429F5C99-493F-4CF6-8B0B-94D69F5293FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5879607-0957-4B93-A367-039EEF70E779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5879607-0957-4B93-A367-039EEF70E779}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5879607-0957-4B93-A367-039EEF70E779}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5879607-0957-4B93-A367-039EEF70E779}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A5CA9BD-C0BB-46A2-B18C-6DB2E686C600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A5CA9BD-C0BB-46A2-B18C-6DB2E686C600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A5CA9BD-C0BB-46A2-B18C-6DB2E686C600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A5CA9BD-C0BB-46A2-B18C-6DB2E686C600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{339B79E1-12AA-4447-B3DE-85C36B79AB74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{339B79E1-12AA-4447-B3DE-85C36B79AB74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{339B79E1-12AA-4447-B3DE-85C36B79AB74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{339B79E1-12AA-4447-B3DE-85C36B79AB74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +127,9 @@ Global
 		{CAEC8358-0134-49F8-94A4-9CD5870F3227} = {65ABB28C-423F-4E5D-80E0-84127B943BAD}
 		{DE33FEAD-D6AD-4443-9645-0678E04FE61E} = {65ABB28C-423F-4E5D-80E0-84127B943BAD}
 		{429F5C99-493F-4CF6-8B0B-94D69F5293FE} = {65ABB28C-423F-4E5D-80E0-84127B943BAD}
+		{D5879607-0957-4B93-A367-039EEF70E779} = {4B25FE1B-A2E3-4E58-A6F0-5BD967DBDA06}
+		{8A5CA9BD-C0BB-46A2-B18C-6DB2E686C600} = {4B25FE1B-A2E3-4E58-A6F0-5BD967DBDA06}
+		{339B79E1-12AA-4447-B3DE-85C36B79AB74} = {65ABB28C-423F-4E5D-80E0-84127B943BAD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D6110671-4E49-4702-832A-BE22583842C7}

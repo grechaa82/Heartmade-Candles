@@ -1,18 +1,25 @@
 using HeartmadeCandles.Admin.BL.Services;
 using HeartmadeCandles.Admin.Core.Interfaces;
-using HeartmadeCandles.Admin.DAL.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using HeartmadeCandles.Admin.DAL;
-using Serilog;
+using HeartmadeCandles.Admin.DAL.Repositories;
+using HeartmadeCandles.API;
+using HeartmadeCandles.Auth.BL;
+using HeartmadeCandles.Auth.Core;
+using HeartmadeCandles.Constructor.BL.Services;
+using HeartmadeCandles.Constructor.Core.Interfaces;
 using HeartmadeCandles.Constructor.DAL;
 using HeartmadeCandles.Constructor.DAL.Repositories;
-using HeartmadeCandles.Constructor.Core.Interfaces;
-using HeartmadeCandles.Constructor.BL.Services;
-using HeartmadeCandles.Order.Core.Interfaces;
-using HeartmadeCandles.Order.DAL.Repositories;
 using HeartmadeCandles.Order.BL.Services;
+using HeartmadeCandles.Order.Bot;
+using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.DAL;
+using HeartmadeCandles.Order.DAL.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,15 +38,35 @@ try
 
     builder.Services.AddCors(options =>
     {
-        options.AddDefaultPolicy(
-            policy =>
-            {
-                policy.WithOrigins("http://localhost:3000")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
-            });
+        options.AddPolicy("AllowCors", policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+                .WithHeaders().AllowAnyHeader()
+                .WithMethods().AllowAnyMethod()
+                .AllowCredentials()
+                .SetIsOriginAllowedToAllowWildcardSubdomains();
+        });
     });
+
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtOptions:Issuer"],
+            ValidAudience = builder.Configuration["JwtOptions:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtOptions:SecretKey"]))
+        };
+    });
+
+    builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 
     //Admin module
     builder.Services.AddDbContext<AdminDbContext>(options =>
@@ -94,6 +121,11 @@ try
     builder.Services
         .AddScoped<IOrderService, OrderService>()
         .AddScoped<IOrderRepository, OrderRepository>();
+    builder.Services.AddScoped<IOrderNotificationHandler, OrderNotificationHandler>();
+    //builder.Services.AddScoped<>;
+
+    //Order module
+    builder.Services.AddScoped<IAuthService, AuthService>();
 
     builder.Services.AddControllers().AddNewtonsoftJson();
     builder.Services.AddEndpointsApiExplorer();
@@ -111,12 +143,7 @@ try
 
     app.UseHttpsRedirection();
 
-    app.UseCors(x =>
-    {
-        x.WithHeaders().AllowAnyHeader();
-        x.WithOrigins().AllowAnyOrigin();
-        x.AllowAnyMethod();
-    });
+    app.UseCors("AllowCors"); ;
 
     app.UseStaticFiles(new StaticFileOptions
     {
@@ -124,6 +151,10 @@ try
            Path.Combine(builder.Environment.ContentRootPath, "StaticFiles")),
         RequestPath = "/StaticFiles"
     });
+
+    app.UseAuthentication();
+
+    app.UseAuthorization();
 
     app.MapControllers();
 

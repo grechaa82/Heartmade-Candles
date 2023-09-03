@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import Input from '../../components/order/Input';
+import Input from '../../components/shared/Input';
 
 import Style from './FormPersonalData.module.css';
 

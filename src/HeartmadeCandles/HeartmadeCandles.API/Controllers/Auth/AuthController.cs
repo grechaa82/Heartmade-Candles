@@ -1,10 +1,8 @@
 ﻿using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.Auth.Core;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -35,8 +33,6 @@ namespace HeartmadeCandles.API.Controllers.Auth
 
                 SetTokenInCookie(token);
 
-                Console.WriteLine(token.ToString());
-
                 return Ok(new { token });
             }
 
@@ -56,24 +52,6 @@ namespace HeartmadeCandles.API.Controllers.Auth
 
         private string GenerateJwtToken()
         {
-            /* var secretKey = Encoding.ASCII.GetBytes(_jwtOptions.SecretKey);
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Role, "Admin")
-            };
-
-            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.UtcNow.AddDays(1),
-                signingCredentials: signingCredentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token)*/
-            ;
-
             var tokenHandler = new JwtSecurityTokenHandler();
             var secretKey = Encoding.ASCII.GetBytes(_jwtOptions.SecretKey);
 

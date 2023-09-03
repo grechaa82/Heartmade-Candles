@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import SelectorWithInput from '../../components/order/SelectorWithInput';
-import Input from '../../components/order/Input';
+import Input from '../../components/shared/Input';
 import IconTrashLarge from '../../UI/IconTrashLarge';
 
 import Style from './FormFeedback.module.css';
