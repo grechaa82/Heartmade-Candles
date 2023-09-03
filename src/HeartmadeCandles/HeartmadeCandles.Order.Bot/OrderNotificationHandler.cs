@@ -52,7 +52,7 @@ namespace HeartmadeCandles.Order.Bot
 
             for (var i = 0; i < candles.Length; i++)
             {
-                message.AppendLine($"Свеча: **{candles[i].CandleDetail.Candle.Title}**, {candles[i].Quantity} шт, {candles[i].Price} р");
+                message.AppendLine($"Свеча: {candles[i].CandleDetail.Candle.Title}, {candles[i].Quantity} шт, {candles[i].Price} р");
                 message.AppendLine($"Количество слоев: {candles[i].CandleDetail.NumberOfLayer.Number}");
                 message.AppendLine($"Слои: ");
                 for (var j = 0; j < candles[i].CandleDetail.LayerColors.Length; j++)

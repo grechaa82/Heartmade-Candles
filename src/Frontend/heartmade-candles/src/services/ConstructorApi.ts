@@ -1,12 +1,13 @@
 import { CandleDetails, CandleDetailRequest, LayerColor } from '../typesV2/BaseProduct';
 import { CandleTypeWithCandles } from '../typesV2/CandleTypeWithCandles';
 
-const apiUrl = 'http://localhost:5000/api/constructor/candles';
+const apiUrl = 'http://localhost:80/api/constructor/candles';
 
 export const ConstructorApi = {
   async getCandles(): Promise<CandleTypeWithCandles[]> {
     const response = await fetch(`${apiUrl}`, {
       method: 'GET',
+      mode: 'cors',
       headers: { 'Content-Type': 'application/json' },
     });
     return (await response.json()) as CandleTypeWithCandles[];

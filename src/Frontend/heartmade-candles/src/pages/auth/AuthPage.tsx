@@ -10,8 +10,6 @@ const AuthPage: FC = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
 
-  console.log(login, password);
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 

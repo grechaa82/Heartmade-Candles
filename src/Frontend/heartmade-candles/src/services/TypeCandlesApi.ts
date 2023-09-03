@@ -1,13 +1,14 @@
 import { TypeCandle } from '../types/TypeCandle';
 import { TypeCandleRequest } from '../types/Requests/TypeCandleRequest';
 
-const apiUrl = 'http://localhost:5000/api/admin/typeCandles';
+const apiUrl = 'http://localhost:80/api/admin/typeCandles';
 
 export const TypeCandlesApi = {
   async getAll() {
     const response = await fetch(`${apiUrl}`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -17,6 +18,7 @@ export const TypeCandlesApi = {
     await fetch(`${apiUrl}`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(typeCandle),
@@ -26,6 +28,7 @@ export const TypeCandlesApi = {
     await fetch(`${apiUrl}/${id}`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });

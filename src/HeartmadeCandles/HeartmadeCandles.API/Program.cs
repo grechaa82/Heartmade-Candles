@@ -122,7 +122,6 @@ try
         .AddScoped<IOrderService, OrderService>()
         .AddScoped<IOrderRepository, OrderRepository>();
     builder.Services.AddScoped<IOrderNotificationHandler, OrderNotificationHandler>();
-    //builder.Services.AddScoped<>;
 
     //Order module
     builder.Services.AddScoped<IAuthService, AuthService>();

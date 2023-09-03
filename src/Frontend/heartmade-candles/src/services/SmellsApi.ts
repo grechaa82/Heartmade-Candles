@@ -1,13 +1,14 @@
 import { Smell } from '../types/Smell';
 import { SmellRequest } from '../types/Requests/SmellRequest';
 
-const apiUrl = 'http://localhost:5000/api/admin/smells';
+const apiUrl = 'http://localhost:80/api/admin/smells';
 
 export const SmellsApi = {
   async getAll(): Promise<Smell[]> {
     const response = await fetch(`${apiUrl}`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -17,6 +18,7 @@ export const SmellsApi = {
     const response = await fetch(`${apiUrl}/${id}`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -26,6 +28,7 @@ export const SmellsApi = {
     await fetch(`${apiUrl}`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(smell),
@@ -35,6 +38,7 @@ export const SmellsApi = {
     await fetch(`${apiUrl}/${id}`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(smell),
@@ -44,6 +48,7 @@ export const SmellsApi = {
     await fetch(`${apiUrl}/${id}`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });

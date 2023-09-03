@@ -2,13 +2,14 @@ import { Candle } from '../types/Candle';
 import { CandleDetail } from '../types/CandleDetail';
 import { CandleRequest } from '../types/Requests/CandleRequest';
 
-const apiUrl = 'http://localhost:5000/api/admin/candles';
+const apiUrl = 'http://localhost:80/api/admin/candles';
 
 export const CandlesApi = {
   async getAll(): Promise<Candle[]> {
     const response = await fetch(`${apiUrl}`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -18,6 +19,7 @@ export const CandlesApi = {
     const response = await fetch(`${apiUrl}/${id}`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -27,6 +29,7 @@ export const CandlesApi = {
     await fetch(`${apiUrl}`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(candle),
@@ -36,6 +39,7 @@ export const CandlesApi = {
     await fetch(`${apiUrl}/${id}`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(candle),
@@ -45,6 +49,7 @@ export const CandlesApi = {
     await fetch(`${apiUrl}/${id}`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -53,6 +58,7 @@ export const CandlesApi = {
     await fetch(`${apiUrl}/${id}/decors`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(decorIds),
@@ -62,6 +68,7 @@ export const CandlesApi = {
     await fetch(`${apiUrl}/${id}/layerColors`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(layerColorIds),
@@ -71,6 +78,7 @@ export const CandlesApi = {
     await fetch(`${apiUrl}/${id}/numberOfLayers`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(numberOfLayerIds),
@@ -80,6 +88,7 @@ export const CandlesApi = {
     await fetch(`${apiUrl}/${id}/smells`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(smellIds),
@@ -89,6 +98,7 @@ export const CandlesApi = {
     await fetch(`${apiUrl}/${id}/wicks`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(wickIds),

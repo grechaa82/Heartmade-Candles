@@ -1,13 +1,14 @@
 import { Decor } from '../types/Decor';
 import { DecorRequest } from '../types/Requests/DecorRequest';
 
-const apiUrl = 'http://localhost:5000/api/admin/decors';
+const apiUrl = 'http://localhost:80/api/admin/decors';
 
 export const DecorsApi = {
   async getAll(): Promise<Decor[]> {
     const response = await fetch(`${apiUrl}`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -17,6 +18,7 @@ export const DecorsApi = {
     const response = await fetch(`${apiUrl}/${id}`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -26,6 +28,7 @@ export const DecorsApi = {
     await fetch(`${apiUrl}`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(decor),
@@ -35,6 +38,7 @@ export const DecorsApi = {
     await fetch(`${apiUrl}/${id}`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(decor),
@@ -44,6 +48,7 @@ export const DecorsApi = {
     await fetch(`${apiUrl}/${id}`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });

@@ -1,13 +1,14 @@
 import { Wick } from '../types/Wick';
 import { WickRequest } from '../types/Requests/WickRequest';
 
-const apiUrl = 'http://localhost:5000/api/admin/wicks';
+const apiUrl = 'http://localhost:80/api/admin/wicks';
 
 export const WicksApi = {
   async getAll(): Promise<Wick[]> {
     const response = await fetch(`${apiUrl}`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -17,6 +18,7 @@ export const WicksApi = {
     const response = await fetch(`${apiUrl}/${id}`, {
       method: 'GET',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
@@ -26,6 +28,7 @@ export const WicksApi = {
     await fetch(`${apiUrl}`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(wick),
@@ -35,6 +38,7 @@ export const WicksApi = {
     await fetch(`${apiUrl}/${id}`, {
       method: 'PUT',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(wick),
@@ -44,6 +48,7 @@ export const WicksApi = {
     await fetch(`${apiUrl}/${id}`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });

@@ -50,7 +50,6 @@ const Input: FC<InputProps> = ({
             <IconAlertCircleLarge color="#eb5757" />
           </span>
         )}
-        {/* {!isValid && <span>Invalid input</span>} */}
       </div>
     </div>
   );

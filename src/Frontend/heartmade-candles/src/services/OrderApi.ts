@@ -3,7 +3,7 @@ import {
   OrderCreaterRequest as OrderCreatorRequest,
 } from '../typesV2/BaseProduct';
 
-const apiUrl = 'http://localhost:5000/api/order';
+const apiUrl = 'http://localhost:80/api/order';
 
 export const OrderApi = {
   async index(configuredCandlesString: string): Promise<CandleDetailWithQuantityAndPrice[]> {

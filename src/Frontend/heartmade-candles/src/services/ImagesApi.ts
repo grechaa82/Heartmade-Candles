@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:5000/api/admin/images';
+const apiUrl = 'http://localhost:80/api/admin/images';
 
 export const ImagesApi = {
   async uploadImages(files: File[]): Promise<string[]> {
@@ -9,6 +9,7 @@ export const ImagesApi = {
     const response = await fetch(`${apiUrl}`, {
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: formData,
@@ -20,6 +21,7 @@ export const ImagesApi = {
     await fetch(`${apiUrl}`, {
       method: 'DELETE',
       headers: {
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(fileNames),
