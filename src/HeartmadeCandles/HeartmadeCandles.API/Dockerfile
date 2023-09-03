@@ -14,7 +14,6 @@ COPY ["HeartmadeCandles.Admin.DAL/HeartmadeCandles.Admin.DAL.csproj", "Heartmade
 COPY ["HeartmadeCandles.Bot/HeartmadeCandles.Bot.csproj", "HeartmadeCandles.Bot/"]
 COPY ["HeartmadeCandles.BusinessLogic/HeartmadeCandles.BusinessLogic.csproj", "HeartmadeCandles.BusinessLogic/"]
 COPY ["HeartmadeCandles.Core/HeartmadeCandles.Core.csproj", "HeartmadeCandles.Core/"]
-COPY ["HeartmadeCandles.DataAccess.MongoDB/HeartmadeCandles.DataAccess.MongoDB.csproj", "HeartmadeCandles.DataAccess.MongoDB/"]
 COPY ["HeartmadeCandles.Migrations/HeartmadeCandles.Migrations.csproj", "HeartmadeCandles.Migrations/"]
 RUN dotnet restore "HeartmadeCandles.API/HeartmadeCandles.API.csproj"
 COPY . .
