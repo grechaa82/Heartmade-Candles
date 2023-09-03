@@ -14,6 +14,7 @@ COPY ["HeartmadeCandles.Admin.DAL/HeartmadeCandles.Admin.DAL.csproj", "Heartmade
 COPY ["HeartmadeCandles.Migrations/HeartmadeCandles.Migrations.csproj", "HeartmadeCandles.Migrations/"]
 COPY ["Directory.Build.props", "Directory.Build.props"]
 COPY ["Directory.Packages.props", "Directory.Packages.props"]
+COPY ["nginx.conf", "nginx.conf"]
 RUN dotnet restore "HeartmadeCandles.API/HeartmadeCandles.API.csproj"
 COPY . .
 WORKDIR "/src/HeartmadeCandles.API"
