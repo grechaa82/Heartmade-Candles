@@ -1,0 +1,119 @@
+version: '3'
+
+services:
+  backend:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - '5000:80'
+    depends_on:
+      - db
+    image: ${DOCKER_REGISTRY-}backend
+    build:
+      context: backend/HeartmadeCandles/
+      dockerfile: Dockerfile
+    volumes:
+      - .backend/HeartmadeCandles/HeartmadeCandles.API/StaticFiles:/app/StaticFiles
+
+  frontend:
+    image: ${DOCKER_REGISTRY-}client
+    build:
+      context: frontend/heartmage-candles
+      dockerfile: Dockerfile
+    ports:
+      - '5173:5173'
+
+  db:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=db
+    image: postgres:15.2
+    ports:
+      - '5432:5432'
+    restart: always
+
+  pg_admin:
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=root@root.root
+      - PGADMIN_DEFAULT_PASSWORD=root
+      - PGADMIN_CONFIG_PROXY_X_FOR_COUNT=1
+      - PGADMIN_CONFIG_PROXY_X_PROTO_COUNT=1
+      - PGADMIN_CONFIG_PROXY_X_HOST_COUNT=1
+      - PGADMIN_CONFIG_PROXY_X_PORT_COUNT=1
+      - PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT=1
+    image: dpage/pgadmin4:6.21
+    ports:
+      - '5433:80'
+
+  proxy:
+    image: nginx:latest
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf
+    ports:
+      - '80:80'
+    depends_on:
+      - backend
+      - frontend
+      - db
+      - pg_admin
+# version: '3.4'
+
+# services:
+#   api:
+#     environment:
+#       - ASPNETCORE_ENVIRONMENT=Development
+#     ports:
+#       - '5000:80'
+#     depends_on:
+#       - db
+#     image: ${DOCKER_REGISTRY-}api
+#     build:
+#       context: backend/HeartmadeCandles/
+#       dockerfile: Dockerfile
+
+#   client:
+#     image: ${DOCKER_REGISTRY-}client
+#     build:
+#       context: frontend/heartmage-candles
+#       dockerfile: Dockerfile
+#     ports:
+#       - '5173:5173'
+
+#   db:
+#     environment:
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_PASSWORD=root
+#       - POSTGRES_DB=db
+#     image: postgres:15.2
+#     ports:
+#       - '5432:5432'
+#     restart: always
+
+# proxy:
+#   image: nginx:latest
+#   volumes:
+#     - ./nginx/default.conf:/etc/nginx/nginx.conf
+#   ports:
+#     - '80:80'
+#   depends_on:
+#     - api
+#     - client
+#     - db
+######
+
+# services:
+#   api:
+#     image: ${DOCKER_REGISTRY-}api
+#     build:
+#       context: .
+#       dockerfile: HeartmadeCandles.API/Dockerfile
+
+#   client:
+#     image: ${DOCKER_REGISTRY-}client
+#     build:
+#       context: ../Frontend/heartmade-candles
+#       dockerfile: Dockerfile
+
+#   proxy:
+#     image: nginx:mainline
