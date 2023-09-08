@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.Constructor.Core.Interfaces;
 using HeartmadeCandles.Constructor.Core.Models;
-using System.Diagnostics;
 
 namespace HeartmadeCandles.Constructor.BL.Services
 {
@@ -14,7 +13,7 @@ namespace HeartmadeCandles.Constructor.BL.Services
             _constructorRepository = constructorRepository;
         }
 
-        public async Task<CandleTypeWithCandles[]> GetCandles()
+        public async Task<Result<CandleTypeWithCandles[]>> GetCandles()
         {
             return await _constructorRepository.GetCandles();
         }

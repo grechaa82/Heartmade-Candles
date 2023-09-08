@@ -1,8 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.API.Contracts.Requests;
+using HeartmadeCandles.API.Controllers.Constructor;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace HeartmadeCandles.API.Controllers.Order
 {
@@ -11,25 +13,48 @@ namespace HeartmadeCandles.API.Controllers.Order
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(IOrderService orderService)
+        public OrderController(IOrderService orderService, ILogger<OrderController> logger)
         {
             _orderService = orderService;
+            _logger = logger;
         }
 
         [HttpGet("{configuredCandlesString}")]
         public async Task<IActionResult> Index(string configuredCandlesString)
         {
+            _logger.LogDebug("Request {@Controller} {@Endpoint}, configuredCandlesString: {@ConfiguredCandlesString}, {@DataTime}",
+                nameof(OrderController),
+                nameof(OrderController.Index),
+                configuredCandlesString,
+                DateTime.UtcNow);
+
             var arrayCandleDetailIdsWithQuantity = GetSplitetConfiguredCandlesString(configuredCandlesString)
                 .Select(item => ParseUrlStringToOrderItemIds(item))
                 .ToArray();
+
+            _logger.LogTrace("ArrayCandleDetailIdsWithQuantity: {0}", arrayCandleDetailIdsWithQuantity);
 
             var result = await _orderService.Get(arrayCandleDetailIdsWithQuantity);
 
             if (result.IsFailure)
             {
+                _logger.LogError("Error request {0} {1}, {2}, {3}",
+                    nameof(OrderController),
+                    nameof(OrderController.Index),
+                    result.Error,
+                    DateTime.UtcNow);
+
                 return BadRequest(result.Error);
             }
+
+            _logger.LogDebug("When Request {0} {1}, an order is received: {2}, configuredCandlesString: {3}, {4}",
+                nameof(OrderController),
+                nameof(OrderController.Index),
+                result.Value,
+                configuredCandlesString,
+                DateTime.UtcNow);
 
             return Ok(result.Value);
         }
@@ -37,9 +62,17 @@ namespace HeartmadeCandles.API.Controllers.Order
         [HttpPost]
         public async Task<IActionResult> CreateOrder(OrderRequest orderRequest)
         {
+            _logger.LogDebug("Request {0} {1}, orderRequest: {2}, {3}",
+                nameof(OrderController),
+                nameof(OrderController.CreateOrder),
+                orderRequest,
+                DateTime.UtcNow);
+
             var arrayCandleDetailIdsWithQuantity = GetSplitetConfiguredCandlesString(orderRequest.ConfiguredCandlesString)
                 .Select(item => ParseUrlStringToOrderItemIds(item))
                 .ToArray();
+
+            _logger.LogTrace("ArrayCandleDetailIdsWithQuantity: {0}", arrayCandleDetailIdsWithQuantity);
 
             var result = await _orderService.CreateOrder(
                 orderRequest.ConfiguredCandlesString, 
@@ -55,8 +88,20 @@ namespace HeartmadeCandles.API.Controllers.Order
 
             if (result.IsFailure)
             {
+                _logger.LogError("Error request {0} {1}, {2}, {3}",
+                    nameof(OrderController),
+                    nameof(OrderController.CreateOrder),
+                    result.Error,
+                    DateTime.UtcNow);
+
                 return BadRequest(result.Error);
             }
+
+            _logger.LogDebug("When Request {0} {1}, order has been created, order: {2}, {3}",
+                nameof(OrderController),
+                nameof(OrderController.CreateOrder),
+                result,
+                DateTime.UtcNow);
 
             return Ok(result);
         }

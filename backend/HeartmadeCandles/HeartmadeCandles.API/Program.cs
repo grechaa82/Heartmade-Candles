@@ -138,6 +138,8 @@ try
 
     var app = builder.Build();
 
+    app.UseHttpLogging();
+
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
@@ -165,10 +167,11 @@ try
 }
 catch (Exception ex)
 {
-    logger.Fatal(ex.ToString());
+    logger.Fatal(ex, "Unhandled exception");
     throw;
 }
 finally
 {
+    logger.Information("Shut down complete");
     logger.Dispose();
 }

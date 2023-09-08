@@ -15,7 +15,7 @@ namespace HeartmadeCandles.Constructor.DAL.Repositories
             _context = context;
         }
 
-        public async Task<CandleTypeWithCandles[]> GetCandles()
+        public async Task<Result<CandleTypeWithCandles[]>> GetCandles()
         {
             var items = await _context.Candle
                 .AsNoTracking()
@@ -29,7 +29,7 @@ namespace HeartmadeCandles.Constructor.DAL.Repositories
                 Candles = c.Select(candle => MapToCandle(candle)).ToArray()
             }).ToArray();
 
-            return result;
+            return Result.Success(result);
         }
 
         public async Task<Maybe<CandleDetail>> GetCandleById(int candleId)
