@@ -1,34 +1,36 @@
 version: '3'
 
 services:
-  api:
+  backend:
     container_name: api
+    image: ${DOCKER_REGISTRY-}backend
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - '5000:80'
     depends_on:
-      - pg_db
+      - db
     build:
       context: backend/HeartmadeCandles/
       dockerfile: Dockerfile
     volumes:
       - .backend/HeartmadeCandles/HeartmadeCandles.API/StaticFiles:/app/StaticFiles
 
-  client:
+  frontend:
     container_name: client
+    image: ${DOCKER_REGISTRY-}frontend
     build:
       context: frontend/heartmage-candles
       dockerfile: Dockerfile
     ports:
       - '5173:5173'
 
-  pg_db:
+  db:
     container_name: pg_db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=pg_db
+      - POSTGRES_DB=db
     image: postgres:15.2
     ports:
       - '5432:5432'
@@ -65,8 +67,8 @@ services:
     ports:
       - '80:80'
     depends_on:
-      - api
-      - client
-      - pg_db
+      - backend
+      - frontend
+      - db
       - pg_admin
       - seq
