@@ -5,6 +5,6 @@ namespace HeartmadeCandles.Order.Core.Interfaces
 {
     public interface IOrderRepository
     {
-        Task<Result<CandleDetailWithQuantityAndPrice[]>> Get(CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity);
+        Task<Result<OrderItem[]>> Get(OrderItemFilter[] orderItemFilters);
     }
 }

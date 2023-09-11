@@ -15,34 +15,34 @@ namespace HeartmadeCandles.Order.DAL.Repositories
             _context = context;
         }
 
-        public async Task<Result<CandleDetailWithQuantityAndPrice[]>> Get(CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity)
+        public async Task<Result<OrderItem[]>> Get(OrderItemFilter[] orderItemFilters)
         {
             var result = Result.Success();
 
-            var candleDetailWithQuantityAndPrice = new List<CandleDetailWithQuantityAndPrice>();
+            var orderItems = new List<OrderItem>();
 
-            foreach (var item in arrayCandleDetailIdsWithQuantity)
+            foreach (var orderItemFilter in orderItemFilters)
             {
                 var candleDetailEntity = await _context.Candle
                     .AsNoTracking()
                     .Include(t => t.TypeCandle)
-                    .Include(cd => cd.CandleDecor.Where(d => d.Decor.Id == item.DecorId && d.Decor.IsActive))
+                    .Include(cd => cd.CandleDecor.Where(d => d.Decor.Id == orderItemFilter.DecorId && d.Decor.IsActive))
                         .ThenInclude(d => d.Decor)
-                    .Include(cl => cl.CandleLayerColor.Where(l => item.LayerColorIds.Contains(l.LayerColor.Id) && l.LayerColor.IsActive))
+                    .Include(cl => cl.CandleLayerColor.Where(l => orderItemFilter.LayerColorIds.Contains(l.LayerColor.Id) && l.LayerColor.IsActive))
                         .ThenInclude(l => l.LayerColor)
-                    .Include(cn => cn.CandleNumberOfLayer.Where(n => n.NumberOfLayer.Id == item.NumberOfLayerId))
+                    .Include(cn => cn.CandleNumberOfLayer.Where(n => n.NumberOfLayer.Id == orderItemFilter.NumberOfLayerId))
                         .ThenInclude(n => n.NumberOfLayer)
-                    .Include(cs => cs.CandleSmell.Where(s => s.Smell.Id == item.SmellId && s.Smell.IsActive))
+                    .Include(cs => cs.CandleSmell.Where(s => s.Smell.Id == orderItemFilter.SmellId && s.Smell.IsActive))
                         .ThenInclude(s => s.Smell)
-                    .Include(cw => cw.CandleWick.Where(w => w.Wick.Id == item.WickId && w.Wick.IsActive))
+                    .Include(cw => cw.CandleWick.Where(w => w.Wick.Id == orderItemFilter.WickId && w.Wick.IsActive))
                         .ThenInclude(w => w.Wick)
-                    .FirstOrDefaultAsync(c => c.Id == item.CandleId && c.IsActive);
+                    .FirstOrDefaultAsync(c => c.Id == orderItemFilter.CandleId && c.IsActive);
 
                 if (candleDetailEntity == null)
                 {
                     result = Result.Combine(
                        result,
-                       Result.Failure<CandleDetailWithQuantityAndPrice[]>($"'{item.CandleId}' does not exist"));
+                       Result.Failure<OrderItem[]>($"'{orderItemFilter.CandleId}' does not exist"));
                     continue;
                 }
 
@@ -73,15 +73,15 @@ namespace HeartmadeCandles.Order.DAL.Repositories
                     wicks
                 );
 
-                candleDetailWithQuantityAndPrice.Add(new CandleDetailWithQuantityAndPrice(candleDetail, item.Quantity));
+                orderItems.Add(new OrderItem(candleDetail, orderItemFilter.Quantity));
             }
 
             if (result.IsFailure)
             {
-                return Result.Failure<CandleDetailWithQuantityAndPrice[]>(result.Error);
+                return Result.Failure<OrderItem[]>(result.Error);
             }
 
-            return Result.Success(candleDetailWithQuantityAndPrice.ToArray());
+            return Result.Success(orderItems.ToArray());
         }
 
         private Candle MapToCandle(CandleEntity candleEntity)

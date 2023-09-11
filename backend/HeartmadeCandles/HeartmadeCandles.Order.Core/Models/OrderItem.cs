@@ -1,8 +1,8 @@
 ﻿namespace HeartmadeCandles.Order.Core.Models
 {
-    public class CandleDetailWithQuantityAndPrice
+    public class OrderItem
     {
-        public CandleDetailWithQuantityAndPrice(CandleDetail candleDetail, int quantity)
+        public OrderItem(CandleDetail candleDetail, int quantity)
         {
             CandleDetail = candleDetail;
             Quantity = quantity;

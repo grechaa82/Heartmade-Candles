@@ -1,15 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.API.Contracts.Requests;
-using HeartmadeCandles.API.Controllers.Constructor;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace HeartmadeCandles.API.Controllers.Order
 {
     [ApiController]
-    [Route("api/order")]
+    [Route("api/orders")]
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;
@@ -22,27 +20,27 @@ namespace HeartmadeCandles.API.Controllers.Order
         }
 
         [HttpGet("{configuredCandlesString}")]
-        public async Task<IActionResult> Index(string configuredCandlesString)
+        public async Task<IActionResult> Get(string configuredCandlesString)
         {
             _logger.LogDebug("Request {@Controller} {@Endpoint}, configuredCandlesString: {@ConfiguredCandlesString}, {@DataTime}",
                 nameof(OrderController),
-                nameof(OrderController.Index),
+                nameof(OrderController.Get),
                 configuredCandlesString,
                 DateTime.UtcNow);
 
-            var arrayCandleDetailIdsWithQuantity = GetSplitetConfiguredCandlesString(configuredCandlesString)
-                .Select(item => ParseUrlStringToOrderItemIds(item))
+            var orderItemFilters = GetSplitetConfiguredCandlesString(configuredCandlesString)
+                .Select(item => ParseUrlStringToOrderItemFilter(item))
                 .ToArray();
 
-            _logger.LogTrace("ArrayCandleDetailIdsWithQuantity: {0}", arrayCandleDetailIdsWithQuantity);
+            _logger.LogTrace("orderItemFilters: {0}", orderItemFilters);
 
-            var result = await _orderService.Get(arrayCandleDetailIdsWithQuantity);
+            var result = await _orderService.Get(orderItemFilters);
 
             if (result.IsFailure)
             {
                 _logger.LogError("Error request {0} {1}, {2}, {3}",
                     nameof(OrderController),
-                    nameof(OrderController.Index),
+                    nameof(OrderController.Get),
                     result.Error,
                     DateTime.UtcNow);
 
@@ -51,7 +49,7 @@ namespace HeartmadeCandles.API.Controllers.Order
 
             _logger.LogDebug("When Request {0} {1}, an order is received: {2}, configuredCandlesString: {3}, {4}",
                 nameof(OrderController),
-                nameof(OrderController.Index),
+                nameof(OrderController.Get),
                 result.Value,
                 configuredCandlesString,
                 DateTime.UtcNow);
@@ -60,7 +58,7 @@ namespace HeartmadeCandles.API.Controllers.Order
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(OrderRequest orderRequest)
+        public async Task<IActionResult> CreateOrder(CreateOrderRequest orderRequest)
         {
             _logger.LogDebug("Request {0} {1}, orderRequest: {2}, {3}",
                 nameof(OrderController),
@@ -68,15 +66,15 @@ namespace HeartmadeCandles.API.Controllers.Order
                 orderRequest,
                 DateTime.UtcNow);
 
-            var arrayCandleDetailIdsWithQuantity = GetSplitetConfiguredCandlesString(orderRequest.ConfiguredCandlesString)
-                .Select(item => ParseUrlStringToOrderItemIds(item))
+            var orderItemFilters = GetSplitetConfiguredCandlesString(orderRequest.ConfiguredCandlesString)
+                .Select(item => ParseUrlStringToOrderItemFilter(item))
                 .ToArray();
 
-            _logger.LogTrace("ArrayCandleDetailIdsWithQuantity: {0}", arrayCandleDetailIdsWithQuantity);
+            _logger.LogTrace("orderItemFilters: {0}", orderItemFilters);
 
             var result = await _orderService.CreateOrder(
                 orderRequest.ConfiguredCandlesString, 
-                arrayCandleDetailIdsWithQuantity,
+                orderItemFilters,
                 new User(
                     orderRequest.User.FirstName, 
                     orderRequest.User.LastName, 
@@ -108,7 +106,7 @@ namespace HeartmadeCandles.API.Controllers.Order
 
         private string[] GetSplitetConfiguredCandlesString(string configuredCandlesString) => configuredCandlesString.Split(".");
 
-        private CandleDetailIdsWithQuantity ParseUrlStringToOrderItemIds(string configuredCandlesString)
+        private OrderItemFilter ParseUrlStringToOrderItemFilter(string configuredCandlesString)
         {
             var candleParts = configuredCandlesString.Split('~');
             var candleId = GetValue(candleParts, "c");
@@ -144,7 +142,7 @@ namespace HeartmadeCandles.API.Controllers.Order
                 return null;
             }
 
-            return new CandleDetailIdsWithQuantity(
+            return new OrderItemFilter(
                 candleId,
                 decorId,
                 numberOfLayerId,

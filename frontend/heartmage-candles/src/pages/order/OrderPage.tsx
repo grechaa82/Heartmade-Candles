@@ -1,13 +1,13 @@
 import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { CandleDetailWithQuantityAndPrice, OrderCreaterRequest } from '../../typesV2/BaseProduct';
+import { CandleDetailWithQuantityAndPrice, CreateOrderRequest } from '../../typesV2/BaseProduct';
 import ListProductsCart from '../../modules/order/ListProductsCart';
 import FormPersonalData, { ItemFormPersonalData } from '../../modules/order/FormPersonalData';
 import FormFeedback, { ItemFormFeedback } from '../../modules/order/FormFeedback';
 import TotalPricePanel from '../../modules/order/TotalPricePanel';
 
-import { OrderApi } from '../../services/OrderApi';
+import { OrdersApi } from '../../services/OrdersApi';
 
 import Style from './OrderPage.module.css';
 
@@ -107,8 +107,6 @@ const OrderPage: FC = () => {
     },
   ];
 
-  console.log(firstName, lastName, email, phone, selectedTypeFeedback, username);
-
   useEffect(() => {
     if (!configuredCandlesString) {
       const searchParams = new URLSearchParams(location.search);
@@ -124,7 +122,7 @@ const OrderPage: FC = () => {
 
     async function fetchData(configuredCandlesString: string) {
       try {
-        const arrayCandleDetailWithQuantityAndPrice = await OrderApi.index(configuredCandlesString);
+        const arrayCandleDetailWithQuantityAndPrice = await OrdersApi.get(configuredCandlesString);
         setArrayCandleDetailWithQuantityAndPrice(arrayCandleDetailWithQuantityAndPrice);
       } catch (error) {
         console.error('Произошла ошибка при загрузке данных:', error);
@@ -149,30 +147,25 @@ const OrderPage: FC = () => {
 
     if (!validateFirstNameAndLastName(firstName)) {
       canCreateOrder = false;
-      console.log('1');
     }
     if (!validateFirstNameAndLastName(lastName)) {
       canCreateOrder = false;
-      console.log('2');
     }
     if (!(email.length < 5) && !validateEmail(email)) {
       canCreateOrder = false;
-      console.log('3');
     }
     if (!validatePhone(phone)) {
       canCreateOrder = false;
-      console.log('4');
     }
     if (
       !(selectedTypeFeedback.length < 2) &&
       !(validatePhone(username) || validateTelegramAndInstagram(username))
     ) {
       canCreateOrder = false;
-      console.log('5');
     }
 
     if (canCreateOrder && configuredCandlesString) {
-      var orderCreaterRequest: OrderCreaterRequest = {
+      var createOrderRequest: CreateOrderRequest = {
         configuredCandlesString: configuredCandlesString,
         user: {
           firstName: firstName,
@@ -185,9 +178,7 @@ const OrderPage: FC = () => {
           userName: username,
         },
       };
-      const response = await OrderApi.createOrder(orderCreaterRequest);
-
-      console.log(response);
+      await OrdersApi.createOrder(createOrderRequest);
     }
   }
 

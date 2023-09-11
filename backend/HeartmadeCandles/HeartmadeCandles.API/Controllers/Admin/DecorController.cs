@@ -21,7 +21,7 @@ namespace HeartmadeCandles.API.Controllers.Admin
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Get()
         {
             return Ok(await _decorService.GetAll());
         }

@@ -1,6 +1,6 @@
 ﻿namespace HeartmadeCandles.API.Contracts.Requests
 {
-    public class OrderRequest
+    public class CreateOrderRequest
     {
         public string ConfiguredCandlesString { get; set; }
         public UserRequest User { get; set; }

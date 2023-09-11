@@ -15,22 +15,22 @@ namespace HeartmadeCandles.Order.BL.Services
             _orderNotificationHandler = orderNotificationHandler;
         }
 
-        public async Task<Result<CandleDetailWithQuantityAndPrice[]>> Get(CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity)
+        public async Task<Result<OrderItem[]>> Get(OrderItemFilter[] orderItemFilters)
         {
             var result = Result.Success();
 
-            var candleDetailWithQuantityAndPriceResult = await _orderRepository.Get(arrayCandleDetailIdsWithQuantity);
+            var candleDetailWithQuantityAndPriceResult = await _orderRepository.Get(orderItemFilters);
 
             if (candleDetailWithQuantityAndPriceResult.IsFailure)
             {
                 return candleDetailWithQuantityAndPriceResult;
             }
 
-            result = await ProcessCandleDetails(candleDetailWithQuantityAndPriceResult.Value, arrayCandleDetailIdsWithQuantity, result);
+            result = await ProcessCandleDetails(candleDetailWithQuantityAndPriceResult.Value, orderItemFilters, result);
 
             if (result.IsFailure)
             {
-                return Result.Failure<CandleDetailWithQuantityAndPrice[]>(result.Error);
+                return Result.Failure<OrderItem[]>(result.Error);
             }
 
             return candleDetailWithQuantityAndPriceResult.Value;
@@ -38,25 +38,25 @@ namespace HeartmadeCandles.Order.BL.Services
 
         public async Task<Result> CreateOrder(
             string configuredCandlesString, 
-            CandleDetailIdsWithQuantity[] arrayCandleDetailIdsWithQuantity, 
+            OrderItemFilter[] OrderItemFilters, 
             User user, 
             Feedback feedback)
         {
             var result = Result.Success();
 
-            var candleDetailWithQuantityAndPriceResult = await _orderRepository.Get(arrayCandleDetailIdsWithQuantity);
-            if (candleDetailWithQuantityAndPriceResult.IsFailure)
+            var orderItemsResult = await _orderRepository.Get(OrderItemFilters);
+            if (orderItemsResult.IsFailure)
             {
-                return candleDetailWithQuantityAndPriceResult;
+                return orderItemsResult;
             }
 
-            result = await ProcessCandleDetails(candleDetailWithQuantityAndPriceResult.Value, arrayCandleDetailIdsWithQuantity, result);
+            result = await ProcessCandleDetails(orderItemsResult.Value, OrderItemFilters, result);
             if (result.IsFailure)
             {
-                return Result.Failure<CandleDetailWithQuantityAndPrice[]>(result.Error);
+                return Result.Failure<OrderItem[]>(result.Error);
             }
 
-            var order = new Core.Models.Order(configuredCandlesString, candleDetailWithQuantityAndPriceResult.Value, user, feedback);
+            var order = new Core.Models.Order(configuredCandlesString, orderItemsResult.Value, user, feedback);
             var isMessageSend = await _orderNotificationHandler.OnCreateOrder(order);
             if(isMessageSend.IsFailure)
             {
@@ -67,8 +67,8 @@ namespace HeartmadeCandles.Order.BL.Services
         }
 
         private async Task<Result> ProcessCandleDetails(
-            CandleDetailWithQuantityAndPrice[] candleDetails, 
-            CandleDetailIdsWithQuantity[] candleDetailIds, 
+            OrderItem[] candleDetails, 
+            OrderItemFilter[] candleDetailIds, 
             Result result)
         {
             for (var i = 0; i < candleDetails.Length; i++)
@@ -80,16 +80,16 @@ namespace HeartmadeCandles.Order.BL.Services
 
                 if (resultMatching.IsFailure)
                 {
-                    result = Result.Combine(result, Result.Failure<CandleDetailWithQuantityAndPrice[]>(resultMatching.Error));
+                    result = Result.Combine(result, Result.Failure<OrderItem[]>(resultMatching.Error));
                 }
             }
 
             return result;
         }
 
-        private async Task<Result<CandleDetailWithQuantityAndPrice>> CheckMatching(
-            CandleDetailWithQuantityAndPrice candleDetailWithQuantityAndPrice,
-            CandleDetailIdsWithQuantity candleDetailIdsWithQuantity)
+        private async Task<Result<OrderItem>> CheckMatching(
+            OrderItem candleDetailWithQuantityAndPrice,
+            OrderItemFilter candleDetailIdsWithQuantity)
         {
             if (candleDetailWithQuantityAndPrice.CandleDetail.Candle.Id != candleDetailIdsWithQuantity.CandleId
                             || (candleDetailWithQuantityAndPrice.CandleDetail.Decor != null
@@ -100,7 +100,7 @@ namespace HeartmadeCandles.Order.BL.Services
                             || (candleDetailWithQuantityAndPrice.CandleDetail.Smell != null
                                 && candleDetailWithQuantityAndPrice.CandleDetail.Smell.Id != candleDetailIdsWithQuantity.SmellId))
             {
-                return Result.Failure<CandleDetailWithQuantityAndPrice>(
+                return Result.Failure<OrderItem>(
                        $"An error occurred in the candle configuration " +
                        $"{candleDetailWithQuantityAndPrice.ToString()}");
             }

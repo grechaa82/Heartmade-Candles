@@ -39,14 +39,14 @@ namespace HeartmadeCandles.Order.Bot
                 $"{(string.IsNullOrEmpty(order.User.Email) ? "N/A" : order.User.Email)}");
             message.AppendLine($"Обратная связь: {order.Feedback.TypeFeedback} {order.Feedback.UserName}");
             message.AppendLine(" ");
-            message.AppendLine(GetInformationAboutCandles(order.Candles));
+            message.AppendLine(GetInformationAboutCandles(order.OrderItems));
             message.AppendLine($"Общая количество: {order.GetTotalQuantity()}");
             message.AppendLine($"Общая стоимость: {order.GetTotalPrice()}");
 
             return message.ToString();
         }
 
-        private static string GetInformationAboutCandles(CandleDetailWithQuantityAndPrice[] candles)
+        private static string GetInformationAboutCandles(OrderItem[] candles)
         {
             StringBuilder message = new StringBuilder();
 

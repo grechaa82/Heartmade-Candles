@@ -1,8 +1,8 @@
 ﻿namespace HeartmadeCandles.Order.Core.Models
 {
-    public class CandleDetailIdsWithQuantity
+    public class OrderItemFilter
     {
-        public CandleDetailIdsWithQuantity(
+        public OrderItemFilter(
            int candleId,
            int decorId,
            int numberOfLayerId,

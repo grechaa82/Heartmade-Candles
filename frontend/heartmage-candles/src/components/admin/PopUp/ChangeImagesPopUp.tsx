@@ -51,7 +51,6 @@ const ChangeImagesPopUp: FC<ChangeImagesPopUpProps> = ({
       return i;
     });
     setNewImages(newStateImages);
-    console.log(newStateImages);
   }
 
   return (

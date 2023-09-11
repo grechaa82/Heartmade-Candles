@@ -110,7 +110,7 @@ export interface Feedback {
   userName: string;
 }
 
-export interface OrderCreaterRequest {
+export interface CreateOrderRequest {
   configuredCandlesString: string;
   user: User;
   feedback: Feedback;
