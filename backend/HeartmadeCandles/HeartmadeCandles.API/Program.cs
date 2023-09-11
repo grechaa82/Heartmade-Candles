@@ -1,21 +1,13 @@
-using HeartmadeCandles.Admin.BL.Services;
-using HeartmadeCandles.Admin.Core.Interfaces;
+using HeartmadeCandles.Admin.BL;
 using HeartmadeCandles.Admin.DAL;
-using HeartmadeCandles.Admin.DAL.Repositories;
 using HeartmadeCandles.API;
 using HeartmadeCandles.Auth.BL;
-using HeartmadeCandles.Auth.Core;
-using HeartmadeCandles.Constructor.BL.Services;
-using HeartmadeCandles.Constructor.Core.Interfaces;
+using HeartmadeCandles.Constructor.BL;
 using HeartmadeCandles.Constructor.DAL;
-using HeartmadeCandles.Constructor.DAL.Repositories;
-using HeartmadeCandles.Order.BL.Services;
+using HeartmadeCandles.Order.BL;
 using HeartmadeCandles.Order.Bot;
-using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.DAL;
-using HeartmadeCandles.Order.DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -45,7 +37,7 @@ try
     {
         options.AddPolicy("AllowCors", policy =>
         {
-            policy.WithOrigins("http://95.140.152.201")
+            policy.WithOrigins("http://95.140.152.201", "http://localhost:5173", "http://localhost", "http://localhost:5000")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
@@ -72,63 +64,23 @@ try
 
     builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 
-    //Admin module
-    builder.Services.AddDbContext<AdminDbContext>(options =>
-    {
-        options.UseNpgsql(
-            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
-            npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
-    });
+    builder.Services
+        .AddAdminServices()
+        .AddAdminRepositories()
+        .AddAdminDbContext(builder.Configuration);
 
     builder.Services
-        .AddScoped<ICandleService, CandleService>()
-        .AddScoped<ICandleRepository, CandleRepository>();
-    builder.Services
-        .AddScoped<IDecorService, DecorService>()
-        .AddScoped<IDecorRepository, DecorRepository>();
-    builder.Services
-        .AddScoped<ILayerColorService, LayerColorService>()
-        .AddScoped<ILayerColorRepository, LayerColorRepository>();
-    builder.Services
-        .AddScoped<ISmellService, SmellService>()
-        .AddScoped<ISmellRepository, SmellRepository>();
-    builder.Services
-        .AddScoped<IWickService, WickService>()
-        .AddScoped<IWickRepository, WickRepository>();
-    builder.Services
-        .AddScoped<INumberOfLayerService, NumberOfLayerService>()
-        .AddScoped<INumberOfLayerRepository, NumberOfLayerRepository>();
-    builder.Services
-        .AddScoped<ITypeCandleService, TypeCandleService>()
-        .AddScoped<ITypeCandleRepository, TypeCandleRepository>();
-
-    //Constructor module
-    builder.Services.AddDbContext<ConstructorDbContext>(options =>
-    {
-        options.UseNpgsql(
-            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
-            npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
-    });
+        .AddConstructorServices()
+        .AddConstructorRepositories()
+        .AddConstructorDbContext(builder.Configuration);
 
     builder.Services
-        .AddScoped<IConstructorService, ConstructorService>()
-        .AddScoped<IConstructorRepository, ConstructorRepository>();
+        .AddOrderServices()
+        .AddOrderRepositories()
+        .AddOrderDbContext(builder.Configuration)
+        .AddOrderNotificationServices();
 
-    //Order module
-    builder.Services.AddDbContext<OrderDbContext>(options =>
-    {
-        options.UseNpgsql(
-            connectionString: builder.Configuration.GetConnectionString("DefaultConnection"),
-            npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
-    });
-
-    builder.Services
-        .AddScoped<IOrderService, OrderService>()
-        .AddScoped<IOrderRepository, OrderRepository>();
-    builder.Services.AddScoped<IOrderNotificationHandler, OrderNotificationHandler>();
-
-    //Order module
-    builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddAuthServices();
 
     builder.Services.AddControllers().AddNewtonsoftJson();
     builder.Services.AddEndpointsApiExplorer();

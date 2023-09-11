@@ -1,7 +1,7 @@
 <Project>
-
   <ItemGroup>
     <PackageVersion Include="JWT" Version="10.1.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
@@ -12,14 +12,12 @@
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageVersion Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.5" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.3" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageVersion Include="Serilog" Version="2.12.0" />
     <PackageVersion Include="Serilog.Extensions.Logging" Version="3.1.0" />
@@ -28,7 +26,6 @@
     <PackageVersion Include="Serilog.Sinks.Console" Version="4.1.0" />
     <PackageVersion Include="Serilog.Sinks.Seq" Version="5.2.2" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageVersion Include="Bogus" Version="34.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
@@ -37,13 +34,10 @@
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
     <PackageVersion Include="coverlet.collector" Version="3.2.0" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageVersion Include="CSharpFunctionalExtensions" Version="2.40.0" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageVersion Include="Telegram.Bot" Version="19.0.0" />
   </ItemGroup>
-
 </Project>
