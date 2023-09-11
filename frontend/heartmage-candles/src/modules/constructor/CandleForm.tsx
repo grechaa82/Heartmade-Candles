@@ -7,9 +7,9 @@ import {
   NumberOfLayer,
   Smell,
   Wick,
+  ImageProduct,
 } from '../../typesV2/BaseProduct';
 import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
-import { ImageProduct } from '../../typesV2/BaseProduct';
 import TagSelector from '../../components/constructor/TagSelector';
 import { TagData } from '../../components/shared/Tag';
 import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
@@ -28,23 +28,35 @@ const CandleForm: FC<CandleFormProps> = ({
   addCandleDetail,
   calculatePriceCandleDetail,
 }) => {
-  const [candleDetail, setCandleDetail] = useState<CandleDetails>(candleDetailData);
-  const [candleDetailState, setCandleDetailState] = useState<CandleDetails>({
-    candle: candleDetailData.candle,
-  });
+  const [candleDetailState, setCandleDetailState] = useState<CandleDetails>();
+
+  useEffect(() => {
+    const newCandleDetailState: CandleDetails = {
+      candle: candleDetailData.candle,
+      numberOfLayers:
+        candleDetailData.numberOfLayers?.length === 1
+          ? [candleDetailData.numberOfLayers[0]]
+          : undefined,
+      wicks: candleDetailData.wicks?.length === 1 ? [candleDetailData.wicks[0]] : undefined,
+    };
+
+    setCandleDetailState(newCandleDetailState);
+  }, []);
 
   const handleNumberOfLayerState = (selectedNumberOfLayer: TagData) => {
-    const newCandleDetailState: CandleDetails = {
-      ...candleDetailState,
-      layerColors: [],
-      numberOfLayers: [convertTagDataToNumberOfLayer(selectedNumberOfLayer)],
-    };
-    setCandleDetailState(newCandleDetailState);
-    calculatePriceCandleDetail(candleDetailState);
+    if (candleDetailState) {
+      const newCandleDetailState: CandleDetails = {
+        ...candleDetailState,
+        layerColors: [],
+        numberOfLayers: [convertTagDataToNumberOfLayer(selectedNumberOfLayer)],
+      };
+      setCandleDetailState(newCandleDetailState);
+    }
   };
 
   const handleLayerColorState = (selectedLayerColor: ImageProduct) => {
     if (
+      candleDetailState &&
       candleDetailState.numberOfLayers &&
       candleDetailState.numberOfLayers[0].number === candleDetailState.layerColors?.length
     ) {
@@ -56,112 +68,125 @@ const CandleForm: FC<CandleFormProps> = ({
       });
     } else {
       const layerColorToAdd = selectedLayerColor as LayerColor;
-      setCandleDetailState({
-        ...candleDetailState,
-        layerColors: candleDetailState.layerColors
-          ? [...candleDetailState.layerColors, layerColorToAdd]
-          : [layerColorToAdd],
-      });
+      if (candleDetailState) {
+        setCandleDetailState({
+          ...candleDetailState,
+          layerColors: candleDetailState?.layerColors
+            ? [...candleDetailState?.layerColors, layerColorToAdd]
+            : [layerColorToAdd],
+        });
+      }
     }
-
-    calculatePriceCandleDetail(candleDetailState);
   };
 
   const handleDeselectLayerColorState = (deselectedLayerColor: ImageProduct) => {
-    const updatedLayerColors = candleDetailState.layerColors?.filter(
-      (layerColor) => layerColor !== deselectedLayerColor,
-    );
-    setCandleDetailState({
-      ...candleDetailState,
-      layerColors: updatedLayerColors,
-    });
-    calculatePriceCandleDetail(candleDetailState);
+    if (candleDetailState) {
+      const updatedLayerColors = candleDetailState.layerColors?.filter(
+        (layerColor) => layerColor !== deselectedLayerColor,
+      );
+      setCandleDetailState({
+        ...candleDetailState,
+        layerColors: updatedLayerColors,
+      });
+    }
   };
 
   const handleDecorState = (selectedDecor: ImageProduct) => {
-    const newCandleDetailState: CandleDetails = {
-      ...candleDetailState,
-      decors: [selectedDecor as Decor],
-    };
-    setCandleDetailState(newCandleDetailState);
-    calculatePriceCandleDetail(candleDetailState);
+    if (candleDetailState) {
+      const newCandleDetailState: CandleDetails = {
+        ...candleDetailState,
+        decors: [selectedDecor as Decor],
+      };
+      setCandleDetailState(newCandleDetailState);
+    }
   };
 
   const handleDeselectDecorState = (deselectedDecor: ImageProduct) => {
-    const updatedDecors = candleDetailState.decors?.filter((decor) => decor !== deselectedDecor);
-    setCandleDetailState({ ...candleDetailState, decors: updatedDecors });
-    calculatePriceCandleDetail(candleDetailState);
+    if (candleDetailState) {
+      const updatedDecors = candleDetailState.decors?.filter((decor) => decor !== deselectedDecor);
+      setCandleDetailState({ ...candleDetailState, decors: updatedDecors });
+    }
   };
 
   const handleSmellState = (selectedSmell: TagData) => {
-    const selected = convertTagDataToSmell(selectedSmell, candleDetail);
-    if (selected) {
-      const newCandleDetailState: CandleDetails = {
-        ...candleDetailState,
-        smells: [selected],
-      };
-      setCandleDetailState(newCandleDetailState);
-      calculatePriceCandleDetail(newCandleDetailState);
+    if (candleDetailState) {
+      const selected = convertTagDataToSmell(selectedSmell, candleDetailData);
+      if (selected) {
+        const newCandleDetailState: CandleDetails = {
+          ...candleDetailState,
+          smells: [selected],
+        };
+        setCandleDetailState(newCandleDetailState);
+      }
     }
   };
   const handleWickState = (selectedWick: ImageProduct) => {
-    const newCandleDetailState: CandleDetails = {
-      ...candleDetailState,
-      wicks: [selectedWick as Wick],
-    };
-    setCandleDetailState(newCandleDetailState);
-    calculatePriceCandleDetail(candleDetailState);
+    if (candleDetailState) {
+      const newCandleDetailState: CandleDetails = {
+        ...candleDetailState,
+        wicks: [selectedWick as Wick],
+      };
+      setCandleDetailState(newCandleDetailState);
+    }
   };
 
   const handleAddCandleDetail = () => {
-    calculatePriceCandleDetail(candleDetailState);
-    addCandleDetail(candleDetailState);
+    if (candleDetailState) {
+      calculatePriceCandleDetail(candleDetailState);
+      addCandleDetail(candleDetailState);
+    }
   };
 
   useEffect(() => {
-    calculatePriceCandleDetail(candleDetailState);
+    if (candleDetailState) {
+      calculatePriceCandleDetail(candleDetailState);
+    }
   }, [candleDetailState]);
 
   return (
     <>
       <div className={Style.candleFrom}>
         <TagSelector
-          title="Количество слоев"
+          title="Количество слоев *"
           data={convertNumberOfLayerToTagData(
-            candleDetail.numberOfLayers ? candleDetail.numberOfLayers : [],
+            candleDetailData.numberOfLayers ? candleDetailData.numberOfLayers : [],
           )}
           selectedData={convertNumberOfLayerToTagData(
-            candleDetailState.numberOfLayers ? candleDetailState.numberOfLayers : [],
+            candleDetailState?.numberOfLayers ? candleDetailState.numberOfLayers : [],
           )}
           onSelectTag={handleNumberOfLayerState}
         />
         <ProductsGridSelector
-          title={'Цвета слоев'}
-          data={candleDetail.layerColors ? candleDetail.layerColors : []}
-          selectedData={candleDetailState.layerColors ? candleDetailState.layerColors : []}
+          title={'Цвета слоев *'}
+          data={candleDetailData.layerColors ? candleDetailData.layerColors : []}
+          selectedData={candleDetailState?.layerColors ? candleDetailState.layerColors : []}
           onSelectProduct={handleLayerColorState}
           onDeselectProduct={handleDeselectLayerColorState}
           withIndex={true}
         />
+        {candleDetailData.decors && candleDetailData.decors.length > 0 && (
+          <ProductsGridSelector
+            title={'Декор'}
+            data={candleDetailData.decors}
+            selectedData={candleDetailState?.decors ? candleDetailState.decors : []}
+            onSelectProduct={handleDecorState}
+            onDeselectProduct={handleDeselectDecorState}
+          />
+        )}
+        {candleDetailData.smells && candleDetailData.smells.length > 0 && (
+          <TagSelector
+            title="Запах"
+            data={convertSmellToTagData(candleDetailData.smells)}
+            selectedData={convertSmellToTagData(
+              candleDetailState?.smells ? candleDetailState.smells : [],
+            )}
+            onSelectTag={handleSmellState}
+          />
+        )}
         <ProductsGridSelector
-          title={'Декор'}
-          data={candleDetail.decors ? candleDetail.decors : []}
-          selectedData={candleDetailState.decors ? candleDetailState.decors : []}
-          onSelectProduct={handleDecorState}
-          onDeselectProduct={handleDeselectDecorState}
-        />
-        <TagSelector
-          title="Запах"
-          data={convertSmellToTagData(candleDetail.smells ? candleDetail.smells : [])}
-          selectedData={convertSmellToTagData(
-            candleDetailState.smells ? candleDetailState.smells : [],
-          )}
-          onSelectTag={handleSmellState}
-        />
-        <ProductsGridSelector
-          title={'Фитиль'}
-          data={candleDetail.wicks ? candleDetail.wicks : []}
-          selectedData={candleDetailState.wicks ? candleDetailState.wicks : []}
+          title={'Фитиль *'}
+          data={candleDetailData.wicks ? candleDetailData.wicks : []}
+          selectedData={candleDetailState?.wicks ? candleDetailState.wicks : []}
           onSelectProduct={handleWickState}
         />
         <div className={Style.addBtn}>

@@ -95,6 +95,7 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
         <button
           className={Style.iconChevronBtn}
           onClick={() => handleChangeImage(currentImageIndex, -1)}
+          type="button"
         >
           <IconChevronLeftLarge color="#777" />
         </button>
@@ -109,6 +110,7 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
         <button
           className={Style.iconChevronBtn}
           onClick={() => handleChangeImage(currentImageIndex, 1)}
+          type="button"
         >
           <IconChevronRightLarge color="#777" />
         </button>

@@ -8,7 +8,7 @@ const ListProductsCartSkeleton: FC = () => {
   const countProductsCartSkeleton = [0, 0, 0];
 
   const productsCartSkeleton = (
-    <div className={Style.productCartSkeleton}>
+    <>
       <div className={Style.imageSkeleton}>
         <Skeleton />
       </div>
@@ -20,13 +20,17 @@ const ListProductsCartSkeleton: FC = () => {
           <Skeleton />
         </div>
       </div>
-    </div>
+    </>
   );
 
   return (
     <div className={Style.listProductsCartSkeleton}>
-      {countProductsCartSkeleton.map((productsCart, index) => {
-        return productsCartSkeleton;
+      {countProductsCartSkeleton.map((item, index) => {
+        return (
+          <div className={Style.productCartSkeleton} key={index}>
+            {productsCartSkeleton}
+          </div>
+        );
       })}
     </div>
   );

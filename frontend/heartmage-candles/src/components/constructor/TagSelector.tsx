@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC } from 'react';
 
 import Tag, { TagData } from '../shared/Tag';
 
@@ -15,7 +15,7 @@ interface TagSelectorProps {
 const TagSelector: FC<TagSelectorProps> = ({
   title,
   data,
-  selectedData = [],
+  selectedData,
   onSelectTag,
   onDeselectTag,
 }) => {
@@ -29,7 +29,7 @@ const TagSelector: FC<TagSelectorProps> = ({
             tag={tag}
             onSelectTag={onSelectTag}
             onDeselectTag={onDeselectTag}
-            isSelected={selectedData.some((selectedData) => selectedData.id === tag.id)}
+            isSelected={selectedData?.some((selectedData) => selectedData.id === tag.id)}
           />
         ))}
       </div>

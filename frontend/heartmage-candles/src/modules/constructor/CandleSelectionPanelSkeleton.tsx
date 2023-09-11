@@ -9,25 +9,27 @@ const CandleSelectionPanelSkeleton: FC = () => {
   const countGridsSkeleton = [0, 0];
 
   const productsGridSelectorSkeleton = (
-    <div className={Style.productGridSkeleton}>
+    <>
       <div className={Style.titleSkeleton}>
         <Skeleton />
       </div>
       <div className={Style.gridSkeleton}>
-        {countProductsSkeleton.map(() => (
-          <div className={Style.gridItem}>
+        {countProductsSkeleton.map((item, index) => (
+          <div className={Style.gridItem} key={index}>
             <Skeleton />
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 
   return (
     <div className={Style.contentSkeleton}>
-      {countGridsSkeleton.map(() => {
-        return productsGridSelectorSkeleton;
-      })}
+      {countGridsSkeleton.map((item, index) => (
+        <div className={Style.productGridSkeleton} key={index}>
+          {productsGridSelectorSkeleton}
+        </div>
+      ))}
     </div>
   );
 };

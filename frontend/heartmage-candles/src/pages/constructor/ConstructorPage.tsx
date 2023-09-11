@@ -36,10 +36,6 @@ const ConstructorPage: FC = () => {
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
-  ///
-  //console.log(JSON.stringify(candleDetailWithQuantity));
-  ///
-
   async function showCandleForm(candleId: number) {
     try {
       const candleDetail = await ConstructorApi.getCandleById(candleId.toString());
@@ -198,7 +194,7 @@ const ConstructorPage: FC = () => {
 
     if (numberOfLayers && layerColors && numberOfLayers.number !== layerColors.length) {
       errorMessageInCandleDetail.push(
-        'Количество слоев не совпадает с количеством выбранных слоев',
+        'Количество слоев не совпадает с количеством выбранных цветовых слоев',
       );
     }
 
