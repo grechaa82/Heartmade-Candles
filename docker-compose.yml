@@ -4,10 +4,8 @@ services:
   backend:
     container_name: api
     image: ${DOCKER_REGISTRY-}backend
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - '5000:80'
+      - ${VAR_BACKEND_PORT}:80
     depends_on:
       - db
     build:
@@ -23,41 +21,27 @@ services:
       context: frontend/heartmage-candles
       dockerfile: Dockerfile
     ports:
-      - '5173:5173'
+      - ${VAR_FRONTEND_PORT}:${VAR_FRONTEND_PORT}
 
   db:
     container_name: pg_db
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=db
     image: postgres:15.2
     ports:
-      - '5432:5432'
+      - ${VAR_POSTGRES_PORT}:${VAR_POSTGRES_PORT}
     restart: always
 
   pg_admin:
     container_name: pg_admin
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=root@root.root
-      - PGADMIN_DEFAULT_PASSWORD=root
-      - PGADMIN_CONFIG_PROXY_X_FOR_COUNT=1
-      - PGADMIN_CONFIG_PROXY_X_PROTO_COUNT=1
-      - PGADMIN_CONFIG_PROXY_X_HOST_COUNT=1
-      - PGADMIN_CONFIG_PROXY_X_PORT_COUNT=1
-      - PGADMIN_CONFIG_PROXY_X_PREFIX_COUNT=1
     image: dpage/pgadmin4:6.21
     ports:
-      - '5433:80'
+      - ${VAR_PGADMIN_PORT}:80
 
   seq:
     container_name: seq
     image: datalust/seq:latest
     restart: unless-stopped
-    environment:
-      ACCEPT_EULA: Y
     ports:
-      - '5341:80'
+      - ${VAR_SEQ_PORT}:80
 
   proxy:
     container_name: proxy
@@ -65,7 +49,7 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/nginx.conf
     ports:
-      - '80:80'
+      - 80:80
     depends_on:
       - backend
       - frontend

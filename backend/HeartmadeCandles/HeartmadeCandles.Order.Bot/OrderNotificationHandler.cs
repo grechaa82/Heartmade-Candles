@@ -3,15 +3,14 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using System.Text;
 using Telegram.Bot;
-using Telegram.Bot.Types.Enums;
 
 namespace HeartmadeCandles.Order.Bot
 {
     public class OrderNotificationHandler : IOrderNotificationHandler
     {
-        private static readonly string chatId = "502372730";
-        private static readonly string token = "6005658712:AAHRoDoomqxZ_efYr3wBAJEjYf9TP8wlvPg";
-        private static TelegramBotClient client = new TelegramBotClient(token);
+        private static readonly string _chatId = Environment.GetEnvironmentVariable("VAR_TELEGRAM_CHAT_ID");
+        private static readonly string _token = Environment.GetEnvironmentVariable("VAR_TELEGRAM_API_TOKEN");
+        private static TelegramBotClient _client = new TelegramBotClient(_token);
 
         public async Task<Result> OnCreateOrder(Core.Models.Order order)
         {
@@ -19,7 +18,7 @@ namespace HeartmadeCandles.Order.Bot
             {
                 string orderText = GetMessageInMarkdownMode(order);
 
-                await client.SendTextMessageAsync(chatId, orderText, parseMode: ParseMode.Markdown);
+                await _client.SendTextMessageAsync(_chatId, orderText);
 
                 return Result.Success();
             }
