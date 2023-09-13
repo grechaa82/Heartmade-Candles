@@ -7,15 +7,21 @@ using HeartmadeCandles.Constructor.DAL;
 using HeartmadeCandles.Order.BL;
 using HeartmadeCandles.Order.Bot;
 using HeartmadeCandles.Order.DAL;
+using OpenTelemetry.Trace;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Serilog.Enrichers.Span;
 using System.Text;
+using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var logger = new LoggerConfiguration()
+    .Enrich.WithSpan()
+    .Enrich.WithCorrelationId()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 
@@ -26,6 +32,34 @@ try
         loggingBuilder.ClearProviders();
 
         loggingBuilder.AddSerilog(logger, true);
+    });
+
+    builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
+
+    builder.Services.ConfigureOpenTelemetryTracerProvider(builder =>
+    {
+        builder
+            .AddJaegerExporter(options =>
+            {
+                options.AgentHost = "jaeger";
+            })
+            .AddSource("HeartmadeCandles.API")
+            .SetResourceBuilder(
+                ResourceBuilder.CreateDefault()
+                .AddTelemetrySdk()
+                .AddService(serviceName: "HeartmadeCandles.API", serviceVersion: "1.0.0"))
+            .AddHttpClientInstrumentation()
+            .AddAspNetCoreInstrumentation()
+            .AddSqlClientInstrumentation(options => options.SetDbStatementForText = true)
+            .AddJaegerExporter(exporter =>
+            {
+                exporter.AgentHost = "localhost";
+                exporter.AgentPort = 6831;
+            })
+            .AddEntityFrameworkCoreInstrumentation(options =>
+            {
+                options.SetDbStatementForText = true;
+            });
     });
 
     if (!Directory.Exists("StaticFiles/"))
@@ -84,6 +118,7 @@ try
 
     builder.Services.AddControllers().AddNewtonsoftJson();
     builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddHttpContextAccessor();
     builder.Services.AddSwaggerGen();
 
     builder.Services.AddHttpLogging(options => { });

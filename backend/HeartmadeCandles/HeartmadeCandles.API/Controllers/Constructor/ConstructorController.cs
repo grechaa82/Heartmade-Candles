@@ -20,7 +20,7 @@ namespace HeartmadeCandles.API.Controllers.Constructor
         [HttpGet("candles")]
         public async Task<IActionResult> GetCandles()
         {
-            _logger.LogDebug("Request {0} {1}, {2}", 
+            _logger.LogInformation("Request {0} {1}, {2}", 
                 nameof(ConstructorController),
                 nameof(ConstructorController.GetCandles),
                 DateTime.UtcNow);
@@ -43,7 +43,7 @@ namespace HeartmadeCandles.API.Controllers.Constructor
         [HttpGet("candles/{candleId}")]
         public async Task<IActionResult> GetCandleById(int candleId)
         {
-            _logger.LogDebug("Request {0} {1}, candleId: {2}, {3}",
+            _logger.LogInformation("Request {0} {1}, candleId: {2}, {3}",
                 nameof(ConstructorController),
                 nameof(ConstructorController.GetCandleById),
                 candleId,

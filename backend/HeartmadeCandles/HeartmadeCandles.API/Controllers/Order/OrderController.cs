@@ -22,7 +22,7 @@ namespace HeartmadeCandles.API.Controllers.Order
         [HttpGet("{configuredCandlesString}")]
         public async Task<IActionResult> Get(string configuredCandlesString)
         {
-            _logger.LogDebug("Request {@Controller} {@Endpoint}, configuredCandlesString: {@ConfiguredCandlesString}, {@DataTime}",
+            _logger.LogInformation("Request {@Controller} {@Endpoint}, configuredCandlesString: {@ConfiguredCandlesString}, {@DataTime}",
                 nameof(OrderController),
                 nameof(OrderController.Get),
                 configuredCandlesString,
@@ -32,7 +32,7 @@ namespace HeartmadeCandles.API.Controllers.Order
                 .Select(item => ParseUrlStringToOrderItemFilter(item))
                 .ToArray();
 
-            _logger.LogTrace("orderItemFilters: {0}", orderItemFilters);
+            _logger.LogInformation("orderItemFilters: {0}", orderItemFilters);
 
             var result = await _orderService.Get(orderItemFilters);
 
@@ -47,7 +47,7 @@ namespace HeartmadeCandles.API.Controllers.Order
                 return BadRequest(result.Error);
             }
 
-            _logger.LogDebug("When Request {0} {1}, an order is received: {2}, configuredCandlesString: {3}, {4}",
+            _logger.LogInformation("When Request {0} {1}, an order is received: {2}, configuredCandlesString: {3}, {4}",
                 nameof(OrderController),
                 nameof(OrderController.Get),
                 result.Value,
@@ -60,7 +60,7 @@ namespace HeartmadeCandles.API.Controllers.Order
         [HttpPost]
         public async Task<IActionResult> CreateOrder(CreateOrderRequest orderRequest)
         {
-            _logger.LogDebug("Request {0} {1}, orderRequest: {2}, {3}",
+            _logger.LogInformation("Request {0} {1}, orderRequest: {2}, {3}",
                 nameof(OrderController),
                 nameof(OrderController.CreateOrder),
                 orderRequest,
@@ -70,7 +70,7 @@ namespace HeartmadeCandles.API.Controllers.Order
                 .Select(item => ParseUrlStringToOrderItemFilter(item))
                 .ToArray();
 
-            _logger.LogTrace("orderItemFilters: {0}", orderItemFilters);
+            _logger.LogInformation("orderItemFilters: {0}", orderItemFilters);
 
             var result = await _orderService.CreateOrder(
                 orderRequest.ConfiguredCandlesString, 
@@ -95,7 +95,7 @@ namespace HeartmadeCandles.API.Controllers.Order
                 return BadRequest(result.Error);
             }
 
-            _logger.LogDebug("When Request {0} {1}, order has been created, order: {2}, {3}",
+            _logger.LogInformation("When Request {0} {1}, order has been created, order: {2}, {3}",
                 nameof(OrderController),
                 nameof(OrderController.CreateOrder),
                 result,
