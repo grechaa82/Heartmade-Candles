@@ -1,7 +1,8 @@
-import { CandleDetails, Candle } from '../typesV2/BaseProduct';
+import { CandleDetail } from '../typesV2/BaseProduct';
+import { Candle } from '../typesV2/Candle';
 import { calculatePrice } from './CalculatePrice';
 
-let candleDetail: CandleDetails = {
+let candleDetail: CandleDetail = {
   candle: {
     id: 1,
     title: 'Scented Candle',

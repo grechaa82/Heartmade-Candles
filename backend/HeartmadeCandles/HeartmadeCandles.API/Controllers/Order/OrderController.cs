@@ -3,6 +3,7 @@ using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using Telegram.Bot.Requests.Abstractions;
 
 namespace HeartmadeCandles.API.Controllers.Order
 {
@@ -66,23 +67,11 @@ namespace HeartmadeCandles.API.Controllers.Order
                 orderRequest,
                 DateTime.UtcNow);
 
-            var orderItemFilters = GetSplitetConfiguredCandlesString(orderRequest.ConfiguredCandlesString)
-                .Select(item => ParseUrlStringToOrderItemFilter(item))
-                .ToArray();
-
-            _logger.LogInformation("orderItemFilters: {0}", orderItemFilters);
-
             var result = await _orderService.CreateOrder(
-                orderRequest.ConfiguredCandlesString, 
-                orderItemFilters,
-                new User(
-                    orderRequest.User.FirstName, 
-                    orderRequest.User.LastName, 
-                    orderRequest.User.Phone,
-                    orderRequest.User.Email),
-                new Feedback(
-                    orderRequest.Feedback.TypeFeedback, 
-                    orderRequest.Feedback.UserName));
+                orderRequest.ConfiguredCandlesString,
+                MapToOrderItemFilter(orderRequest.OrderItemFilters),
+                MapToUser(orderRequest.User),
+                MapToFeedback(orderRequest.Feedback));
 
             if (result.IsFailure)
             {
@@ -150,6 +139,30 @@ namespace HeartmadeCandles.API.Controllers.Order
                 smellId,
                 wickId,
                 quantity);
+        }
+
+        private OrderItemFilter[] MapToOrderItemFilter(OrderItemFilterRequest[] items)
+        {
+            return items
+                .Select(item => new OrderItemFilter(
+                    item.CandleId,
+                    item.DecorId,
+                    item.NumberOfLayerId,
+                    item.LayerColorIds,
+                    item.SmellId,
+                    item.WickId,
+                    item.Quantity))
+                .ToArray();
+        }
+
+        private User MapToUser (UserRequest item)
+        {
+            return new User(item.FirstName, item.LastName, item.Phone, item.Email);
+        }
+
+        private Feedback MapToFeedback(FeedbackRequest item)
+        {
+            return new Feedback(item.TypeFeedback, item.UserName);
         }
     }
 }

@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 
 import Product from './Product';
-import { ImageProduct } from '../../typesV2/BaseProduct';
+import { ImageProduct } from '../../typesV2/Candle';
 
 import Style from './ProductsGridSelector.module.css';
 

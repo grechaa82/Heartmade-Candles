@@ -39,8 +39,8 @@ namespace HeartmadeCandles.Order.Bot
             message.AppendLine($"Обратная связь: {order.Feedback.TypeFeedback} {order.Feedback.UserName}");
             message.AppendLine(" ");
             message.AppendLine(GetInformationAboutCandles(order.OrderItems));
-            message.AppendLine($"Общая количество: {order.GetTotalQuantity()}");
-            message.AppendLine($"Общая стоимость: {order.GetTotalPrice()}");
+            message.AppendLine($"Общая количество: {order.TotalQuantity}");
+            message.AppendLine($"Общая стоимость: {order.TotalPrice}");
 
             return message.ToString();
         }

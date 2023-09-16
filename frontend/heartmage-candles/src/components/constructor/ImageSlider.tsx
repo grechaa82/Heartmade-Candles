@@ -21,14 +21,14 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
       />
       <div className={Style.slider}>
         {images.map((image, index) => (
-          <div className={Style.imageSliderBlock}>
+          <div className={Style.imageSliderBlock} key={index}>
             <button
               className={`${Style.sliderBtn} ${currentImageIndex === index ? Style.selected : ''}`}
               type="button"
               onClick={() => setCurrentImageIndex(index)}
             >
               <div className={Style.image}>
-                <img key={index} src={`${apiUrlToImage}/${image.fileName}`} />
+                <img src={`${apiUrlToImage}/${image.fileName}`} />
               </div>
             </button>
           </div>

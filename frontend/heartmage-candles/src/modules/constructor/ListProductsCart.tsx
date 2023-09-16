@@ -1,13 +1,13 @@
-import { FC } from 'react';
+import { FC, useState, useEffect } from 'react';
 
 import ProductCart from '../../components/constructor/ProductCart';
-import { CandleDetailWithQuantity } from '../../typesV2/BaseProduct';
+import { ConfiguredCandleDetail } from '../../typesV2/BaseProduct';
 
 import Style from './ListProductsCart.module.css';
 
 export interface ListProductsCartProps {
-  products: CandleDetailWithQuantity[];
-  onChangeCandleDetailWithQuantity: (CandleDetailWithQuantity: CandleDetailWithQuantity[]) => void;
+  products: ConfiguredCandleDetail[];
+  onChangeCandleDetailWithQuantity: (CandleDetailWithQuantity: ConfiguredCandleDetail[]) => void;
 }
 
 const ListProductsCart: FC<ListProductsCartProps> = ({
@@ -15,14 +15,14 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
   onChangeCandleDetailWithQuantity,
 }) => {
   const handleChangingQuantityProduct = (newQuantity: number, index: number) => {
-    const updatedCandleDetailWithQuantity = [...products];
-    if (updatedCandleDetailWithQuantity[index]) {
+    if (products[index]) {
+      const updatedConfiguredCandleDetail = [...products];
       if (newQuantity <= 0) {
-        updatedCandleDetailWithQuantity.splice(index, 1);
+        updatedConfiguredCandleDetail.splice(index, 1);
       } else {
-        updatedCandleDetailWithQuantity[index].quantity = newQuantity;
+        updatedConfiguredCandleDetail[index].quantity = newQuantity;
       }
-      onChangeCandleDetailWithQuantity(updatedCandleDetailWithQuantity);
+      onChangeCandleDetailWithQuantity(updatedConfiguredCandleDetail);
     }
   };
 

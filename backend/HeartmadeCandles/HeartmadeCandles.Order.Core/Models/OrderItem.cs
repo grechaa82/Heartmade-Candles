@@ -1,17 +1,21 @@
-﻿namespace HeartmadeCandles.Order.Core.Models
+﻿using CSharpFunctionalExtensions;
+
+namespace HeartmadeCandles.Order.Core.Models
 {
     public class OrderItem
     {
-        public OrderItem(CandleDetail candleDetail, int quantity)
+        public OrderItem(CandleDetail candleDetail, int quantity, OrderItemFilter orderItemFilter)
         {
             CandleDetail = candleDetail;
             Quantity = quantity;
             Price = Math.Round(CalculatePrice() * quantity);
+            OrderItemFilter = orderItemFilter;
         }
 
         public CandleDetail CandleDetail { get; private set; }
         public int Quantity { get; private set; }
         public decimal Price { get; private set; }
+        public OrderItemFilter OrderItemFilter { get; private set; }
 
         private decimal CalculatePrice()
         {
@@ -25,6 +29,23 @@
             price += layerColorsPrice;
 
             return price;
+        }
+
+        public Result<OrderItem> CheckIsOrderItemMissing ()
+        {
+            if (CandleDetail.Candle.Id != OrderItemFilter.CandleId
+                            || (CandleDetail.Decor != null
+                                && CandleDetail.Decor.Id != OrderItemFilter.DecorId)
+                            || CandleDetail.NumberOfLayer.Id != OrderItemFilter.NumberOfLayerId
+                            || CandleDetail.NumberOfLayer.Number != CandleDetail.LayerColors.Length
+                            || CandleDetail.Wick.Id != OrderItemFilter.WickId
+                            || (CandleDetail.Smell != null
+                                && CandleDetail.Smell.Id != OrderItemFilter.SmellId))
+            {
+                return Result.Failure<OrderItem>("");
+            }
+
+            return Result.Success(this);
         }
 
         public override string ToString()

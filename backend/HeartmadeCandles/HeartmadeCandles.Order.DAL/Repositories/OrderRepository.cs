@@ -56,7 +56,7 @@ namespace HeartmadeCandles.Order.DAL.Repositories
                     .ToArray();
                 var numberOfLayers = candleDetailEntity.CandleNumberOfLayer
                     .Select(cn => MapToNumberOfLayer(cn.NumberOfLayer))
-                    .First();
+                    .FirstOrDefault();
                 var smells = candleDetailEntity.CandleSmell
                     .Select(cs => MapToSmell(cs.Smell))
                     .FirstOrDefault();
@@ -73,7 +73,7 @@ namespace HeartmadeCandles.Order.DAL.Repositories
                     wicks
                 );
 
-                orderItems.Add(new OrderItem(candleDetail, orderItemFilter.Quantity));
+                orderItems.Add(new OrderItem(candleDetail, orderItemFilter.Quantity, orderItemFilter));
             }
 
             if (result.IsFailure)

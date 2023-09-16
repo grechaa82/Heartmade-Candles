@@ -1,13 +1,13 @@
 import { FC, useState } from 'react';
 
-import { CandleDetailWithQuantityAndPrice } from '../../typesV2/BaseProduct';
+import { OrderItem } from '../../typesV2/order/OrderItem';
 import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
 import { apiUrlToImage } from '../../config';
 
 import Style from './ProductCart.module.css';
 
 export interface ProductCartProps {
-  product: CandleDetailWithQuantityAndPrice;
+  product: OrderItem;
 }
 
 const ProductCart: FC<ProductCartProps> = ({ product }) => {

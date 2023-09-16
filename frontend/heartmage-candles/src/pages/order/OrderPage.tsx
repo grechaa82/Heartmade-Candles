@@ -1,7 +1,9 @@
 import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { CandleDetailWithQuantityAndPrice, CreateOrderRequest } from '../../typesV2/BaseProduct';
+import { OrderItemFilter } from '../../typesV2/OrderItemFilter';
+import { OrderItem } from '../../typesV2/order/OrderItem';
+import { CreateOrderRequest } from '../../typesV2/order/CreateOrderRequest';
 import ListProductsCart from '../../modules/order/ListProductsCart';
 import FormPersonalData, { ItemFormPersonalData } from '../../modules/order/FormPersonalData';
 import FormFeedback, { ItemFormFeedback } from '../../modules/order/FormFeedback';
@@ -11,9 +13,61 @@ import { OrdersApi } from '../../services/OrdersApi';
 
 import Style from './OrderPage.module.css';
 
+function parseCandleDetailIdsWithQuantityString(strings: string[]): OrderItemFilter[] {
+  const candleDetailIdsWithQuantities: OrderItemFilter[] = [];
+
+  for (const str of strings) {
+    if (str === '') {
+      continue;
+    }
+
+    const candleDetailIdsWithQuantity: OrderItemFilter = {
+      candleId: 0,
+      quantity: 0,
+    };
+
+    const components = str.split('~');
+
+    for (const component of components) {
+      const [type, value] = component.split('-');
+
+      switch (type) {
+        case 'c':
+          candleDetailIdsWithQuantity.candleId = parseInt(value);
+          break;
+        case 'd':
+          candleDetailIdsWithQuantity.decorIds = mapParseToInt(value);
+          break;
+        case 'l':
+          candleDetailIdsWithQuantity.layerColorIds = mapParseToInt(value);
+          break;
+        case 'n':
+          candleDetailIdsWithQuantity.numberOfLayerIds = mapParseToInt(value);
+          break;
+        case 's':
+          candleDetailIdsWithQuantity.smellIds = mapParseToInt(value);
+          break;
+        case 'w':
+          candleDetailIdsWithQuantity.wickIds = mapParseToInt(value);
+          break;
+        case 'q':
+          candleDetailIdsWithQuantity.quantity = parseInt(value);
+          break;
+      }
+    }
+    candleDetailIdsWithQuantities.push(candleDetailIdsWithQuantity);
+  }
+
+  return candleDetailIdsWithQuantities;
+}
+
+function mapParseToInt(value: string): number[] {
+  return value.split('_').map(Number);
+}
+
 const OrderPage: FC = () => {
   const [arrayCandleDetailWithQuantityAndPrice, setArrayCandleDetailWithQuantityAndPrice] =
-    useState<CandleDetailWithQuantityAndPrice[]>([]);
+    useState<OrderItem[]>([]);
   const [configuredCandlesString, setConfiguredCandlesString] = useState<string | undefined>();
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
@@ -130,13 +184,13 @@ const OrderPage: FC = () => {
     }
   }, []);
 
-  function calculatePrice(arrayCandleDetails: CandleDetailWithQuantityAndPrice[]) {
+  function calculatePrice(arrayCandleDetails: OrderItem[]) {
     let price = 0;
     arrayCandleDetails.map((item) => (price += item.price));
     return price;
   }
 
-  function calculateTotalQuantity(arrayCandleDetails: CandleDetailWithQuantityAndPrice[]) {
+  function calculateTotalQuantity(arrayCandleDetails: OrderItem[]) {
     let totalQuantity = 0;
     arrayCandleDetails.map((item) => (totalQuantity += item.quantity));
     return totalQuantity;
@@ -167,6 +221,9 @@ const OrderPage: FC = () => {
     if (canCreateOrder && configuredCandlesString) {
       var createOrderRequest: CreateOrderRequest = {
         configuredCandlesString: configuredCandlesString,
+        orderItemFilters: parseCandleDetailIdsWithQuantityString(
+          configuredCandlesString.split('.'),
+        ),
         user: {
           firstName: firstName,
           lastName: lastName,

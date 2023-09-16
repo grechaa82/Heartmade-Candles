@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
 import { CandleTypeWithCandles } from '../../typesV2/CandleTypeWithCandles';
-import { ImageProduct } from '../../typesV2/BaseProduct';
+import { ImageProduct } from '../../typesV2/Candle';
 
 import Style from './CandleSelectionPanel.module.css';
 

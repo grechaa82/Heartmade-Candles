@@ -1,4 +1,6 @@
-﻿namespace HeartmadeCandles.API.Contracts.Requests
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HeartmadeCandles.API.Contracts.Requests
 {
     public class FeedbackRequest
     {

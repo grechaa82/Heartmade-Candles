@@ -41,77 +41,63 @@ export interface Image {
   alternativeName: string;
 }
 
-export interface CandleDetails {
+export interface CandleDetail {
   candle: Candle;
   decors?: Decor[];
-  layerColors?: LayerColor[];
-  numberOfLayers?: NumberOfLayer[];
+  layerColors: LayerColor[];
+  numberOfLayers: NumberOfLayer[];
   smells?: Smell[];
-  wicks?: Wick[];
-}
-
-export interface CandleDetailWithQuantity {
-  candle: Candle;
-  decors?: Decor[];
-  layerColors?: LayerColor[];
-  numberOfLayers?: NumberOfLayer[];
-  smells?: Smell[];
-  wicks?: Wick[];
-  quantity: number;
-}
-
-export interface CandleDetailRequest {
-  candle: Candle;
-  decors?: Decor[];
-  layerColors?: LayerColorRequest[];
-  numberOfLayers?: NumberOfLayer[];
-  smells?: Smell[];
-  wicks?: Wick[];
+  wicks: Wick[];
 }
 
 export interface LayerColorRequest extends ImageProduct {
   pricePerGram: number;
 }
 
-export interface CandleDetailIdsWithQuantity {
-  candleId: number;
-  decorIds?: number[];
-  layerColorIds?: number[];
-  numberOfLayerIds?: number[];
-  smellIds?: number[];
-  wickIds?: number[];
-  quantity: number;
-}
-
-export interface CandleDetail {
+// ConfiguredCandleDetail = CandleDetailWithQuantity
+export class ConfiguredCandleDetail {
   candle: Candle;
-  decor: Decor;
-  layerColors?: LayerColor[];
-  numberOfLayer: NumberOfLayer;
-  smell?: Smell;
-  wick: Wick;
-}
-
-export interface CandleDetailWithQuantityAndPrice {
-  candleDetail: CandleDetail;
   quantity: number;
-  price: number;
-}
+  numberOfLayer?: NumberOfLayer;
+  layerColors?: LayerColor[];
+  wick?: Wick;
+  decor?: Decor;
+  smell?: Smell;
+  filter?: string;
 
-export interface User {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email?: string;
-}
+  constructor(
+    candle: Candle,
+    quantity: number,
+    numberOfLayer?: NumberOfLayer,
+    layerColors?: LayerColor[],
+    wick?: Wick,
+    decor?: Decor,
+    smell?: Smell,
+  ) {
+    this.candle = candle;
+    this.layerColors = layerColors;
+    this.numberOfLayer = numberOfLayer;
+    this.wick = wick;
+    this.quantity = quantity;
+    this.decor = decor;
+    this.smell = smell;
+  }
 
-export interface Feedback {
-  typeFeedback: string;
-  userName: string;
-}
+  getFilter(): string {
+    if (!this.filter) {
+      const parts = [
+        `c-${this.candle.id}`,
+        `n-${this.numberOfLayer?.id}`,
+        this.layerColors ? `l-${this.layerColors.map((item) => item.id).join('_')}` : '',
+        this.decor ? `d-${this.decor.id}` : '',
+        this.smell ? `s-${this.smell.id}` : '',
+        `w-${this.wick?.id}`,
+        `q-${this.quantity}`,
+      ];
 
-export interface CreateOrderRequest {
-  configuredCandlesString: string;
-  user: User;
-  feedback: Feedback;
+      return parts.filter((part) => part !== '').join('~');
+    }
+
+    return this.filter;
+  }
 }

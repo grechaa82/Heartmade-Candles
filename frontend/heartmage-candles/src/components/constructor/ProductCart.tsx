@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import CornerTag from './CornerTag';
-import { ImageProduct } from '../../typesV2/BaseProduct';
+import { ImageProduct } from '../../typesV2/Candle';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 import IconMinusLarge from '../../UI/IconMinusLarge';
 import { apiUrlToImage } from '../../config';

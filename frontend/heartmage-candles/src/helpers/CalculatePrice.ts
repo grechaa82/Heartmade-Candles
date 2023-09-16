@@ -1,38 +1,32 @@
-import { CandleDetails } from '../typesV2/BaseProduct';
+import { ConfiguredCandleDetail } from '../typesV2/BaseProduct';
 
-export const calculatePrice = (candleDetail: CandleDetails): number => {
+export const calculatePrice = (candleDetail: ConfiguredCandleDetail): number => {
   let totalPrice: number = candleDetail.candle.price;
 
-  if (candleDetail.decors) {
-    for (const decor of candleDetail.decors) {
-      totalPrice += decor.price;
-    }
+  if (candleDetail.decor) {
+    totalPrice += candleDetail.decor.price;
   }
 
   if (
-    candleDetail.numberOfLayers &&
-    candleDetail.numberOfLayers.length > 0 &&
+    candleDetail.numberOfLayer &&
     candleDetail.layerColors &&
     candleDetail.layerColors.length > 0
   ) {
-    const gramsInLayer = candleDetail.candle.weightGrams / candleDetail.numberOfLayers[0].number;
+    const gramsInLayer = candleDetail.candle.weightGrams / candleDetail.numberOfLayer.number;
 
     for (const layerColor of candleDetail.layerColors) {
       totalPrice += gramsInLayer * layerColor.price;
     }
   }
 
-  if (candleDetail.smells) {
-    for (const smell of candleDetail.smells) {
-      totalPrice += smell.price;
-    }
+  if (candleDetail.smell) {
+    totalPrice += candleDetail.smell.price;
   }
 
-  if (candleDetail.wicks) {
-    for (const wick of candleDetail.wicks) {
-      totalPrice += wick.price;
-    }
+  if (candleDetail.wick) {
+    totalPrice += candleDetail.wick.price;
   }
 
+  console.log(totalPrice, candleDetail);
   return Number(totalPrice.toFixed());
 };
