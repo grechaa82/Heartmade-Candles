@@ -5,7 +5,7 @@ import ListProductsCart from '../../modules/constructor/ListProductsCart';
 import ListProductsCartSkeleton from '../../modules/constructor/ListProductsCartSkeleton';
 import CandleForm from '../../modules/constructor/CandleForm';
 import { CandleDetail, ConfiguredCandleDetail } from '../../typesV2/BaseProduct';
-import { ImageProduct } from '../../typesV2/Candle';
+import { Candle, ImageProduct } from '../../typesV2/Candle';
 import { OrderItemFilter, validateOrderItemFilter } from '../../typesV2/OrderItemFilter';
 import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
 import CandleSelectionPanelSkeleton from '../../modules/constructor/CandleSelectionPanelSkeleton';
@@ -32,8 +32,6 @@ const ConstructorPage: FC = () => {
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
-
-  console.log('checkConfiguredCandleDetail', configuredCandleDetails);
 
   async function showCandleForm(candleId: number) {
     try {
@@ -122,18 +120,7 @@ const ConstructorPage: FC = () => {
     fetchData();
   }, []);
 
-  /* Временно выключаем */
-
   useEffect(() => {
-    // 1. Взять строку из URL
-    // 2. Получить из строки OrderItemFilter[]
-    // 3. Проверить что OrderItemFilter[] валидны (c-1~n-1~l-1~w-1~q-1 === candleId=1, numberOfLayerId=1, layerColorIds=1, wickId=1, quantity=1)
-    // 4. Проверить что такая свеча может существовать на сервере
-    //   4.1 Запросить свечу CandleDetail = ConstructorApi.getCandleById(id)
-    //   4.2 Узнать есть ли в CandleDetail такой OrderItemFilter (подобный метод уже существует)
-    //   4.3 Создать из этого ConfiguredCandleDetail
-    // 5. Установить значение setConfiguredCandleDetail
-
     setIsConfiguredCandleDetailLoading(true);
 
     let validConfiguredCandleDetail: ConfiguredCandleDetail[] = [];
@@ -149,41 +136,50 @@ const ConstructorPage: FC = () => {
       .map(decodeURIComponent)
       .map(OrderItemFilter.parseToOrderItemFilter);
 
-    getValidCandleDetails(orderItemFilters).then((result) => {
+    getValidConfiguredCandleDetail(orderItemFilters).then((result) => {
       const { candleDetails, errorMessages } = result;
+
+      validConfiguredCandleDetail.push(...candleDetails);
+
       setConfiguredCandleDetails(candleDetails);
       let newTotalPrice = candleDetails.reduce(
         (sum, detail) => sum + calculatePrice(detail) * detail.quantity,
         0,
       );
       setTotalPrice(newTotalPrice);
+
       allErrorMessages = [...allErrorMessages, ...errorMessages];
 
-      if (allErrorMessages.length) setErrorMessage(allErrorMessages);
+      if (allErrorMessages.length) {
+        setErrorMessage(allErrorMessages);
+      }
+
+      setConfiguredCandleDetails(validConfiguredCandleDetail);
+
       setIsConfiguredCandleDetailLoading(false);
     });
   }, [location.search]);
 
-  function generateErrorMessage(candleTitle: string, property: string, id: number) {
-    return `У свечи '${candleTitle}' нет ${property}: ${id}`;
-  }
-
   async function getValidConfiguredCandleDetail(orderItemFilters: OrderItemFilter[]) {
-    let validCandleDetails = [];
-    let allErrorMessages = [];
+    let validConfiguredCandleDetail: ConfiguredCandleDetail[] = [];
+    let allErrorMessages: string[] = [];
 
-    for (const filter of validFilters) {
+    for (const filter of orderItemFilters) {
       const candleDetail = await ConstructorApi.getCandleById(filter.candleId.toString());
       const validationResult = validateConfiguredCandleDetail(candleDetail, filter);
 
       if (Array.isArray(validationResult)) {
         allErrorMessages = [...allErrorMessages, ...validationResult];
       } else {
-        validCandleDetails.push(validationResult);
+        validConfiguredCandleDetail.push(validationResult);
       }
     }
 
-    return { candleDetails: validCandleDetails, errorMessages: allErrorMessages };
+    return { candleDetails: validConfiguredCandleDetail, errorMessages: allErrorMessages };
+  }
+
+  function generateErrorMessage(candleTitle: string, property: string, id: string) {
+    return `У свечи '${candleTitle}' нет ${property}: ${id}`;
   }
 
   function validateConfiguredCandleDetail(
@@ -199,7 +195,11 @@ const ConstructorPage: FC = () => {
       !candleDetail.decors.some((d) => d.id === orderItemFilter.decorId)
     ) {
       errorMessageInvalidCandleComponents.push(
-        `У свечи '${candleDetail.candle.title}' нет декора: ${orderItemFilter.decorId}`,
+        generateErrorMessage(
+          candleDetail.candle.title,
+          'декора',
+          orderItemFilter.decorId.toString(),
+        ),
       );
       isValid = false;
     }
@@ -212,7 +212,11 @@ const ConstructorPage: FC = () => {
       )
     ) {
       errorMessageInvalidCandleComponents.push(
-        `У свечи '${candleDetail.candle.title}' нет слоя: ${orderItemFilter.layerColorIds}`,
+        generateErrorMessage(
+          candleDetail.candle.title,
+          'слоя',
+          orderItemFilter.layerColorIds.join(','),
+        ),
       );
       isValid = false;
     }
@@ -223,7 +227,11 @@ const ConstructorPage: FC = () => {
       !candleDetail.numberOfLayers.some((n) => n.id === orderItemFilter.numberOfLayerId)
     ) {
       errorMessageInvalidCandleComponents.push(
-        `У свечи '${candleDetail.candle.title}' нет количество слоев: ${orderItemFilter.numberOfLayerId}`,
+        generateErrorMessage(
+          candleDetail.candle.title,
+          'количества слоев',
+          orderItemFilter.numberOfLayerId.toString(),
+        ),
       );
       isValid = false;
     }
@@ -234,7 +242,11 @@ const ConstructorPage: FC = () => {
       !candleDetail.smells.some((s) => s.id === orderItemFilter.smellId)
     ) {
       errorMessageInvalidCandleComponents.push(
-        `У свечи '${candleDetail.candle.title}' нет запаха: ${orderItemFilter.smellId}`,
+        generateErrorMessage(
+          candleDetail.candle.title,
+          'запаха',
+          orderItemFilter.smellId.toString(),
+        ),
       );
       isValid = false;
     }
@@ -245,7 +257,11 @@ const ConstructorPage: FC = () => {
       !candleDetail.wicks.some((w) => w.id === orderItemFilter.wickId)
     ) {
       errorMessageInvalidCandleComponents.push(
-        `У свечи '${candleDetail.candle.title}' нет фитиля: ${orderItemFilter.wickId}`,
+        generateErrorMessage(
+          candleDetail.candle.title,
+          'фитиля',
+          orderItemFilter.wickId.toString(),
+        ),
       );
       isValid = false;
     }
@@ -307,13 +323,12 @@ const ConstructorPage: FC = () => {
   };
 
   const calculatePriceConfiguredCandleDetail = (configuredCandleDetail: ConfiguredCandleDetail) => {
-    console.log(configuredCandleDetail);
     setPriceConfiguredCandleDetail(calculatePrice(configuredCandleDetail));
   };
 
   const getCreateOrderLink = (): string => {
     var configuredCandlesString = location.search;
-    return `/order${configuredCandlesString}`;
+    return `/orders${configuredCandlesString}`;
   };
 
   return (

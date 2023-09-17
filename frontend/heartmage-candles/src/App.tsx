@@ -45,7 +45,7 @@ function App() {
           }
         />
         <Route path="constructor/" element={<ConstructorPage />} />
-        <Route path="order/" element={<OrderPage />} />
+        <Route path="orders/" element={<OrderPage />} />
         <Route path="auth/" element={<AuthPage />} />
         <Route path="weather" element={<Weather />} />
       </Routes>

@@ -27,6 +27,5 @@ export const calculatePrice = (candleDetail: ConfiguredCandleDetail): number => 
     totalPrice += candleDetail.wick.price;
   }
 
-  console.log(totalPrice, candleDetail);
   return Number(totalPrice.toFixed());
 };
