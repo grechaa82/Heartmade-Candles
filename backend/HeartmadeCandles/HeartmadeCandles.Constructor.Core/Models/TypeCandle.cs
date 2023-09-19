@@ -1,8 +1,7 @@
-﻿namespace HeartmadeCandles.Constructor.Core.Models
+﻿namespace HeartmadeCandles.Constructor.Core.Models;
+
+public class TypeCandle
 {
-    public class TypeCandle
-    {
-        public int Id { get; init; }
-        public string Title { get; init;}
-    }
+    public int Id { get; init; }
+    public string Title { get; init; }
 }

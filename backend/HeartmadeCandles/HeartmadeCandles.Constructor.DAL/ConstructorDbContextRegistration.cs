@@ -2,20 +2,21 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HeartmadeCandles.Constructor.DAL
+namespace HeartmadeCandles.Constructor.DAL;
+
+public static class ConstructorDbContextRegistration
 {
-    public static class ConstructorDbContextRegistration
+    public static IServiceCollection AddConstructorDbContext(this IServiceCollection services,
+        IConfiguration configuration)
     {
-        public static IServiceCollection AddConstructorDbContext(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<ConstructorDbContext>(options =>
+        services.AddDbContext<ConstructorDbContext>(
+            options =>
             {
                 options.UseNpgsql(
-                    connectionString: configuration.GetConnectionString("DefaultConnection"),
-                    npgsqlOptionsAction: builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
+                    configuration.GetConnectionString("DefaultConnection"),
+                    builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
             });
 
-            return services;
-        }
+        return services;
     }
 }

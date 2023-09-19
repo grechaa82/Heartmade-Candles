@@ -1,85 +1,84 @@
-﻿using HeartmadeCandles.Admin.DAL.Entities;
+﻿#nullable disable
+
+using HeartmadeCandles.Admin.DAL.Entities;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
+namespace HeartmadeCandles.Migrations.AdminDatabase;
 
-namespace HeartmadeCandles.Migrations.AdminDatabase
+/// <inheritdoc />
+public partial class UpdatedImagesContinued : Migration
 {
     /// <inheritdoc />
-    public partial class UpdatedImagesContinued : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "imageURL",
-                table: "Wick");
+        migrationBuilder.DropColumn(
+            "imageURL",
+            "Wick");
 
-            migrationBuilder.DropColumn(
-                name: "imageURL",
-                table: "LayerColor");
+        migrationBuilder.DropColumn(
+            "imageURL",
+            "LayerColor");
 
-            migrationBuilder.DropColumn(
-                name: "imageURL",
-                table: "Decor");
+        migrationBuilder.DropColumn(
+            "imageURL",
+            "Decor");
 
-            migrationBuilder.AddColumn<ImageEntity[]>(
-                name: "images",
-                table: "Wick",
-                type: "jsonb",
-                nullable: false,
-                defaultValue: new ImageEntity[0]);
+        migrationBuilder.AddColumn<ImageEntity[]>(
+            "images",
+            "Wick",
+            "jsonb",
+            nullable: false,
+            defaultValue: new ImageEntity[0]);
 
-            migrationBuilder.AddColumn<ImageEntity[]>(
-                name: "images",
-                table: "LayerColor",
-                type: "jsonb",
-                nullable: false,
-                defaultValue: new ImageEntity[0]);
+        migrationBuilder.AddColumn<ImageEntity[]>(
+            "images",
+            "LayerColor",
+            "jsonb",
+            nullable: false,
+            defaultValue: new ImageEntity[0]);
 
-            migrationBuilder.AddColumn<ImageEntity[]>(
-                name: "images",
-                table: "Decor",
-                type: "jsonb",
-                nullable: false,
-                defaultValue: new ImageEntity[0]);
-        }
+        migrationBuilder.AddColumn<ImageEntity[]>(
+            "images",
+            "Decor",
+            "jsonb",
+            nullable: false,
+            defaultValue: new ImageEntity[0]);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "images",
-                table: "Wick");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            "images",
+            "Wick");
 
-            migrationBuilder.DropColumn(
-                name: "images",
-                table: "LayerColor");
+        migrationBuilder.DropColumn(
+            "images",
+            "LayerColor");
 
-            migrationBuilder.DropColumn(
-                name: "images",
-                table: "Decor");
+        migrationBuilder.DropColumn(
+            "images",
+            "Decor");
 
-            migrationBuilder.AddColumn<string>(
-                name: "imageURL",
-                table: "Wick",
-                type: "text",
-                nullable: false,
-                defaultValue: "");
+        migrationBuilder.AddColumn<string>(
+            "imageURL",
+            "Wick",
+            "text",
+            nullable: false,
+            defaultValue: "");
 
-            migrationBuilder.AddColumn<string>(
-                name: "imageURL",
-                table: "LayerColor",
-                type: "text",
-                nullable: false,
-                defaultValue: "");
+        migrationBuilder.AddColumn<string>(
+            "imageURL",
+            "LayerColor",
+            "text",
+            nullable: false,
+            defaultValue: "");
 
-            migrationBuilder.AddColumn<string>(
-                name: "imageURL",
-                table: "Decor",
-                type: "text",
-                nullable: false,
-                defaultValue: "");
-        }
+        migrationBuilder.AddColumn<string>(
+            "imageURL",
+            "Decor",
+            "text",
+            nullable: false,
+            defaultValue: "");
     }
 }

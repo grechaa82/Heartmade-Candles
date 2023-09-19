@@ -1,83 +1,82 @@
 ﻿using CSharpFunctionalExtensions;
-using CSharpFunctionalExtensions.ValueTasks;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 
-namespace HeartmadeCandles.Order.BL.Services
+namespace HeartmadeCandles.Order.BL.Services;
+
+public class OrderService : IOrderService
 {
-    public class OrderService : IOrderService
+    private readonly IOrderNotificationHandler _orderNotificationHandler;
+    private readonly IOrderRepository _orderRepository;
+
+    public OrderService(IOrderRepository orderRepository, IOrderNotificationHandler orderNotificationHandler)
     {
-        private readonly IOrderRepository _orderRepository;
-        private readonly IOrderNotificationHandler _orderNotificationHandler;
+        _orderRepository = orderRepository;
+        _orderNotificationHandler = orderNotificationHandler;
+    }
 
-        public OrderService(IOrderRepository orderRepository, IOrderNotificationHandler orderNotificationHandler)
+    public async Task<Result<OrderItem[]>> Get(OrderItemFilter[] orderItemFilters)
+    {
+        var orderItemsResult = await _orderRepository.Get(orderItemFilters);
+        if (orderItemsResult.IsFailure)
         {
-            _orderRepository = orderRepository;
-            _orderNotificationHandler = orderNotificationHandler;
+            return orderItemsResult;
         }
 
-        public async Task<Result<OrderItem[]>> Get(OrderItemFilter[] orderItemFilters)
+        var invalidOrderItems = orderItemsResult.Value
+            .Select(o => o.CheckIsOrderItemMissing())
+            .ToArray();
+        if (invalidOrderItems.Any(o => o.IsFailure))
         {
-            var orderItemsResult = await _orderRepository.Get(orderItemFilters);
-            if (orderItemsResult.IsFailure)
-            {
-                return orderItemsResult;
-            }
-
-            var invalidOrderItems = orderItemsResult.Value
-                .Select(o => o.CheckIsOrderItemMissing())
-                .ToArray();
-            if (invalidOrderItems.Any(o => o.IsFailure))
-            {
-                return Result.Failure<OrderItem[]>("");
-            }
-
-            return orderItemsResult.Value;
+            return Result.Failure<OrderItem[]>("");
         }
 
-        public async Task<Result> CreateOrder(
-            string configuredCandlesString, 
-            OrderItemFilter[] OrderItemFilters, 
-            User user, 
-            Feedback feedback)
+        return orderItemsResult.Value;
+    }
+
+    public async Task<Result> CreateOrder(
+        string configuredCandlesString,
+        OrderItemFilter[] OrderItemFilters,
+        User user,
+        Feedback feedback)
+    {
+        var result = Result.Success();
+
+        var orderItemsResult = await _orderRepository.Get(OrderItemFilters);
+        if (orderItemsResult.IsFailure)
         {
-            var result = Result.Success();
+            return orderItemsResult;
+        }
 
-            var orderItemsResult = await _orderRepository.Get(OrderItemFilters);
-            if (orderItemsResult.IsFailure)
-            {
-                return orderItemsResult;
-            }
-
-            var invalidOrderItems = orderItemsResult.Value
-                .Select(o => o.CheckIsOrderItemMissing())
-                .ToArray();
-            if(invalidOrderItems.Any(o => o.IsFailure))
-            {
-                return Result.Failure(string.Join(
-                    ", ", 
+        var invalidOrderItems = orderItemsResult.Value
+            .Select(o => o.CheckIsOrderItemMissing())
+            .ToArray();
+        if (invalidOrderItems.Any(o => o.IsFailure))
+        {
+            return Result.Failure(
+                string.Join(
+                    ", ",
                     invalidOrderItems
                         .Where(o => o.IsFailure)
                         .Select(e => e.Error)));
-            }
-
-            var orderResutl = Core.Models.Order.Create(
-                configuredCandlesString, 
-                orderItemsResult.Value, 
-                user, 
-                feedback);
-            if (orderResutl.IsFailure)
-            {
-                return Result.Failure(orderResutl.Error);
-            }
-
-            var isMessageSend = await _orderNotificationHandler.OnCreateOrder(orderResutl.Value);
-            if (isMessageSend.IsFailure)
-            {
-                return Result.Failure(result.Error);
-            }
-
-            return Result.Success();
         }
+
+        var orderResutl = Core.Models.Order.Create(
+            configuredCandlesString,
+            orderItemsResult.Value,
+            user,
+            feedback);
+        if (orderResutl.IsFailure)
+        {
+            return Result.Failure(orderResutl.Error);
+        }
+
+        var isMessageSend = await _orderNotificationHandler.OnCreateOrder(orderResutl.Value);
+        if (isMessageSend.IsFailure)
+        {
+            return Result.Failure(result.Error);
+        }
+
+        return Result.Success();
     }
 }

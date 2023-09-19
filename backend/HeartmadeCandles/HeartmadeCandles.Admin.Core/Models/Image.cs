@@ -1,56 +1,54 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace HeartmadeCandles.Admin.Core.Models
+namespace HeartmadeCandles.Admin.Core.Models;
+
+public class Image
 {
-    public class Image
+    public const int MaxAlternativeNameLenght = 48;
+
+    private Image(string fileName, string alternativeName)
     {
-        public const int MaxAlternativeNameLenght = 48;
+        FileName = fileName;
+        AlternativeName = alternativeName;
+    }
 
-        private string _fileName;
-        private string _alternativeName;
+    public string FileName { get; }
 
-        private Image(string fileName, string alternativeName)
+    public string AlternativeName { get; }
+
+    public static Result<Image> Create(string fileName, string alternativeName)
+    {
+        var result = Result.Success();
+
+        if (string.IsNullOrWhiteSpace(fileName))
         {
-            _fileName = fileName;
-            _alternativeName = alternativeName;
+            result = Result.Combine(
+                result,
+                Result.Failure<Image>($"'{nameof(fileName)}' cannot be null or whitespace"));
         }
 
-        public string FileName { get => _fileName; }
-        public string AlternativeName { get => _alternativeName; }
-
-        public static Result<Image> Create(string fileName, string alternativeName)
+        if (string.IsNullOrWhiteSpace(alternativeName))
         {
-            var result = Result.Success();
-
-            if (string.IsNullOrWhiteSpace(fileName))
-            {
-                result = Result.Combine(
-                   result,
-                   Result.Failure<Image>($"'{nameof(fileName)}' cannot be null or whitespace"));
-            }
-
-            if (string.IsNullOrWhiteSpace(alternativeName))
-            {
-                result = Result.Combine(
-                   result,
-                   Result.Failure<Image>($"'{nameof(alternativeName)}' cannot be null or whitespace"));
-            }
-
-            if (!string.IsNullOrWhiteSpace(alternativeName) && alternativeName.Length > MaxAlternativeNameLenght)
-            {
-                result = Result.Combine(
-                   result,
-                   Result.Failure<Image>($"'{nameof(alternativeName)}' cannot be more than {MaxAlternativeNameLenght} characters"));
-            }
-
-            if (result.IsFailure)
-            {
-                Result.Failure<LayerColor>(result.Error);
-            }
-
-            var image = new Image(fileName, alternativeName);
-
-            return Result.Success(image);
+            result = Result.Combine(
+                result,
+                Result.Failure<Image>($"'{nameof(alternativeName)}' cannot be null or whitespace"));
         }
+
+        if (!string.IsNullOrWhiteSpace(alternativeName) && alternativeName.Length > MaxAlternativeNameLenght)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<Image>(
+                    $"'{nameof(alternativeName)}' cannot be more than {MaxAlternativeNameLenght} characters"));
+        }
+
+        if (result.IsFailure)
+        {
+            Result.Failure<LayerColor>(result.Error);
+        }
+
+        var image = new Image(fileName, alternativeName);
+
+        return Result.Success(image);
     }
 }

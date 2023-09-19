@@ -1,6 +1,5 @@
-﻿namespace HeartmadeCandles.UnitTests.Admin.DAL.Mapping
+﻿namespace HeartmadeCandles.UnitTests.Admin.DAL.Mapping;
+
+public class CandleMappingTest
 {
-    public class CandleMappingTest
-    {
-    }
 }

@@ -1,11 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.Constructor.Core.Models;
 
-namespace HeartmadeCandles.Constructor.Core.Interfaces
+namespace HeartmadeCandles.Constructor.Core.Interfaces;
+
+public interface IConstructorRepository
 {
-    public interface IConstructorRepository
-    {
-        Task<Maybe<CandleDetail>> GetCandleById(int candleId);
-        Task<Result<CandleTypeWithCandles[]>> GetCandles();
-    }
+    Task<Maybe<CandleDetail>> GetCandleById(int candleId);
+    Task<Result<CandleTypeWithCandles[]>> GetCandles();
 }

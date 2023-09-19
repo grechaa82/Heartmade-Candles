@@ -4,121 +4,116 @@ using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using Moq;
 
-namespace HeartmadeCandles.UnitTests.Admin.BL.Services
+namespace HeartmadeCandles.UnitTests.Admin.BL.Services;
+
+public class CandleServiceTest
 {
-    public class CandleServiceTest
+    private static readonly Faker _faker = new();
+
+    private readonly Mock<ICandleRepository> _candleRepositoryMock = new(MockBehavior.Strict);
+    private readonly Mock<IDecorRepository> _decorRepositoryMock = new(MockBehavior.Strict);
+    private readonly Mock<ILayerColorRepository> _layerColorRepositoryMock = new(MockBehavior.Strict);
+    private readonly Mock<INumberOfLayerRepository> _numberOfLayerRepositoryMock = new(MockBehavior.Strict);
+
+    private readonly CandleService _service;
+    private readonly Mock<ISmellRepository> _smellRepositoryMock = new(MockBehavior.Strict);
+    private readonly Mock<ITypeCandleRepository> _typeCandleRepositoryMock = new(MockBehavior.Strict);
+    private readonly Mock<IWickRepository> _wickRepositoryMock = new(MockBehavior.Strict);
+
+    public CandleServiceTest()
     {
-        private static Faker _faker = new Faker();
+        _service = new CandleService(
+            _candleRepositoryMock.Object,
+            _decorRepositoryMock.Object,
+            _layerColorRepositoryMock.Object,
+            _numberOfLayerRepositoryMock.Object,
+            _smellRepositoryMock.Object,
+            _typeCandleRepositoryMock.Object,
+            _wickRepositoryMock.Object);
+    }
 
-        private readonly CandleService _service;
+    [Fact]
+    public async Task UpdateDecor_WhenValid_ShouldReturnFailureAsync()
+    {
+        // Arrange
+        var id = _faker.Random.Number(1, 100);
+        var ids = new[] { 1, 2, 3 };
 
-        private readonly Mock<ICandleRepository> _candleRepositoryMock = new Mock<ICandleRepository>(MockBehavior.Strict);
-        private readonly Mock<IDecorRepository> _decorRepositoryMock = new Mock<IDecorRepository>(MockBehavior.Strict);
-        private readonly Mock<ILayerColorRepository> _layerColorRepositoryMock = new Mock<ILayerColorRepository>(MockBehavior.Strict);
-        private readonly Mock<INumberOfLayerRepository> _numberOfLayerRepositoryMock = new Mock<INumberOfLayerRepository>(MockBehavior.Strict);
-        private readonly Mock<ISmellRepository> _smellRepositoryMock = new Mock<ISmellRepository>(MockBehavior.Strict);
-        private readonly Mock<ITypeCandleRepository> _typeCandleRepositoryMock = new Mock<ITypeCandleRepository>(MockBehavior.Strict);
-        private readonly Mock<IWickRepository> _wickRepositoryMock = new Mock<IWickRepository>(MockBehavior.Strict);
+        var decors = new Decor[ids.Length];
+        for (var i = 0; i < ids.Length; i++) decors[i] = GenerateDecor(i);
 
-        public CandleServiceTest()
-        {
-            _service = new CandleService(
-                _candleRepositoryMock.Object, 
-                _decorRepositoryMock.Object, 
-                _layerColorRepositoryMock.Object, 
-                _numberOfLayerRepositoryMock.Object,
-                _smellRepositoryMock.Object,
-                _typeCandleRepositoryMock.Object,
-                _wickRepositoryMock.Object);
-        }
+        _decorRepositoryMock.Setup(d => d.GetByIds(ids))
+            .ReturnsAsync(decors)
+            .Verifiable();
 
-        [Fact]
-        public async Task UpdateDecor_WhenValid_ShouldReturnFailureAsync()
-        {
-            // Arrange
-            var id = _faker.Random.Number(1, 100);
-            var ids = new int[] { 1, 2, 3 };
+        _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, decors))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
 
-            var decors = new Decor[ids.Length];
-            for (int i = 0; i < ids.Length; i++)
+        // Act
+        var result = await _service.UpdateDecor(id, ids);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        Assert.Equal(ids.Length, decors.Length);
+    }
+
+    private static Decor GenerateDecor(int id = 0)
+    {
+        var decor = Decor.Create(
+            _faker.Random.String(1, Decor.MaxTitleLenght),
+            _faker.Random.String(1, Decor.MaxDescriptionLenght),
+            _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+            new[]
             {
-                decors[i] = GenerateDecor(i);
-            }
+                Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value
+            },
+            _faker.Random.Bool(),
+            id == 0 ? _faker.Random.Number(1, 10000) : id);
 
-            _decorRepositoryMock.Setup(d => d.GetByIds(ids))
-                .ReturnsAsync(decors)
-                .Verifiable();
+        return decor.Value;
+    }
 
-            _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, decors))
-                .Returns(Task.CompletedTask)
-                .Verifiable();
+    [Fact]
+    public async Task UpdateDecor_WhenAllDecorsNotExist_ShouldReturnFailureAsync()
+    {
+        // Arrange
+        var id = _faker.Random.Number(1, 100);
+        var ids = new[] { 1, 2, 3 };
 
-            // Act
-            var result = await _service.UpdateDecor(id, ids);
+        _decorRepositoryMock.Setup(d => d.GetByIds(ids))
+            .ReturnsAsync(Array.Empty<Decor>())
+            .Verifiable();
 
-            // Assert
-            Assert.True(result.IsSuccess);
-            Assert.Equal(ids.Length, decors.Length);
-        }
+        // Act
+        var result = await _service.UpdateDecor(id, ids);
 
-        private static Decor GenerateDecor(int id = 0)
-        {
-            var decor = Decor.Create(
-                _faker.Random.String(1, Decor.MaxTitleLenght),
-                _faker.Random.String(1, Decor.MaxDescriptionLenght),
-                _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
-                new Image[] { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
-                _faker.Random.Bool(),
-                id == 0 ? _faker.Random.Number(1, 10000) : id);
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal($"'{string.Join(", ", ids)}' these ids do not exist", result.Error);
+    }
 
-            return decor.Value;
-        }
+    [Fact]
+    public async Task UpdateDecor_WhenOneDecorNotExist_ShouldReturnFailureAsync()
+    {
+        // Arrange
+        var id = _faker.Random.Number(1, 100);
+        var ids = new[] { 1, 2, 3, 4 };
 
-        [Fact]
-        public async Task UpdateDecor_WhenAllDecorsNotExist_ShouldReturnFailureAsync()
-        {
-            // Arrange
-            var id = _faker.Random.Number(1, 100);
-            var ids = new int[] { 1, 2, 3 };
+        var decors = new Decor[ids.Length - 1];
+        for (var i = 0; i < decors.Length; i++) decors[ids[i] - 1] = GenerateDecor(ids[i]);
 
-            _decorRepositoryMock.Setup(d => d.GetByIds(ids))
-                .ReturnsAsync(Array.Empty<Decor>())
-                .Verifiable();
+        var idsToCheck = ids.Take(3).ToArray();
 
-            // Act
-            var result = await _service.UpdateDecor(id, ids);
+        _decorRepositoryMock.Setup(d => d.GetByIds(ids))
+            .ReturnsAsync(decors)
+            .Verifiable();
 
-            // Assert
-            Assert.True(result.IsFailure);
-            Assert.Equal($"'{string.Join(", ", ids)}' these ids do not exist", result.Error);
-        }
+        // Act
+        var result = await _service.UpdateDecor(id, ids);
 
-        [Fact]
-        public async Task UpdateDecor_WhenOneDecorNotExist_ShouldReturnFailureAsync()
-        {
-            // Arrange
-            var id = _faker.Random.Number(1, 100);
-            var ids = new int[] { 1, 2, 3, 4 };
-
-            var decors = new Decor[ids.Length - 1];
-            for (int i = 0; i < decors.Length; i++)
-            {
-                decors[ids[i] - 1] = GenerateDecor(ids[i]);
-            }
-
-            var idsToCheck = ids.Take(3).ToArray();
-
-            _decorRepositoryMock.Setup(d => d.GetByIds(ids))
-                .ReturnsAsync(decors)
-                .Verifiable();
-
-            // Act
-            var result = await _service.UpdateDecor(id, ids);
-
-            // Assert
-            Assert.True(result.IsFailure);
-            Assert.Equal("'4' these ids do not exist", result.Error);
-        }
-
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal("'4' these ids do not exist", result.Error);
     }
 }

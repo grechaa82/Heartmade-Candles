@@ -1,7 +1,6 @@
-﻿namespace HeartmadeCandles.Auth.Core
+﻿namespace HeartmadeCandles.Auth.Core;
+
+public interface IAuthService
 {
-    public interface IAuthService
-    {
-        bool IsValidUser(string login, string password);
-    }
+    bool IsValidUser(string login, string password);
 }

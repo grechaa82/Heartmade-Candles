@@ -1,25 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HeartmadeCandles.Constructor.DAL.Entities
+namespace HeartmadeCandles.Constructor.DAL.Entities;
+
+[Table("Smell")]
+public class SmellEntity
 {
-    [Table("Smell")]
-    public class SmellEntity
-    {
-        [Column("id")]
-        public int Id { get; set; }
+    [Column("id")] public int Id { get; set; }
 
-        [Column("title")]
-        public string Title { get; set; }
+    [Column("title")] public string Title { get; set; }
 
-        [Column("description")]
-        public string Description { get; set; }
+    [Column("description")] public string Description { get; set; }
 
-        [Column("price")]
-        public decimal Price { get; set; }
+    [Column("price")] public decimal Price { get; set; }
 
-        [Column("isActive")]
-        public bool IsActive { get; set; }
+    [Column("isActive")] public bool IsActive { get; set; }
 
-        public virtual ICollection<CandleEntitySmellEntity> CandleSmell { get; set; }
-    }
+    public virtual ICollection<CandleEntitySmellEntity> CandleSmell { get; set; }
 }

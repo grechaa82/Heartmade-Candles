@@ -2,15 +2,14 @@
 using HeartmadeCandles.Order.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HeartmadeCandles.Order.BL
-{
-    public static class OrderServicesRegistration
-    {
-        public static IServiceCollection AddOrderServices(this IServiceCollection services)
-        {
-            services.AddScoped<IOrderService, OrderService>();
+namespace HeartmadeCandles.Order.BL;
 
-            return services;
-        }
+public static class OrderServicesRegistration
+{
+    public static IServiceCollection AddOrderServices(this IServiceCollection services)
+    {
+        services.AddScoped<IOrderService, OrderService>();
+
+        return services;
     }
 }

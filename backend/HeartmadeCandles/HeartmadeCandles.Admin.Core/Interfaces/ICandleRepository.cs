@@ -1,18 +1,17 @@
 ﻿using HeartmadeCandles.Admin.Core.Models;
 
-namespace HeartmadeCandles.Admin.Core.Interfaces
+namespace HeartmadeCandles.Admin.Core.Interfaces;
+
+public interface ICandleRepository
 {
-    public interface ICandleRepository
-    {
-        Task<Candle[]> GetAll();
+    Task<Candle[]> GetAll();
 
-        Task<Candle> GetById(int candleId);
-        Task<CandleDetail> GetCandleDetailById(int candleId);
+    Task<Candle> GetById(int candleId);
+    Task<CandleDetail> GetCandleDetailById(int candleId);
 
-        Task Create(Candle candle);
+    Task Create(Candle candle);
 
-        Task Update(Candle candle);
+    Task Update(Candle candle);
 
-        Task Delete(int candleId);
-    }
+    Task Delete(int candleId);
 }

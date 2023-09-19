@@ -1,41 +1,40 @@
-﻿using HeartmadeCandles.Admin.DAL.Entities;
+﻿#nullable disable
+
+using HeartmadeCandles.Admin.DAL.Entities;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-#nullable disable
+namespace HeartmadeCandles.Migrations.AdminDatabase;
 
-namespace HeartmadeCandles.Migrations.AdminDatabase
+/// <inheritdoc />
+public partial class UpdatedImages : Migration
 {
     /// <inheritdoc />
-    public partial class UpdatedImages : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "imageURL",
-                table: "Candle");
+        migrationBuilder.DropColumn(
+            "imageURL",
+            "Candle");
 
-            migrationBuilder.AddColumn<ImageEntity[]>(
-                name: "images",
-                table: "Candle",
-                type: "jsonb",
-                nullable: false,
-                defaultValue: new ImageEntity[0]);
-        }
+        migrationBuilder.AddColumn<ImageEntity[]>(
+            "images",
+            "Candle",
+            "jsonb",
+            nullable: false,
+            defaultValue: new ImageEntity[0]);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "images",
-                table: "Candle");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            "images",
+            "Candle");
 
-            migrationBuilder.AddColumn<string>(
-                name: "imageURL",
-                table: "Candle",
-                type: "text",
-                nullable: false,
-                defaultValue: "");
-        }
+        migrationBuilder.AddColumn<string>(
+            "imageURL",
+            "Candle",
+            "text",
+            nullable: false,
+            defaultValue: "");
     }
 }

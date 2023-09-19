@@ -1,15 +1,14 @@
 ﻿using HeartmadeCandles.Order.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HeartmadeCandles.Order.Bot
-{
-    public static class OrderNotificationServicesRegistration
-    {
-        public static IServiceCollection AddOrderNotificationServices(this IServiceCollection services)
-        {
-            services.AddScoped<IOrderNotificationHandler, OrderNotificationHandler>();
+namespace HeartmadeCandles.Order.Bot;
 
-            return services;
-        }
+public static class OrderNotificationServicesRegistration
+{
+    public static IServiceCollection AddOrderNotificationServices(this IServiceCollection services)
+    {
+        services.AddScoped<IOrderNotificationHandler, OrderNotificationHandler>();
+
+        return services;
     }
 }

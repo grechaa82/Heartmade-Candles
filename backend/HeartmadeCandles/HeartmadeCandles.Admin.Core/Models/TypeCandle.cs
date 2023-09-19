@@ -1,38 +1,35 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace HeartmadeCandles.Admin.Core.Models
+namespace HeartmadeCandles.Admin.Core.Models;
+
+public class TypeCandle
 {
-    public class TypeCandle
+    public const int MaxTitleLenght = 32;
+
+    private TypeCandle(int id, string title)
     {
-        public const int MaxTitleLenght = 32;
+        Id = id;
+        Title = title;
+    }
 
-        private int _id;
-        private string _title;
+    public int Id { get; }
 
-        private TypeCandle(int id, string title)
+    public string Title { get; }
+
+    public static Result<TypeCandle> Create(string title, int id = 0)
+    {
+        if (string.IsNullOrWhiteSpace(title))
         {
-            _id = id;
-            _title = title;
+            return Result.Failure<TypeCandle>($"'{nameof(title)}' cannot be null or whitespace");
         }
 
-        public int Id { get => _id; }
-        public string Title { get => _title; }
-
-        public static Result<TypeCandle> Create(string title, int id = 0)
+        if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
         {
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                return Result.Failure<TypeCandle>($"'{nameof(title)}' cannot be null or whitespace");
-            }
-
-            if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
-            {
-                return Result.Failure<TypeCandle>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters");
-            }
-
-            var typeCandle = new TypeCandle(id, title);
-
-            return Result.Success(typeCandle);
+            return Result.Failure<TypeCandle>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters");
         }
+
+        var typeCandle = new TypeCandle(id, title);
+
+        return Result.Success(typeCandle);
     }
 }

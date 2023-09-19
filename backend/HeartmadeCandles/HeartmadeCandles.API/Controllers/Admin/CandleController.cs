@@ -5,176 +5,176 @@ using HeartmadeCandles.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HeartmadeCandles.API.Controllers.Admin
+namespace HeartmadeCandles.API.Controllers.Admin;
+
+[ApiController]
+[Route("api/admin/candles")]
+[Authorize(Roles = "Admin")]
+public class CandleController : Controller
 {
-    [ApiController]
-    [Route("api/admin/candles")]
-    [Authorize(Roles = "Admin")]
-    public class CandleController : Controller
+    private readonly ICandleService _candleService;
+
+    public CandleController(ICandleService candleService)
     {
-        private readonly ICandleService _candleService;
+        _candleService = candleService;
+    }
 
-        public CandleController(ICandleService candleService)
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        var candles = await _candleService.GetAll();
+        return Ok(candles);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int id)
+    {
+        return Ok(await _candleService.Get(id));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(CandleRequest candleRequest)
+    {
+        var typeCandleResult = TypeCandle.Create(candleRequest.TypeCandle.Title, candleRequest.TypeCandle.Id);
+
+        if (typeCandleResult.IsFailure)
         {
-            _candleService = candleService;
+            return BadRequest(typeCandleResult.Error);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        var imagesResult = ImageValidator.ValidateImages(candleRequest.Images);
+
+        if (imagesResult.IsFailure)
         {
-            return Ok(await _candleService.GetAll());
+            return BadRequest(imagesResult.Error);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        var candleResult = Candle.Create(
+            candleRequest.Title,
+            candleRequest.Description,
+            candleRequest.Price,
+            candleRequest.WeightGrams,
+            imagesResult.Value,
+            typeCandleResult.Value,
+            candleRequest.IsActive);
+
+        if (candleResult.IsFailure)
         {
-            return Ok(await _candleService.Get(id));
+            return BadRequest(candleResult.Error);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(CandleRequest candleRequest)
+        await _candleService.Create(candleResult.Value);
+
+        return Ok();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, CandleRequest candleRequest)
+    {
+        var typeCandleResult = TypeCandle.Create(candleRequest.TypeCandle.Title, candleRequest.TypeCandle.Id);
+
+        if (typeCandleResult.IsFailure)
         {
-            var typeCandleResult = TypeCandle.Create(candleRequest.TypeCandle.Title, candleRequest.TypeCandle.Id);
-
-            if (typeCandleResult.IsFailure)
-            {
-                return BadRequest(typeCandleResult.Error);
-            }
-
-            var imagesResult = ImageValidator.ValidateImages(candleRequest.Images);
-
-            if (imagesResult.IsFailure)
-            {
-                return BadRequest(imagesResult.Error);
-            }
-
-            var candleResult = Candle.Create(
-                candleRequest.Title,
-                candleRequest.Description,
-                candleRequest.Price,
-                candleRequest.WeightGrams,
-                imagesResult.Value,
-                typeCandleResult.Value,
-                candleRequest.IsActive);
-
-            if (candleResult.IsFailure)
-            {
-                return BadRequest(candleResult.Error);
-            }
-
-            await _candleService.Create(candleResult.Value);
-
-            return Ok();
+            return BadRequest(typeCandleResult.Error);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, CandleRequest candleRequest)
+        var imagesResult = ImageValidator.ValidateImages(candleRequest.Images);
+
+        if (imagesResult.IsFailure)
         {
-            var typeCandleResult = TypeCandle.Create(candleRequest.TypeCandle.Title, candleRequest.TypeCandle.Id);
-
-            if (typeCandleResult.IsFailure)
-            {
-                return BadRequest(typeCandleResult.Error);
-            }
-
-            var imagesResult = ImageValidator.ValidateImages(candleRequest.Images);
-
-            if (imagesResult.IsFailure)
-            {
-                return BadRequest(imagesResult.Error);
-            }
-
-            var candleResult = Candle.Create(
-                candleRequest.Title,
-                candleRequest.Description,
-                candleRequest.Price,
-                candleRequest.WeightGrams,
-                imagesResult.Value,
-                typeCandleResult.Value,
-                candleRequest.IsActive,
-                id);
-
-            if (candleResult.IsFailure)
-            {
-                return BadRequest(candleResult.Error);
-            }
-
-            await _candleService.Update(candleResult.Value);
-
-            return Ok();
+            return BadRequest(imagesResult.Error);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _candleService.Delete(id);
+        var candleResult = Candle.Create(
+            candleRequest.Title,
+            candleRequest.Description,
+            candleRequest.Price,
+            candleRequest.WeightGrams,
+            imagesResult.Value,
+            typeCandleResult.Value,
+            candleRequest.IsActive,
+            id);
 
-            return Ok();
+        if (candleResult.IsFailure)
+        {
+            return BadRequest(candleResult.Error);
         }
 
-        [HttpPut("{id}/decors")]
-        public async Task<IActionResult> UpdateDecor(int id, int[] decorsIds)
+        await _candleService.Update(candleResult.Value);
+
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _candleService.Delete(id);
+
+        return Ok();
+    }
+
+    [HttpPut("{id}/decors")]
+    public async Task<IActionResult> UpdateDecor(int id, int[] decorsIds)
+    {
+        var result = await _candleService.UpdateDecor(id, decorsIds);
+
+        if (result.IsFailure)
         {
-            var result = await _candleService.UpdateDecor(id, decorsIds);
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return BadRequest(result.Error);
         }
 
-        [HttpPut("{id}/layerColors")]
-        public async Task<IActionResult> UpdateLayerColor(int id, int[] layerColorsIds)
+        return Ok();
+    }
+
+    [HttpPut("{id}/layerColors")]
+    public async Task<IActionResult> UpdateLayerColor(int id, int[] layerColorsIds)
+    {
+        var result = await _candleService.UpdateLayerColor(id, layerColorsIds);
+
+        if (result.IsFailure)
         {
-            var result = await _candleService.UpdateLayerColor(id, layerColorsIds);
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return BadRequest(result.Error);
         }
 
-        [HttpPut("{id}/numberOfLayers")]
-        public async Task<IActionResult> UpdateNumberOfLayer(int id, int[] numberOfLayersIds)
+        return Ok();
+    }
+
+    [HttpPut("{id}/numberOfLayers")]
+    public async Task<IActionResult> UpdateNumberOfLayer(int id, int[] numberOfLayersIds)
+    {
+        var result = await _candleService.UpdateNumberOfLayer(id, numberOfLayersIds);
+
+        if (result.IsFailure)
         {
-            var result = await _candleService.UpdateNumberOfLayer(id, numberOfLayersIds);
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return BadRequest(result.Error);
         }
 
-        [HttpPut("{id}/smells")]
-        public async Task<IActionResult> UpdateSmell(int id, int[] smellsIds)
+        return Ok();
+    }
+
+    [HttpPut("{id}/smells")]
+    public async Task<IActionResult> UpdateSmell(int id, int[] smellsIds)
+    {
+        var result = await _candleService.UpdateSmell(id, smellsIds);
+
+        if (result.IsFailure)
         {
-            var result = await _candleService.UpdateSmell(id, smellsIds);
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return BadRequest(result.Error);
         }
 
-        [HttpPut("{id}/wicks")]
-        public async Task<IActionResult> UpdateWick(int id, int[] wicksIds)
+        return Ok();
+    }
+
+    [HttpPut("{id}/wicks")]
+    public async Task<IActionResult> UpdateWick(int id, int[] wicksIds)
+    {
+        var result = await _candleService.UpdateWick(id, wicksIds);
+
+        if (result.IsFailure)
         {
-            var result = await _candleService.UpdateWick(id, wicksIds);
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            return Ok();
+            return BadRequest(result.Error);
         }
+
+        return Ok();
     }
 }

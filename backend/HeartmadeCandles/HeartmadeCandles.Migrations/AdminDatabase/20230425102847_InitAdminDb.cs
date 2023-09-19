@@ -1,164 +1,158 @@
-﻿using System;
+﻿#nullable disable
+
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-#nullable disable
+namespace HeartmadeCandles.Migrations.AdminDatabase;
 
-namespace HeartmadeCandles.Migrations.AdminDatabase
+/// <inheritdoc />
+public partial class InitAdminDb : Migration
 {
     /// <inheritdoc />
-    public partial class InitAdminDb : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.CreateTable(
-                name: "Decor",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    title = table.Column<string>(type: "character varying(48)", maxLength: 48, nullable: false),
-                    description = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    price = table.Column<decimal>(type: "numeric", nullable: false),
-                    imageURL = table.Column<string>(type: "text", nullable: false),
-                    isActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Decor", x => x.id);
-                });
+        migrationBuilder.CreateTable(
+            "Decor",
+            table => new
+            {
+                id = table.Column<int>("integer", nullable: false)
+                    .Annotation(
+                        "Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                title = table.Column<string>("character varying(48)", maxLength: 48, nullable: false),
+                description = table.Column<string>("character varying(256)", maxLength: 256, nullable: false),
+                price = table.Column<decimal>("numeric", nullable: false),
+                imageURL = table.Column<string>("text", nullable: false),
+                isActive = table.Column<bool>("boolean", nullable: false)
+            },
+            constraints: table => { table.PrimaryKey("PK_Decor", x => x.id); });
 
-            migrationBuilder.CreateTable(
-                name: "LayerColor",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    title = table.Column<string>(type: "character varying(48)", maxLength: 48, nullable: false),
-                    description = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    pricePerGram = table.Column<decimal>(type: "numeric", nullable: false),
-                    imageURL = table.Column<string>(type: "text", nullable: false),
-                    isActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LayerColor", x => x.id);
-                });
+        migrationBuilder.CreateTable(
+            "LayerColor",
+            table => new
+            {
+                id = table.Column<int>("integer", nullable: false)
+                    .Annotation(
+                        "Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                title = table.Column<string>("character varying(48)", maxLength: 48, nullable: false),
+                description = table.Column<string>("character varying(256)", maxLength: 256, nullable: false),
+                pricePerGram = table.Column<decimal>("numeric", nullable: false),
+                imageURL = table.Column<string>("text", nullable: false),
+                isActive = table.Column<bool>("boolean", nullable: false)
+            },
+            constraints: table => { table.PrimaryKey("PK_LayerColor", x => x.id); });
 
-            migrationBuilder.CreateTable(
-                name: "NumberOfLayer",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    number = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_NumberOfLayer", x => x.id);
-                });
+        migrationBuilder.CreateTable(
+            "NumberOfLayer",
+            table => new
+            {
+                id = table.Column<int>("integer", nullable: false)
+                    .Annotation(
+                        "Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                number = table.Column<int>("integer", nullable: false)
+            },
+            constraints: table => { table.PrimaryKey("PK_NumberOfLayer", x => x.id); });
 
-            migrationBuilder.CreateTable(
-                name: "Smell",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    title = table.Column<string>(type: "character varying(48)", maxLength: 48, nullable: false),
-                    description = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    price = table.Column<decimal>(type: "numeric", nullable: false),
-                    isActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Smell", x => x.id);
-                });
+        migrationBuilder.CreateTable(
+            "Smell",
+            table => new
+            {
+                id = table.Column<int>("integer", nullable: false)
+                    .Annotation(
+                        "Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                title = table.Column<string>("character varying(48)", maxLength: 48, nullable: false),
+                description = table.Column<string>("character varying(256)", maxLength: 256, nullable: false),
+                price = table.Column<decimal>("numeric", nullable: false),
+                isActive = table.Column<bool>("boolean", nullable: false)
+            },
+            constraints: table => { table.PrimaryKey("PK_Smell", x => x.id); });
 
-            migrationBuilder.CreateTable(
-                name: "TypeCandle",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    title = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TypeCandle", x => x.id);
-                });
+        migrationBuilder.CreateTable(
+            "TypeCandle",
+            table => new
+            {
+                id = table.Column<int>("integer", nullable: false)
+                    .Annotation(
+                        "Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                title = table.Column<string>("character varying(32)", maxLength: 32, nullable: false)
+            },
+            constraints: table => { table.PrimaryKey("PK_TypeCandle", x => x.id); });
 
-            migrationBuilder.CreateTable(
-                name: "Wick",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    title = table.Column<string>(type: "character varying(48)", maxLength: 48, nullable: false),
-                    description = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    price = table.Column<decimal>(type: "numeric", nullable: false),
-                    imageURL = table.Column<string>(type: "text", nullable: false),
-                    isActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Wick", x => x.id);
-                });
+        migrationBuilder.CreateTable(
+            "Wick",
+            table => new
+            {
+                id = table.Column<int>("integer", nullable: false)
+                    .Annotation(
+                        "Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                title = table.Column<string>("character varying(48)", maxLength: 48, nullable: false),
+                description = table.Column<string>("character varying(256)", maxLength: 256, nullable: false),
+                price = table.Column<decimal>("numeric", nullable: false),
+                imageURL = table.Column<string>("text", nullable: false),
+                isActive = table.Column<bool>("boolean", nullable: false)
+            },
+            constraints: table => { table.PrimaryKey("PK_Wick", x => x.id); });
 
-            migrationBuilder.CreateTable(
-                name: "Candle",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    title = table.Column<string>(type: "character varying(48)", maxLength: 48, nullable: false),
-                    description = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    weightGrams = table.Column<int>(type: "integer", nullable: false),
-                    imageURL = table.Column<string>(type: "text", nullable: false),
-                    isActive = table.Column<bool>(type: "boolean", nullable: false),
-                    typeCandleId = table.Column<int>(type: "integer", nullable: false),
-                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Candle", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_Candle_TypeCandle_typeCandleId",
-                        column: x => x.typeCandleId,
-                        principalTable: "TypeCandle",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+        migrationBuilder.CreateTable(
+            "Candle",
+            table => new
+            {
+                id = table.Column<int>("integer", nullable: false)
+                    .Annotation(
+                        "Npgsql:ValueGenerationStrategy",
+                        NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                title = table.Column<string>("character varying(48)", maxLength: 48, nullable: false),
+                description = table.Column<string>("character varying(256)", maxLength: 256, nullable: false),
+                weightGrams = table.Column<int>("integer", nullable: false),
+                imageURL = table.Column<string>("text", nullable: false),
+                isActive = table.Column<bool>("boolean", nullable: false),
+                typeCandleId = table.Column<int>("integer", nullable: false),
+                createdAt = table.Column<DateTime>("timestamp with time zone", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_Candle", x => x.id);
+                table.ForeignKey(
+                    "FK_Candle_TypeCandle_typeCandleId",
+                    x => x.typeCandleId,
+                    "TypeCandle",
+                    "id",
+                    onDelete: ReferentialAction.Cascade);
+            });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Candle_typeCandleId",
-                table: "Candle",
-                column: "typeCandleId");
-        }
+        migrationBuilder.CreateIndex(
+            "IX_Candle_typeCandleId",
+            "Candle",
+            "typeCandleId");
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "Candle");
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            "Candle");
 
-            migrationBuilder.DropTable(
-                name: "Decor");
+        migrationBuilder.DropTable(
+            "Decor");
 
-            migrationBuilder.DropTable(
-                name: "LayerColor");
+        migrationBuilder.DropTable(
+            "LayerColor");
 
-            migrationBuilder.DropTable(
-                name: "NumberOfLayer");
+        migrationBuilder.DropTable(
+            "NumberOfLayer");
 
-            migrationBuilder.DropTable(
-                name: "Smell");
+        migrationBuilder.DropTable(
+            "Smell");
 
-            migrationBuilder.DropTable(
-                name: "Wick");
+        migrationBuilder.DropTable(
+            "Wick");
 
-            migrationBuilder.DropTable(
-                name: "TypeCandle");
-        }
+        migrationBuilder.DropTable(
+            "TypeCandle");
     }
 }

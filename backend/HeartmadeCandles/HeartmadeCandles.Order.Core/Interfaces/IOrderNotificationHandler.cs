@@ -1,9 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace HeartmadeCandles.Order.Core.Interfaces
+namespace HeartmadeCandles.Order.Core.Interfaces;
+
+public interface IOrderNotificationHandler
 {
-    public interface IOrderNotificationHandler
-    {
-        Task<Result> OnCreateOrder(Models.Order order);
-    }
+    Task<Result> OnCreateOrder(Models.Order order);
 }

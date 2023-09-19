@@ -1,8 +1,7 @@
-﻿namespace HeartmadeCandles.Constructor.Core.Models
+﻿namespace HeartmadeCandles.Constructor.Core.Models;
+
+public class Image
 {
-    public class Image
-    {
-        public string FileName { get; init; }
-        public string AlternativeName { get; init; }
-    }
+    public string FileName { get; init; }
+    public string AlternativeName { get; init; }
 }

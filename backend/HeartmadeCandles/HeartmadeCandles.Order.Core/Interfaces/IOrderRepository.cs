@@ -1,10 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.Order.Core.Models;
 
-namespace HeartmadeCandles.Order.Core.Interfaces
+namespace HeartmadeCandles.Order.Core.Interfaces;
+
+public interface IOrderRepository
 {
-    public interface IOrderRepository
-    {
-        Task<Result<OrderItem[]>> Get(OrderItemFilter[] orderItemFilters);
-    }
+    Task<Result<OrderItem[]>> Get(OrderItemFilter[] orderItemFilters);
 }

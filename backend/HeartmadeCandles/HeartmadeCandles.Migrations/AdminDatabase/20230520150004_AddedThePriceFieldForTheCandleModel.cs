@@ -1,29 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿#nullable disable
 
-#nullable disable
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace HeartmadeCandles.Migrations.AdminDatabase
+namespace HeartmadeCandles.Migrations.AdminDatabase;
+
+/// <inheritdoc />
+public partial class AddedThePriceFieldForTheCandleModel : Migration
 {
     /// <inheritdoc />
-    public partial class AddedThePriceFieldForTheCandleModel : Migration
+    protected override void Up(MigrationBuilder migrationBuilder)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AddColumn<decimal>(
-                name: "price",
-                table: "Candle",
-                type: "numeric",
-                nullable: false,
-                defaultValue: 0m);
-        }
+        migrationBuilder.AddColumn<decimal>(
+            "price",
+            "Candle",
+            "numeric",
+            nullable: false,
+            defaultValue: 0m);
+    }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropColumn(
-                name: "price",
-                table: "Candle");
-        }
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropColumn(
+            "price",
+            "Candle");
     }
 }

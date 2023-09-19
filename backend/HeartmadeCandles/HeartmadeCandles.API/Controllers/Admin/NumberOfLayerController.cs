@@ -3,70 +3,68 @@ using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
-namespace HeartmadeCandles.API.Controllers.Admin
+namespace HeartmadeCandles.API.Controllers.Admin;
+
+[ApiController]
+[Route("api/admin/numberOfLayers")]
+[Authorize(Roles = "Admin")]
+public class NumberOfLayerController : Controller
 {
-    [ApiController]
-    [Route("api/admin/numberOfLayers")]
-    [Authorize(Roles = "Admin")]
-    public class NumberOfLayerController : Controller
+    private readonly INumberOfLayerService _numberOfLayerService;
+
+    public NumberOfLayerController(INumberOfLayerService numberOfLayerService)
     {
-        private readonly INumberOfLayerService _numberOfLayerService;
+        _numberOfLayerService = numberOfLayerService;
+    }
 
-        public NumberOfLayerController(INumberOfLayerService numberOfLayerService)
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        return Ok(await _numberOfLayerService.GetAll());
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get(int id)
+    {
+        return Ok(await _numberOfLayerService.Get(id));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(NumberOfLayerRequest numberOfLayerRequest)
+    {
+        var result = NumberOfLayer.Create(numberOfLayerRequest.Number);
+
+        if (result.IsFailure)
         {
-            _numberOfLayerService = numberOfLayerService;
+            return BadRequest(result.Error);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        await _numberOfLayerService.Create(result.Value);
+
+        return Ok();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, NumberOfLayerRequest numberOfLayerRequest)
+    {
+        var result = NumberOfLayer.Create(numberOfLayerRequest.Number, id);
+
+        if (result.IsFailure)
         {
-            return Ok(await _numberOfLayerService.GetAll());
+            return BadRequest(result.Error);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            return Ok(await _numberOfLayerService.Get(id));
-        }
+        await _numberOfLayerService.Update(result.Value);
 
-        [HttpPost]
-        public async Task<IActionResult> Create(NumberOfLayerRequest numberOfLayerRequest)
-        {
-            var result = NumberOfLayer.Create(numberOfLayerRequest.Number);
+        return Ok();
+    }
 
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _numberOfLayerService.Delete(id);
 
-            await _numberOfLayerService.Create(result.Value);
-
-            return Ok();
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, NumberOfLayerRequest numberOfLayerRequest)
-        {
-            var result = NumberOfLayer.Create(numberOfLayerRequest.Number, id);
-
-            if (result.IsFailure)
-            {
-                return BadRequest(result.Error);
-            }
-
-            await _numberOfLayerService.Update(result.Value);
-
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            await _numberOfLayerService.Delete(id);
-
-            return Ok();
-        }
+        return Ok();
     }
 }

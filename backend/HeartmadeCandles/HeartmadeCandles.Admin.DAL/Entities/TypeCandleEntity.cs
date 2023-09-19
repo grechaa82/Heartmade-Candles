@@ -1,18 +1,18 @@
-﻿using HeartmadeCandles.Admin.Core.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using HeartmadeCandles.Admin.Core.Models;
 
-namespace HeartmadeCandles.Admin.DAL.Entities
+namespace HeartmadeCandles.Admin.DAL.Entities;
+
+[Table("TypeCandle")]
+public class TypeCandleEntity
 {
-    [Table("TypeCandle")]
-    public class TypeCandleEntity
-    {
-        [Column("id")]
-        public int Id { get; set; }
+    [Column("id")] public int Id { get; set; }
 
-        [Column("title"), MaxLength(TypeCandle.MaxTitleLenght), Required]
-        public string Title { get; set; }
+    [Column("title")]
+    [MaxLength(TypeCandle.MaxTitleLenght)]
+    [Required]
+    public string Title { get; set; }
 
-        public ICollection<CandleEntity> Candles { get; set; }
-    }
+    public ICollection<CandleEntity> Candles { get; set; }
 }
