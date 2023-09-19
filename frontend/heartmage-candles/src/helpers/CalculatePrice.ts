@@ -1,4 +1,4 @@
-import { ConfiguredCandleDetail } from '../typesV2/BaseProduct';
+import { ConfiguredCandleDetail } from '../typesV2/constructor/ConfiguredCandleDetail';
 
 export const calculatePrice = (candleDetail: ConfiguredCandleDetail): number => {
   let totalPrice: number = candleDetail.candle.price;

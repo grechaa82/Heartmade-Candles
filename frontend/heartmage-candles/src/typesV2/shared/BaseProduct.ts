@@ -40,3 +40,7 @@ export interface Image {
   fileName: string;
   alternativeName: string;
 }
+
+export interface LayerColorRequest extends ImageProduct {
+  pricePerGram: number;
+}

@@ -6,7 +6,7 @@
 }
 
 .leftPanel {
-  width: 132px;
+  min-width: 132px;
   border-right: 4px solid var(--color-eee);
   padding: 16px;
 }

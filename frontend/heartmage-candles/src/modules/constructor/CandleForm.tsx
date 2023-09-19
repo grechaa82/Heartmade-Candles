@@ -1,6 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 
-import { ConfiguredCandleDetail, CandleDetail } from '../../typesV2/BaseProduct';
+import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
+import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';
 import { NumberOfLayer, Smell, ImageProduct } from '../../typesV2/Candle';
 import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
 import TagSelector from '../../components/constructor/TagSelector';

@@ -1,5 +1,6 @@
-// OrderItemFilter = CandleDetailIdsWithQuantity
 export class OrderItemFilter {
+  static readonly MIN_LENGTH_FILTER: number = 18;
+
   candleId: number;
   numberOfLayerId: number;
   layerColorIds: number[];
@@ -102,6 +103,14 @@ export class OrderItemFilter {
       smellId,
     );
   }
+}
+
+export function tryParseToOrderItemFilter(filter: string): OrderItemFilter | string[] {
+  //Проверка
+
+  const orderItemFilter: OrderItemFilter = OrderItemFilter.parseToOrderItemFilter(filter);
+
+  return orderItemFilter;
 }
 
 export function validateOrderItemFilter(orderItemFilter: OrderItemFilter): string[] | undefined {

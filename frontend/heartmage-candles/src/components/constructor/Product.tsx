@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
 import CornerTag from './CornerTag';
-import { ImageProduct } from '../../typesV2/Candle';
+import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import Tag from '../shared/Tag';
 import IconAlertCircleLarge from '../../UI/IconAlertCircleLarge';
 import { apiUrlToImage } from '../../config';

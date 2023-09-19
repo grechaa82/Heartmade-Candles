@@ -1,7 +1,7 @@
 import { FC, useState, useEffect } from 'react';
 
 import ProductCart from '../../components/constructor/ProductCart';
-import { ConfiguredCandleDetail } from '../../typesV2/BaseProduct';
+import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';
 
 import Style from './ListProductsCart.module.css';
 

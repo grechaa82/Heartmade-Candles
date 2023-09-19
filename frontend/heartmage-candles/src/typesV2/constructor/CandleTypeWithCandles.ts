@@ -1,4 +1,4 @@
-import { Candle } from './Candle';
+import { Candle } from '../shared/BaseProduct';
 
 export interface CandleTypeWithCandles {
   type: string;

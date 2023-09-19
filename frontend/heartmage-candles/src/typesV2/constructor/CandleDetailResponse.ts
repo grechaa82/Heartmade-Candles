@@ -1,5 +1,11 @@
-import { LayerColorRequest } from '../BaseProduct';
-import { Candle, Decor, NumberOfLayer, Smell, Wick } from '../Candle';
+import {
+  Candle,
+  Decor,
+  NumberOfLayer,
+  Smell,
+  Wick,
+  LayerColorRequest,
+} from '../shared/BaseProduct';
 
 export interface CandleDetailResponse {
   candle: Candle;

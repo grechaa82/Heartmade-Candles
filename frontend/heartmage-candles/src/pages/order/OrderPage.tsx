@@ -1,9 +1,9 @@
 import { FC, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { OrderItemFilter } from '../../typesV2/OrderItemFilter';
+import { OrderItemFilter } from '../../typesV2/shared/OrderItemFilter';
 import { OrderItem } from '../../typesV2/order/OrderItem';
-import { CreateOrderRequest } from '../../typesV2/order/CreateOrderRequest';
+import { CreateOrderRequest, OrderItemFilterRequest } from '../../typesV2/order/CreateOrderRequest';
 import ListProductsCart from '../../modules/order/ListProductsCart';
 import FormPersonalData, { ItemFormPersonalData } from '../../modules/order/FormPersonalData';
 import FormFeedback, { ItemFormFeedback } from '../../modules/order/FormFeedback';
@@ -12,58 +12,6 @@ import TotalPricePanel from '../../modules/order/TotalPricePanel';
 import { OrdersApi } from '../../services/OrdersApi';
 
 import Style from './OrderPage.module.css';
-
-function parseCandleDetailIdsWithQuantityString(strings: string[]): OrderItemFilter[] {
-  const candleDetailIdsWithQuantities: OrderItemFilter[] = [];
-
-  for (const str of strings) {
-    if (str === '') {
-      continue;
-    }
-
-    const candleDetailIdsWithQuantity: OrderItemFilter = {
-      candleId: 0,
-      quantity: 0,
-    };
-
-    const components = str.split('~');
-
-    for (const component of components) {
-      const [type, value] = component.split('-');
-
-      switch (type) {
-        case 'c':
-          candleDetailIdsWithQuantity.candleId = parseInt(value);
-          break;
-        case 'd':
-          candleDetailIdsWithQuantity.decorIds = mapParseToInt(value);
-          break;
-        case 'l':
-          candleDetailIdsWithQuantity.layerColorIds = mapParseToInt(value);
-          break;
-        case 'n':
-          candleDetailIdsWithQuantity.numberOfLayerIds = mapParseToInt(value);
-          break;
-        case 's':
-          candleDetailIdsWithQuantity.smellIds = mapParseToInt(value);
-          break;
-        case 'w':
-          candleDetailIdsWithQuantity.wickIds = mapParseToInt(value);
-          break;
-        case 'q':
-          candleDetailIdsWithQuantity.quantity = parseInt(value);
-          break;
-      }
-    }
-    candleDetailIdsWithQuantities.push(candleDetailIdsWithQuantity);
-  }
-
-  return candleDetailIdsWithQuantities;
-}
-
-function mapParseToInt(value: string): number[] {
-  return value.split('_').map(Number);
-}
 
 const OrderPage: FC = () => {
   const [arrayCandleDetailWithQuantityAndPrice, setArrayCandleDetailWithQuantityAndPrice] =
@@ -97,7 +45,7 @@ const OrderPage: FC = () => {
     return regex.test(value);
   };
 
-  const itemFormPersonalData: ItemFormPersonalData[] = [
+  const itemsFormPersonalData: ItemFormPersonalData[] = [
     {
       label: 'Имя',
       value: firstName,
@@ -176,15 +124,15 @@ const OrderPage: FC = () => {
 
     async function fetchData(configuredCandlesString: string) {
       try {
-        const arrayCandleDetailWithQuantityAndPrice = await OrdersApi.get(configuredCandlesString);
-        setArrayCandleDetailWithQuantityAndPrice(arrayCandleDetailWithQuantityAndPrice);
+        const orderItems: OrderItem[] = await OrdersApi.get(configuredCandlesString);
+        setArrayCandleDetailWithQuantityAndPrice(orderItems);
       } catch (error) {
         console.error('Произошла ошибка при загрузке данных:', error);
       }
     }
   }, []);
 
-  function calculatePrice(arrayCandleDetails: OrderItem[]) {
+  function calculateTotalPrice(arrayCandleDetails: OrderItem[]) {
     let price = 0;
     arrayCandleDetails.map((item) => (price += item.price));
     return price;
@@ -219,11 +167,27 @@ const OrderPage: FC = () => {
     }
 
     if (canCreateOrder && configuredCandlesString) {
-      var createOrderRequest: CreateOrderRequest = {
+      const orderItemFilters = configuredCandlesString
+        .split('.')
+        .map((filter) => OrderItemFilter.parseToOrderItemFilter(filter));
+
+      const orderItemFilterRequests: OrderItemFilterRequest[] = orderItemFilters.map(
+        (orderItemFilter: OrderItemFilter) => {
+          return {
+            candleId: orderItemFilter.candleId,
+            decorId: orderItemFilter.decorId ? orderItemFilter.decorId : 0,
+            numberOfLayerId: orderItemFilter.numberOfLayerId,
+            layerColorIds: orderItemFilter.layerColorIds,
+            smellId: orderItemFilter.smellId ? orderItemFilter.smellId : 0,
+            wickId: orderItemFilter.wickId,
+            quantity: orderItemFilter.quantity,
+          };
+        },
+      );
+
+      const createOrderRequest: CreateOrderRequest = {
         configuredCandlesString: configuredCandlesString,
-        orderItemFilters: parseCandleDetailIdsWithQuantityString(
-          configuredCandlesString.split('.'),
-        ),
+        orderItemFilters: orderItemFilterRequests,
         user: {
           firstName: firstName,
           lastName: lastName,
@@ -235,6 +199,7 @@ const OrderPage: FC = () => {
           userName: username,
         },
       };
+
       await OrdersApi.createOrder(createOrderRequest);
     }
   }
@@ -243,12 +208,12 @@ const OrderPage: FC = () => {
     <div className={Style.container}>
       <div className={Style.leftPanel}>
         <ListProductsCart products={arrayCandleDetailWithQuantityAndPrice} />
-        <FormPersonalData itemsFormPersonalData={itemFormPersonalData} />
+        <FormPersonalData itemsFormPersonalData={itemsFormPersonalData} />
         <FormFeedback itemsFormFeedbacks={itemsFormFeedback} />
       </div>
       <div className={Style.rightPanel}>
         <TotalPricePanel
-          totalPrice={calculatePrice(arrayCandleDetailWithQuantityAndPrice)}
+          totalPrice={calculateTotalPrice(arrayCandleDetailWithQuantityAndPrice)}
           totalQuantityProduct={calculateTotalQuantity(arrayCandleDetailWithQuantityAndPrice)}
           onCreateOrder={createOrder}
         />

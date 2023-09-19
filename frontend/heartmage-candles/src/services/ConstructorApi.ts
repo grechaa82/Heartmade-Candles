@@ -1,6 +1,6 @@
-import { CandleDetail } from '../typesV2/BaseProduct';
+import { CandleDetail } from '../typesV2/constructor/CandleDetail';
 import { CandleDetailResponse } from '../typesV2/constructor/CandleDetailResponse';
-import { CandleTypeWithCandles } from '../typesV2/CandleTypeWithCandles';
+import { CandleTypeWithCandles } from '../typesV2/constructor/CandleTypeWithCandles';
 
 import { apiUrl } from '../config';
 

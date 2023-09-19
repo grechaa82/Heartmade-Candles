@@ -1,10 +1,19 @@
 import { Feedback } from './Feedback';
 import { User } from './User';
-import { OrderItemFilter } from '../OrderItemFilter';
 
 export interface CreateOrderRequest {
   configuredCandlesString: string;
-  orderItemFilters: OrderItemFilter[];
+  orderItemFilters: OrderItemFilterRequest[];
   user: User;
   feedback: Feedback;
+}
+
+export interface OrderItemFilterRequest {
+  candleId: number;
+  decorId?: number;
+  numberOfLayerId: number;
+  layerColorIds: number[];
+  smellId?: number;
+  wickId: number;
+  quantity: number;
 }

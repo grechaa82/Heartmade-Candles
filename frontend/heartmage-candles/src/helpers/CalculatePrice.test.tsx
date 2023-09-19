@@ -1,5 +1,4 @@
-import { CandleDetail } from '../typesV2/BaseProduct';
-import { Candle } from '../typesV2/Candle';
+import { CandleDetail } from '../typesV2/constructor/CandleDetail';
 import { calculatePrice } from './CalculatePrice';
 
 let candleDetail: CandleDetail = {
