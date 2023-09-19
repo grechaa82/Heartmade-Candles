@@ -170,6 +170,6 @@ public class OrderController : Controller
 
     private Feedback MapToFeedback(FeedbackRequest item)
     {
-        return new Feedback(item.TypeFeedback, item.UserName);
+        return new Feedback(item.Feedback.ToString(), item.UserName);
     }
 }

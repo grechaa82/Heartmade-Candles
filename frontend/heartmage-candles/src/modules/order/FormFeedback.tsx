@@ -3,14 +3,15 @@ import { FC } from 'react';
 import SelectorWithInput from '../../components/order/SelectorWithInput';
 import Input from '../../components/shared/Input';
 import IconTrashLarge from '../../UI/IconTrashLarge';
+import { feedbackType } from '../../typesV2/order/Feedback';
 
 import Style from './FormFeedback.module.css';
 
 export interface ItemFormFeedback {
-  title: string;
+  title: feedbackType;
   label: string;
   value: string;
-  onChangeSelectedForm: (value: string) => void;
+  onChangeSelectedForm: (value: feedbackType) => void;
   onChangeUsername: (value: string) => void;
   isRequired: boolean;
   isSelected: boolean;
@@ -35,7 +36,7 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
         <div className={Style.column}>
           {evenItems.map((item, index) => (
             <SelectorWithInput
-              title={item.title}
+              title={item.title.toString()}
               icon={IconTrashLarge}
               isSelected={item.isSelected}
               onSelected={() => item.onChangeSelectedForm(item.title)}
@@ -55,7 +56,7 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
         <div className={Style.column}>
           {oddItems.map((item, index) => (
             <SelectorWithInput
-              title={item.title}
+              title={item.title.toString()}
               icon={IconTrashLarge}
               isSelected={item.isSelected}
               onSelected={() => item.onChangeSelectedForm(item.title)}

@@ -1,4 +1,10 @@
 export interface Feedback {
-  typeFeedback: string;
+  feedback: feedbackType;
   userName: string;
+}
+
+export enum feedbackType {
+  Telegram = 'Telegram',
+  Instagram = 'Instagram',
+  Whatsapp = 'Whatsapp',
 }

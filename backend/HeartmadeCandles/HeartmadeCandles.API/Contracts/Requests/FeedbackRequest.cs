@@ -2,6 +2,13 @@
 
 public class FeedbackRequest
 {
-    public string TypeFeedback { get; set; }
+    public FeedbackType Feedback { get; set; }
     public string UserName { get; set; }
+}
+
+public enum FeedbackType
+{
+    Telegram,
+    Instagram,
+    Whatsapp
 }

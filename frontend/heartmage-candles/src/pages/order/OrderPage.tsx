@@ -8,6 +8,7 @@ import ListProductsCart from '../../modules/order/ListProductsCart';
 import FormPersonalData, { ItemFormPersonalData } from '../../modules/order/FormPersonalData';
 import FormFeedback, { ItemFormFeedback } from '../../modules/order/FormFeedback';
 import TotalPricePanel from '../../modules/order/TotalPricePanel';
+import { feedbackType } from '../../typesV2/order/Feedback';
 
 import { OrdersApi } from '../../services/OrdersApi';
 
@@ -21,7 +22,7 @@ const OrderPage: FC = () => {
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [phone, setPhone] = useState('');
-  const [selectedTypeFeedback, setTypeFeedback] = useState<string>('');
+  const [selectedTypeFeedback, setTypeFeedback] = useState<feedbackType>();
   const [username, setUsername] = useState<string>('');
 
   const location = useLocation();
@@ -78,33 +79,33 @@ const OrderPage: FC = () => {
 
   const itemsFormFeedback: ItemFormFeedback[] = [
     {
-      title: 'Telegram',
+      title: feedbackType.Telegram,
       label: 'Введите имя пользователя',
       value: username,
       onChangeSelectedForm: setTypeFeedback,
       onChangeUsername: setUsername,
       isRequired: true,
-      isSelected: selectedTypeFeedback === 'Telegram' ? true : false,
+      isSelected: selectedTypeFeedback === feedbackType.Telegram ? true : false,
       validation: validateTelegramAndInstagram,
     },
     {
-      title: 'Instagram',
+      title: feedbackType.Instagram,
       label: 'Введите имя пользователя',
       value: username,
       onChangeSelectedForm: setTypeFeedback,
       onChangeUsername: setUsername,
       isRequired: true,
-      isSelected: selectedTypeFeedback === 'Instagram' ? true : false,
+      isSelected: selectedTypeFeedback === feedbackType.Instagram ? true : false,
       validation: validateTelegramAndInstagram,
     },
     {
-      title: 'Whatsapp',
+      title: feedbackType.Whatsapp,
       label: 'Введите имя пользователя',
       value: username,
       onChangeSelectedForm: setTypeFeedback,
       onChangeUsername: setUsername,
       isRequired: true,
-      isSelected: selectedTypeFeedback === 'Whatsapp' ? true : false,
+      isSelected: selectedTypeFeedback === feedbackType.Whatsapp ? true : false,
       validation: validatePhone,
     },
   ];
@@ -160,7 +161,7 @@ const OrderPage: FC = () => {
       canCreateOrder = false;
     }
     if (
-      !(selectedTypeFeedback.length < 2) &&
+      !selectedTypeFeedback &&
       !(validatePhone(username) || validateTelegramAndInstagram(username))
     ) {
       canCreateOrder = false;
@@ -195,7 +196,7 @@ const OrderPage: FC = () => {
           email: email,
         },
         feedback: {
-          typeFeedback: selectedTypeFeedback,
+          feedback: selectedTypeFeedback!,
           userName: username,
         },
       };
