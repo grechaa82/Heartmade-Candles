@@ -7,15 +7,19 @@ using HeartmadeCandles.Constructor.DAL;
 using HeartmadeCandles.Order.BL;
 using HeartmadeCandles.Order.Bot;
 using HeartmadeCandles.Order.DAL;
-using OpenTelemetry.Trace;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.ResourceDetectors.Container;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Enrichers.Span;
 using System.Text;
-using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,31 +40,29 @@ try
 
     builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
 
-    builder.Services.ConfigureOpenTelemetryTracerProvider(builder =>
-    {
-        builder
-            .AddJaegerExporter(options =>
-            {
-                options.AgentHost = "jaeger";
-            })
-            .AddSource("HeartmadeCandles.API")
-            .SetResourceBuilder(
-                ResourceBuilder.CreateDefault()
-                .AddTelemetrySdk()
-                .AddService(serviceName: "HeartmadeCandles.API", serviceVersion: "1.0.0"))
-            .AddHttpClientInstrumentation()
-            .AddAspNetCoreInstrumentation()
-            .AddSqlClientInstrumentation(options => options.SetDbStatementForText = true)
-            .AddJaegerExporter(exporter =>
-            {
-                exporter.AgentHost = "localhost";
-                exporter.AgentPort = 6831;
-            })
-            .AddEntityFrameworkCoreInstrumentation(options =>
-            {
-                options.SetDbStatementForText = true;
-            });
-    });
+    Action<ResourceBuilder> appResourceBuilder =
+    resource => resource
+        .AddDetector(new ContainerResourceDetector());
+
+    builder.Services.AddOpenTelemetry()
+        .ConfigureResource(appResourceBuilder)
+        .WithTracing(tracerBuilder =>
+            tracerBuilder
+                .AddSource("HeartmadeCandles.API")
+                .ConfigureResource(resource =>
+                    resource.AddService(
+                        serviceName: "HeartmadeCandles.API",
+                        serviceVersion: "1.0.0"))
+                .AddAspNetCoreInstrumentation()
+                .AddGrpcClientInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddOtlpExporter(options =>
+                {
+                    options.Endpoint = new Uri("http://jaeger:4318/v1/traces");
+                    options.Protocol = OtlpExportProtocol.HttpProtobuf;
+                })
+                .AddSqlClientInstrumentation(options => options.SetDbStatementForText = true)
+                .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true));
 
     if (!Directory.Exists("StaticFiles/"))
     {
@@ -71,7 +73,7 @@ try
     {
         options.AddPolicy("AllowCors", policy =>
         {
-            policy.WithOrigins("http://95.140.152.201", "http://localhost:5173", "http://localhost", "http://localhost:5000")
+            policy.WithOrigins("http://95.140.152.201", "http://localhost:5173", "http://localhost", "http://localhost:5000", "http://localhost:5174")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
