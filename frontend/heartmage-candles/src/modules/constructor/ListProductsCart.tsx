@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC } from 'react';
 
 import ProductCart from '../../components/constructor/ProductCart';
 import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';

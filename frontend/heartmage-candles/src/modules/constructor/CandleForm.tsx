@@ -2,7 +2,7 @@ import { FC, useState, useEffect } from 'react';
 
 import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
 import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';
-import { NumberOfLayer, Smell, ImageProduct } from '../../typesV2/Candle';
+import { NumberOfLayer, Smell, ImageProduct } from '../../typesV2/shared/BaseProduct';
 import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
 import TagSelector from '../../components/constructor/TagSelector';
 import { TagData } from '../../components/shared/Tag';
@@ -231,7 +231,7 @@ const CandleForm: FC<CandleFormProps> = ({
                 : []
             }
             onSelectTag={handleSmellState}
-            // onDeselectTag={handleDeselectSmellState}
+            onDeselectTag={handleDeselectSmellState}
           />
         )}
         <ProductsGridSelector
