@@ -13,32 +13,61 @@ namespace HeartmadeCandles.API.Controllers.Admin;
 public class CandleController : Controller
 {
     private readonly ICandleService _candleService;
+    private readonly ILogger<CandleController> _logger;
 
-    public CandleController(ICandleService candleService)
+    public CandleController(ICandleService candleService,
+        ILogger<CandleController> logger)
     {
         _candleService = candleService;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        var candles = await _candleService.GetAll();
-        return Ok(candles);
+        var candlesMaybe = await _candleService.GetAll();
+
+        if (!candlesMaybe.HasValue)
+        {
+            _logger.LogInformation("No candles");
+            return BadRequest("No candles");
+        }
+
+        return Ok(candlesMaybe.Value);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        return Ok(await _candleService.Get(id));
+        var candleMaybe = await _candleService.Get(id);
+
+        if (!candleMaybe.HasValue)
+        {
+            _logger.LogInformation("Candle by id: {0} does not exist", id);
+            return BadRequest($"Candle by id: {id} does not exist");
+        }
+
+        return Ok(candleMaybe.Value);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(CandleRequest candleRequest)
     {
-        var typeCandleResult = TypeCandle.Create(candleRequest.TypeCandle.Title, candleRequest.TypeCandle.Id);
+        if (candleRequest.TypeCandle.Id <= 0)
+        {
+            _logger.LogInformation(
+                "Unable to request {0} by id: {1}", nameof(candleRequest.TypeCandle), candleRequest.TypeCandle.Id);
+            return BadRequest($"TypeCandle by id: {candleRequest.TypeCandle.Id} does not exist");
+        }
+
+        var typeCandleResult = TypeCandle.Create(
+            candleRequest.TypeCandle.Title,
+            candleRequest.TypeCandle.Id);
 
         if (typeCandleResult.IsFailure)
         {
+            _logger.LogInformation(
+                "Failed to create {0}, error message: {1}", typeof(TypeCandle), typeCandleResult.Error);
             return BadRequest(typeCandleResult.Error);
         }
 
@@ -46,6 +75,7 @@ public class CandleController : Controller
 
         if (imagesResult.IsFailure)
         {
+            _logger.LogInformation("Failed to create {0}, error message: {1}", typeof(Image), imagesResult.Error);
             return BadRequest(imagesResult.Error);
         }
 
@@ -60,21 +90,43 @@ public class CandleController : Controller
 
         if (candleResult.IsFailure)
         {
+            _logger.LogInformation("Failed to create {0}, error message: {1}", typeof(Candle), candleResult.Error);
             return BadRequest(candleResult.Error);
         }
 
-        await _candleService.Create(candleResult.Value);
+        var result = await _candleService.Create(candleResult.Value);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.Create), result.Error);
+            return BadRequest(result.Error);
+        }
+
+        _logger.LogInformation("Candle was created by name: {0}", candleRequest.Title);
 
         return Ok();
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, CandleRequest candleRequest)
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> Update(int id,
+        CandleRequest candleRequest)
     {
-        var typeCandleResult = TypeCandle.Create(candleRequest.TypeCandle.Title, candleRequest.TypeCandle.Id);
+        if (candleRequest.TypeCandle.Id <= 0)
+        {
+            _logger.LogInformation(
+                "Unable to request {0} by id: {1}", nameof(candleRequest.TypeCandle), candleRequest.TypeCandle.Id);
+            return BadRequest($"TypeCandle by id: {candleRequest.TypeCandle.Id} does not exist");
+        }
+
+        var typeCandleResult = TypeCandle.Create(
+            candleRequest.TypeCandle.Title,
+            candleRequest.TypeCandle.Id);
 
         if (typeCandleResult.IsFailure)
         {
+            _logger.LogInformation(
+                "Failed to update {0}, error message: {1}", typeof(TypeCandle), typeCandleResult.Error);
             return BadRequest(typeCandleResult.Error);
         }
 
@@ -82,6 +134,7 @@ public class CandleController : Controller
 
         if (imagesResult.IsFailure)
         {
+            _logger.LogInformation("Failed to update {0}, error message: {1}", typeof(Image), imagesResult.Error);
             return BadRequest(imagesResult.Error);
         }
 
@@ -97,81 +150,122 @@ public class CandleController : Controller
 
         if (candleResult.IsFailure)
         {
+            _logger.LogInformation("Failed to update {0}, error message: {1}", typeof(Candle), candleResult.Error);
             return BadRequest(candleResult.Error);
         }
 
-        await _candleService.Update(candleResult.Value);
+        var result = await _candleService.Update(candleResult.Value);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.Create), result.Error);
+        }
 
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _candleService.Delete(id);
-
-        return Ok();
-    }
-
-    [HttpPut("{id}/decors")]
-    public async Task<IActionResult> UpdateDecor(int id, int[] decorsIds)
-    {
-        var result = await _candleService.UpdateDecor(id, decorsIds);
+        var result = await _candleService.Delete(id);
 
         if (result.IsFailure)
         {
+            _logger.LogError(
+                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.Delete), result.Error);
             return BadRequest(result.Error);
         }
 
         return Ok();
     }
 
-    [HttpPut("{id}/layerColors")]
-    public async Task<IActionResult> UpdateLayerColor(int id, int[] layerColorsIds)
+    [HttpPut("{id:int}/decors")]
+    public async Task<IActionResult> UpdateDecor(int id,
+        int[] decorsIds)
     {
-        var result = await _candleService.UpdateLayerColor(id, layerColorsIds);
+        var result = await _candleService.UpdateDecor(
+            id,
+            decorsIds);
 
         if (result.IsFailure)
         {
+            _logger.LogError(
+                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateDecor), result.Error);
             return BadRequest(result.Error);
         }
 
         return Ok();
     }
 
-    [HttpPut("{id}/numberOfLayers")]
-    public async Task<IActionResult> UpdateNumberOfLayer(int id, int[] numberOfLayersIds)
+    [HttpPut("{id:int}/layerColors")]
+    public async Task<IActionResult> UpdateLayerColor(int id,
+        int[] layerColorsIds)
     {
-        var result = await _candleService.UpdateNumberOfLayer(id, numberOfLayersIds);
+        var result = await _candleService.UpdateLayerColor(
+            id,
+            layerColorsIds);
 
         if (result.IsFailure)
         {
+            _logger.LogError(
+                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateLayerColor),
+                result.Error);
             return BadRequest(result.Error);
         }
 
         return Ok();
     }
 
-    [HttpPut("{id}/smells")]
-    public async Task<IActionResult> UpdateSmell(int id, int[] smellsIds)
+    [HttpPut("{id:int}/numberOfLayers")]
+    public async Task<IActionResult> UpdateNumberOfLayer(int id,
+        int[] numberOfLayersIds)
     {
-        var result = await _candleService.UpdateSmell(id, smellsIds);
+        var result = await _candleService.UpdateNumberOfLayer(
+            id,
+            numberOfLayersIds);
 
         if (result.IsFailure)
         {
+            _logger.LogError(
+                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateNumberOfLayer),
+                result.Error);
             return BadRequest(result.Error);
         }
 
         return Ok();
     }
 
-    [HttpPut("{id}/wicks")]
-    public async Task<IActionResult> UpdateWick(int id, int[] wicksIds)
+    [HttpPut("{id:int}/smells")]
+    public async Task<IActionResult> UpdateSmell(int id,
+        int[] smellsIds)
     {
-        var result = await _candleService.UpdateWick(id, wicksIds);
+        var result = await _candleService.UpdateSmell(
+            id,
+            smellsIds);
 
         if (result.IsFailure)
         {
+            _logger.LogError(
+                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateSmell), result.Error);
+            return BadRequest(result.Error);
+        }
+
+        return Ok();
+    }
+
+    [HttpPut("{id:int}/wicks")]
+    public async Task<IActionResult> UpdateWick(int id,
+        int[] wicksIds)
+    {
+        var result = await _candleService.UpdateWick(
+            id,
+            wicksIds);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateWick), result.Error);
             return BadRequest(result.Error);
         }
 

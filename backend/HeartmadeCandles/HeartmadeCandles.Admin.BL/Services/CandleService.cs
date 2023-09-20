@@ -32,29 +32,29 @@ public class CandleService : ICandleService
         _wickRepository = wickRepository;
     }
 
-    public async Task<Candle[]> GetAll()
+    public async Task<Maybe<Candle[]>> GetAll()
     {
         return await _candleRepository.GetAll();
     }
 
-    public async Task<CandleDetail> Get(int candleId)
+    public async Task<Maybe<CandleDetail>> Get(int candleId)
     {
         return await _candleRepository.GetCandleDetailById(candleId);
     }
 
-    public async Task Create(Candle candle)
+    public async Task<Result> Create(Candle candle)
     {
-        await _candleRepository.Create(candle);
+        return await _candleRepository.Create(candle);
     }
 
-    public async Task Update(Candle candle)
+    public async Task<Result> Update(Candle candle)
     {
-        await _candleRepository.Update(candle);
+        return await _candleRepository.Update(candle);
     }
 
-    public async Task Delete(int candleId)
+    public async Task<Result> Delete(int candleId)
     {
-        await _candleRepository.Delete(candleId);
+        return await _candleRepository.Delete(candleId);
     }
 
     public async Task<Result> UpdateDecor(int candleId, int[] decorIds)

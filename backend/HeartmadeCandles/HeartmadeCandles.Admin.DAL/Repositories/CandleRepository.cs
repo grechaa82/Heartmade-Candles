@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.Admin.DAL.Mapping;
 using Microsoft.EntityFrameworkCore;
@@ -14,24 +15,32 @@ public class CandleRepository : ICandleRepository
         _context = context;
     }
 
-    public async Task<Candle[]> GetAll()
+    public async Task<Maybe<Candle[]>> GetAll()
     {
         var items = await _context.Candle
             .AsNoTracking()
             .Include(c => c.TypeCandle)
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<Candle[]>.None;
+        }
+
         var result = items.Select(
-            item =>
-            {
-                var typeCandle = TypeCandleMapping.MapToCandleType(item.TypeCandle);
-                return CandleMapping.MapToCandle(item, typeCandle);
-            }).ToArray();
+                item =>
+                {
+                    var typeCandle = TypeCandleMapping.MapToCandleType(item.TypeCandle);
+                    return CandleMapping.MapToCandle(
+                        item,
+                        typeCandle);
+                })
+            .ToArray();
 
         return result;
     }
 
-    public async Task<Candle?> GetById(int candleId)
+    public async Task<Maybe<Candle>> GetById(int candleId)
     {
         var item = await _context.Candle
             .AsNoTracking()
@@ -40,7 +49,7 @@ public class CandleRepository : ICandleRepository
 
         if (item == null)
         {
-            return null;
+            return Maybe<Candle>.None;
         }
 
         var typeCandle = TypeCandleMapping.MapToCandleType(item.TypeCandle);
@@ -50,17 +59,27 @@ public class CandleRepository : ICandleRepository
         return result;
     }
 
-    public async Task<CandleDetail> GetCandleDetailById(int candleId)
+    public async Task<Maybe<CandleDetail>> GetCandleDetailById(int candleId)
     {
         var candleDetailEntity = await _context.Candle
             .AsNoTracking()
             .Include(t => t.TypeCandle)
-            .Include(cd => cd.CandleDecor).ThenInclude(d => d.Decor)
-            .Include(cl => cl.CandleLayerColor).ThenInclude(l => l.LayerColor)
-            .Include(cn => cn.CandleNumberOfLayer).ThenInclude(n => n.NumberOfLayer)
-            .Include(cs => cs.CandleSmell).ThenInclude(s => s.Smell)
-            .Include(cw => cw.CandleWick).ThenInclude(w => w.Wick)
+            .Include(cd => cd.CandleDecor)
+            .ThenInclude(d => d.Decor)
+            .Include(cl => cl.CandleLayerColor)
+            .ThenInclude(l => l.LayerColor)
+            .Include(cn => cn.CandleNumberOfLayer)
+            .ThenInclude(n => n.NumberOfLayer)
+            .Include(cs => cs.CandleSmell)
+            .ThenInclude(s => s.Smell)
+            .Include(cw => cw.CandleWick)
+            .ThenInclude(w => w.Wick)
             .FirstOrDefaultAsync(c => c.Id == candleId);
+
+        if (candleDetailEntity == null)
+        {
+            return Maybe<CandleDetail>.None;
+        }
 
         var typeCandle = TypeCandleMapping.MapToCandleType(candleDetailEntity.TypeCandle);
         var candle = CandleMapping.MapToCandle(candleDetailEntity, typeCandle);
@@ -92,30 +111,44 @@ public class CandleRepository : ICandleRepository
         return candleDetail.Value;
     }
 
-    public async Task Create(Candle candle)
+    public async Task<Result> Create(Candle candle)
     {
         var item = CandleMapping.MapToCandleEntity(candle);
 
         await _context.Candle.AddAsync(item);
-        await _context.SaveChangesAsync();
+        var created = await _context.SaveChangesAsync();
+
+        return created > 0
+            ? Result.Success()
+            : Result.Failure($"Candle {candle.Title} not created");
     }
 
-    public async Task Update(Candle candle)
+    public async Task<Result> Update(Candle candle)
     {
         var item = CandleMapping.MapToCandleEntity(candle);
 
         _context.Candle.Update(item);
-        await _context.SaveChangesAsync();
+        var updated = await _context.SaveChangesAsync();
+
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"Candle {candle.Title} not updated");
     }
 
-    public async Task Delete(int candleId)
+    public async Task<Result> Delete(int candleId)
     {
         var item = await _context.Candle.FirstOrDefaultAsync(c => c.Id == candleId);
 
-        if (item != null)
+        if (item == null)
         {
-            _context.Candle.Remove(item);
-            await _context.SaveChangesAsync();
+            return Result.Failure($"Candle by id: {candleId} does not exist");
         }
+
+        _context.Candle.Remove(item);
+        var deleted = await _context.SaveChangesAsync();
+
+        return deleted > 0
+            ? Result.Success()
+            : Result.Failure($"Candle by id: {candleId} does not exist");
     }
 }
