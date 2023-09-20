@@ -1,11 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeartmadeCandles.API.Controllers.Admin;
 
 [ApiController]
 [Route("api/admin/images")]
-//[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 public class ImageController : Controller
 {
     private readonly ILogger<ImageController> _logger;

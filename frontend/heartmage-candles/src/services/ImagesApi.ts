@@ -9,7 +9,7 @@ export const ImagesApi = {
     const response = await fetch(`${apiUrl}/admin/images`, {
       method: 'POST',
       headers: {
-        // Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: formData,
     });
@@ -21,7 +21,7 @@ export const ImagesApi = {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        // Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
       body: JSON.stringify(fileNames),
     });
