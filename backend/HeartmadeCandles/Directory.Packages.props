@@ -1,5 +1,6 @@
 <Project>
   <ItemGroup>
+    <PackageVersion Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageVersion Include="JWT" Version="10.1.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0" />
