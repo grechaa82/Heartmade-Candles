@@ -92,12 +92,13 @@ public class CandleController : Controller
         if (result.IsFailure)
         {
             _logger.LogError(
-                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.Create), result.Error);
+                "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_candleService.Create),
+                result.Error);
             return BadRequest(
                 $"Error: Failed in process {nameof(_candleService.Create)}, error message: {result.Error}");
         }
 
-        _logger.LogInformation("Candle was created by name: {0}", candleRequest.Title);
+        _logger.LogInformation("Candle was created by name: {title}", candleRequest.Title);
 
         return Ok();
     }

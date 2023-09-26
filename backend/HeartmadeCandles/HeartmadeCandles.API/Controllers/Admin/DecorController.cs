@@ -13,22 +13,38 @@ namespace HeartmadeCandles.API.Controllers.Admin;
 public class DecorController : Controller
 {
     private readonly IDecorService _decorService;
+    private readonly ILogger<DecorController> _logger;
 
-    public DecorController(IDecorService decorService)
+    public DecorController(IDecorService decorService, ILogger<DecorController> logger)
     {
         _decorService = decorService;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        return Ok(await _decorService.GetAll());
+        var decorsMaybe = await _decorService.GetAll();
+
+        if (!decorsMaybe.HasValue)
+        {
+            return Ok(Array.Empty<Decor>());
+        }
+
+        return Ok(decorsMaybe.Value);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        return Ok(await _decorService.Get(id));
+        var decorMaybe = await _decorService.Get(id);
+
+        if (!decorMaybe.HasValue)
+        {
+            return NotFound($"Decor by id: {id} does not exist");
+        }
+
+        return Ok(decorMaybe.Value);
     }
 
     [HttpPost]
@@ -41,24 +57,33 @@ public class DecorController : Controller
             return BadRequest(imagesResult.Error);
         }
 
-        var result = Decor.Create(
+        var decorResult = Decor.Create(
             decorRequest.Title,
             decorRequest.Description,
             decorRequest.Price,
             imagesResult.Value,
             decorRequest.IsActive);
 
-        if (result.IsFailure)
+        if (decorResult.IsFailure)
         {
-            return BadRequest(result.Error);
+            return BadRequest($"Failed to create {typeof(Decor)}, error message: {decorResult.Error}");
         }
 
-        await _decorService.Create(result.Value);
+        var result = await _decorService.Create(decorResult.Value);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_decorService.Create),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_decorService.Create)}, error message: {result.Error}");
+        }
 
         return Ok();
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, DecorRequest decorRequest)
     {
         var imagesResult = ImageValidator.ValidateImages(decorRequest.Images);
@@ -68,7 +93,7 @@ public class DecorController : Controller
             return BadRequest(imagesResult.Error);
         }
 
-        var result = Decor.Create(
+        var decorResult = Decor.Create(
             decorRequest.Title,
             decorRequest.Description,
             decorRequest.Price,
@@ -76,20 +101,37 @@ public class DecorController : Controller
             decorRequest.IsActive,
             id);
 
-        if (result.IsFailure)
+        if (decorResult.IsFailure)
         {
-            return BadRequest(result.Error);
+            return BadRequest(decorResult.Error);
         }
 
-        await _decorService.Update(result.Value);
+        var result = await _decorService.Update(decorResult.Value);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_decorService.Update),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_decorService.Update)}, error message: {result.Error}");
+        }
 
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _decorService.Delete(id);
+        var result = await _decorService.Delete(id);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_decorService.Delete),
+                result.Error);
+            return BadRequest(result.Error);
+        }
 
         return Ok();
     }

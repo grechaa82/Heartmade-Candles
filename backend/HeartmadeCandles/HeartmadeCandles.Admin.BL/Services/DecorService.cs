@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.BL.Services;
@@ -12,28 +13,28 @@ public class DecorService : IDecorService
         _decorRepository = decorRepository;
     }
 
-    public async Task<Decor[]> GetAll()
+    public async Task<Maybe<Decor[]>> GetAll()
     {
         return await _decorRepository.GetAll();
     }
 
-    public async Task<Decor> Get(int decorId)
+    public async Task<Maybe<Decor>> Get(int decorId)
     {
         return await _decorRepository.Get(decorId);
     }
 
-    public async Task Create(Decor decor)
+    public async Task<Result> Create(Decor decor)
     {
-        await _decorRepository.Create(decor);
+        return await _decorRepository.Create(decor);
     }
 
-    public async Task Update(Decor decor)
+    public async Task<Result> Update(Decor decor)
     {
-        await _decorRepository.Update(decor);
+        return await _decorRepository.Update(decor);
     }
 
-    public async Task Delete(int decorId)
+    public async Task<Result> Delete(int decorId)
     {
-        await _decorRepository.Delete(decorId);
+        return await _decorRepository.Delete(decorId);
     }
 }

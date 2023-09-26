@@ -120,7 +120,7 @@ public class CandleRepository : ICandleRepository
 
         return created > 0
             ? Result.Success()
-            : Result.Failure($"Candle {candle.Title} not created");
+            : Result.Failure($"Candle {candle.Title} was not created");
     }
 
     public async Task<Result> Update(Candle candle)
@@ -132,7 +132,7 @@ public class CandleRepository : ICandleRepository
 
         return updated > 0
             ? Result.Success()
-            : Result.Failure($"Candle {candle.Title} not updated");
+            : Result.Failure($"Candle {candle.Title} was not updated");
     }
 
     public async Task<Result> Delete(int candleId)
@@ -149,6 +149,6 @@ public class CandleRepository : ICandleRepository
 
         return deleted > 0
             ? Result.Success()
-            : Result.Failure($"Candle by id: {candleId} does not exist");
+            : Result.Failure($"Candle by id: {candleId} was not deleted");
     }
 }

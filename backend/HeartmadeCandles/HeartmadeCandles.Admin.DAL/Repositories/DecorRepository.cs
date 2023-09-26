@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.Admin.DAL.Entities;
 using HeartmadeCandles.Admin.DAL.Mapping;
@@ -15,36 +16,51 @@ public class DecorRepository : IDecorRepository
         _context = context;
     }
 
-    public async Task<Decor[]> GetAll()
+    public async Task<Maybe<Decor[]>> GetAll()
     {
         var items = await _context.Decor
             .AsNoTracking()
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<Decor[]>.None;
+        }
+
         var result = items
-            .Select(item => DecorMapping.MapToDecor(item))
+            .Select(DecorMapping.MapToDecor)
             .ToArray();
 
         return result;
     }
 
-    public async Task<Decor> Get(int decorId)
+    public async Task<Maybe<Decor>> Get(int decorId)
     {
         var item = await _context.Decor
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == decorId);
+
+        if (item == null)
+        {
+            return Maybe<Decor>.None;
+        }
 
         var decor = DecorMapping.MapToDecor(item);
 
         return decor;
     }
 
-    public async Task<Decor[]> GetByIds(int[] decorIds)
+    public async Task<Maybe<Decor[]>> GetByIds(int[] decorIds)
     {
         var items = await _context.Decor
             .AsNoTracking()
             .Where(c => decorIds.Contains(c.Id))
             .ToArrayAsync();
+
+        if (!items.Any())
+        {
+            return Maybe<Decor[]>.None;
+        }
 
         var result = items
             .Select(item => DecorMapping.MapToDecor(item))
@@ -53,34 +69,48 @@ public class DecorRepository : IDecorRepository
         return result;
     }
 
-    public async Task Create(Decor decor)
+    public async Task<Result> Create(Decor decor)
     {
         var item = DecorMapping.MapToDecorEntity(decor);
 
         await _context.Decor.AddAsync(item);
-        await _context.SaveChangesAsync();
+        var created = await _context.SaveChangesAsync();
+
+        return created > 0
+            ? Result.Success()
+            : Result.Failure($"Decor {decor.Title} was not created");
     }
 
-    public async Task Update(Decor decor)
+    public async Task<Result> Update(Decor decor)
     {
         var item = DecorMapping.MapToDecorEntity(decor);
 
         _context.Decor.Update(item);
-        await _context.SaveChangesAsync();
+        var updated = await _context.SaveChangesAsync();
+
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"Decor {decor.Title} was not updated");
     }
 
-    public async Task Delete(int decorId)
+    public async Task<Result> Delete(int decorId)
     {
         var item = await _context.Decor.FirstOrDefaultAsync(c => c.Id == decorId);
 
-        if (item != null)
+        if (item == null)
         {
-            _context.Decor.Remove(item);
-            await _context.SaveChangesAsync();
+            return Result.Failure($"Decor by id: {decorId} does not exist");
         }
+
+        _context.Decor.Remove(item);
+        var deleted = await _context.SaveChangesAsync();
+
+        return deleted > 0
+            ? Result.Success()
+            : Result.Failure($"Decor by id: {decorId} was not deleted");
     }
 
-    public async Task UpdateCandleDecor(int candleId, Decor[] decors)
+    public async Task<Result> UpdateCandleDecor(int candleId, Decor[] decors)
     {
         var existingDecors = await _context.CandleDecor
             .Where(c => c.CandleId == candleId)
@@ -98,38 +128,10 @@ public class DecorRepository : IDecorRepository
         _context.RemoveRange(decorsToDelete);
         _context.AddRange(decorsToAdd);
 
-        await _context.SaveChangesAsync();
-    }
+        var updated = await _context.SaveChangesAsync();
 
-    public async Task<bool> AreIdsExist(int[] ids)
-    {
-        foreach (var id in ids)
-        {
-            var exists = await _context.Decor.AnyAsync(d => d.Id == id);
-
-            if (!exists)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public async Task<int[]> GetNonExistingIds(int[] ids)
-    {
-        var nonExistingIds = new List<int>();
-
-        foreach (var id in ids)
-        {
-            var exists = await _context.Decor.AnyAsync(d => d.Id == id);
-
-            if (!exists)
-            {
-                nonExistingIds.Add(id);
-            }
-        }
-
-        return nonExistingIds.ToArray();
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"Decors of candle by id {candleId} were not updated");
     }
 }

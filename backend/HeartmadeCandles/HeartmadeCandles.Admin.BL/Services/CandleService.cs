@@ -61,14 +61,14 @@ public class CandleService : ICandleService
     {
         var decors = await _decorRepository.GetByIds(decorIds);
 
-        if (decors.Length != decorIds.Length)
+        if (!decors.HasValue || decors.Value.Length != decorIds.Length)
         {
-            var missingIds = decorIds.Except(decors.Select(d => d.Id));
+            var missingIds = decorIds.Except(decors.Value.Select(d => d.Id));
             var missingIdsString = string.Join(", ", missingIds);
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _decorRepository.UpdateCandleDecor(candleId, decors);
+        await _decorRepository.UpdateCandleDecor(candleId, decors.Value);
 
         return Result.Success();
     }
