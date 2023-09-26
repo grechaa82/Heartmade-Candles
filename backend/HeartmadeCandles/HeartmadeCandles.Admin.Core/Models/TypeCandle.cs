@@ -4,7 +4,7 @@ namespace HeartmadeCandles.Admin.Core.Models;
 
 public class TypeCandle
 {
-    public const int MaxTitleLenght = 32;
+    public const int MaxTitleLength = 32;
 
     private TypeCandle(int id, string title)
     {
@@ -23,9 +23,9 @@ public class TypeCandle
             return Result.Failure<TypeCandle>($"'{nameof(title)}' cannot be null or whitespace");
         }
 
-        if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
+        if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLength)
         {
-            return Result.Failure<TypeCandle>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters");
+            return Result.Failure<TypeCandle>($"'{nameof(title)}' cannot be more than {MaxTitleLength} characters");
         }
 
         var typeCandle = new TypeCandle(id, title);

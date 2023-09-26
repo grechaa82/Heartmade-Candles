@@ -21,6 +21,6 @@ public class ConstructorService : IConstructorService
     public async Task<Result<CandleDetail>> GetCandleDetailById(int candleId)
     {
         return await _constructorRepository.GetCandleById(candleId)
-            .ToResult($"Candle with id '{candleId}' not found");
+            .ToResult($"Candle with id '{candleId}' does not exist");
     }
 }

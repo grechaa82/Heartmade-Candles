@@ -4,8 +4,8 @@ namespace HeartmadeCandles.Admin.Core.Models;
 
 public class Decor
 {
-    public const int MaxTitleLenght = 48;
-    public const int MaxDescriptionLenght = 256;
+    public const int MaxTitleLength = 48;
+    public const int MaxDescriptionLength = 256;
 
     private Decor(
         int id,
@@ -52,11 +52,11 @@ public class Decor
                 Result.Failure<Decor>($"'{nameof(title)}' cannot be null or whitespace"));
         }
 
-        if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
+        if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLength)
         {
             result = Result.Combine(
                 result,
-                Result.Failure<Decor>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters"));
+                Result.Failure<Decor>($"'{nameof(title)}' cannot be more than {MaxTitleLength} characters"));
         }
 
         if (string.IsNullOrWhiteSpace(description))
@@ -66,12 +66,12 @@ public class Decor
                 Result.Failure<Decor>($"'{nameof(description)}' cannot be null or whitespace"));
         }
 
-        if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
+        if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLength)
         {
             result = Result.Combine(
                 result,
                 Result.Failure<Decor>(
-                    $"'{nameof(description)}' cannot be more than {MaxDescriptionLenght} characters"));
+                    $"'{nameof(description)}' cannot be more than {MaxDescriptionLength} characters"));
         }
 
         if (price <= 0)

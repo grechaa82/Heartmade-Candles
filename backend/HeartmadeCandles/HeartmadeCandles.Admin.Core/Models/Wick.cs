@@ -4,8 +4,8 @@ namespace HeartmadeCandles.Admin.Core.Models;
 
 public class Wick
 {
-    public const int MaxTitleLenght = 48;
-    public const int MaxDescriptionLenght = 256;
+    public const int MaxTitleLength = 48;
+    public const int MaxDescriptionLength = 256;
 
     private Wick(
         int id,
@@ -52,11 +52,11 @@ public class Wick
                 Result.Failure<Wick>($"'{nameof(title)}' cannot be null or whitespace"));
         }
 
-        if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
+        if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLength)
         {
             result = Result.Combine(
                 result,
-                Result.Failure<Wick>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters"));
+                Result.Failure<Wick>($"'{nameof(title)}' cannot be more than {MaxTitleLength} characters"));
         }
 
         if (string.IsNullOrWhiteSpace(description))
@@ -66,11 +66,11 @@ public class Wick
                 Result.Failure<Wick>($"'{nameof(description)}' cannot be null"));
         }
 
-        if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
+        if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLength)
         {
             result = Result.Combine(
                 result,
-                Result.Failure<Wick>($"'{nameof(description)}' cannot be more than {MaxDescriptionLenght} characters"));
+                Result.Failure<Wick>($"'{nameof(description)}' cannot be more than {MaxDescriptionLength} characters"));
         }
 
         if (price <= 0)

@@ -44,7 +44,7 @@ public class Image
 
         if (result.IsFailure)
         {
-            Result.Failure<LayerColor>(result.Error);
+            Result.Failure<Image>(result.Error);
         }
 
         var image = new Image(fileName, alternativeName);

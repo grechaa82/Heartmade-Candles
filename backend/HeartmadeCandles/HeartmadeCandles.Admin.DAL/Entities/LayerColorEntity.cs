@@ -10,12 +10,12 @@ public class LayerColorEntity
     [Column("id")] public int Id { get; set; }
 
     [Column("title")]
-    [MaxLength(LayerColor.MaxTitleLenght)]
+    [MaxLength(LayerColor.MaxTitleLength)]
     [Required]
     public string Title { get; set; }
 
     [Column("description")]
-    [MaxLength(LayerColor.MaxDescriptionLenght)]
+    [MaxLength(LayerColor.MaxDescriptionLength)]
     [Required]
     public string Description { get; set; }
 

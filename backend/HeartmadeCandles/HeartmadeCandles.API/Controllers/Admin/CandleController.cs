@@ -29,8 +29,7 @@ public class CandleController : Controller
 
         if (!candlesMaybe.HasValue)
         {
-            _logger.LogInformation("No candles");
-            return BadRequest("No candles");
+            return Ok(Array.Empty<Candle>());
         }
 
         return Ok(candlesMaybe.Value);
@@ -43,8 +42,7 @@ public class CandleController : Controller
 
         if (!candleMaybe.HasValue)
         {
-            _logger.LogInformation("Candle by id: {0} does not exist", id);
-            return BadRequest($"Candle by id: {id} does not exist");
+            return NotFound($"Candle by id: {id} does not exist");
         }
 
         return Ok(candleMaybe.Value);
@@ -55,9 +53,8 @@ public class CandleController : Controller
     {
         if (candleRequest.TypeCandle.Id <= 0)
         {
-            _logger.LogInformation(
-                "Unable to request {0} by id: {1}", nameof(candleRequest.TypeCandle), candleRequest.TypeCandle.Id);
-            return BadRequest($"TypeCandle by id: {candleRequest.TypeCandle.Id} does not exist");
+            return BadRequest(
+                $"Unable to request {nameof(candleRequest.TypeCandle)} by id: {candleRequest.TypeCandle.Id} does not exist");
         }
 
         var typeCandleResult = TypeCandle.Create(
@@ -66,17 +63,14 @@ public class CandleController : Controller
 
         if (typeCandleResult.IsFailure)
         {
-            _logger.LogInformation(
-                "Failed to create {0}, error message: {1}", typeof(TypeCandle), typeCandleResult.Error);
-            return BadRequest(typeCandleResult.Error);
+            return BadRequest($"Failed to create {typeof(TypeCandle)}, error message: {typeCandleResult.Error}");
         }
 
         var imagesResult = ImageValidator.ValidateImages(candleRequest.Images);
 
         if (imagesResult.IsFailure)
         {
-            _logger.LogInformation("Failed to create {0}, error message: {1}", typeof(Image), imagesResult.Error);
-            return BadRequest(imagesResult.Error);
+            return BadRequest($"Failed to create {typeof(Image)}, error message: {imagesResult.Error}");
         }
 
         var candleResult = Candle.Create(
@@ -90,8 +84,7 @@ public class CandleController : Controller
 
         if (candleResult.IsFailure)
         {
-            _logger.LogInformation("Failed to create {0}, error message: {1}", typeof(Candle), candleResult.Error);
-            return BadRequest(candleResult.Error);
+            return BadRequest($"Failed to create {typeof(Candle)}, error message: {candleResult.Error}");
         }
 
         var result = await _candleService.Create(candleResult.Value);
@@ -100,7 +93,8 @@ public class CandleController : Controller
         {
             _logger.LogError(
                 "Error: Failed in process {0}, error message: {1}", nameof(_candleService.Create), result.Error);
-            return BadRequest(result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_candleService.Create)}, error message: {result.Error}");
         }
 
         _logger.LogInformation("Candle was created by name: {0}", candleRequest.Title);
@@ -114,9 +108,8 @@ public class CandleController : Controller
     {
         if (candleRequest.TypeCandle.Id <= 0)
         {
-            _logger.LogInformation(
-                "Unable to request {0} by id: {1}", nameof(candleRequest.TypeCandle), candleRequest.TypeCandle.Id);
-            return BadRequest($"TypeCandle by id: {candleRequest.TypeCandle.Id} does not exist");
+            return BadRequest(
+                $"Unable to request {nameof(candleRequest.TypeCandle)} by id: {candleRequest.TypeCandle.Id} does not exist");
         }
 
         var typeCandleResult = TypeCandle.Create(
@@ -125,17 +118,14 @@ public class CandleController : Controller
 
         if (typeCandleResult.IsFailure)
         {
-            _logger.LogInformation(
-                "Failed to update {0}, error message: {1}", typeof(TypeCandle), typeCandleResult.Error);
-            return BadRequest(typeCandleResult.Error);
+            return BadRequest($"Failed to update {typeof(TypeCandle)}, error message: {typeCandleResult.Error}");
         }
 
         var imagesResult = ImageValidator.ValidateImages(candleRequest.Images);
 
         if (imagesResult.IsFailure)
         {
-            _logger.LogInformation("Failed to update {0}, error message: {1}", typeof(Image), imagesResult.Error);
-            return BadRequest(imagesResult.Error);
+            return BadRequest($"Failed to update {typeof(Image)}, error message: {imagesResult.Error}");
         }
 
         var candleResult = Candle.Create(
@@ -150,8 +140,7 @@ public class CandleController : Controller
 
         if (candleResult.IsFailure)
         {
-            _logger.LogInformation("Failed to update {0}, error message: {1}", typeof(Candle), candleResult.Error);
-            return BadRequest(candleResult.Error);
+            return BadRequest($"Failed to update {typeof(Candle)}, error message: {candleResult.Error}");
         }
 
         var result = await _candleService.Update(candleResult.Value);
@@ -159,7 +148,10 @@ public class CandleController : Controller
         if (result.IsFailure)
         {
             _logger.LogError(
-                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.Create), result.Error);
+                "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_candleService.Create),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_candleService.Create)}, error message: {result.Error}");
         }
 
         return Ok();
@@ -173,7 +165,8 @@ public class CandleController : Controller
         if (result.IsFailure)
         {
             _logger.LogError(
-                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.Delete), result.Error);
+                "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_candleService.Delete),
+                result.Error);
             return BadRequest(result.Error);
         }
 
@@ -190,9 +183,8 @@ public class CandleController : Controller
 
         if (result.IsFailure)
         {
-            _logger.LogError(
-                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateDecor), result.Error);
-            return BadRequest(result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_candleService.UpdateDecor)}, error message: {result.Error}");
         }
 
         return Ok();
@@ -208,10 +200,8 @@ public class CandleController : Controller
 
         if (result.IsFailure)
         {
-            _logger.LogError(
-                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateLayerColor),
-                result.Error);
-            return BadRequest(result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_candleService.UpdateLayerColor)}, error message: {result.Error}");
         }
 
         return Ok();
@@ -227,10 +217,8 @@ public class CandleController : Controller
 
         if (result.IsFailure)
         {
-            _logger.LogError(
-                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateNumberOfLayer),
-                result.Error);
-            return BadRequest(result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_candleService.UpdateNumberOfLayer)}, error message: {result.Error}");
         }
 
         return Ok();
@@ -246,9 +234,8 @@ public class CandleController : Controller
 
         if (result.IsFailure)
         {
-            _logger.LogError(
-                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateSmell), result.Error);
-            return BadRequest(result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_candleService.UpdateSmell)}, error message: {result.Error}");
         }
 
         return Ok();
@@ -264,9 +251,8 @@ public class CandleController : Controller
 
         if (result.IsFailure)
         {
-            _logger.LogError(
-                "Error: Failed in process {0}, error message: {1}", nameof(_candleService.UpdateWick), result.Error);
-            return BadRequest(result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_candleService.UpdateWick)}, error message: {result.Error}");
         }
 
         return Ok();

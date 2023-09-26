@@ -10,12 +10,12 @@ public class DecorEntity
     [Column("id")] public int Id { get; set; }
 
     [Column("title")]
-    [MaxLength(Decor.MaxTitleLenght)]
+    [MaxLength(Decor.MaxTitleLength)]
     [Required]
     public string Title { get; set; }
 
     [Column("description")]
-    [MaxLength(Decor.MaxDescriptionLenght)]
+    [MaxLength(Decor.MaxDescriptionLength)]
     [Required]
     public string Description { get; set; }
 

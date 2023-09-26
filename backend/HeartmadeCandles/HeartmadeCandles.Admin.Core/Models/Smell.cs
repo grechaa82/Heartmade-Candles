@@ -4,8 +4,8 @@ namespace HeartmadeCandles.Admin.Core.Models;
 
 public class Smell
 {
-    public const int MaxTitleLenght = 48;
-    public const int MaxDescriptionLenght = 256;
+    public const int MaxTitleLength = 48;
+    public const int MaxDescriptionLength = 256;
 
     private Smell(
         int id,
@@ -47,11 +47,11 @@ public class Smell
                 Result.Failure<Smell>($"'{nameof(title)}' cannot be null or whitespace"));
         }
 
-        if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLenght)
+        if (!string.IsNullOrWhiteSpace(title) && title.Length > MaxTitleLength)
         {
             result = Result.Combine(
                 result,
-                Result.Failure<Smell>($"'{nameof(title)}' cannot be more than {MaxTitleLenght} characters"));
+                Result.Failure<Smell>($"'{nameof(title)}' cannot be more than {MaxTitleLength} characters"));
         }
 
         if (string.IsNullOrWhiteSpace(description))
@@ -61,19 +61,19 @@ public class Smell
                 Result.Failure<Smell>($"'{nameof(description)}' cannot be null or whitespace"));
         }
 
-        if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLenght)
+        if (!string.IsNullOrWhiteSpace(description) && description.Length > MaxDescriptionLength)
         {
             result = Result.Combine(
                 result,
                 Result.Failure<Smell>(
-                    $"'{nameof(description)}' cannot be more than {MaxDescriptionLenght} characters"));
+                    $"'{nameof(description)}' cannot be more than {MaxDescriptionLength} characters"));
         }
 
         if (price <= 0)
         {
             result = Result.Combine(
                 result,
-                Result.Failure<Smell>($"'{nameof(price)}' сannot be 0 or less"));
+                Result.Failure<Smell>($"'{nameof(price)}' cannot be 0 or less"));
         }
 
         var smell = new Smell(

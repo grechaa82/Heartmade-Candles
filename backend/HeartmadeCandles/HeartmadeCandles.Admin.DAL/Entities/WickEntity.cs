@@ -10,12 +10,12 @@ public class WickEntity
     [Column("id")] public int Id { get; set; }
 
     [Column("title")]
-    [MaxLength(Wick.MaxTitleLenght)]
+    [MaxLength(Wick.MaxTitleLength)]
     [Required]
     public string Title { get; set; }
 
     [Column("description")]
-    [MaxLength(Wick.MaxDescriptionLenght)]
+    [MaxLength(Wick.MaxDescriptionLength)]
     [Required]
     public string Description { get; set; }
 

@@ -10,7 +10,7 @@ public class TypeCandleEntity
     [Column("id")] public int Id { get; set; }
 
     [Column("title")]
-    [MaxLength(TypeCandle.MaxTitleLenght)]
+    [MaxLength(TypeCandle.MaxTitleLength)]
     [Required]
     public string Title { get; set; }
 

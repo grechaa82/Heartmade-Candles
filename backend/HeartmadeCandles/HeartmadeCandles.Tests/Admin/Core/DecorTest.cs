@@ -44,8 +44,8 @@ public class DecorTest
             yield return new object[]
             {
                 faker.Random.Number(1, 10000),
-                faker.Random.String(1, Decor.MaxTitleLenght),
-                faker.Random.String(1, Decor.MaxDescriptionLenght),
+                faker.Random.String(1, Decor.MaxTitleLength),
+                faker.Random.String(1, Decor.MaxDescriptionLength),
                 faker.Random.Number(1, 10000) * faker.Random.Decimal(),
                 new[]
                 {
@@ -67,7 +67,7 @@ public class DecorTest
         var result = Decor.Create(
             id: _faker.Random.Number(1, 10000),
             title: title,
-            description: _faker.Random.String(1, Decor.MaxDescriptionLenght),
+            description: _faker.Random.String(1, Decor.MaxDescriptionLength),
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             images: new[]
                 { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
@@ -82,14 +82,14 @@ public class DecorTest
     public void Create_LongTitle_ShouldReturnFailure()
     {
         // Arrange
-        var title = _faker.Random.String(Decor.MaxTitleLenght + 1);
+        var title = _faker.Random.String(Decor.MaxTitleLength + 1);
 
         // Act
         var result = Make(title: title);
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal($"'title' cannot be more than {Decor.MaxTitleLenght} characters", result.Error);
+        Assert.Equal($"'title' cannot be more than {Decor.MaxTitleLength} characters", result.Error);
     }
 
     [Theory]
@@ -103,7 +103,7 @@ public class DecorTest
         // Act
         var result = Decor.Create(
             id: _faker.Random.Number(1, 10000),
-            title: _faker.Random.String(1, Decor.MaxTitleLenght),
+            title: _faker.Random.String(1, Decor.MaxTitleLength),
             description: description,
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             images: new[]
@@ -119,14 +119,14 @@ public class DecorTest
     public void Create_LongDescription_ShouldReturnFailure()
     {
         // Arrange
-        var description = _faker.Random.String(Decor.MaxDescriptionLenght + 1);
+        var description = _faker.Random.String(Decor.MaxDescriptionLength + 1);
 
         // Act
         var result = Make(description: description);
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal($"'description' cannot be more than {Decor.MaxDescriptionLenght} characters", result.Error);
+        Assert.Equal($"'description' cannot be more than {Decor.MaxDescriptionLength} characters", result.Error);
     }
 
     [Fact]
@@ -179,8 +179,8 @@ public class DecorTest
 
         return Decor.Create(
             id: id ?? faker.Random.Number(1, 10000),
-            title: title ?? faker.Random.String(1, Decor.MaxTitleLenght),
-            description: description ?? faker.Random.String(1, Decor.MaxDescriptionLenght),
+            title: title ?? faker.Random.String(1, Decor.MaxTitleLength),
+            description: description ?? faker.Random.String(1, Decor.MaxDescriptionLength),
             price: price ?? faker.Random.Number(1, 10000) * faker.Random.Decimal(),
             images: images ?? new[]
                 { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },

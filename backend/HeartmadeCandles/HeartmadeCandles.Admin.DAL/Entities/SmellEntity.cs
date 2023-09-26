@@ -10,12 +10,12 @@ public class SmellEntity
     [Column("id")] public int Id { get; set; }
 
     [Column("title")]
-    [MaxLength(Smell.MaxTitleLenght)]
+    [MaxLength(Smell.MaxTitleLength)]
     [Required]
     public string Title { get; set; }
 
     [Column("description")]
-    [MaxLength(Smell.MaxDescriptionLenght)]
+    [MaxLength(Smell.MaxDescriptionLength)]
     [Required]
     public string Description { get; set; }
 

@@ -41,8 +41,8 @@ public class LayerColorTest
             yield return new object[]
             {
                 faker.Random.Number(1, 10000),
-                faker.Random.String(1, LayerColor.MaxTitleLenght),
-                faker.Random.String(1, LayerColor.MaxDescriptionLenght),
+                faker.Random.String(1, LayerColor.MaxTitleLength),
+                faker.Random.String(1, LayerColor.MaxDescriptionLength),
                 faker.Random.Number(1, 10000),
                 new[]
                 {
@@ -64,7 +64,7 @@ public class LayerColorTest
         var result = LayerColor.Create(
             id: _faker.Random.Number(1, 10000),
             title: title,
-            description: _faker.Random.String(1, LayerColor.MaxDescriptionLenght),
+            description: _faker.Random.String(1, LayerColor.MaxDescriptionLength),
             pricePerGram: _faker.Random.Number(1, 10000),
             images: new[]
                 { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
@@ -86,7 +86,7 @@ public class LayerColorTest
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal($"'title' cannot be more than {LayerColor.MaxTitleLenght} characters", result.Error);
+        Assert.Equal($"'title' cannot be more than {LayerColor.MaxTitleLength} characters", result.Error);
     }
 
     [Theory]
@@ -100,7 +100,7 @@ public class LayerColorTest
         // Act
         var result = LayerColor.Create(
             id: _faker.Random.Number(1, 10000),
-            title: _faker.Random.String(1, LayerColor.MaxTitleLenght),
+            title: _faker.Random.String(1, LayerColor.MaxTitleLength),
             description: description,
             pricePerGram: _faker.Random.Number(1, 10000),
             images: new[]
@@ -116,14 +116,14 @@ public class LayerColorTest
     public void Create_LongDescription_ShouldReturnFailure()
     {
         // Arrange
-        var description = _faker.Random.String(LayerColor.MaxDescriptionLenght + 1);
+        var description = _faker.Random.String(LayerColor.MaxDescriptionLength + 1);
 
         // Act
         var result = Make(description: description);
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal($"'description' cannot be more than {LayerColor.MaxDescriptionLenght} characters", result.Error);
+        Assert.Equal($"'description' cannot be more than {LayerColor.MaxDescriptionLength} characters", result.Error);
     }
 
     [Fact]
@@ -176,8 +176,8 @@ public class LayerColorTest
 
         return LayerColor.Create(
             id: id ?? faker.Random.Number(1, 10000),
-            title: title ?? faker.Random.String(1, LayerColor.MaxTitleLenght),
-            description: description ?? faker.Random.String(1, LayerColor.MaxDescriptionLenght),
+            title: title ?? faker.Random.String(1, LayerColor.MaxTitleLength),
+            description: description ?? faker.Random.String(1, LayerColor.MaxDescriptionLength),
             pricePerGram: pricePerGram ?? faker.Random.Number(1, 10000),
             images: images ?? new[]
                 { Image.Create(faker.Random.String(1, Image.MaxAlternativeNameLenght), faker.Random.String()).Value },

@@ -10,7 +10,6 @@ public class ConstructorController : Controller
     private readonly IConstructorService _constructorService;
     private readonly ILogger<ConstructorController> _logger;
 
-
     public ConstructorController(IConstructorService constructorService, ILogger<ConstructorController> logger)
     {
         _constructorService = constructorService;

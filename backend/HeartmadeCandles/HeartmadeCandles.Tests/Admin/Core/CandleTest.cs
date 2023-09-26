@@ -56,7 +56,7 @@ public class CandleTests
                     Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value
                 },
                 faker.Random.Bool(),
-                TypeCandle.Create(faker.Random.String(1, TypeCandle.MaxTitleLenght), faker.Random.Number(1, 10000))
+                TypeCandle.Create(faker.Random.String(1, TypeCandle.MaxTitleLength), faker.Random.Number(1, 10000))
                     .Value,
                 faker.Date.Past()
             };
@@ -81,7 +81,7 @@ public class CandleTests
                 { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
             isActive: _faker.Random.Bool(),
             typeCandle: TypeCandle.Create(
-                _faker.Random.String(1, TypeCandle.MaxTitleLenght),
+                _faker.Random.String(1, TypeCandle.MaxTitleLength),
                 _faker.Random.Number(1, 10000)).Value,
             createdAt: _faker.Date.Past());
 
@@ -123,7 +123,7 @@ public class CandleTests
                 { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
             isActive: _faker.Random.Bool(),
             typeCandle: TypeCandle.Create(
-                _faker.Random.String(1, TypeCandle.MaxTitleLenght),
+                _faker.Random.String(1, TypeCandle.MaxTitleLength),
                 _faker.Random.Number(1, 10000)).Value,
             createdAt: _faker.Date.Past());
 
@@ -251,7 +251,7 @@ public class CandleTests
                 { Image.Create(faker.Random.String(1, Image.MaxAlternativeNameLenght), faker.Random.String()).Value },
             isActive: isActive ?? faker.Random.Bool(),
             typeCandle: typeCandle ?? TypeCandle.Create(
-                faker.Random.String(1, TypeCandle.MaxTitleLenght),
+                faker.Random.String(1, TypeCandle.MaxTitleLength),
                 faker.Random.Number(1, 10000)).Value,
             createdAt: createdAt ?? faker.Date.Past());
     }

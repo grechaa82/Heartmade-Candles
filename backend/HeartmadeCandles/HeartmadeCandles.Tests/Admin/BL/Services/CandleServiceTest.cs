@@ -61,8 +61,8 @@ public class CandleServiceTest
     private static Decor GenerateDecor(int id = 0)
     {
         var decor = Decor.Create(
-            _faker.Random.String(1, Decor.MaxTitleLenght),
-            _faker.Random.String(1, Decor.MaxDescriptionLenght),
+            _faker.Random.String(1, Decor.MaxTitleLength),
+            _faker.Random.String(1, Decor.MaxDescriptionLength),
             _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             new[]
             {
