@@ -85,7 +85,7 @@ public class DecorController : Controller
 
         if (imagesResult.IsFailure)
         {
-            return BadRequest($"Failed to create {typeof(Image)}, error message: {imagesResult.Error}");
+            return BadRequest($"Failed to update {typeof(Image)}, error message: {imagesResult.Error}");
         }
 
         var decorResult = Decor.Create(
@@ -98,7 +98,7 @@ public class DecorController : Controller
 
         if (decorResult.IsFailure)
         {
-            return BadRequest(decorResult.Error);
+            return BadRequest($"Failed to update {typeof(Decor)}, error message: {decorResult.Error}");
         }
 
         var result = await _decorService.Update(decorResult.Value);

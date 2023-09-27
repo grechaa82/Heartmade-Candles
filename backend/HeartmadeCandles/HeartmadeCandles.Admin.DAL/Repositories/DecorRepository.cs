@@ -63,7 +63,7 @@ public class DecorRepository : IDecorRepository
         }
 
         var result = items
-            .Select(item => DecorMapping.MapToDecor(item))
+            .Select(DecorMapping.MapToDecor)
             .ToArray();
 
         return result;
@@ -124,6 +124,11 @@ public class DecorRepository : IDecorRepository
             .Where(d => existingDecors.All(ed => ed.DecorId != d.Id))
             .Select(d => new CandleEntityDecorEntity { CandleId = candleId, DecorId = d.Id })
             .ToArray();
+
+        if (!decorsToDelete.Any() && !decorsToAdd.Any())
+        {
+            Result.Failure($"There are no Decors of candle by id: {candleId} that need to be updated");
+        }
 
         _context.CandleDecor.RemoveRange(decorsToDelete);
         _context.CandleDecor.AddRange(decorsToAdd);

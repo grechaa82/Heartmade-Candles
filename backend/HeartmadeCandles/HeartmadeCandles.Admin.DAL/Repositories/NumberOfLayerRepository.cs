@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.Admin.DAL.Entities;
 using HeartmadeCandles.Admin.DAL.Mapping;
@@ -15,121 +16,127 @@ public class NumberOfLayerRepository : INumberOfLayerRepository
         _context = context;
     }
 
-    public async Task<NumberOfLayer[]> GetAll()
+    public async Task<Maybe<NumberOfLayer[]>> GetAll()
     {
         var items = await _context.NumberOfLayer
             .AsNoTracking()
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<NumberOfLayer[]>.None;
+        }
+
         var result = items
-            .Select(item => NumberOfLayerMapping.MapToNumberOfLayer(item))
+            .Select(NumberOfLayerMapping.MapToNumberOfLayer)
             .ToArray();
 
         return result;
     }
 
-    public async Task<NumberOfLayer> Get(int numberOfLayerId)
+    public async Task<Maybe<NumberOfLayer>> Get(int numberOfLayerId)
     {
         var item = await _context.NumberOfLayer
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == numberOfLayerId);
+
+        if (item == null)
+        {
+            return Maybe<NumberOfLayer>.None;
+        }
 
         var numberOfLayer = NumberOfLayerMapping.MapToNumberOfLayer(item);
 
         return numberOfLayer;
     }
 
-    public async Task<NumberOfLayer[]> GetByIds(int[] numberOfLayerIds)
+    public async Task<Maybe<NumberOfLayer[]>> GetByIds(int[] numberOfLayerIds)
     {
         var items = await _context.NumberOfLayer
             .AsNoTracking()
             .Where(c => numberOfLayerIds.Contains(c.Id))
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<NumberOfLayer[]>.None;
+        }
+
         var result = items
-            .Select(item => NumberOfLayerMapping.MapToNumberOfLayer(item))
+            .Select(NumberOfLayerMapping.MapToNumberOfLayer)
             .ToArray();
 
         return result;
     }
 
-    public async Task Create(NumberOfLayer numberOfLayer)
+    public async Task<Result> Create(NumberOfLayer numberOfLayer)
     {
         var item = NumberOfLayerMapping.MapToNumberOfLayerEntity(numberOfLayer);
 
         await _context.NumberOfLayer.AddAsync(item);
-        await _context.SaveChangesAsync();
+        var created = await _context.SaveChangesAsync();
+
+        return created > 0
+            ? Result.Success()
+            : Result.Failure($"NumberOfLayer {numberOfLayer.Number} was not created");
     }
 
-    public async Task Update(NumberOfLayer numberOfLayer)
+    public async Task<Result> Update(NumberOfLayer numberOfLayer)
     {
         var item = NumberOfLayerMapping.MapToNumberOfLayerEntity(numberOfLayer);
 
         _context.NumberOfLayer.Update(item);
-        await _context.SaveChangesAsync();
+        var updated = await _context.SaveChangesAsync();
+
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"NumberOfLayer {numberOfLayer.Number} was not updated");
     }
 
-    public async Task Delete(int numberOfLayerId)
+    public async Task<Result> Delete(int numberOfLayerId)
     {
         var item = await _context.NumberOfLayer.FirstOrDefaultAsync(c => c.Id == numberOfLayerId);
 
-        if (item != null)
+        if (item == null)
         {
-            _context.NumberOfLayer.Remove(item);
-            await _context.SaveChangesAsync();
+            return Result.Failure($"NumberOfLayer by id: {numberOfLayerId} does not exist");
         }
+
+        _context.NumberOfLayer.Remove(item);
+        var deleted = await _context.SaveChangesAsync();
+
+        return deleted > 0
+            ? Result.Success()
+            : Result.Failure($"NumberOfLayer by id: {numberOfLayerId} was not deleted");
     }
 
-    public async Task UpdateCandleNumberOfLayer(int candleId, NumberOfLayer[] numberOfLayers)
+    public async Task<Result> UpdateCandleNumberOfLayer(int candleId, NumberOfLayer[] numberOfLayers)
     {
         var existingNumberOfLayers = await _context.CandleNumberOfLayer
             .Where(c => c.CandleId == candleId)
             .ToArrayAsync();
 
         var numberOfLayersToDelete = existingNumberOfLayers
-            .Where(en => !numberOfLayers.Any(w => w.Id == en.NumberOfLayerId))
+            .Where(en => numberOfLayers.All(w => w.Id != en.NumberOfLayerId))
             .ToArray();
 
         var numberOfLayersToAdd = numberOfLayers
-            .Where(n => !existingNumberOfLayers.Any(en => en.NumberOfLayerId == n.Id))
+            .Where(n => existingNumberOfLayers.All(en => en.NumberOfLayerId != n.Id))
             .Select(n => new CandleEntityNumberOfLayerEntity { CandleId = candleId, NumberOfLayerId = n.Id })
             .ToArray();
 
-        _context.RemoveRange(numberOfLayersToDelete);
-        _context.AddRange(numberOfLayersToAdd);
-
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<bool> AreIdsExist(int[] ids)
-    {
-        foreach (var id in ids)
+        if (!numberOfLayersToDelete.Any() && !numberOfLayersToAdd.Any())
         {
-            var exists = await _context.Decor.AnyAsync(d => d.Id == id);
-
-            if (!exists)
-            {
-                return false;
-            }
+            Result.Failure($"There are no NumberOfLayers of candle by id: {candleId} that need to be updated");
         }
 
-        return true;
-    }
+        _context.CandleNumberOfLayer.RemoveRange(numberOfLayersToDelete);
+        _context.CandleNumberOfLayer.AddRange(numberOfLayersToAdd);
 
-    public async Task<int[]> GetNonExistingIds(int[] ids)
-    {
-        var nonExistingIds = new List<int>();
+        var updated = await _context.SaveChangesAsync();
 
-        foreach (var id in ids)
-        {
-            var exists = await _context.Decor.AnyAsync(d => d.Id == id);
-
-            if (!exists)
-            {
-                nonExistingIds.Add(id);
-            }
-        }
-
-        return nonExistingIds.ToArray();
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"NumberOfLayers of candle by id: {candleId} were not updated");
     }
 }

@@ -127,7 +127,7 @@ public class LayerColorRepository : ILayerColorRepository
 
         if (!layerColorsToDelete.Any() && !layerColorsToAdd.Any())
         {
-            Result.Failure($"LayerColors of candle by id {candleId} were not updated");
+            Result.Failure($"There are no LayerColors of candle by id: {candleId} that need to be updated");
         }
 
         _context.CandleLayerColor.RemoveRange(layerColorsToDelete);
@@ -137,6 +137,6 @@ public class LayerColorRepository : ILayerColorRepository
 
         return updated > 0
             ? Result.Success()
-            : Result.Failure($"LayerColors of candle by id {candleId} were not updated");
+            : Result.Failure($"LayerColors of candle by id: {candleId} were not updated");
     }
 }

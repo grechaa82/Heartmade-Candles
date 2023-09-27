@@ -93,14 +93,14 @@ public class CandleService : ICandleService
     {
         var numberOfLayers = await _numberOfLayerRepository.GetByIds(numberOfLayerIds);
 
-        if (numberOfLayers.Length != numberOfLayerIds.Length)
+        if (!numberOfLayers.HasValue || numberOfLayers.Value.Length != numberOfLayerIds.Length)
         {
-            var missingIds = numberOfLayerIds.Except(numberOfLayers.Select(l => l.Id));
+            var missingIds = numberOfLayerIds.Except(numberOfLayers.Value.Select(l => l.Id));
             var missingIdsString = string.Join(", ", missingIds);
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _numberOfLayerRepository.UpdateCandleNumberOfLayer(candleId, numberOfLayers);
+        await _numberOfLayerRepository.UpdateCandleNumberOfLayer(candleId, numberOfLayers.Value);
 
         return Result.Success();
     }

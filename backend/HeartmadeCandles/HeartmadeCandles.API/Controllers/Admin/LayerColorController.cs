@@ -86,7 +86,7 @@ public class LayerColorController : Controller
 
         if (imagesResult.IsFailure)
         {
-            return BadRequest($"Failed to create {typeof(Image)}, error message: {imagesResult.Error}");
+            return BadRequest($"Failed to update {typeof(Image)}, error message: {imagesResult.Error}");
         }
 
         var layerColorResult = LayerColor.Create(
@@ -99,7 +99,7 @@ public class LayerColorController : Controller
 
         if (layerColorResult.IsFailure)
         {
-            return BadRequest($"Failed to create {typeof(LayerColor)}, error message: {layerColorResult.Error}");
+            return BadRequest($"Failed to update {typeof(LayerColor)}, error message: {layerColorResult.Error}");
         }
 
         var result = await _layerColorService.Update(layerColorResult.Value);

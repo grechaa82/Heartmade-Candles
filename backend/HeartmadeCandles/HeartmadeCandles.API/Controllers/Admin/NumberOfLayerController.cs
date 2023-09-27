@@ -11,59 +11,99 @@ namespace HeartmadeCandles.API.Controllers.Admin;
 [Authorize(Roles = "Admin")]
 public class NumberOfLayerController : Controller
 {
+    private readonly ILogger<NumberOfLayerController> _logger;
     private readonly INumberOfLayerService _numberOfLayerService;
 
-    public NumberOfLayerController(INumberOfLayerService numberOfLayerService)
+    public NumberOfLayerController(INumberOfLayerService numberOfLayerService, ILogger<NumberOfLayerController> logger)
     {
         _numberOfLayerService = numberOfLayerService;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        return Ok(await _numberOfLayerService.GetAll());
+        var numberOfLayersMaybe = await _numberOfLayerService.GetAll();
+        return Ok(numberOfLayersMaybe.HasValue ? numberOfLayersMaybe.Value : Array.Empty<NumberOfLayer>());
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        return Ok(await _numberOfLayerService.Get(id));
+        var numberOfLayerMaybe = await _numberOfLayerService.Get(id);
+
+        if (!numberOfLayerMaybe.HasValue)
+        {
+            return NotFound($"NumberOfLayer by id: {id} does not exist");
+        }
+
+        return Ok(numberOfLayerMaybe.Value);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(NumberOfLayerRequest numberOfLayerRequest)
     {
-        var result = NumberOfLayer.Create(numberOfLayerRequest.Number);
+        var numberOfLayerResult = NumberOfLayer.Create(numberOfLayerRequest.Number);
+
+        if (numberOfLayerResult.IsFailure)
+        {
+            return BadRequest($"Failed to create {typeof(NumberOfLayer)}, error message: {numberOfLayerResult.Error}");
+        }
+
+        var result = await _numberOfLayerService.Create(numberOfLayerResult.Value);
 
         if (result.IsFailure)
         {
-            return BadRequest(result.Error);
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_numberOfLayerService.Create),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_numberOfLayerService.Create)}, error message: {result.Error}");
         }
-
-        await _numberOfLayerService.Create(result.Value);
 
         return Ok();
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, NumberOfLayerRequest numberOfLayerRequest)
     {
-        var result = NumberOfLayer.Create(numberOfLayerRequest.Number, id);
+        var numberOfLayerResult = NumberOfLayer.Create(numberOfLayerRequest.Number, id);
+
+        if (numberOfLayerResult.IsFailure)
+        {
+            return BadRequest($"Failed to update {typeof(NumberOfLayer)}, error message: {numberOfLayerResult.Error}");
+        }
+
+        var result = await _numberOfLayerService.Update(numberOfLayerResult.Value);
 
         if (result.IsFailure)
         {
-            return BadRequest(result.Error);
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_numberOfLayerService.Update),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_numberOfLayerService.Update)}, error message: {result.Error}");
         }
-
-        await _numberOfLayerService.Update(result.Value);
 
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _numberOfLayerService.Delete(id);
+        var result = await _numberOfLayerService.Delete(id);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_numberOfLayerService.Delete),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_numberOfLayerService.Delete)}, error message: {result.Error}");
+        }
 
         return Ok();
     }

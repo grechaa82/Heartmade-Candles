@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.BL.Services;
@@ -12,28 +13,28 @@ public class NumberOfLayerService : INumberOfLayerService
         _numberOfLayerServiceRepository = numberOfLayerServiceRepository;
     }
 
-    public async Task<NumberOfLayer[]> GetAll()
+    public async Task<Maybe<NumberOfLayer[]>> GetAll()
     {
         return await _numberOfLayerServiceRepository.GetAll();
     }
 
-    public async Task<NumberOfLayer> Get(int numberOfLayerId)
+    public async Task<Maybe<NumberOfLayer>> Get(int numberOfLayerId)
     {
         return await _numberOfLayerServiceRepository.Get(numberOfLayerId);
     }
 
-    public async Task Create(NumberOfLayer numberOfLayer)
+    public async Task<Result> Create(NumberOfLayer numberOfLayer)
     {
-        await _numberOfLayerServiceRepository.Create(numberOfLayer);
+        return await _numberOfLayerServiceRepository.Create(numberOfLayer);
     }
 
-    public async Task Update(NumberOfLayer numberOfLayer)
+    public async Task<Result> Update(NumberOfLayer numberOfLayer)
     {
-        await _numberOfLayerServiceRepository.Update(numberOfLayer);
+        return await _numberOfLayerServiceRepository.Update(numberOfLayer);
     }
 
-    public async Task Delete(int numberOfLayerId)
+    public async Task<Result> Delete(int numberOfLayerId)
     {
-        await _numberOfLayerServiceRepository.Delete(numberOfLayerId);
+        return await _numberOfLayerServiceRepository.Delete(numberOfLayerId);
     }
 }
