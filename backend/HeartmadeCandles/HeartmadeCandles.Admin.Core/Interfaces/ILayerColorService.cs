@@ -1,12 +1,13 @@
-﻿using HeartmadeCandles.Admin.Core.Models;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.Core.Interfaces;
 
 public interface ILayerColorService
 {
-    Task<LayerColor[]> GetAll();
-    Task<LayerColor> Get(int layerColorId);
-    Task Create(LayerColor layerColor);
-    Task Update(LayerColor layerColor);
-    Task Delete(int layerColorId);
+    Task<Maybe<LayerColor[]>> GetAll();
+    Task<Maybe<LayerColor>> Get(int layerColorId);
+    Task<Result> Create(LayerColor layerColor);
+    Task<Result> Update(LayerColor layerColor);
+    Task<Result> Delete(int layerColorId);
 }

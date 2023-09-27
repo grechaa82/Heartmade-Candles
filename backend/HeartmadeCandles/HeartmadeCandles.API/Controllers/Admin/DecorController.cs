@@ -26,12 +26,7 @@ public class DecorController : Controller
     {
         var decorsMaybe = await _decorService.GetAll();
 
-        if (!decorsMaybe.HasValue)
-        {
-            return Ok(Array.Empty<Decor>());
-        }
-
-        return Ok(decorsMaybe.Value);
+        return Ok(decorsMaybe.HasValue ? decorsMaybe.Value : Array.Empty<Decor>());
     }
 
     [HttpGet("{id:int}")]
@@ -54,7 +49,7 @@ public class DecorController : Controller
 
         if (imagesResult.IsFailure)
         {
-            return BadRequest(imagesResult.Error);
+            return BadRequest($"Failed to create {typeof(Image)}, error message: {imagesResult.Error}");
         }
 
         var decorResult = Decor.Create(
@@ -90,7 +85,7 @@ public class DecorController : Controller
 
         if (imagesResult.IsFailure)
         {
-            return BadRequest(imagesResult.Error);
+            return BadRequest($"Failed to create {typeof(Image)}, error message: {imagesResult.Error}");
         }
 
         var decorResult = Decor.Create(
@@ -130,7 +125,8 @@ public class DecorController : Controller
             _logger.LogError(
                 "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_decorService.Delete),
                 result.Error);
-            return BadRequest(result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_decorService.Delete)}, error message: {result.Error}");
         }
 
         return Ok();

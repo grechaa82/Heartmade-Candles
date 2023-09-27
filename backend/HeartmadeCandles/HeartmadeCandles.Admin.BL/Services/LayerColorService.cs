@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.BL.Services;
@@ -12,28 +13,28 @@ public class LayerColorService : ILayerColorService
         _layerColorRepository = layerColorRepository;
     }
 
-    public async Task<LayerColor[]> GetAll()
+    public async Task<Maybe<LayerColor[]>> GetAll()
     {
         return await _layerColorRepository.GetAll();
     }
 
-    public async Task<LayerColor> Get(int layerColorId)
+    public async Task<Maybe<LayerColor>> Get(int layerColorId)
     {
         return await _layerColorRepository.Get(layerColorId);
     }
 
-    public async Task Create(LayerColor layerColor)
+    public async Task<Result> Create(LayerColor layerColor)
     {
-        await _layerColorRepository.Create(layerColor);
+        return await _layerColorRepository.Create(layerColor);
     }
 
-    public async Task Update(LayerColor layerColor)
+    public async Task<Result> Update(LayerColor layerColor)
     {
-        await _layerColorRepository.Update(layerColor);
+        return await _layerColorRepository.Update(layerColor);
     }
 
-    public async Task Delete(int layerColorId)
+    public async Task<Result> Delete(int layerColorId)
     {
-        await _layerColorRepository.Delete(layerColorId);
+        return await _layerColorRepository.Delete(layerColorId);
     }
 }

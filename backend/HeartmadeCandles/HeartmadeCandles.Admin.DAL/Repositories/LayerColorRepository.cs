@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.Admin.DAL.Entities;
 using HeartmadeCandles.Admin.DAL.Mapping;
@@ -15,121 +16,127 @@ public class LayerColorRepository : ILayerColorRepository
         _context = context;
     }
 
-    public async Task<LayerColor[]> GetAll()
+    public async Task<Maybe<LayerColor[]>> GetAll()
     {
         var items = await _context.LayerColor
             .AsNoTracking()
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<LayerColor[]>.None;
+        }
+
         var result = items
-            .Select(item => LayerColorMapping.MapToLayerColor(item))
+            .Select(LayerColorMapping.MapToLayerColor)
             .ToArray();
 
         return result;
     }
 
-    public async Task<LayerColor> Get(int layerColorId)
+    public async Task<Maybe<LayerColor>> Get(int layerColorId)
     {
         var item = await _context.LayerColor
             .AsNoTracking()
             .FirstOrDefaultAsync(l => l.Id == layerColorId);
+
+        if (item == null)
+        {
+            return Maybe<LayerColor>.None;
+        }
 
         var layerColor = LayerColorMapping.MapToLayerColor(item);
 
         return layerColor;
     }
 
-    public async Task<LayerColor[]> GetByIds(int[] layerColorIds)
+    public async Task<Maybe<LayerColor[]>> GetByIds(int[] layerColorIds)
     {
         var items = await _context.LayerColor
             .AsNoTracking()
             .Where(c => layerColorIds.Contains(c.Id))
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<LayerColor[]>.None;
+        }
+
         var result = items
-            .Select(item => LayerColorMapping.MapToLayerColor(item))
+            .Select(LayerColorMapping.MapToLayerColor)
             .ToArray();
 
         return result;
     }
 
-    public async Task Create(LayerColor layerColor)
+    public async Task<Result> Create(LayerColor layerColor)
     {
         var item = LayerColorMapping.MapToLayerColorEntity(layerColor);
 
         await _context.LayerColor.AddAsync(item);
-        await _context.SaveChangesAsync();
+        var created = await _context.SaveChangesAsync();
+
+        return created > 0
+            ? Result.Success()
+            : Result.Failure($"LayerColor {layerColor.Title} was not created");
     }
 
-    public async Task Update(LayerColor layerColor)
+    public async Task<Result> Update(LayerColor layerColor)
     {
         var item = LayerColorMapping.MapToLayerColorEntity(layerColor);
 
         _context.LayerColor.Update(item);
-        await _context.SaveChangesAsync();
+        var updated = await _context.SaveChangesAsync();
+
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"LayerColor {layerColor.Title} was not updated");
     }
 
-    public async Task Delete(int layerColorId)
+    public async Task<Result> Delete(int layerColorId)
     {
         var item = await _context.LayerColor.FirstOrDefaultAsync(l => l.Id == layerColorId);
 
-        if (item != null)
+        if (item == null)
         {
-            _context.LayerColor.Remove(item);
-            await _context.SaveChangesAsync();
+            return Result.Failure($"LayerColor by id: {layerColorId} does not exist");
         }
+
+        _context.LayerColor.Remove(item);
+        var deleted = await _context.SaveChangesAsync();
+
+        return deleted > 0
+            ? Result.Success()
+            : Result.Failure($"LayerColor by id: {layerColorId} was not deleted");
     }
 
-    public async Task UpdateCandleLayerColor(int candleId, LayerColor[] layerColors)
+    public async Task<Result> UpdateCandleLayerColor(int candleId, LayerColor[] layerColors)
     {
         var existingLayerColors = await _context.CandleLayerColor
             .Where(c => c.CandleId == candleId)
             .ToArrayAsync();
 
         var layerColorsToDelete = existingLayerColors
-            .Where(el => !layerColors.Any(l => l.Id == el.LayerColorId))
+            .Where(el => layerColors.All(l => l.Id != el.LayerColorId))
             .ToArray();
 
-        var layerColorssToAdd = layerColors
-            .Where(l => !existingLayerColors.Any(el => el.LayerColorId == l.Id))
+        var layerColorsToAdd = layerColors
+            .Where(l => existingLayerColors.All(el => el.LayerColorId != l.Id))
             .Select(l => new CandleEntityLayerColorEntity { CandleId = candleId, LayerColorId = l.Id })
             .ToArray();
 
-        _context.RemoveRange(layerColorsToDelete);
-        _context.AddRange(layerColorssToAdd);
-
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<bool> AreIdsExist(int[] ids)
-    {
-        foreach (var id in ids)
+        if (!layerColorsToDelete.Any() && !layerColorsToAdd.Any())
         {
-            var exists = await _context.LayerColor.AnyAsync(l => l.Id == id);
-
-            if (!exists)
-            {
-                return false;
-            }
+            Result.Failure($"LayerColors of candle by id {candleId} were not updated");
         }
 
-        return true;
-    }
+        _context.CandleLayerColor.RemoveRange(layerColorsToDelete);
+        _context.CandleLayerColor.AddRange(layerColorsToAdd);
 
-    public async Task<int[]> GetNonExistingIds(int[] ids)
-    {
-        var nonExistingIds = new List<int>();
+        var updated = await _context.SaveChangesAsync();
 
-        foreach (var id in ids)
-        {
-            var exists = await _context.LayerColor.AnyAsync(l => l.Id == id);
-
-            if (!exists)
-            {
-                nonExistingIds.Add(id);
-            }
-        }
-
-        return nonExistingIds.ToArray();
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"LayerColors of candle by id {candleId} were not updated");
     }
 }

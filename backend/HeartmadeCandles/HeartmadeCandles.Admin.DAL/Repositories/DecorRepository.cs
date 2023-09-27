@@ -117,16 +117,16 @@ public class DecorRepository : IDecorRepository
             .ToArrayAsync();
 
         var decorsToDelete = existingDecors
-            .Where(ed => !decors.Any(d => d.Id == ed.DecorId))
+            .Where(ed => decors.All(d => d.Id != ed.DecorId))
             .ToArray();
 
         var decorsToAdd = decors
-            .Where(d => !existingDecors.Any(ed => ed.DecorId == d.Id))
+            .Where(d => existingDecors.All(ed => ed.DecorId != d.Id))
             .Select(d => new CandleEntityDecorEntity { CandleId = candleId, DecorId = d.Id })
             .ToArray();
 
-        _context.RemoveRange(decorsToDelete);
-        _context.AddRange(decorsToAdd);
+        _context.CandleDecor.RemoveRange(decorsToDelete);
+        _context.CandleDecor.AddRange(decorsToAdd);
 
         var updated = await _context.SaveChangesAsync();
 

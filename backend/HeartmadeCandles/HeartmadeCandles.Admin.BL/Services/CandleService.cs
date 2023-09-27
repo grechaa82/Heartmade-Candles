@@ -77,14 +77,14 @@ public class CandleService : ICandleService
     {
         var layerColors = await _layerColorRepository.GetByIds(layerColorIds);
 
-        if (layerColors.Length != layerColorIds.Length)
+        if (!layerColors.HasValue || layerColors.Value.Length != layerColorIds.Length)
         {
-            var missingIds = layerColorIds.Except(layerColors.Select(l => l.Id));
+            var missingIds = layerColorIds.Except(layerColors.Value.Select(l => l.Id));
             var missingIdsString = string.Join(", ", missingIds);
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _layerColorRepository.UpdateCandleLayerColor(candleId, layerColors);
+        await _layerColorRepository.UpdateCandleLayerColor(candleId, layerColors.Value);
 
         return Result.Success();
     }
