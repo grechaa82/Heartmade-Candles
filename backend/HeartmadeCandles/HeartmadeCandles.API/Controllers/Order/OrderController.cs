@@ -21,40 +21,20 @@ public class OrderController : Controller
     [HttpGet("{configuredCandlesString}")]
     public async Task<IActionResult> Get(string configuredCandlesString)
     {
-        _logger.LogInformation(
-            "Request {@Controller} {@Endpoint}, configuredCandlesString: {@ConfiguredCandlesString}, {@DataTime}",
-            nameof(OrderController),
-            nameof(Get),
-            configuredCandlesString,
-            DateTime.UtcNow);
-
-        var orderItemFilters = GetSplitetConfiguredCandlesString(configuredCandlesString)
-            .Select(item => ParseUrlStringToOrderItemFilter(item))
+        var orderItemFilters = GetSplitedConfiguredCandlesString(configuredCandlesString)
+            .Select(ParseUrlStringToOrderItemFilter)
             .ToArray();
-
-        _logger.LogInformation("orderItemFilters: {0}", orderItemFilters);
 
         var result = await _orderService.Get(orderItemFilters);
 
         if (result.IsFailure)
         {
             _logger.LogError(
-                "Error request {0} {1}, {2}, {3}",
-                nameof(OrderController),
-                nameof(Get),
-                result.Error,
-                DateTime.UtcNow);
-
-            return BadRequest(result.Error);
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_orderService.Get),
+                result.Error);
+            return BadRequest($"Error: Failed in process {typeof(OrderItem)}, error message: {result.Error}");
         }
-
-        _logger.LogInformation(
-            "When Request {0} {1}, an order is received: {2}, configuredCandlesString: {3}, {4}",
-            nameof(OrderController),
-            nameof(Get),
-            result.Value,
-            configuredCandlesString,
-            DateTime.UtcNow);
 
         return Ok(result.Value);
     }
@@ -62,13 +42,6 @@ public class OrderController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateOrder(CreateOrderRequest orderRequest)
     {
-        _logger.LogInformation(
-            "Request {0} {1}, orderRequest: {2}, {3}",
-            nameof(OrderController),
-            nameof(CreateOrder),
-            orderRequest,
-            DateTime.UtcNow);
-
         var result = await _orderService.CreateOrder(
             orderRequest.ConfiguredCandlesString,
             MapToOrderItemFilter(orderRequest.OrderItemFilters),
@@ -78,26 +51,16 @@ public class OrderController : Controller
         if (result.IsFailure)
         {
             _logger.LogError(
-                "Error request {0} {1}, {2}, {3}",
-                nameof(OrderController),
-                nameof(CreateOrder),
-                result.Error,
-                DateTime.UtcNow);
-
-            return BadRequest(result.Error);
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_orderService.CreateOrder),
+                result.Error);
+            return BadRequest($"Failed in process {typeof(OrderItem)}, error message: {result.Error}");
         }
-
-        _logger.LogInformation(
-            "When Request {0} {1}, order has been created, order: {2}, {3}",
-            nameof(OrderController),
-            nameof(CreateOrder),
-            result,
-            DateTime.UtcNow);
 
         return Ok(result);
     }
 
-    private string[] GetSplitetConfiguredCandlesString(string configuredCandlesString)
+    private string[] GetSplitedConfiguredCandlesString(string configuredCandlesString)
     {
         return configuredCandlesString.Split(".");
     }
@@ -132,7 +95,7 @@ public class OrderController : Controller
             if (value != null)
             {
                 var values = value.Split('_');
-                return values.Select(v => int.Parse(v)).ToArray();
+                return values.Select(int.Parse).ToArray();
             }
 
             return null;

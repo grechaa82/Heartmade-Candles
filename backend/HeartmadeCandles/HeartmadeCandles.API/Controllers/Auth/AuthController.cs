@@ -14,12 +14,14 @@ namespace HeartmadeCandles.API.Controllers.Auth;
 public class AuthController : Controller
 {
     private readonly JwtOptions _jwtOptions;
+    private readonly ILogger<AuthController> _logger;
     private readonly IAuthService _userService;
 
-    public AuthController(IOptions<JwtOptions> jwtOptions, IAuthService userService)
+    public AuthController(IOptions<JwtOptions> jwtOptions, IAuthService userService, ILogger<AuthController> logger)
     {
         _userService = userService;
         _jwtOptions = jwtOptions.Value;
+        _logger = logger;
     }
 
     [HttpPost("login")]
@@ -36,6 +38,7 @@ public class AuthController : Controller
             return Ok(new { token });
         }
 
+        _logger.LogError("User could not login");
         return Unauthorized();
     }
 

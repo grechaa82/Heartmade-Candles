@@ -45,6 +45,7 @@ public class ImageController : Controller
 
         return Ok(fileNames);
     }
+
     private string GenerateFileName(string extension)
     {
         return Guid.NewGuid() + extension;

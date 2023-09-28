@@ -19,23 +19,16 @@ public class ConstructorController : Controller
     [HttpGet("candles")]
     public async Task<IActionResult> GetCandles()
     {
-        _logger.LogInformation(
-            "Request {0} {1}, {2}",
-            nameof(ConstructorController),
-            nameof(GetCandles),
-            DateTime.UtcNow);
-
         var result = await _constructorService.GetCandles();
 
         if (result.IsFailure)
         {
             _logger.LogError(
-                "Error request {0} {1}, {2}",
-                nameof(ConstructorController),
-                nameof(GetCandles),
-                DateTime.UtcNow);
-
-            return BadRequest(result.Error);
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_constructorService.GetCandles),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_constructorService.GetCandles)}, error message: {result.Error}");
         }
 
         return Ok(result.Value);
@@ -44,25 +37,16 @@ public class ConstructorController : Controller
     [HttpGet("candles/{candleId}")]
     public async Task<IActionResult> GetCandleById(int candleId)
     {
-        _logger.LogInformation(
-            "Request {0} {1}, candleId: {2}, {3}",
-            nameof(ConstructorController),
-            nameof(GetCandleById),
-            candleId,
-            DateTime.UtcNow);
-
         var result = await _constructorService.GetCandleDetailById(candleId);
 
         if (result.IsFailure)
         {
             _logger.LogError(
-                "Error request {0} {1}, candleId: {2}, {3}",
-                nameof(ConstructorController),
-                nameof(GetCandles),
-                candleId,
-                DateTime.UtcNow);
-
-            return BadRequest(result.Error);
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_constructorService.GetCandleDetailById),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_constructorService.GetCandleDetailById)}, error message: {result.Error}");
         }
 
         return Ok(result.Value);
