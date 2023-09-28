@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.Admin.DAL.Entities;
 using HeartmadeCandles.Admin.DAL.Mapping;
@@ -15,121 +16,127 @@ public class WickRepository : IWickRepository
         _context = context;
     }
 
-    public async Task<Wick[]> GetAll()
+    public async Task<Maybe<Wick[]>> GetAll()
     {
         var items = await _context.Wick
             .AsNoTracking()
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<Wick[]>.None;
+        }
+
         var result = items
-            .Select(item => WickMapping.MapToWick(item))
+            .Select(WickMapping.MapToWick)
             .ToArray();
 
         return result;
     }
 
-    public async Task<Wick> Get(int wickId)
+    public async Task<Maybe<Wick>> Get(int wickId)
     {
         var item = await _context.Wick
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == wickId);
+
+        if (item == null)
+        {
+            return Maybe<Wick>.None;
+        }
 
         var wick = WickMapping.MapToWick(item);
 
         return wick;
     }
 
-    public async Task<Wick[]> GetByIds(int[] wickIds)
+    public async Task<Maybe<Wick[]>> GetByIds(int[] wickIds)
     {
         var items = await _context.Wick
             .AsNoTracking()
             .Where(c => wickIds.Contains(c.Id))
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<Wick[]>.None;
+        }
+
         var result = items
-            .Select(item => WickMapping.MapToWick(item))
+            .Select(WickMapping.MapToWick)
             .ToArray();
 
         return result;
     }
 
-    public async Task Create(Wick wick)
+    public async Task<Result> Create(Wick wick)
     {
         var item = WickMapping.MapToWickEntity(wick);
 
         await _context.Wick.AddAsync(item);
-        await _context.SaveChangesAsync();
+        var created = await _context.SaveChangesAsync();
+
+        return created > 0
+            ? Result.Success()
+            : Result.Failure($"Wick {wick.Title} was not created");
     }
 
-    public async Task Update(Wick wick)
+    public async Task<Result> Update(Wick wick)
     {
         var item = WickMapping.MapToWickEntity(wick);
 
         _context.Wick.Update(item);
-        await _context.SaveChangesAsync();
+        var updated = await _context.SaveChangesAsync();
+
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"Wick {wick.Title} was not updated");
     }
 
-    public async Task Delete(int wickId)
+    public async Task<Result> Delete(int wickId)
     {
         var item = await _context.Wick.FirstOrDefaultAsync(c => c.Id == wickId);
 
-        if (item != null)
+        if (item == null)
         {
-            _context.Wick.Remove(item);
-            await _context.SaveChangesAsync();
+            return Result.Failure($"Wick by id: {wickId} does not exist");
         }
+
+        _context.Wick.Remove(item);
+        var deleted = await _context.SaveChangesAsync();
+
+        return deleted > 0
+            ? Result.Success()
+            : Result.Failure($"Wick by id: {wickId} was not deleted");
     }
 
-    public async Task UpdateCandleWick(int candleId, Wick[] wicks)
+    public async Task<Result> UpdateCandleWick(int candleId, Wick[] wicks)
     {
         var existingWicks = await _context.CandleWick
             .Where(c => c.CandleId == candleId)
             .ToArrayAsync();
 
         var wicksToDelete = existingWicks
-            .Where(ew => !wicks.Any(w => w.Id == ew.WickId))
+            .Where(ew => wicks.All(w => w.Id != ew.WickId))
             .ToArray();
 
         var wicksToAdd = wicks
-            .Where(w => !existingWicks.Any(ew => ew.WickId == w.Id))
+            .Where(w => existingWicks.All(ew => ew.WickId != w.Id))
             .Select(w => new CandleEntityWickEntity { CandleId = candleId, WickId = w.Id })
             .ToArray();
 
-        _context.RemoveRange(wicksToDelete);
-        _context.AddRange(wicksToAdd);
-
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<bool> AreIdsExist(int[] ids)
-    {
-        foreach (var id in ids)
+        if (!wicksToDelete.Any() && !wicksToAdd.Any())
         {
-            var exists = await _context.Wick.AnyAsync(d => d.Id == id);
-
-            if (!exists)
-            {
-                return false;
-            }
+            Result.Failure($"There are no Wicks of candle by id: {candleId} that need to be updated");
         }
 
-        return true;
-    }
+        _context.CandleWick.RemoveRange(wicksToDelete);
+        _context.CandleWick.AddRange(wicksToAdd);
 
-    public async Task<int[]> GetNonExistingIds(int[] ids)
-    {
-        var nonExistingIds = new List<int>();
+        var updated = await _context.SaveChangesAsync();
 
-        foreach (var id in ids)
-        {
-            var exists = await _context.Wick.AnyAsync(d => d.Id == id);
-
-            if (!exists)
-            {
-                nonExistingIds.Add(id);
-            }
-        }
-
-        return nonExistingIds.ToArray();
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"Wicks of candle by id {candleId} were not updated");
     }
 }

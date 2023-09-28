@@ -125,14 +125,14 @@ public class CandleService : ICandleService
     {
         var wicks = await _wickRepository.GetByIds(wickIds);
 
-        if (wicks.Length != wickIds.Length)
+        if (!wicks.HasValue || wicks.Value.Length != wickIds.Length)
         {
-            var missingIds = wickIds.Except(wicks.Select(l => l.Id));
+            var missingIds = wickIds.Except(wicks.Value.Select(l => l.Id));
             var missingIdsString = string.Join(", ", missingIds);
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _wickRepository.UpdateCandleWick(candleId, wicks);
+        await _wickRepository.UpdateCandleWick(candleId, wicks.Value);
 
         return Result.Success();
     }

@@ -1,14 +1,15 @@
-﻿using HeartmadeCandles.Admin.Core.Models;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.Core.Interfaces;
 
 public interface IWickRepository
 {
-    Task<Wick[]> GetAll();
-    Task<Wick> Get(int wickId);
-    Task<Wick[]> GetByIds(int[] wickIds);
-    Task Create(Wick wick);
-    Task Update(Wick wick);
-    Task Delete(int wickId);
-    Task UpdateCandleWick(int candleId, Wick[] wicks);
+    Task<Maybe<Wick[]>> GetAll();
+    Task<Maybe<Wick>> Get(int wickId);
+    Task<Maybe<Wick[]>> GetByIds(int[] wickIds);
+    Task<Result> Create(Wick wick);
+    Task<Result> Update(Wick wick);
+    Task<Result> Delete(int wickId);
+    Task<Result> UpdateCandleWick(int candleId, Wick[] wicks);
 }
