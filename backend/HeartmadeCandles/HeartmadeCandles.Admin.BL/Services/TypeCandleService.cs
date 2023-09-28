@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.BL.Services;
@@ -12,28 +13,28 @@ public class TypeCandleService : ITypeCandleService
         _typeCandleRepository = typeCandleRepository;
     }
 
-    public async Task<TypeCandle[]> GetAll()
+    public async Task<Maybe<TypeCandle[]>> GetAll()
     {
         return await _typeCandleRepository.GetAll();
     }
 
-    public async Task<TypeCandle> Get(int typeCandleId)
+    public async Task<Maybe<TypeCandle>> Get(int typeCandleId)
     {
         return await _typeCandleRepository.Get(typeCandleId);
     }
 
-    public async Task Create(TypeCandle typeCandle)
+    public async Task<Result> Create(TypeCandle typeCandle)
     {
-        await _typeCandleRepository.Create(typeCandle);
+        return await _typeCandleRepository.Create(typeCandle);
     }
 
-    public async Task Update(TypeCandle typeCandle)
+    public async Task<Result> Update(TypeCandle typeCandle)
     {
-        await _typeCandleRepository.Update(typeCandle);
+        return await _typeCandleRepository.Update(typeCandle);
     }
 
-    public async Task Delete(int typeCandleId)
+    public async Task<Result> Delete(int typeCandleId)
     {
-        await _typeCandleRepository.Delete(typeCandleId);
+        return await _typeCandleRepository.Delete(typeCandleId);
     }
 }

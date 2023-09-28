@@ -11,59 +11,100 @@ namespace HeartmadeCandles.API.Controllers.Admin;
 [Authorize(Roles = "Admin")]
 public class TypeCandleController : Controller
 {
+    private readonly ILogger<TypeCandleController> _logger;
     private readonly ITypeCandleService _typeCandleService;
 
-    public TypeCandleController(ITypeCandleService typeCandleService)
+    public TypeCandleController(ITypeCandleService typeCandleService, ILogger<TypeCandleController> logger)
     {
         _typeCandleService = typeCandleService;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        return Ok(await _typeCandleService.GetAll());
+        var typeCandlesMaybe = await _typeCandleService.GetAll();
+
+        return Ok(typeCandlesMaybe.HasValue ? typeCandlesMaybe.Value : Array.Empty<Decor>());
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        return Ok(await _typeCandleService.Get(id));
+        var typeCandleMaybe = await _typeCandleService.Get(id);
+
+        if (!typeCandleMaybe.HasValue)
+        {
+            return NotFound($"TypeCandle by id: {id} does not exist");
+        }
+
+        return Ok(typeCandleMaybe.Value);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(TypeCandleRequest typeCandleRequest)
     {
-        var result = TypeCandle.Create(typeCandleRequest.Title, typeCandleRequest.Id);
+        var typeCandleResult = TypeCandle.Create(typeCandleRequest.Title, typeCandleRequest.Id);
+
+        if (typeCandleResult.IsFailure)
+        {
+            return BadRequest($"Failed to create {typeof(TypeCandle)}, error message: {typeCandleResult.Error}");
+        }
+
+        var result = await _typeCandleService.Create(typeCandleResult.Value);
 
         if (result.IsFailure)
         {
-            return BadRequest(result.Error);
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_typeCandleService.Create),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_typeCandleService.Create)}, error message: {result.Error}");
         }
-
-        await _typeCandleService.Create(result.Value);
 
         return Ok();
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, TypeCandleRequest typeCandleRequest)
     {
-        var result = TypeCandle.Create(typeCandleRequest.Title, id);
+        var typeCandleResult = TypeCandle.Create(typeCandleRequest.Title, id);
+
+        if (typeCandleResult.IsFailure)
+        {
+            return BadRequest($"Failed to update {typeof(TypeCandle)}, error message: {typeCandleResult.Error}");
+        }
+
+        var result = await _typeCandleService.Update(typeCandleResult.Value);
 
         if (result.IsFailure)
         {
-            return BadRequest(result.Error);
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_typeCandleService.Update),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_typeCandleService.Update)}, error message: {result.Error}");
         }
-
-        await _typeCandleService.Update(result.Value);
 
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _typeCandleService.Delete(id);
+        var result = await _typeCandleService.Delete(id);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_typeCandleService.Delete),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_typeCandleService.Delete)}, error message: {result.Error}");
+        }
 
         return Ok();
     }

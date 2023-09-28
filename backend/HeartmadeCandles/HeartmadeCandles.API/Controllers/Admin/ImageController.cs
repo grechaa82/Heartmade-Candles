@@ -20,6 +20,7 @@ public class ImageController : Controller
     [HttpPost]
     public async Task<IActionResult> UploadImages(IFormFileCollection formImages)
     {
+        var result = Result.Success();
         var fileNames = new List<string>();
 
         foreach (var formImage in formImages)
@@ -29,59 +30,88 @@ public class ImageController : Controller
             var addImageResult = await AddImage(formImage, fileName);
             if (addImageResult.IsFailure)
             {
-                return BadRequest(addImageResult.Error);
+                result = Result.Combine(result, Result.Failure($"'{nameof(formImage.FileName)}' was not added"));
             }
+            else
+            {
+                fileNames.Add(fileName);
+            }
+        }
 
-            fileNames.Add(fileName);
+        if (result.IsFailure)
+        {
+            return BadRequest($"Failed to add images, error message: {result.Error}");
         }
 
         return Ok(fileNames);
+    }
+    private string GenerateFileName(string extension)
+    {
+        return Guid.NewGuid() + extension;
+    }
 
-        string GenerateFileName(string extension)
+    private async Task<Result> AddImage(IFormFile image, string fileName)
+    {
+        try
         {
-            return Guid.NewGuid() + extension;
+            var filePath = Path.Combine(_staticFilesPath, fileName);
+
+            await using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+
+            return Result.Success();
         }
-
-        async Task<Result> AddImage(IFormFile image, string fileName)
+        catch (Exception ex)
         {
-            try
-            {
-                var filePath = Path.Combine(_staticFilesPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await image.CopyToAsync(stream);
-                }
-
-                return Result.Success();
-            }
-            catch (Exception ex)
-            {
-                return Result.Failure(ex.Message);
-            }
+            _logger.LogError("Error: Failed to add images, error message: {errorMessage}", ex);
+            return Result.Failure(ex.Message);
         }
     }
 
     [HttpDelete]
-    public Task<IActionResult> DeleteImages(string[] fileNames)
+    public async Task<IActionResult> DeleteImages(string[] fileNames)
+    {
+        var result = Result.Success();
+
+        foreach (var fileName in fileNames)
+        {
+            var imagePath = Path.Combine(_staticFilesPath, fileName);
+
+            var deleteImageResult = await DeleteImage(imagePath);
+
+            if (deleteImageResult.IsFailure)
+            {
+                result = Result.Combine(result, Result.Failure($"'{nameof(fileName)}' does not deleted"));
+            }
+        }
+
+        if (result.IsFailure)
+        {
+            return BadRequest($"Failed to delete images, error message: {result.Error}");
+        }
+
+        return Ok(fileNames);
+    }
+
+    private Task<Result> DeleteImage(string imagePath)
     {
         try
         {
-            foreach (var fileName in fileNames)
+            if (!System.IO.File.Exists(imagePath))
             {
-                var imagePath = Path.Combine(_staticFilesPath, fileName);
-
-                if (System.IO.File.Exists(imagePath))
-                {
-                    System.IO.File.Delete(imagePath);
-                }
+                return Task.FromResult(Result.Failure($"{imagePath} does not exist"));
             }
 
-            return Task.FromResult<IActionResult>(Ok());
+            System.IO.File.Delete(imagePath);
+
+            return Task.FromResult(Result.Success());
         }
         catch (Exception ex)
         {
-            return Task.FromResult<IActionResult>(BadRequest(ex.Message));
+            _logger.LogError("Error: Failed to delete images, error message: {errorMessage}", ex);
+            throw;
         }
     }
 }

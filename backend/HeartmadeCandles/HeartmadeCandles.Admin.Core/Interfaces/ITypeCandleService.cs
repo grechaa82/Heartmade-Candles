@@ -1,12 +1,13 @@
-﻿using HeartmadeCandles.Admin.Core.Models;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.Core.Interfaces;
 
 public interface ITypeCandleService
 {
-    Task<TypeCandle[]> GetAll();
-    Task<TypeCandle> Get(int typeCandleId);
-    Task Create(TypeCandle typeCandle);
-    Task Update(TypeCandle typeCandle);
-    Task Delete(int typeCandleId);
+    Task<Maybe<TypeCandle[]>> GetAll();
+    Task<Maybe<TypeCandle>> Get(int typeCandleId);
+    Task<Result> Create(TypeCandle typeCandle);
+    Task<Result> Update(TypeCandle typeCandle);
+    Task<Result> Delete(int typeCandleId);
 }
