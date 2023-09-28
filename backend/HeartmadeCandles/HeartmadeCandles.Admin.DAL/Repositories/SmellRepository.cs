@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.Admin.DAL.Entities;
 using HeartmadeCandles.Admin.DAL.Mapping;
@@ -15,121 +16,127 @@ public class SmellRepository : ISmellRepository
         _context = context;
     }
 
-    public async Task<Smell[]> GetAll()
+    public async Task<Maybe<Smell[]>> GetAll()
     {
         var items = await _context.Smell
             .AsNoTracking()
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<Smell[]>.None;
+        }
+
         var result = items
-            .Select(item => SmellMapping.MapToSmell(item))
+            .Select(SmellMapping.MapToSmell)
             .ToArray();
 
         return result;
     }
 
-    public async Task<Smell> Get(int smellId)
+    public async Task<Maybe<Smell>> Get(int smellId)
     {
         var item = await _context.Smell
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == smellId);
+
+        if (item == null)
+        {
+            return Maybe<Smell>.None;
+        }
 
         var smell = SmellMapping.MapToSmell(item);
 
         return smell;
     }
 
-    public async Task<Smell[]> GetByIds(int[] smellIds)
+    public async Task<Maybe<Smell[]>> GetByIds(int[] smellIds)
     {
         var items = await _context.Smell
             .AsNoTracking()
             .Where(c => smellIds.Contains(c.Id))
             .ToArrayAsync();
 
+        if (!items.Any())
+        {
+            return Maybe<Smell[]>.None;
+        }
+
         var result = items
-            .Select(item => SmellMapping.MapToSmell(item))
+            .Select(SmellMapping.MapToSmell)
             .ToArray();
 
         return result;
     }
 
-    public async Task Create(Smell smell)
+    public async Task<Result> Create(Smell smell)
     {
         var result = SmellMapping.MapToSmellEntity(smell);
 
         await _context.Smell.AddAsync(result);
-        await _context.SaveChangesAsync();
+        var created = await _context.SaveChangesAsync();
+
+        return created > 0
+            ? Result.Success()
+            : Result.Failure($"Smell {smell.Title} was not created");
     }
 
-    public async Task Update(Smell smell)
+    public async Task<Result> Update(Smell smell)
     {
         var item = SmellMapping.MapToSmellEntity(smell);
 
         _context.Smell.Update(item);
-        await _context.SaveChangesAsync();
+        var updated = await _context.SaveChangesAsync();
+
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"Smell {smell.Title} was not updated");
     }
 
-    public async Task Delete(int smellId)
+    public async Task<Result> Delete(int smellId)
     {
         var item = await _context.Smell.FirstOrDefaultAsync(c => c.Id == smellId);
 
-        if (item != null)
+        if (item == null)
         {
-            _context.Smell.Remove(item);
-            await _context.SaveChangesAsync();
+            return Result.Failure($"Smell by id: {smellId} does not exist");
         }
+
+        _context.Smell.Remove(item);
+        var deleted = await _context.SaveChangesAsync();
+
+        return deleted > 0
+            ? Result.Success()
+            : Result.Failure($"Smell by id: {smellId} was not deleted");
     }
 
-    public async Task UpdateCandleSmell(int candleId, Smell[] smells)
+    public async Task<Result> UpdateCandleSmell(int candleId, Smell[] smells)
     {
         var existingSmells = await _context.CandleSmell
             .Where(c => c.CandleId == candleId)
             .ToArrayAsync();
 
         var smellsToDelete = existingSmells
-            .Where(es => !smells.Any(s => s.Id == es.SmellId))
+            .Where(es => smells.All(s => s.Id != es.SmellId))
             .ToArray();
 
         var smellsToAdd = smells
-            .Where(s => !existingSmells.Any(es => es.SmellId == s.Id))
+            .Where(s => existingSmells.All(es => es.SmellId != s.Id))
             .Select(s => new CandleEntitySmellEntity { CandleId = candleId, SmellId = s.Id })
             .ToArray();
 
-        _context.RemoveRange(smellsToDelete);
-        _context.AddRange(smellsToAdd);
-
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task<bool> AreIdsExist(int[] ids)
-    {
-        foreach (var id in ids)
+        if (!smellsToDelete.Any() && !smellsToAdd.Any())
         {
-            var exists = await _context.Smell.AnyAsync(d => d.Id == id);
-
-            if (!exists)
-            {
-                return false;
-            }
+            Result.Failure($"There are no Smells of candle by id: {candleId} that need to be updated");
         }
 
-        return true;
-    }
+        _context.CandleSmell.RemoveRange(smellsToDelete);
+        _context.CandleSmell.AddRange(smellsToAdd);
 
-    public async Task<int[]> GetNonExistingIds(int[] ids)
-    {
-        var nonExistingIds = new List<int>();
+        var updated = await _context.SaveChangesAsync();
 
-        foreach (var id in ids)
-        {
-            var exists = await _context.Smell.AnyAsync(d => d.Id == id);
-
-            if (!exists)
-            {
-                nonExistingIds.Add(id);
-            }
-        }
-
-        return nonExistingIds.ToArray();
+        return updated > 0
+            ? Result.Success()
+            : Result.Failure($"Smells of candle by id {candleId} were not updated");
     }
 }

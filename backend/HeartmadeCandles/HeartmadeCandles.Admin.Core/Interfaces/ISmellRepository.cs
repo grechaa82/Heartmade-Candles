@@ -1,14 +1,15 @@
-﻿using HeartmadeCandles.Admin.Core.Models;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.Core.Interfaces;
 
 public interface ISmellRepository
 {
-    Task<Smell[]> GetAll();
-    Task<Smell> Get(int smellId);
-    Task<Smell[]> GetByIds(int[] smellIds);
-    Task Create(Smell smell);
-    Task Update(Smell smell);
-    Task Delete(int smellId);
-    Task UpdateCandleSmell(int candleId, Smell[] smells);
+    Task<Maybe<Smell[]>> GetAll();
+    Task<Maybe<Smell>> Get(int smellId);
+    Task<Maybe<Smell[]>> GetByIds(int[] smellIds);
+    Task<Result> Create(Smell smell);
+    Task<Result> Update(Smell smell);
+    Task<Result> Delete(int smellId);
+    Task<Result> UpdateCandleSmell(int candleId, Smell[] smells);
 }

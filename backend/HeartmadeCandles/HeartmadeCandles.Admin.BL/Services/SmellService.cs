@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Admin.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
 
 namespace HeartmadeCandles.Admin.BL.Services;
@@ -12,28 +13,28 @@ public class SmellService : ISmellService
         _smellRepository = smellRepository;
     }
 
-    public async Task<Smell[]> GetAll()
+    public async Task<Maybe<Smell[]>> GetAll()
     {
         return await _smellRepository.GetAll();
     }
 
-    public async Task<Smell> Get(int smellId)
+    public async Task<Maybe<Smell>> Get(int smellId)
     {
         return await _smellRepository.Get(smellId);
     }
 
-    public async Task Create(Smell smell)
+    public async Task<Result> Create(Smell smell)
     {
-        await _smellRepository.Create(smell);
+        return await _smellRepository.Create(smell);
     }
 
-    public async Task Update(Smell smell)
+    public async Task<Result> Update(Smell smell)
     {
-        await _smellRepository.Update(smell);
+        return await _smellRepository.Update(smell);
     }
 
-    public async Task Delete(int smellId)
+    public async Task<Result> Delete(int smellId)
     {
-        await _smellRepository.Delete(smellId);
+        return await _smellRepository.Delete(smellId);
     }
 }

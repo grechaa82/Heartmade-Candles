@@ -45,10 +45,6 @@ services:
 
   jaeger:
     image: jaegertracing/all-in-one:1.49
-    environment:
-      - SAMPLING_STRATEGIES_FILE=/etc/jaeger/sampling_strategies.json
-      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
-      - COLLECTOR_OTLP_ENABLED:"true"
     container_name: jaeger
     restart: unless-stopped
     ports:

@@ -11,68 +11,106 @@ namespace HeartmadeCandles.API.Controllers.Admin;
 [Authorize(Roles = "Admin")]
 public class SmellController : Controller
 {
+    private readonly ILogger<SmellController> _logger;
     private readonly ISmellService _smellService;
 
-    public SmellController(ISmellService smellService)
+    public SmellController(ISmellService smellService, ILogger<SmellController> logger)
     {
         _smellService = smellService;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> Get()
     {
-        return Ok(await _smellService.GetAll());
+        var smellsMaybe = await _smellService.GetAll();
+
+        return Ok(smellsMaybe.HasValue ? smellsMaybe.Value : Array.Empty<Smell>());
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id)
     {
-        return Ok(await _smellService.Get(id));
+        var smellMaybe = await _smellService.Get(id);
+
+        if (!smellMaybe.HasValue)
+        {
+            return NotFound($"Smell by id: {id} does not exist");
+        }
+
+        return Ok(smellMaybe.Value);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(SmellRequest smellRequest)
     {
-        var result = Smell.Create(
+        var smellResult = Smell.Create(
             smellRequest.Title,
             smellRequest.Description,
             smellRequest.Price,
             smellRequest.IsActive);
 
-        if (result.IsFailure)
+        if (smellResult.IsFailure)
         {
-            return BadRequest(result.Error);
+            return BadRequest($"Failed to create {typeof(Smell)}, error message: {smellResult.Error}");
         }
 
-        await _smellService.Create(result.Value);
+        var result = await _smellService.Create(smellResult.Value);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_smellService.Create),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_smellService.Create)}, error message: {result.Error}");
+        }
 
         return Ok();
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, SmellRequest smellRequest)
     {
-        var result = Smell.Create(
+        var smellResult = Smell.Create(
             smellRequest.Title,
             smellRequest.Description,
             smellRequest.Price,
             smellRequest.IsActive,
             id);
 
-        if (result.IsFailure)
+        if (smellResult.IsFailure)
         {
-            return BadRequest(result.Error);
+            return BadRequest($"Failed to update {typeof(Smell)}, error message: {smellResult.Error}");
         }
 
-        await _smellService.Update(result.Value);
+        var result = await _smellService.Update(smellResult.Value);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_smellService.Update),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_smellService.Update)}, error message: {result.Error}");
+        }
 
         return Ok();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        await _smellService.Delete(id);
+        var result = await _smellService.Delete(id);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}", nameof(_smellService.Delete),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_smellService.Delete)}, error message: {result.Error}");
+        }
 
         return Ok();
     }

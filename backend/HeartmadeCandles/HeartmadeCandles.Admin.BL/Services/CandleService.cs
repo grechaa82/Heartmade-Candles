@@ -109,14 +109,14 @@ public class CandleService : ICandleService
     {
         var smells = await _smellRepository.GetByIds(smellIds);
 
-        if (smells.Length != smellIds.Length)
+        if (!smells.HasValue || smells.Value.Length != smellIds.Length)
         {
-            var missingIds = smellIds.Except(smells.Select(l => l.Id));
+            var missingIds = smellIds.Except(smells.Value.Select(l => l.Id));
             var missingIdsString = string.Join(", ", missingIds);
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _smellRepository.UpdateCandleSmell(candleId, smells);
+        await _smellRepository.UpdateCandleSmell(candleId, smells.Value);
 
         return Result.Success();
     }
