@@ -36,10 +36,9 @@ const Tag: FC<TagProps> = ({
   };
 
   return (
-    <button
+    <div
       className={`${Style.tag} ${Style[appearanceTag]} ${isSelected ? Style.selected : ''}`}
       onClick={() => handleSelectTag()}
-      type="button"
     >
       <p className={Style.title}>{tag.text}</p>
       {onRemove && (
@@ -47,7 +46,7 @@ const Tag: FC<TagProps> = ({
           <IconRemoveLarge />
         </button>
       )}
-    </button>
+    </div>
   );
 };
 

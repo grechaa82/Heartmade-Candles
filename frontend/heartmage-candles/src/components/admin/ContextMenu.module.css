@@ -4,6 +4,7 @@
   border-radius: var(--border-radius-primary);
   border: 2px solid var(--color-eee);
   background: var(--color-fff);
+  z-index: 50;
 }
 
 .contextMenuItem {

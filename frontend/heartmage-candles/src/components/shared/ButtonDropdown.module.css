@@ -6,6 +6,9 @@
   width: 100%;
   box-sizing: border-box;
 }
+.buttonDropdownIsOpen {
+  border: 2px solid var(--color-000);
+}
 .buttonDropdown > p {
   margin-inline-end: 8px;
 }

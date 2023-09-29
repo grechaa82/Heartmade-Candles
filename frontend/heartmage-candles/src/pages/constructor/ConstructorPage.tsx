@@ -155,11 +155,8 @@ const ConstructorPage: FC = () => {
       validConfiguredCandleDetail.push(...candleDetails);
 
       setConfiguredCandleDetails(candleDetails);
-      let newTotalPrice = candleDetails.reduce(
-        (sum, detail) => sum + calculatePrice(detail) * detail.quantity,
-        0,
-      );
-      setTotalPrice(newTotalPrice);
+
+      setNewTotalPrice(candleDetails);
 
       allErrorMessages = [...allErrorMessages, ...errorMessages];
 
@@ -195,6 +192,7 @@ const ConstructorPage: FC = () => {
     navigate('');
     addQueryString(convertToCandleString(value));
     setConfiguredCandleDetails(value);
+    setNewTotalPrice(value);
   };
 
   const handleSelectCandle = (candle: ImageProduct) => {
@@ -210,6 +208,14 @@ const ConstructorPage: FC = () => {
     var configuredCandlesString = location.search;
     return `/orders${configuredCandlesString}`;
   };
+
+  function setNewTotalPrice(configuredCandleDetails: ConfiguredCandleDetail[]) {
+    let newTotalPrice = configuredCandleDetails.reduce(
+      (sum, detail) => sum + calculatePrice(detail) * detail.quantity,
+      0,
+    );
+    setTotalPrice(newTotalPrice);
+  }
 
   return (
     <div className={Style.container}>

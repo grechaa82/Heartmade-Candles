@@ -43,7 +43,9 @@ const ButtonDropdown: FC<ButtonDropdownProps> = ({
     <div className={Style.dropdownBlock} onClick={() => setIsOpen(!isOpen)}>
       <button
         style={buttonStyle}
-        className={`${StyleButton.button} ${Style.buttonDropdown}`}
+        className={`${StyleButton.button} ${Style.buttonDropdown} ${
+          isOpen ? Style.buttonDropdownIsOpen : ''
+        } `}
         type="button"
       >
         <p>{selectedOption ? selectedOption.title : text}</p>

@@ -61,9 +61,7 @@ const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({ product, width, page
         </Link>
       </div>
       <div className={Style.options}>
-        <div className={Style.checkboxBlock}>
-          <Checkbox checked={product.isActive} />
-        </div>
+        <Checkbox checked={product.isActive} />
         {actions && actions.length > 0 && (
           <>
             <button onClick={handleMenuToggle} className={Style.contextMenuBtn}>

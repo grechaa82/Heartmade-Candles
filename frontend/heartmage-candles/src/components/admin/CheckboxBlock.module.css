@@ -1,16 +1,21 @@
 .checkboxBlock {
+  height: 100%;
+  background: none;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.label {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 24px;
-  box-sizing: border-box;
-  border: 2px solid var(--color-eee);
-  border-radius: var(--border-radius-primary);
-  background: none;
   padding: 14px 16px 16px 16px;
-  height: 100%;
 }
-.checkboxBlock > p {
+.label > p {
   margin: 0;
   font-style: normal;
   font-weight: var(--font-weight-400);

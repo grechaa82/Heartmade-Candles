@@ -1,31 +1,27 @@
-.checkbox {
-  position: relative;
+.checkbox[type='checkbox'] {
+  display: none;
 }
-.checkbox > input[type='checkbox'] {
+.fakeCheckbox > svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+.fakeCheckbox {
   width: 24px;
   height: 24px;
   appearance: none;
   border-radius: var(--border-radius-secondary);
-  border: 2px solid var(--color-light-green);
   background-color: var(--color-light-green);
-  outline: none;
+  position: relative;
   cursor: pointer;
-  display: block;
 }
-.checkbox > input:checked + .checkboxIcon {
-  visibility: visible;
+.checked {
+  width: 100%;
+  height: 100%;
   border-radius: var(--border-radius-secondary);
   background-color: var(--color-green);
-  border-color: var(--color-green);
 }
-.checkboxIcon {
-  position: absolute;
-  display: flex;
-  top: 0;
-  right: 0;
-  justify-content: center;
-  align-items: center;
-}
-
-.checkboxIcon > svg {
+.checkbox:checked + .fakeCheckbox > svg {
+  opacity: 1;
 }

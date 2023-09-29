@@ -1,4 +1,5 @@
-import { ChangeEvent, FC, useState } from 'react';
+import { FC, useState } from 'react';
+
 import Checkbox from './Checkbox';
 
 import Style from './CheckboxBlock.module.css';
@@ -19,8 +20,10 @@ const CheckboxBlock: FC<CheckboxBlockProps> = ({ text, color = '#222', checked, 
 
   return (
     <div className={Style.checkboxBlock}>
-      <p style={CheckboxBlockStyle}>{text}</p>
-      <Checkbox checked={isChecked} onChange={onChange} />
+      <label className={Style.label} onClick={() => setIsChecked(true)}>
+        <p style={CheckboxBlockStyle}>{text}</p>
+        <Checkbox checked={isChecked} onChange={onChange} />
+      </label>
     </div>
   );
 };

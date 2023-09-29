@@ -21,9 +21,16 @@ const Checkbox: FC<CheckboxProps> = ({ checked = false, onChange }) => {
   };
 
   return (
-    <label className={Style.checkbox}>
-      <input type="checkbox" checked={isChecked} onChange={handleChange} placeholder="" />
-      <div className={Style.checkboxIcon}>
+    <label className={Style.checkboxLabel}>
+      <input
+        type="checkbox"
+        className={Style.checkbox}
+        checked={isChecked}
+        onChange={handleChange}
+        placeholder=""
+      />
+      <div className={Style.fakeCheckbox}>
+        <div className={isChecked ? Style.checked : ''}></div>
         <IconCheckLarge color="#fff" />
       </div>
     </label>
