@@ -2,11 +2,13 @@
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HeartmadeCandles.API.Controllers.Order;
 
 [ApiController]
 [Route("api/orders")]
+[EnableRateLimiting("ConcurrencyPolicy")]
 public class OrderController : Controller
 {
     private readonly ILogger<OrderController> _logger;

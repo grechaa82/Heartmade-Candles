@@ -3,12 +3,14 @@ using HeartmadeCandles.Admin.Core.Models;
 using HeartmadeCandles.API.Contracts.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HeartmadeCandles.API.Controllers.Admin;
 
 [ApiController]
 [Route("api/admin/numberOfLayers")]
 [Authorize(Roles = "Admin")]
+[EnableRateLimiting("FixedWindowPolicy")]
 public class NumberOfLayerController : Controller
 {
     private readonly ILogger<NumberOfLayerController> _logger;

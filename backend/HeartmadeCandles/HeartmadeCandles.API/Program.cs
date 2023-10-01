@@ -1,4 +1,5 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using HeartmadeCandles.Admin.BL;
 using HeartmadeCandles.Admin.DAL;
 using HeartmadeCandles.API;
@@ -10,6 +11,7 @@ using HeartmadeCandles.Order.Bot;
 using HeartmadeCandles.Order.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using OpenTelemetry.Exporter;
@@ -135,6 +137,27 @@ try
 
     builder.Services.AddHttpLogging(options => { });
 
+    builder.Services.AddRateLimiter(
+        options =>
+        {
+            options.AddConcurrencyLimiter(
+                "ConcurrencyPolicy", opt =>
+                {
+                    opt.PermitLimit = 10;
+                    opt.QueueLimit = 20;
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                }).RejectionStatusCode = 429;
+
+            options.AddFixedWindowLimiter(
+                "FixedWindowPolicy", opt =>
+                {
+                    opt.Window = TimeSpan.FromSeconds(5);
+                    opt.PermitLimit = 10;
+                    opt.QueueLimit = 20;
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                }).RejectionStatusCode = 429;
+        });
+
     var app = builder.Build();
 
     app.UseHttpLogging();
@@ -144,6 +167,8 @@ try
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+
+    app.UseRateLimiter();
 
     app.UseHttpsRedirection();
 

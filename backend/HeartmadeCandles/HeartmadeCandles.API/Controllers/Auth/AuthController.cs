@@ -4,6 +4,7 @@ using System.Text;
 using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.Auth.Core;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,6 +12,7 @@ namespace HeartmadeCandles.API.Controllers.Auth;
 
 [ApiController]
 [Route("api/auth")]
+[EnableRateLimiting("ConcurrencyPolicy")]
 public class AuthController : Controller
 {
     private readonly JwtOptions _jwtOptions;

@@ -4,12 +4,14 @@ using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HeartmadeCandles.API.Controllers.Admin;
 
 [ApiController]
 [Route("api/admin/decors")]
 [Authorize(Roles = "Admin")]
+[EnableRateLimiting("FixedWindowPolicy")]
 public class DecorController : Controller
 {
     private readonly IDecorService _decorService;

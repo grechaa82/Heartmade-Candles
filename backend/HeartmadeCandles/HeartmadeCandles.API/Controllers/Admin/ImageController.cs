@@ -1,12 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HeartmadeCandles.API.Controllers.Admin;
 
 [ApiController]
 [Route("api/admin/images")]
 [Authorize(Roles = "Admin")]
+[EnableRateLimiting("FixedWindowPolicy")]
 public class ImageController : Controller
 {
     private readonly ILogger<ImageController> _logger;

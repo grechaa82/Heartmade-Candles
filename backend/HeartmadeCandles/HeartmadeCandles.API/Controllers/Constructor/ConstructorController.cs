@@ -1,10 +1,12 @@
 ﻿using HeartmadeCandles.Constructor.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HeartmadeCandles.API.Controllers.Constructor;
 
 [ApiController]
 [Route("api/constructor")]
+[EnableRateLimiting("ConcurrencyPolicy")]
 public class ConstructorController : Controller
 {
     private readonly IConstructorService _constructorService;
