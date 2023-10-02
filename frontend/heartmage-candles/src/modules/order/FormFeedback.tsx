@@ -2,8 +2,8 @@ import { FC } from 'react';
 
 import SelectorWithInput from '../../components/order/SelectorWithInput';
 import Input from '../../components/shared/Input';
-import IconTrashLarge from '../../UI/IconTrashLarge';
 import { feedbackType } from '../../typesV2/order/Feedback';
+import { IconProps } from '../../UI/IconProps';
 
 import Style from './FormFeedback.module.css';
 
@@ -16,6 +16,7 @@ export interface ItemFormFeedback {
   isRequired: boolean;
   isSelected: boolean;
   validation: (value: string) => boolean;
+  icon?: FC<IconProps>;
 }
 
 export interface FormFeedbackProps {
@@ -37,7 +38,7 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
           {evenItems.map((item, index) => (
             <SelectorWithInput
               title={item.title.toString()}
-              icon={IconTrashLarge}
+              icon={item.icon}
               isSelected={item.isSelected}
               onSelected={() => item.onChangeSelectedForm(item.title)}
               input={
@@ -57,7 +58,7 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
           {oddItems.map((item, index) => (
             <SelectorWithInput
               title={item.title.toString()}
-              icon={IconTrashLarge}
+              icon={item.icon}
               isSelected={item.isSelected}
               onSelected={() => item.onChangeSelectedForm(item.title)}
               input={

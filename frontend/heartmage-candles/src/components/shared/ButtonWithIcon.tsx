@@ -1,19 +1,15 @@
-import React, { FC } from "react";
-import { IconProps } from "../../UI/IconProps";
-import Button, { ButtonProps } from "./Button";
-import Style from "./ButtonWithIcon.module.css";
-import StyleButton from "./Button.module.css";
+import { FC } from 'react';
+import { IconProps } from '../../UI/IconProps';
+import { ButtonProps } from './Button';
+import Style from './ButtonWithIcon.module.css';
+import StyleButton from './Button.module.css';
 
 interface ButtonWithIconProps extends ButtonProps {
   icon: React.FC<IconProps>;
   onClick: () => void;
 }
 
-const ButtonWithIcon: React.FC<ButtonWithIconProps> = ({
-  icon: Icon,
-  onClick,
-  ...buttonProps
-}) => {
+const ButtonWithIcon: FC<ButtonWithIconProps> = ({ icon: Icon, onClick, ...buttonProps }) => {
   const buttonStyle = {
     color: buttonProps.color,
     ...(buttonProps.height && { height: `${buttonProps.height - 4}px` }),

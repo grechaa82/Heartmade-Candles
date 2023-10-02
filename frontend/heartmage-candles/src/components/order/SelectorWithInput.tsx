@@ -23,11 +23,7 @@ const SelectorWithInput: FC<SelectorWithInputProps> = ({
   return (
     <div className={Style.selectorWithInput} onClick={() => onSelected()}>
       <div className={Style.title}>
-        {Icon && (
-          <div className={Style.icon}>
-            <Icon />
-          </div>
-        )}
+        {Icon && <Icon />}
         {title}
       </div>
       <div className={Style.selectedBlock}>

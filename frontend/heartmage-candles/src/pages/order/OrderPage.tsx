@@ -9,6 +9,9 @@ import FormPersonalData, { ItemFormPersonalData } from '../../modules/order/Form
 import FormFeedback, { ItemFormFeedback } from '../../modules/order/FormFeedback';
 import TotalPricePanel from '../../modules/order/TotalPricePanel';
 import { feedbackType } from '../../typesV2/order/Feedback';
+import IconTelegram from '../../UI/IconTelegram';
+import IconInstagram from '../../UI/IconInstagram';
+import IconWhatsapp from '../../UI/IconWhatsapp';
 
 import { OrdersApi } from '../../services/OrdersApi';
 
@@ -87,6 +90,7 @@ const OrderPage: FC = () => {
       isRequired: true,
       isSelected: selectedTypeFeedback === feedbackType.Telegram ? true : false,
       validation: validateTelegramAndInstagram,
+      icon: IconTelegram,
     },
     {
       title: feedbackType.Instagram,
@@ -97,6 +101,7 @@ const OrderPage: FC = () => {
       isRequired: true,
       isSelected: selectedTypeFeedback === feedbackType.Instagram ? true : false,
       validation: validateTelegramAndInstagram,
+      icon: IconInstagram,
     },
     {
       title: feedbackType.Whatsapp,
@@ -107,6 +112,7 @@ const OrderPage: FC = () => {
       isRequired: true,
       isSelected: selectedTypeFeedback === feedbackType.Whatsapp ? true : false,
       validation: validatePhone,
+      icon: IconWhatsapp,
     },
   ];
 
