@@ -1,23 +1,15 @@
-using System.Text;
-using System.Threading.RateLimiting;
 using HeartmadeCandles.Admin.BL;
 using HeartmadeCandles.Admin.DAL;
 using HeartmadeCandles.API;
+using HeartmadeCandles.API.Extensions;
 using HeartmadeCandles.Auth.BL;
 using HeartmadeCandles.Constructor.BL;
 using HeartmadeCandles.Constructor.DAL;
 using HeartmadeCandles.Order.BL;
 using HeartmadeCandles.Order.Bot;
 using HeartmadeCandles.Order.DAL;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
-using OpenTelemetry.Exporter;
-using OpenTelemetry.ResourceDetectors.Container;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Serilog;
 using Serilog.Enrichers.Span;
 
@@ -41,74 +33,16 @@ try
 
     builder.Services.AddHttpLogging(logging => logging.LoggingFields = HttpLoggingFields.All);
 
-    Action<ResourceBuilder> appResourceBuilder =
-        resource => resource
-            .AddDetector(new ContainerResourceDetector());
-
-    builder.Services.AddOpenTelemetry()
-        .ConfigureResource(appResourceBuilder)
-        .WithTracing(
-            tracerBuilder =>
-                tracerBuilder
-                    .AddSource("HeartmadeCandles.API")
-                    .ConfigureResource(
-                        resource =>
-                            resource.AddService(
-                                "HeartmadeCandles.API",
-                                serviceVersion: "1.0.0"))
-                    .AddAspNetCoreInstrumentation()
-                    .AddGrpcClientInstrumentation()
-                    .AddHttpClientInstrumentation()
-                    .AddOtlpExporter(
-                        options =>
-                        {
-                            options.Endpoint = new Uri("http://jaeger:4318/v1/traces");
-                            options.Protocol = OtlpExportProtocol.HttpProtobuf;
-                        })
-                    .AddSqlClientInstrumentation(options => options.SetDbStatementForText = true)
-                    .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true));
+    builder.Services.AddOpenTelemetryMetrics();
 
     if (!Directory.Exists("StaticFiles/"))
     {
         Directory.CreateDirectory("StaticFiles/Images");
     }
 
-    builder.Services.AddCors(
-        options =>
-        {
-            options.AddPolicy(
-                "AllowCors", policy =>
-                {
-                    policy.WithOrigins(
-                            "http://95.140.152.201", "http://localhost:5173", "http://localhost",
-                            "http://localhost:5000", "http://localhost:5174")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
-                });
-        });
+    builder.Services.AddCustomCors();
 
-    builder.Services.AddAuthentication(
-            options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-        .AddJwtBearer(
-            options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["JwtOptions:Issuer"],
-                    ValidAudience = builder.Configuration["JwtOptions:Audience"],
-                    IssuerSigningKey =
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtOptions:SecretKey"]))
-                };
-            });
+    builder.Services.AddApiAuthentication(builder.Configuration);
 
     builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 
@@ -131,32 +65,16 @@ try
     builder.Services.AddAuthServices();
 
     builder.Services.AddControllers().AddNewtonsoftJson();
+    
     builder.Services.AddEndpointsApiExplorer();
+
     builder.Services.AddHttpContextAccessor();
+    
     builder.Services.AddSwaggerGen();
 
     builder.Services.AddHttpLogging(options => { });
 
-    builder.Services.AddRateLimiter(
-        options =>
-        {
-            options.AddConcurrencyLimiter(
-                "ConcurrencyPolicy", opt =>
-                {
-                    opt.PermitLimit = 10;
-                    opt.QueueLimit = 20;
-                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                }).RejectionStatusCode = 429;
-
-            options.AddFixedWindowLimiter(
-                "FixedWindowPolicy", opt =>
-                {
-                    opt.Window = TimeSpan.FromSeconds(5);
-                    opt.PermitLimit = 10;
-                    opt.QueueLimit = 20;
-                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                }).RejectionStatusCode = 429;
-        });
+    builder.Services.AddRateLimiterService();
 
     var app = builder.Build();
 
