@@ -49,10 +49,12 @@ const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({ product, width, page
 
   return (
     <div className={Style.productBlock} style={productBlockStyle} ref={ref}>
-      <div className={Style.image}>
-        {firstImage && (
-          <img src={`${apiUrlToImage}/${firstImage.fileName}`} alt={firstImage.alternativeName} />
-        )}
+      <div className={Style.imageBlock}>
+        <div className={Style.image}>
+          {firstImage && (
+            <img src={`${apiUrlToImage}/${firstImage.fileName}`} alt={firstImage.alternativeName} />
+          )}
+        </div>
       </div>
       <div className={Style.info}>
         <Link to={getProductLink()} className={Style.link}>

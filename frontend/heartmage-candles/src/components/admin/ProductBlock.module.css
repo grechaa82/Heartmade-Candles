@@ -6,9 +6,7 @@
   border: 2px solid var(--color-eee);
   border-radius: var(--border-radius-primary);
   padding-right: 16px;
-  min-width: 320px;
-  max-width: 500px;
-  min-height: 112px;
+  gap: 12px;
 }
 
 .options {
@@ -18,15 +16,6 @@
 
 .options > label {
   margin-left: auto;
-}
-
-.image {
-  max-width: 108px;
-  max-height: 108px;
-  background: var(--color-eee);
-  border-radius: var(--border-radius-primary);
-  margin-right: 16px;
-  display: block;
 }
 
 .link > p {
@@ -75,8 +64,19 @@
   cursor: pointer;
 }
 
+.imageBlock {
+  width: 108px;
+  height: 108px;
+  aspect-ratio: 1;
+}
 .image {
   overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: var(--color-eee);
+  border-radius: var(--border-radius-primary);
+  margin-right: 16px;
+  display: block;
 }
 
 .image > img {

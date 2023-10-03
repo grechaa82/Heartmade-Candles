@@ -65,11 +65,11 @@ try
     builder.Services.AddAuthServices();
 
     builder.Services.AddControllers().AddNewtonsoftJson();
-    
+
     builder.Services.AddEndpointsApiExplorer();
 
     builder.Services.AddHttpContextAccessor();
-    
+
     builder.Services.AddSwaggerGen();
 
     builder.Services.AddHttpLogging(options => { });

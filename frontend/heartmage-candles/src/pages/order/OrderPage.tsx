@@ -12,6 +12,8 @@ import { feedbackType } from '../../typesV2/order/Feedback';
 import IconTelegram from '../../UI/IconTelegram';
 import IconInstagram from '../../UI/IconInstagram';
 import IconWhatsapp from '../../UI/IconWhatsapp';
+import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
+import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 
 import { OrdersApi } from '../../services/OrdersApi';
 
@@ -211,9 +213,21 @@ const OrderPage: FC = () => {
     }
   }
 
+  const handleNavigateToConstructor = () => {
+    navigate(`/constructor?${configuredCandlesString}`);
+  };
+
   return (
     <div className={Style.container}>
       <div className={Style.leftPanel}>
+        <div className={Style.backBtn}>
+          <ButtonWithIcon
+            text="Конструктор"
+            onClick={handleNavigateToConstructor}
+            icon={IconArrowLeftLarge}
+            color="#aaa"
+          />
+        </div>
         <ListProductsCart products={arrayCandleDetailWithQuantityAndPrice} />
         <FormPersonalData itemsFormPersonalData={itemsFormPersonalData} />
         <FormFeedback itemsFormFeedbacks={itemsFormFeedback} />

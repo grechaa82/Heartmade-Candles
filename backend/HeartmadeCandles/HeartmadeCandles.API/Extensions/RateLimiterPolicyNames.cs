@@ -1,8 +1,7 @@
-﻿namespace HeartmadeCandles.API.Extensions
+﻿namespace HeartmadeCandles.API.Extensions;
+
+public static class RateLimiterPolicyNames
 {
-    public static class RateLimiterPolicyNames
-    {
-        public const string FixedWindowPolicy = "FixedWindowPolicy";
-        public const string ConcurrencyPolicy = "ConcurrencyPolicy";
-    }
+    public const string FixedWindowPolicy = "FixedWindowPolicy";
+    public const string ConcurrencyPolicy = "ConcurrencyPolicy";
 }
