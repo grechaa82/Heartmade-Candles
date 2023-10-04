@@ -1,24 +1,15 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HeartmadeCandles.API.Contracts.Requests;
 
 public class SmellRequest
 {
-    [JsonConstructor]
-    public SmellRequest(
-        string title,
-        string description,
-        decimal price,
-        bool isActive)
-    {
-        Title = title;
-        Description = description;
-        Price = price;
-        IsActive = isActive;
-    }
-
+    [Required]
     public string Title { get; set; }
+    [Required]
     public string Description { get; set; }
+    [Required]
     public decimal Price { get; set; }
+    [Required]
     public bool IsActive { get; set; }
 }

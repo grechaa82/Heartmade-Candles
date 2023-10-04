@@ -1,33 +1,20 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HeartmadeCandles.API.Contracts.Requests;
 
 public class CandleRequest
 {
-    [JsonConstructor]
-    public CandleRequest(
-        string title,
-        string description,
-        decimal price,
-        int weightGrams,
-        ImageRequest[] images,
-        TypeCandleRequest typeCandle,
-        bool isActive)
-    {
-        Title = title;
-        Description = description;
-        Price = price;
-        WeightGrams = weightGrams;
-        Images = images;
-        TypeCandle = typeCandle;
-        IsActive = isActive;
-    }
-
+    [Required]
     public string Title { get; set; }
+    [Required]
     public string Description { get; set; }
+    [Required]
     public decimal Price { get; set; }
+    [Required]
     public int WeightGrams { get; set; }
     public ImageRequest[] Images { get; set; }
+    [Required]
     public TypeCandleRequest TypeCandle { get; set; }
+    [Required]
     public bool IsActive { get; set; }
 }

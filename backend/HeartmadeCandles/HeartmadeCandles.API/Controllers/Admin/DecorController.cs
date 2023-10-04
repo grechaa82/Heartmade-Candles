@@ -24,7 +24,7 @@ public class DecorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         var decorsMaybe = await _decorService.GetAll();
 
@@ -32,7 +32,7 @@ public class DecorController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var decorMaybe = await _decorService.Get(id);
 

@@ -24,7 +24,7 @@ public class WickController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         var wicksMaybe = await _wickService.GetAll();
 
@@ -32,7 +32,7 @@ public class WickController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var wickMaybe = await _wickService.Get(id);
 

@@ -1,16 +1,10 @@
-﻿using System.Text.Json.Serialization;
-
+﻿using System.ComponentModel.DataAnnotations;
 namespace HeartmadeCandles.API.Contracts.Requests;
 
 public class ImageRequest
 {
-    [JsonConstructor]
-    public ImageRequest(string fileName, string alternativeName)
-    {
-        FileName = fileName;
-        AlternativeName = alternativeName;
-    }
-
+    [Required]
     public string FileName { get; set; }
+    [Required]
     public string AlternativeName { get; set; }
 }

@@ -23,14 +23,14 @@ public class NumberOfLayerController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         var numberOfLayersMaybe = await _numberOfLayerService.GetAll();
         return Ok(numberOfLayersMaybe.HasValue ? numberOfLayersMaybe.Value : Array.Empty<NumberOfLayer>());
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var numberOfLayerMaybe = await _numberOfLayerService.Get(id);
 

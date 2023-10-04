@@ -23,7 +23,7 @@ public class TypeCandleController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         var typeCandlesMaybe = await _typeCandleService.GetAll();
 
@@ -31,7 +31,7 @@ public class TypeCandleController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var typeCandleMaybe = await _typeCandleService.Get(id);
 

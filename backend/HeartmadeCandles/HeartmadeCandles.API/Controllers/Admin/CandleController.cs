@@ -25,7 +25,7 @@ public class CandleController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         var candlesMaybe = await _candleService.GetAll();
 
@@ -38,7 +38,7 @@ public class CandleController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var candleMaybe = await _candleService.Get(id);
 

@@ -21,7 +21,7 @@ const TotalPricePanel: FC<TotalPricePanelProps> = ({
           {totalPrice.toLocaleString('ru-RU', { useGrouping: true })}
         </p>
       </div>
-      <div className={Style.totalQuantityBlock}>{totalQuantityProduct} свечей</div>
+      <div className={Style.totalQuantityBlock}>Свечей {totalQuantityProduct}</div>
       <button className={Style.createOrder} onClick={onCreateOrder}>
         Оформить заказ
       </button>

@@ -1,27 +1,16 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HeartmadeCandles.API.Contracts.Requests;
 
 public class DecorRequest
 {
-    [JsonConstructor]
-    public DecorRequest(
-        string title,
-        string description,
-        decimal price,
-        ImageRequest[] images,
-        bool isActive)
-    {
-        Title = title;
-        Description = description;
-        Price = price;
-        Images = images;
-        IsActive = isActive;
-    }
-
+    [Required]
     public string Title { get; set; }
+    [Required]
     public string Description { get; set; }
+    [Required]
     public decimal Price { get; set; }
     public ImageRequest[] Images { get; set; }
+    [Required]
     public bool IsActive { get; set; }
 }

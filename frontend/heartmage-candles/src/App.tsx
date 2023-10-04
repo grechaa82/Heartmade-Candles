@@ -14,7 +14,6 @@ import Navbar from './components/admin/Navbar';
 import ConstructorPage from './pages/constructor/ConstructorPage';
 import OrderPage from './pages/order/OrderPage';
 import AuthPage from './pages/auth/AuthPage';
-import Weather from './Weather';
 
 import Style from './App.module.css';
 
@@ -47,7 +46,6 @@ function App() {
         <Route path="constructor/" element={<ConstructorPage />} />
         <Route path="orders/" element={<OrderPage />} />
         <Route path="auth/" element={<AuthPage />} />
-        <Route path="weather" element={<Weather />} />
       </Routes>
     </>
   );

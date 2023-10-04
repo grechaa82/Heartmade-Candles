@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 import IconChevronLeftLarge from '../../UI/IconChevronLeftLarge';
 import IconChevronRightLarge from '../../UI/IconChevronRightLarge';

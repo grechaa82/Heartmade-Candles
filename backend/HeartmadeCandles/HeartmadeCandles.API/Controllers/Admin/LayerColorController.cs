@@ -24,7 +24,7 @@ public class LayerColorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         var layerColorsMaybe = await _layerColorService.GetAll();
 
@@ -32,7 +32,7 @@ public class LayerColorController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var layerColorMaybe = await _layerColorService.Get(id);
 

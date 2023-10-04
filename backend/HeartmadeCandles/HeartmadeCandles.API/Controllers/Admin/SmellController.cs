@@ -23,7 +23,7 @@ public class SmellController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAll()
     {
         var smellsMaybe = await _smellService.GetAll();
 
@@ -31,7 +31,7 @@ public class SmellController : Controller
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> GetById(int id)
     {
         var smellMaybe = await _smellService.Get(id);
 

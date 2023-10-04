@@ -1,14 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HeartmadeCandles.API.Contracts.Requests;
 
 public class NumberOfLayerRequest
 {
-    [JsonConstructor]
-    public NumberOfLayerRequest(int number)
-    {
-        Number = number;
-    }
-
+    [Required]
     public int Number { get; set; }
 }
