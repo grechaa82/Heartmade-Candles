@@ -1,4 +1,5 @@
 import { Feedback } from './Feedback';
+import { OrderItemFilterRequest } from './OrderItemFilterRequest';
 import { User } from './User';
 
 export interface CreateOrderRequest {
@@ -6,14 +7,4 @@ export interface CreateOrderRequest {
   orderItemFilters: OrderItemFilterRequest[];
   user: User;
   feedback: Feedback;
-}
-
-export interface OrderItemFilterRequest {
-  candleId: number;
-  decorId?: number;
-  numberOfLayerId: number;
-  layerColorIds: number[];
-  smellId?: number;
-  wickId: number;
-  quantity: number;
 }

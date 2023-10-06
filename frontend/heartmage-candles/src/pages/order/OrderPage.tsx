@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { OrderItemFilter } from '../../typesV2/shared/OrderItemFilter';
 import { OrderItem } from '../../typesV2/order/OrderItem';
-import { CreateOrderRequest, OrderItemFilterRequest } from '../../typesV2/order/CreateOrderRequest';
+import { CreateOrderRequest } from '../../typesV2/order/CreateOrderRequest';
+import { OrderItemFilterRequest } from '../../typesV2/order/OrderItemFilterRequest';
 import ListProductsCart from '../../modules/order/ListProductsCart';
 import FormPersonalData, { ItemFormPersonalData } from '../../modules/order/FormPersonalData';
 import FormFeedback, { ItemFormFeedback } from '../../modules/order/FormFeedback';
@@ -14,6 +15,7 @@ import IconInstagram from '../../UI/IconInstagram';
 import IconWhatsapp from '../../UI/IconWhatsapp';
 import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { OrdersApi } from '../../services/OrdersApi';
 
@@ -32,6 +34,9 @@ const OrderPage: FC = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
+  console.log(errorMessage);
 
   const validateFirstNameAndLastName = (value: string) => {
     const regex = /^[a-zA-Zа-яА-Я]+$/;
@@ -132,11 +137,11 @@ const OrderPage: FC = () => {
     }
 
     async function fetchData(configuredCandlesString: string) {
-      try {
-        const orderItems: OrderItem[] = await OrdersApi.get(configuredCandlesString);
-        setArrayCandleDetailWithQuantityAndPrice(orderItems);
-      } catch (error) {
-        console.error('Произошла ошибка при загрузке данных:', error);
+      const orderItemsResponse = await OrdersApi.get(configuredCandlesString);
+      if (orderItemsResponse.data && !orderItemsResponse.error) {
+        setArrayCandleDetailWithQuantityAndPrice(orderItemsResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, orderItemsResponse.error as string]);
       }
     }
   }, []);
@@ -154,26 +159,8 @@ const OrderPage: FC = () => {
   }
 
   async function createOrder() {
-    let canCreateOrder = true;
-
-    if (!validateFirstNameAndLastName(firstName)) {
-      canCreateOrder = false;
-    }
-    if (!validateFirstNameAndLastName(lastName)) {
-      canCreateOrder = false;
-    }
-    if (!(email.length < 5) && !validateEmail(email)) {
-      canCreateOrder = false;
-    }
-    if (!validatePhone(phone)) {
-      canCreateOrder = false;
-    }
-    if (
-      !selectedTypeFeedback &&
-      !(validatePhone(username) || validateTelegramAndInstagram(username))
-    ) {
-      canCreateOrder = false;
-    }
+    var { canCreateOrder, errorMessages }: { canCreateOrder: boolean; errorMessages: string[] } =
+      isValidUserData();
 
     if (canCreateOrder && configuredCandlesString) {
       const orderItemFilters = configuredCandlesString
@@ -209,8 +196,59 @@ const OrderPage: FC = () => {
         },
       };
 
-      await OrdersApi.createOrder(createOrderRequest);
+      const orderItemsResponse = await OrdersApi.createOrder(createOrderRequest);
+      if (orderItemsResponse.error) {
+        setErrorMessage([...errorMessage, orderItemsResponse.error]);
+      }
+    } else {
+      setErrorMessage((prev) => [...prev, ...errorMessages.flat()]);
     }
+  }
+
+  function isValidUserData(): { canCreateOrder: boolean; errorMessages: string[] } {
+    let canCreateOrder = true;
+    const errorMessages: string[] = [];
+
+    if (!firstName) {
+      errorMessages.push(`Заполните поле 'Имя'`);
+    }
+    if (firstName && !validateFirstNameAndLastName(firstName)) {
+      errorMessages.push(`Поле 'Имя' введено неверно`);
+      canCreateOrder = false;
+    }
+
+    if (!lastName) {
+      errorMessages.push(`Заполните поле 'Фамилия'`);
+    }
+    if (lastName && !validateFirstNameAndLastName(lastName)) {
+      errorMessages.push(`Поле 'Фамилия' введено неверно`);
+      canCreateOrder = false;
+    }
+    if (!(email.length < 5) && !validateEmail(email)) {
+      errorMessages.push(`Поле 'Электронная почта' введено неверно`);
+      canCreateOrder = false;
+    }
+
+    if (!phone) {
+      errorMessages.push(`Заполните поле 'Номер телефона'`);
+    }
+    if (phone && !validatePhone(phone)) {
+      errorMessages.push(`Поле 'Номер телефона' введено неверно`);
+      canCreateOrder = false;
+    }
+
+    if (!selectedTypeFeedback) {
+      errorMessages.push(`Выберите тип обратной связи`);
+      canCreateOrder = false;
+    }
+    if (
+      selectedTypeFeedback &&
+      !(validatePhone(username) || validateTelegramAndInstagram(username))
+    ) {
+      errorMessages.push(`Введите корректные данные для обратной связи`);
+      canCreateOrder = false;
+    }
+    return { canCreateOrder, errorMessages };
   }
 
   const handleNavigateToConstructor = () => {
@@ -219,6 +257,9 @@ const OrderPage: FC = () => {
 
   return (
     <div className={Style.container}>
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
+      </div>
       <div className={Style.leftPanel}>
         <div className={Style.backBtn}>
           <ButtonWithIcon
