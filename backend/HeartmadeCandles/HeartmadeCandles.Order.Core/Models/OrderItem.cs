@@ -4,7 +4,7 @@ namespace HeartmadeCandles.Order.Core.Models;
 
 public class OrderItem
 {
-    public OrderItem(CandleDetail candleDetail, int quantity, OrderItemFilter orderItemFilter)
+    private OrderItem(CandleDetail candleDetail, int quantity, OrderItemFilter orderItemFilter)
     {
         CandleDetail = candleDetail;
         Quantity = quantity;
@@ -17,10 +17,45 @@ public class OrderItem
     public decimal Price { get; private set; }
     public OrderItemFilter OrderItemFilter { get; }
 
+    public static Result<OrderItem> Create(CandleDetail candleDetail, int quantity, OrderItemFilter orderItemFilter)
+    {
+        var result = Result.Success();
+
+        if (candleDetail == null)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<Candle>($"'{nameof(candleDetail)}' cannot be null"));
+        }
+
+        if (quantity <= 0)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<Candle>($"'{nameof(quantity)}' cannot be 0 or less"));
+        }
+
+        if (orderItemFilter == null)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<Candle>($"'{nameof(orderItemFilter)}' cannot be null"));
+        }
+
+        if (result.IsFailure)
+        {
+            return Result.Failure<OrderItem>(result.Error);
+        }
+
+        var orderItem = new OrderItem(candleDetail, quantity, orderItemFilter);
+
+        return Result.Success(orderItem);
+    }
+
     private decimal CalculatePrice()
     {
-        var decorPrice = CandleDetail.Decor != null ? CandleDetail.Decor.Price : 0;
-        var smellPrice = CandleDetail.Smell != null ? CandleDetail.Smell.Price : 0;
+        var decorPrice = CandleDetail.Decor?.Price ?? 0;
+        var smellPrice = CandleDetail.Smell?.Price ?? 0;
 
         var price = CandleDetail.Candle.Price + decorPrice + smellPrice + CandleDetail.Wick.Price;
 
@@ -33,16 +68,63 @@ public class OrderItem
 
     public Result<OrderItem> CheckIsOrderItemMissing()
     {
-        if (CandleDetail.Candle.Id != OrderItemFilter.CandleId
-            || (CandleDetail.Decor != null
-                && CandleDetail.Decor.Id != OrderItemFilter.DecorId)
-            || CandleDetail.NumberOfLayer.Id != OrderItemFilter.NumberOfLayerId
-            || CandleDetail.NumberOfLayer.Number != CandleDetail.LayerColors.Length
-            || CandleDetail.Wick.Id != OrderItemFilter.WickId
-            || (CandleDetail.Smell != null
-                && CandleDetail.Smell.Id != OrderItemFilter.SmellId))
+        var result = Result.Success();
+
+        if (CandleDetail.Candle.Id != OrderItemFilter.CandleId)
         {
-            return Result.Failure<OrderItem>("");
+            result = Result.Combine(
+                result,
+                Result.Failure<OrderItem[]>(
+                    $"Candle by id: {CandleDetail.Candle.Id} does not match with candle by id: {OrderItemFilter.CandleId}"));
+        }
+
+
+        if (OrderItemFilter.DecorId != 0)
+        {
+            if (CandleDetail.Decor != null || CandleDetail.Decor?.Id != OrderItemFilter.DecorId)
+            {
+                result = Result.Combine(
+                    result,
+                    Result.Failure<OrderItem[]>(
+                        $"Decor by id: {CandleDetail.Decor?.Id} does not match with decor by id: {OrderItemFilter.DecorId}"));
+            }
+        }
+
+        if (CandleDetail.NumberOfLayer.Id != OrderItemFilter.NumberOfLayerId)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<OrderItem[]>(
+                    $"NumberOfLayer by id: {CandleDetail.NumberOfLayer.Id} does not match with numberOfLayer by id: {OrderItemFilter.NumberOfLayerId}"));
+        }
+
+        if (CandleDetail.NumberOfLayer.Number != CandleDetail.LayerColors.Length)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<OrderItem[]>(
+                    $"The number of layers '{CandleDetail.NumberOfLayer.Number}' does not match the actual number '{CandleDetail.LayerColors.Length}'"));
+        }
+
+        if (CandleDetail.Wick.Id != OrderItemFilter.WickId)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<OrderItem[]>(
+                    $"Wick by id: {CandleDetail.Wick.Id} does not match with wick by id: {OrderItemFilter.WickId}"));
+        }
+
+        if (CandleDetail.Smell != null && CandleDetail.Smell.Id != OrderItemFilter.SmellId)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<OrderItem[]>(
+                    $"Smell by id: {CandleDetail.Smell.Id} does not match with smell by id: {OrderItemFilter.SmellId}"));
+        }
+
+        if (result.IsFailure)
+        {
+            return Result.Failure<OrderItem>(result.Error);
         }
 
         return Result.Success(this);

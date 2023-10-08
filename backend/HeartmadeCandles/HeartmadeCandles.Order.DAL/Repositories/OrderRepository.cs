@@ -45,7 +45,7 @@ public class OrderRepository : IOrderRepository
             {
                 result = Result.Combine(
                     result,
-                    Result.Failure<OrderItem[]>($"'{orderItemFilter.CandleId}' does not exist"));
+                    Result.Failure<OrderItem[]>($"Candle by id: {orderItemFilter.CandleId} does not exist"));
                 continue;
             }
 
@@ -65,7 +65,24 @@ public class OrderRepository : IOrderRepository
                 .FirstOrDefault();
             var wicks = candleDetailEntity.CandleWick
                 .Select(cw => MapToWick(cw.Wick))
-                .First();
+                .FirstOrDefault();
+
+            if (numberOfLayers == null)
+            {
+                result = Result.Combine(
+                    result,
+                    Result.Failure<OrderItem[]>(
+                        $"NumberOfLayer by id: {orderItemFilter.NumberOfLayerId} does not exist"));
+                continue;
+            }
+
+            if (wicks == null)
+            {
+                result = Result.Combine(
+                    result,
+                    Result.Failure<OrderItem[]>($"Wick by id: {orderItemFilter.WickId} does not exist"));
+                continue;
+            }
 
             var candleDetail = new CandleDetail(
                 candle,
@@ -76,7 +93,7 @@ public class OrderRepository : IOrderRepository
                 wicks
             );
 
-            orderItems.Add(new OrderItem(candleDetail, orderItemFilter.Quantity, orderItemFilter));
+            orderItems.Add(OrderItem.Create(candleDetail, orderItemFilter.Quantity, orderItemFilter).Value);
         }
 
         if (result.IsFailure)
