@@ -2,7 +2,7 @@
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.Core.Models;
 
-namespace HeartmadeCandles.Tests.Admin.Core;
+namespace HeartmadeCandles.UnitTests.Admin.Core;
 
 public class LayerColorTest
 {
