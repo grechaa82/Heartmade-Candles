@@ -19,49 +19,380 @@ public class OrderItemTest
 
         // Assert
         Assert.True(result.IsSuccess);
-        Assert.True(result.Value.Price > 0);
-        Assert.Equal(quantity, result.Value.Quantity);
     }
 
     public static IEnumerable<object[]> GenerateData()
     {
         for (var i = 0; i < 100; i++)
         {
-            var candleDetail = GenerateCandleDetail();
-            var quantity = _faker.Random.Number(1, 10000);
+            var candleDetail = GenerateOrderData.GenerateCandleDetail();
+            var quantity = _faker.Random.Number(1, 100);
 
             yield return new object[]
             {
                 candleDetail,
                 quantity,
-                GenerateOrderItemFilter(candleDetail, quantity)
+                GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity)
             };
         }
     }
 
-    private static CandleDetail GenerateCandleDetail()
+    [Fact]
+    public void Create_ZeroOrLessQuantity_ReturnFailure()
     {
-        var candle = GenerateOrderData.GenerateCandle();
-        var numberOfLayer = GenerateOrderData.GenerateNumberOfLayer();
-        var layerColors = new List<LayerColor>();
-        for (var i = 0; i < numberOfLayer.Number; i++) layerColors.Add(GenerateOrderData.GenerateLayerColor());
-        var decor = GenerateOrderData.GenerateDecor();
-        var smell = GenerateOrderData.GenerateSmell();
-        var wick = GenerateOrderData.GenerateWick();
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(-10000, 0);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
 
+        // Act
+        var result = OrderItem.Create(candleDetail, quantity, orderItemFilter);
 
-        return new CandleDetail(candle, decor, layerColors.ToArray(), numberOfLayer, smell, wick);
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal("'quantity' cannot be 0 or less", result.Error);
     }
 
-    private static OrderItemFilter GenerateOrderItemFilter(CandleDetail candleDetail, int quantity)
+    [Theory]
+    [MemberData(nameof(GenerateData))]
+    public void CheckIsOrderItemMissing_ValidParameters_ReturnsSuccess(CandleDetail candleDetail, int quantity,
+        OrderItemFilter orderItemFilter)
     {
-        var candleId = candleDetail.Candle.Id;
-        var decorId = candleDetail.Decor?.Id ?? 0;
-        var numberOfLayerId = candleDetail.NumberOfLayer.Id;
-        var layerColorIds = candleDetail.LayerColors.Select(l => l.Id).ToArray();
-        var smellId = candleDetail.Smell?.Id ?? 0;
-        var wickId = candleDetail.Wick.Id;
+        // Arrange
+        var orderItem = OrderItem.Create(candleDetail, quantity, orderItemFilter);
 
-        return new OrderItemFilter(candleId, decorId, numberOfLayerId, layerColorIds, smellId, wickId, quantity);
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_WithMismatchedCandle_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newOrderItemFilter = new OrderItemFilter(
+            _faker.Random.Number(0, 10000),
+            orderItemFilter.DecorId,
+            orderItemFilter.NumberOfLayerId,
+            orderItemFilter.LayerColorIds,
+            orderItemFilter.SmellId,
+            orderItemFilter.WickId,
+            orderItemFilter.Quantity);
+
+        var orderItem = OrderItem.Create(candleDetail, quantity, newOrderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.NotEqual(orderItem.Value.OrderItemFilter.CandleId, orderItem.Value.CandleDetail.Candle.Id);
+        Assert.Equal(
+            $"Candle by id: {orderItem.Value.OrderItemFilter.CandleId} does not match with candle by id: {orderItem.Value.CandleDetail.Candle.Id}",
+            result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_WithDecorNotFoundInCandleDetail_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newCandleDetail = new CandleDetail(
+            candleDetail.Candle,
+            null,
+            candleDetail.LayerColors,
+            candleDetail.NumberOfLayer,
+            candleDetail.Smell,
+            candleDetail.Wick);
+
+        var orderItem = OrderItem.Create(newCandleDetail, quantity, orderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.Equal($"Decor by id: {orderItem.Value.OrderItemFilter.DecorId} is not found", result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_WithMismatchedDecorId_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newCandleDetail = new CandleDetail(
+            candleDetail.Candle,
+            GenerateOrderData.GenerateDecor(),
+            candleDetail.LayerColors,
+            candleDetail.NumberOfLayer,
+            candleDetail.Smell,
+            candleDetail.Wick);
+
+        var orderItem = OrderItem.Create(newCandleDetail, quantity, orderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.Equal(
+            $"Decor by id: {orderItem.Value.OrderItemFilter.DecorId} does not match with decor by id: {orderItem.Value.CandleDetail.Decor?.Id}",
+            result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_WithMissingDecorIdInOrderItemFilter_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newOrderItemFilter = new OrderItemFilter(
+            orderItemFilter.CandleId,
+            0,
+            orderItemFilter.NumberOfLayerId,
+            orderItemFilter.LayerColorIds,
+            orderItemFilter.SmellId,
+            orderItemFilter.WickId,
+            orderItemFilter.Quantity);
+
+        var orderItem = OrderItem.Create(candleDetail, quantity, newOrderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.Equal(
+            $"Decor by id: {orderItem.Value.OrderItemFilter.DecorId} is found, but it should not be in", result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_WithMismatchedNumberOfLayer_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newOrderItemFilter = new OrderItemFilter(
+            orderItemFilter.CandleId,
+            orderItemFilter.DecorId,
+            _faker.Random.Number(0, 10000),
+            orderItemFilter.LayerColorIds,
+            orderItemFilter.SmellId,
+            orderItemFilter.WickId,
+            orderItemFilter.Quantity);
+
+        var orderItem = OrderItem.Create(candleDetail, quantity, newOrderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.NotEqual(orderItem.Value.OrderItemFilter.NumberOfLayerId, orderItem.Value.CandleDetail.NumberOfLayer.Id);
+        Assert.Equal(
+            $"NumberOfLayer by id: {orderItem.Value.OrderItemFilter.NumberOfLayerId} does not match with numberOfLayer by id: {orderItem.Value.CandleDetail.NumberOfLayer.Id}",
+            result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_DifferentArrayLengths_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newLayerColorsIds = new int[_faker.Random.Number(0, 100)];
+        foreach (var _ in newLayerColorsIds) newLayerColorsIds.Append(_faker.Random.Number(0, 10000));
+
+        var newOrderItemFilter = new OrderItemFilter(
+            orderItemFilter.CandleId,
+            orderItemFilter.DecorId,
+            orderItemFilter.NumberOfLayerId,
+            newLayerColorsIds,
+            orderItemFilter.SmellId,
+            orderItemFilter.WickId,
+            orderItemFilter.Quantity);
+
+        var orderItem = OrderItem.Create(candleDetail, quantity, newOrderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.Equal("Length of LayerColorIds is incorrect", result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_DifferentLayerColors_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newLayerColorsIds = orderItemFilter.LayerColorIds.ToList();
+        var newLayerColorsId = _faker.Random.Number(0, 10000);
+        newLayerColorsIds[0] = newLayerColorsId;
+
+        var newOrderItemFilter = new OrderItemFilter(
+            orderItemFilter.CandleId,
+            orderItemFilter.DecorId,
+            orderItemFilter.NumberOfLayerId,
+            newLayerColorsIds.ToArray(),
+            orderItemFilter.SmellId,
+            orderItemFilter.WickId,
+            orderItemFilter.Quantity);
+
+        var orderItem = OrderItem.Create(candleDetail, quantity, newOrderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.Equal(
+            $"LayerColor by id: {orderItem.Value.OrderItemFilter.LayerColorIds[0]} does not match with layerColor by id: {orderItem.Value.CandleDetail.LayerColors[0].Id}",
+            result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_WithMismatchedWick_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newOrderItemFilter = new OrderItemFilter(
+            orderItemFilter.CandleId,
+            orderItemFilter.DecorId,
+            orderItemFilter.NumberOfLayerId,
+            orderItemFilter.LayerColorIds,
+            orderItemFilter.SmellId,
+            _faker.Random.Number(0, 10000),
+            orderItemFilter.Quantity);
+
+        var orderItem = OrderItem.Create(candleDetail, quantity, newOrderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.NotEqual(orderItem.Value.OrderItemFilter.WickId, orderItem.Value.CandleDetail.Wick.Id);
+        Assert.Equal(
+            $"Wick by id: {orderItem.Value.OrderItemFilter.WickId} does not match with wick by id: {orderItem.Value.CandleDetail.Wick.Id}",
+            result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_WithSmellNotFoundInCandleDetail_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newCandleDetail = new CandleDetail(
+            candleDetail.Candle,
+            candleDetail.Decor,
+            candleDetail.LayerColors,
+            candleDetail.NumberOfLayer,
+            null,
+            candleDetail.Wick);
+
+        var orderItem = OrderItem.Create(newCandleDetail, quantity, orderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.Equal($"Smell by id: {orderItem.Value.OrderItemFilter.SmellId} is not found", result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_WithMismatchedSmellId_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newCandleDetail = new CandleDetail(
+            candleDetail.Candle,
+            candleDetail.Decor,
+            candleDetail.LayerColors,
+            candleDetail.NumberOfLayer,
+            GenerateOrderData.GenerateSmell(),
+            candleDetail.Wick);
+
+        var orderItem = OrderItem.Create(newCandleDetail, quantity, orderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.Equal(
+            $"Smell by id: {orderItem.Value.OrderItemFilter.SmellId} does not match with smell by id: {orderItem.Value.CandleDetail.Smell?.Id}",
+            result.Error);
+    }
+
+    [Fact]
+    public void CheckIsOrderItemMissing_WithMissingSmellIdInOrderItemFilter_ReturnFailure()
+    {
+        // Arrange
+        var candleDetail = GenerateOrderData.GenerateCandleDetail();
+        var quantity = _faker.Random.Number(0, 10000);
+        var orderItemFilter = GenerateOrderData.GenerateOrderItemFilter(candleDetail, quantity);
+
+        var newOrderItemFilter = new OrderItemFilter(
+            orderItemFilter.CandleId,
+            orderItemFilter.DecorId,
+            orderItemFilter.NumberOfLayerId,
+            orderItemFilter.LayerColorIds,
+            0,
+            orderItemFilter.WickId,
+            orderItemFilter.Quantity);
+
+        var orderItem = OrderItem.Create(candleDetail, quantity, newOrderItemFilter);
+
+        // Act
+        var result = orderItem.Value.CheckIsOrderItemMissing();
+
+        // Assert
+        Assert.True(orderItem.IsSuccess);
+        Assert.True(result.IsFailure);
+        Assert.Equal(
+            $"Smell by id: {orderItem.Value.OrderItemFilter.SmellId} is found, but it should not be in", result.Error);
     }
 }

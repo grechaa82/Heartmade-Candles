@@ -100,7 +100,7 @@ public class OrderController : Controller
                 return values.Select(int.Parse).ToArray();
             }
 
-            return null;
+            return Array.Empty<int>();
         }
 
         return new OrderItemFilter(

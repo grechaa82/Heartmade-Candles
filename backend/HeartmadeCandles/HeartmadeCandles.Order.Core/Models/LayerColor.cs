@@ -19,6 +19,11 @@ public class LayerColor
     public int Id { get; private set; }
     public string Title { get; private set; }
     public string Description { get; private set; }
-    public decimal PricePerGram { get; private set; }
+    public decimal PricePerGram { get; }
     public Image[] Images { get; private set; }
+
+    public decimal CalculatePriceForGrams(int grams)
+    {
+        return PricePerGram * grams;
+    }
 }

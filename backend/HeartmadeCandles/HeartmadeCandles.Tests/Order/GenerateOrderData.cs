@@ -6,12 +6,7 @@ namespace HeartmadeCandles.UnitTests.Order;
 
 internal class GenerateOrderData
 {
-    private static readonly Faker _faker = new("ru");
-
-    public static IEnumerable<object[]> GenerateOrderItem()
-    {
-        yield return new object[] { };
-    }
+    private static readonly Faker _faker = new();
 
     public static Candle GenerateCandle()
     {
@@ -94,5 +89,30 @@ internal class GenerateOrderData
                     _faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String())
             }
         );
+    }
+
+    public static CandleDetail GenerateCandleDetail()
+    {
+        var candle = GenerateCandle();
+        var numberOfLayer = GenerateNumberOfLayer();
+        var layerColors = new List<LayerColor>();
+        for (var i = 0; i < numberOfLayer.Number; i++) layerColors.Add(GenerateLayerColor());
+        var decor = GenerateDecor();
+        var smell = GenerateSmell();
+        var wick = GenerateWick();
+
+        return new CandleDetail(candle, decor, layerColors.ToArray(), numberOfLayer, smell, wick);
+    }
+
+    public static OrderItemFilter GenerateOrderItemFilter(CandleDetail candleDetail, int quantity)
+    {
+        var candleId = candleDetail.Candle.Id;
+        var decorId = candleDetail.Decor?.Id ?? 0;
+        var numberOfLayerId = candleDetail.NumberOfLayer.Id;
+        var layerColorIds = candleDetail.LayerColors.Select(l => l.Id).ToArray();
+        var smellId = candleDetail.Smell?.Id ?? 0;
+        var wickId = candleDetail.Wick.Id;
+
+        return new OrderItemFilter(candleId, decorId, numberOfLayerId, layerColorIds, smellId, wickId, quantity);
     }
 }
