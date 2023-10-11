@@ -28,7 +28,8 @@ public class OrderService : IOrderService
             .ToArray();
         if (invalidOrderItems.Any(o => o.IsFailure))
         {
-            return Result.Failure<OrderItem[]>("Same error");
+            return Result.Failure<OrderItem[]>(
+                string.Join(", ", invalidOrderItems.Where(o => o.IsFailure).Select(e => e.Error)));
         }
 
         return orderItemsResult.Value;

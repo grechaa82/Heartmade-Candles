@@ -30,8 +30,7 @@ public class OrderRepository : IOrderRepository
                 .ThenInclude(d => d.Decor)
                 .Include(
                     cl => cl.CandleLayerColor.Where(
-                        l =>
-                            orderItemFilter.LayerColorIds.Contains(l.LayerColor.Id) && l.LayerColor.IsActive))
+                        l => orderItemFilter.LayerColorIds.Contains(l.LayerColor.Id) && l.LayerColor.IsActive))
                 .ThenInclude(l => l.LayerColor)
                 .Include(cn => cn.CandleNumberOfLayer.Where(n => n.NumberOfLayer.Id == orderItemFilter.NumberOfLayerId))
                 .ThenInclude(n => n.NumberOfLayer)
@@ -66,6 +65,11 @@ public class OrderRepository : IOrderRepository
             var wicks = candleDetailEntity.CandleWick
                 .Select(cw => MapToWick(cw.Wick))
                 .FirstOrDefault();
+
+            Array.Sort(
+                layerColors,
+                (x, y) => Array.IndexOf(orderItemFilter.LayerColorIds, x.Id)
+                    .CompareTo(Array.IndexOf(orderItemFilter.LayerColorIds, y.Id)));
 
             if (numberOfLayers == null)
             {
