@@ -4,13 +4,18 @@ import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { Decor } from '../../types/Decor';
 import { DecorRequest } from '../../types/Requests/DecorRequest';
 import CreateDecorPopUp from '../../components/admin/PopUp/CreateDecorPopUp';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { DecorsApi } from '../../services/DecorsApi';
+
+import Style from './AllDecorPage.module.css';
 
 export interface AllDecorPageProps {}
 
 const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
   const [decorsData, setDecorsData] = useState<Decor[]>([]);
+
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleCreateDecor = async (createdItem: Decor) => {
     const decorRequest: DecorRequest = {
@@ -20,21 +25,41 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
       images: createdItem.images,
       isActive: createdItem.isActive,
     };
-    await DecorsApi.create(decorRequest);
-    const updatedDecors = await DecorsApi.getAll();
-    setDecorsData(updatedDecors);
+    const response = await DecorsApi.create(decorRequest);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedDecorsResponse = await DecorsApi.getAll();
+      if (updatedDecorsResponse.data && !updatedDecorsResponse.error) {
+        setDecorsData(updatedDecorsResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedDecorsResponse.error as string]);
+      }
+    }
   };
 
-  const handleDeleteSmell = async (id: string) => {
-    DecorsApi.delete(id);
-    const updatedCandles = await DecorsApi.getAll();
-    setDecorsData(updatedCandles);
+  const handleDeleteDecor = async (id: string) => {
+    const response = await DecorsApi.delete(id);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedDecorsResponse = await DecorsApi.getAll();
+      if (updatedDecorsResponse.data && !updatedDecorsResponse.error) {
+        setDecorsData(updatedDecorsResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedDecorsResponse.error as string]);
+      }
+    }
   };
 
   useEffect(() => {
     async function fetchDecors() {
-      const data = await DecorsApi.getAll();
-      setDecorsData(data);
+      const decorsResponse = await DecorsApi.getAll();
+      if (decorsResponse.data && !decorsResponse.error) {
+        setDecorsData(decorsResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, decorsResponse.error as string]);
+      }
     }
     fetchDecors();
   }, []);
@@ -52,8 +77,11 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
             onSave={handleCreateDecor}
           />
         }
-        deleteProduct={handleDeleteSmell}
+        deleteProduct={handleDeleteDecor}
       />
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
+      </div>
     </>
   );
 };

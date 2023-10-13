@@ -4,8 +4,11 @@ import { useParams } from 'react-router-dom';
 import MainInfoDecor from '../../modules/admin/MainInfoDecor';
 import { Decor } from '../../types/Decor';
 import { DecorRequest } from '../../types/Requests/DecorRequest';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { DecorsApi } from '../../services/DecorsApi';
+
+import Style from './DecorPage.module.css';
 
 type DecorParams = {
   id: string;
@@ -14,6 +17,8 @@ type DecorParams = {
 const DecorPage: FC = () => {
   const { id } = useParams<DecorParams>();
   const [decorData, setDecorData] = useState<Decor>();
+
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleChangesDecor = (updatedDecor: Decor) => {
     setDecorData((prevDecorData) => ({
@@ -31,15 +36,23 @@ const DecorPage: FC = () => {
         images: updatedItem.images,
         isActive: updatedItem.isActive,
       };
-      await DecorsApi.update(id, decorRequest);
+
+      const updatedDecorResponse = await DecorsApi.update(id, decorRequest);
+      if (updatedDecorResponse.error) {
+        setErrorMessage([...errorMessage, updatedDecorResponse.error as string]);
+      }
     }
   };
 
   useEffect(() => {
     async function fetchDecors() {
       if (id) {
-        const data = await DecorsApi.getById(id);
-        setDecorData(data);
+        const decorResponse = await DecorsApi.getById(id);
+        if (decorResponse.data && !decorResponse.error) {
+          setDecorData(decorResponse.data);
+        } else {
+          setErrorMessage([...errorMessage, decorResponse.error as string]);
+        }
       }
     }
 
@@ -56,6 +69,9 @@ const DecorPage: FC = () => {
             onSave={updateDecor}
           />
         )}
+      </div>
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
       </div>
     </>
   );

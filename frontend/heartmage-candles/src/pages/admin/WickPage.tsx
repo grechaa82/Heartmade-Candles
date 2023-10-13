@@ -4,8 +4,11 @@ import { useParams } from 'react-router-dom';
 import MainInfoWick from '../../modules/admin/MainInfoWick';
 import { Wick } from '../../types/Wick';
 import { WickRequest } from '../../types/Requests/WickRequest';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { WicksApi } from '../../services/WicksApi';
+
+import Style from './WickPage.module.css';
 
 type WickParams = {
   id: string;
@@ -14,6 +17,8 @@ type WickParams = {
 const WickPage: FC = () => {
   const { id } = useParams<WickParams>();
   const [wickData, setWickData] = useState<Wick>();
+
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleChangesWick = (updatedWick: Wick) => {
     setWickData((prevWickData) => ({
@@ -31,15 +36,23 @@ const WickPage: FC = () => {
         images: updatedItem.images,
         isActive: updatedItem.isActive,
       };
-      await WicksApi.update(id, wickRequest);
+
+      const updatedWickResponse = await WicksApi.update(id, wickRequest);
+      if (updatedWickResponse.error) {
+        setErrorMessage([...errorMessage, updatedWickResponse.error as string]);
+      }
     }
   };
 
   useEffect(() => {
     async function fetchWick() {
       if (id) {
-        const data = await WicksApi.getById(id);
-        setWickData(data);
+        const wickResponse = await WicksApi.getById(id);
+        if (wickResponse.data && !wickResponse.error) {
+          setWickData(wickResponse.data);
+        } else {
+          setErrorMessage([...errorMessage, wickResponse.error as string]);
+        }
       }
     }
 
@@ -52,6 +65,9 @@ const WickPage: FC = () => {
         {wickData && (
           <MainInfoWick data={wickData} onChangesWick={handleChangesWick} onSave={updateWick} />
         )}
+      </div>
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
       </div>
     </>
   );

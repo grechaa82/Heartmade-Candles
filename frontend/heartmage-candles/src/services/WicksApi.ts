@@ -1,56 +1,105 @@
 import { Wick } from '../types/Wick';
 import { WickRequest } from '../types/Requests/WickRequest';
+import { ApiResponse } from './ApiResponse';
 
 import { apiUrl } from '../config';
 
 export const WicksApi = {
-  async getAll(): Promise<Wick[]> {
-    const response = await fetch(`${apiUrl}/admin/wicks`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    return (await response.json()) as Wick[];
+  getAll: async (): Promise<ApiResponse<Wick[]>> => {
+    try {
+      const response = await fetch(`${apiUrl}/admin/wicks`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (response.ok) {
+        return { data: await response.json(), error: null };
+      } else {
+        return { data: null, error: await response.text() };
+      }
+    } catch (error) {
+      throw new Error(error as string);
+    }
   },
-  async getById(id: string): Promise<Wick> {
-    const response = await fetch(`${apiUrl}/admin/wicks/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    return (await response.json()) as Wick;
+  getById: async (id: string): Promise<ApiResponse<Wick>> => {
+    try {
+      const response = await fetch(`${apiUrl}/admin/wicks/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (response.ok) {
+        return { data: await response.json(), error: null };
+      } else {
+        return { data: null, error: await response.text() };
+      }
+    } catch (error) {
+      throw new Error(error as string);
+    }
   },
-  async create(wick: WickRequest): Promise<void> {
-    await fetch(`${apiUrl}/admin/wicks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(wick),
-    });
+  create: async (wick: WickRequest): Promise<ApiResponse<void>> => {
+    try {
+      const response = await fetch(`${apiUrl}/admin/wicks`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(wick),
+      });
+
+      if (response.ok) {
+        return { data: null, error: null };
+      } else {
+        return { data: null, error: await response.text() };
+      }
+    } catch (error) {
+      throw new Error(error as string);
+    }
   },
-  async update(id: string, wick: WickRequest): Promise<void> {
-    await fetch(`${apiUrl}/admin/wicks/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(wick),
-    });
+  update: async (id: string, wick: WickRequest): Promise<ApiResponse<void>> => {
+    try {
+      const response = await fetch(`${apiUrl}/admin/wicks/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(wick),
+      });
+
+      if (response.ok) {
+        return { data: null, error: null };
+      } else {
+        return { data: null, error: await response.text() };
+      }
+    } catch (error) {
+      throw new Error(error as string);
+    }
   },
-  async delete(id: string): Promise<void> {
-    await fetch(`${apiUrl}/admin/wicks/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
+  delete: async (id: string): Promise<ApiResponse<void>> => {
+    try {
+      const response = await fetch(`${apiUrl}/admin/wicks/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (response.ok) {
+        return { data: null, error: null };
+      } else {
+        return { data: null, error: await response.text() };
+      }
+    } catch (error) {
+      throw new Error(error as string);
+    }
   },
 };

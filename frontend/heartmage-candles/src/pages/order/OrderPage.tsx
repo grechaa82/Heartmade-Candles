@@ -36,7 +36,6 @@ const OrderPage: FC = () => {
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
-  console.log(errorMessage);
 
   const validateFirstNameAndLastName = (value: string) => {
     const regex = /^[a-zA-Zа-яА-Я]+$/;

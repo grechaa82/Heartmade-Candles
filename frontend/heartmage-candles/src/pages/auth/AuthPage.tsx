@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 
 import Input from '../../components/shared/Input';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { AuthApi } from '../../services/AuthApi';
 
@@ -10,15 +11,17 @@ const AuthPage: FC = () => {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
 
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     async function fetchData() {
-      try {
-        const token = await AuthApi.login(login, password);
-        localStorage.setItem('token', token);
-      } catch (error: any) {
-        console.error('Произошла ошибка при загрузке данных:', error);
+      const tokenResponse = await AuthApi.login(login, password);
+      if (tokenResponse.data && !tokenResponse.error) {
+        localStorage.setItem('token', tokenResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, tokenResponse.error as string]);
       }
     }
 
@@ -26,15 +29,20 @@ const AuthPage: FC = () => {
   };
 
   return (
-    <div className={Style.container}>
-      <form onSubmit={handleSubmit} className={Style.form}>
-        <Input label="Логин" required value={login} onChange={setLogin} />
-        <Input label="Пароль" required value={password} onChange={setPassword} />
-        <button className={Style.loginBtn} type="submit">
-          Войти
-        </button>
-      </form>
-    </div>
+    <>
+      <div className={Style.container}>
+        <form onSubmit={handleSubmit} className={Style.form}>
+          <Input label="Логин" required value={login} onChange={setLogin} />
+          <Input label="Пароль" required value={password} onChange={setPassword} />
+          <button className={Style.loginBtn} type="submit">
+            Войти
+          </button>
+        </form>
+      </div>
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
+      </div>
+    </>
   );
 };
 

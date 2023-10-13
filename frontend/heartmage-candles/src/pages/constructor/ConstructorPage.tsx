@@ -38,11 +38,11 @@ const ConstructorPage: FC = () => {
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   async function showCandleForm(candleId: number) {
-    try {
-      const candleDetail = await ConstructorApi.getCandleById(candleId.toString());
-      setCandleDetail(candleDetail);
-    } catch (error) {
-      console.error('Произошла ошибка при загрузке данных:', error);
+    const candleDetailResponse = await ConstructorApi.getCandleById(candleId.toString());
+    if (candleDetailResponse.data && !candleDetailResponse.error) {
+      setCandleDetail(candleDetailResponse.data);
+    } else {
+      setErrorMessage([...errorMessage, candleDetailResponse.error as string]);
     }
   }
 
@@ -114,11 +114,11 @@ const ConstructorPage: FC = () => {
   useEffect(() => {
     setIsConfiguredCandleDetailLoading(true);
     async function fetchData() {
-      try {
-        const candles = await ConstructorApi.getCandles();
-        setCandleTypeWithCandles(candles);
-      } catch (error) {
-        console.error('Произошла ошибка при загрузке данных:', error);
+      const candlesResponse = await ConstructorApi.getCandles();
+      if (candlesResponse.data && !candlesResponse.error) {
+        setCandleTypeWithCandles(candlesResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, candlesResponse.error as string]);
       }
     }
 
@@ -175,13 +175,17 @@ const ConstructorPage: FC = () => {
     let allErrorMessages: string[] = [];
 
     for (const filter of orderItemFilters) {
-      const candleDetail = await ConstructorApi.getCandleById(filter.candleId.toString());
-      const validationResult = validateConfiguredCandleDetail(candleDetail, filter);
+      const candleDetailResponse = await ConstructorApi.getCandleById(filter.candleId.toString());
+      if (candleDetailResponse.data && !candleDetailResponse.error) {
+        const validationResult = validateConfiguredCandleDetail(candleDetailResponse.data, filter);
 
-      if (Array.isArray(validationResult)) {
-        allErrorMessages = [...allErrorMessages, ...validationResult];
+        if (Array.isArray(validationResult)) {
+          allErrorMessages = [...allErrorMessages, ...validationResult];
+        } else {
+          validConfiguredCandleDetail.push(validationResult);
+        }
       } else {
-        validConfiguredCandleDetail.push(validationResult);
+        setErrorMessage([...errorMessage, candleDetailResponse.error as string]);
       }
     }
 

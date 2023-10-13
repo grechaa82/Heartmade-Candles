@@ -14,6 +14,7 @@ import { Wick } from '../../types/Wick';
 import { BaseProduct } from '../../types/BaseProduct';
 import { TagData } from '../../components/shared/Tag';
 import AddProductPopUp from '../../components/admin/PopUp/AddProductPopUp';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { CandlesApi } from '../../services/CandlesApi';
 import { DecorsApi } from '../../services/DecorsApi';
@@ -34,6 +35,8 @@ const CandleDetailsPage: FC = () => {
   const [candleDetailData, setCandleDetailData] = useState<CandleDetail>();
   const [numberOfLayerTagData, setNumberOfLayerTagData] = useState<TagData[]>();
 
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
+
   const fetchTypeCandles: FetchTypeCandle = async () => {
     try {
       const data = await TypeCandlesApi.getAll();
@@ -45,11 +48,11 @@ const CandleDetailsPage: FC = () => {
   };
 
   const fetchDecors: FetchProducts<Decor> = async () => {
-    try {
-      const data = await DecorsApi.getAll();
-      return data;
-    } catch (error) {
-      console.error('Произошла ошибка при загрузке типов свечей:', error);
+    const decorsResponse = await DecorsApi.getAll();
+    if (decorsResponse.data && !decorsResponse.error) {
+      return decorsResponse.data;
+    } else {
+      setErrorMessage([...errorMessage, decorsResponse.error as string]);
       return [];
     }
   };
@@ -85,11 +88,11 @@ const CandleDetailsPage: FC = () => {
   };
 
   const fetchWicks: FetchProducts<Wick> = async () => {
-    try {
-      const data = await WicksApi.getAll();
-      return data;
-    } catch (error) {
-      console.error('Произошла ошибка при загрузке типов свечей:', error);
+    const wicksResponse = await WicksApi.getAll();
+    if (wicksResponse.data && !wicksResponse.error) {
+      return wicksResponse.data;
+    } else {
+      setErrorMessage([...errorMessage, wicksResponse.error as string]);
       return [];
     }
   };
@@ -317,6 +320,9 @@ const CandleDetailsPage: FC = () => {
           }
         />
       )}
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
+      </div>
     </>
   );
 };

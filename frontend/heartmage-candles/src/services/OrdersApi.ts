@@ -14,11 +14,10 @@ export const OrdersApi = {
       if (response.ok) {
         return { data: (await response.json()) as OrderItem[], error: null };
       } else {
-        const errorMessage = await response.text();
-        return { data: null, error: errorMessage };
+        return { data: null, error: await response.text() };
       }
     } catch (error) {
-      return { data: null, error: error as string };
+      throw new Error(error as string);
     }
   },
   createOrder: async (createOrderRequest: CreateOrderRequest): Promise<ApiResponse<void>> => {
@@ -31,11 +30,10 @@ export const OrdersApi = {
       if (response.ok) {
         return { data: null, error: null };
       } else {
-        const errorMessage = await response.text();
-        return { data: null, error: errorMessage };
+        return { data: null, error: await response.text() };
       }
     } catch (error) {
-      return { data: null, error: error as string };
+      throw new Error(error as string);
     }
   },
 };

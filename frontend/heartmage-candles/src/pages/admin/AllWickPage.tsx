@@ -4,13 +4,18 @@ import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { Wick } from '../../types/Wick';
 import { WickRequest } from '../../types/Requests/WickRequest';
 import CreateWickPopUp from '../../components/admin/PopUp/CreateWickPopUp';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { WicksApi } from '../../services/WicksApi';
+
+import Style from './AllWickPage.module.css';
 
 export interface AllWickPageProps {}
 
 const AllWickPage: React.FC<AllWickPageProps> = () => {
   const [wicksData, setWicksData] = useState<Wick[]>([]);
+
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleCreateWick = async (createdItem: Wick) => {
     const wickRequest: WickRequest = {
@@ -20,21 +25,41 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
       images: createdItem.images,
       isActive: createdItem.isActive,
     };
-    await WicksApi.create(wickRequest);
-    const updatedWicks = await WicksApi.getAll();
-    setWicksData(updatedWicks);
+    const response = await WicksApi.create(wickRequest);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedWicksResponse = await WicksApi.getAll();
+      if (updatedWicksResponse.data && !updatedWicksResponse.error) {
+        setWicksData(updatedWicksResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedWicksResponse.error as string]);
+      }
+    }
   };
 
   const handleDeleteWick = async (id: string) => {
-    WicksApi.delete(id);
-    const updatedCandles = await WicksApi.getAll();
-    setWicksData(updatedCandles);
+    const response = await WicksApi.delete(id);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedWicksResponse = await WicksApi.getAll();
+      if (updatedWicksResponse.data && !updatedWicksResponse.error) {
+        setWicksData(updatedWicksResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedWicksResponse.error as string]);
+      }
+    }
   };
 
   useEffect(() => {
     async function fetchWicks() {
-      const data = await WicksApi.getAll();
-      setWicksData(data);
+      const wicksResponse = await WicksApi.getAll();
+      if (wicksResponse.data && !wicksResponse.error) {
+        setWicksData(wicksResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, wicksResponse.error as string]);
+      }
     }
     fetchWicks();
   }, []);
@@ -54,6 +79,9 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
         }
         deleteProduct={handleDeleteWick}
       />
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
+      </div>
     </>
   );
 };
