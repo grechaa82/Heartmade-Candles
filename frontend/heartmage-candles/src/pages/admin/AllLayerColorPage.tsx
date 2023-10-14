@@ -4,13 +4,18 @@ import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { LayerColor } from '../../types/LayerColor';
 import { LayerColorRequest } from '../../types/Requests/LayerColorRequest';
 import CreateLayerColorPopUp from '../../components/admin/PopUp/CreateLayerColorPopUp';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { LayerColorsApi } from '../../services/LayerColorsApi';
+
+import Style from './AllLayerColorPage.module.css';
 
 export interface AllLayerColorPageProps {}
 
 const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
   const [layerColorData, setLayerColorData] = useState<LayerColor[]>([]);
+
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleCreateLayerColor = async (createdItem: LayerColor) => {
     const layerColorRequest: LayerColorRequest = {
@@ -20,21 +25,41 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
       images: createdItem.images,
       isActive: createdItem.isActive,
     };
-    await LayerColorsApi.create(layerColorRequest);
-    const updatedLayerColors = await LayerColorsApi.getAll();
-    setLayerColorData(updatedLayerColors);
+    const response = await LayerColorsApi.create(layerColorRequest);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedLayerColorsResponse = await LayerColorsApi.getAll();
+      if (updatedLayerColorsResponse.data && !updatedLayerColorsResponse.error) {
+        setLayerColorData(updatedLayerColorsResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedLayerColorsResponse.error as string]);
+      }
+    }
   };
 
   const handleDeleteLayerColor = async (id: string) => {
-    LayerColorsApi.delete(id);
-    const updatedCandles = await LayerColorsApi.getAll();
-    setLayerColorData(updatedCandles);
+    const response = await LayerColorsApi.delete(id);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedLayerColorsResponse = await LayerColorsApi.getAll();
+      if (updatedLayerColorsResponse.data && !updatedLayerColorsResponse.error) {
+        setLayerColorData(updatedLayerColorsResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedLayerColorsResponse.error as string]);
+      }
+    }
   };
 
   useEffect(() => {
     async function fetchLayerColors() {
-      const data = await LayerColorsApi.getAll();
-      setLayerColorData(data);
+      const layerColorsResponse = await LayerColorsApi.getAll();
+      if (layerColorsResponse.data && !layerColorsResponse.error) {
+        setLayerColorData(layerColorsResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, layerColorsResponse.error as string]);
+      }
     }
     fetchLayerColors();
   }, []);
@@ -54,6 +79,9 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
         }
         deleteProduct={handleDeleteLayerColor}
       />
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
+      </div>
     </>
   );
 };

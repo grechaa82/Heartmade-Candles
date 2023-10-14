@@ -12,10 +12,13 @@ import { CandleRequest } from '../../types/Requests/CandleRequest';
 import CreateTagPopUp from '../../components/admin/PopUp/CreateTagPopUp';
 import { NumberOfLayerRequest } from '../../types/Requests/NumberOfLayerRequest';
 import { TypeCandleRequest } from '../../types/Requests/TypeCandleRequest';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { CandlesApi } from '../../services/CandlesApi';
 import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
 import { TypeCandlesApi } from '../../services/TypeCandlesApi';
+
+import Style from './AllCandlePage.module.css';
 
 export interface AllCandlePageProps {}
 
@@ -23,6 +26,8 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
   const [typeCandlesData, setTypeCandlesData] = useState<TypeCandle[]>([]);
   const [numberOfLayersData, setNumberOfLayersData] = useState<NumberOfLayer[]>([]);
   const [candlesData, setCandlesData] = useState<Candle[]>([]);
+
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleCreateCandle = async (createdItem: Candle) => {
     const candleRequest: CandleRequest = {
@@ -34,60 +39,119 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       typeCandle: createdItem.typeCandle,
       isActive: createdItem.isActive,
     };
-    await CandlesApi.create(candleRequest);
-    const updatedCandles = await CandlesApi.getAll();
-    setCandlesData(updatedCandles);
+
+    const response = await CandlesApi.create(candleRequest);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedCandlesResponse = await CandlesApi.getAll();
+      if (updatedCandlesResponse.data && !updatedCandlesResponse.error) {
+        setCandlesData(updatedCandlesResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedCandlesResponse.error as string]);
+      }
+    }
   };
 
   const handleDeleteCandle = async (id: string) => {
-    await CandlesApi.delete(id);
-    const updatedCandles = await CandlesApi.getAll();
-    setCandlesData(updatedCandles);
+    const response = await CandlesApi.delete(id);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedCandlesResponse = await CandlesApi.getAll();
+      if (updatedCandlesResponse.data && !updatedCandlesResponse.error) {
+        setCandlesData(updatedCandlesResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedCandlesResponse.error as string]);
+      }
+    }
   };
 
   const handleCreateNumberOfLayer = async (tag: TagData) => {
     const numberOfLayerRequest: NumberOfLayerRequest = {
       number: parseInt(tag.text),
     };
-    await NumberOfLayersApi.create(numberOfLayerRequest);
-    const updatedNumberOfLayers = await NumberOfLayersApi.getAll();
-    setNumberOfLayersData(updatedNumberOfLayers);
+
+    const response = await NumberOfLayersApi.create(numberOfLayerRequest);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedNumberOfLayersResponse = await NumberOfLayersApi.getAll();
+      if (updatedNumberOfLayersResponse.data && !updatedNumberOfLayersResponse.error) {
+        setNumberOfLayersData(updatedNumberOfLayersResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedNumberOfLayersResponse.error as string]);
+      }
+    }
   };
 
   const handleCreateTypeCandle = async (tag: TagData) => {
     const typeCandleRequest: TypeCandleRequest = {
       title: tag.text,
     };
-    await TypeCandlesApi.create(typeCandleRequest);
-    const updatedTypeCandles = await TypeCandlesApi.getAll();
-    setTypeCandlesData(updatedTypeCandles);
+
+    const response = await TypeCandlesApi.create(typeCandleRequest);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedTypeCandlesResponse = await TypeCandlesApi.getAll();
+      if (updatedTypeCandlesResponse.data && !updatedTypeCandlesResponse.error) {
+        setTypeCandlesData(updatedTypeCandlesResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedTypeCandlesResponse.error as string]);
+      }
+    }
   };
 
   const handleDeleteNumberOfLayer = async (id: string) => {
-    await NumberOfLayersApi.delete(id);
-    const updatedNumberOfLayers = await NumberOfLayersApi.getAll();
-    setNumberOfLayersData(updatedNumberOfLayers);
+    const response = await NumberOfLayersApi.delete(id);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedNumberOfLayersResponse = await NumberOfLayersApi.getAll();
+      if (updatedNumberOfLayersResponse.data && !updatedNumberOfLayersResponse.error) {
+        setNumberOfLayersData(updatedNumberOfLayersResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedNumberOfLayersResponse.error as string]);
+      }
+    }
   };
 
   const handleDeleteTypeCandle = async (id: string) => {
-    await TypeCandlesApi.delete(id);
-    const updatedTypeCandles = await TypeCandlesApi.getAll();
-    setTypeCandlesData(updatedTypeCandles);
+    const response = await TypeCandlesApi.delete(id);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedTypeCandlesResponse = await TypeCandlesApi.getAll();
+      if (updatedTypeCandlesResponse.data && !updatedTypeCandlesResponse.error) {
+        setTypeCandlesData(updatedTypeCandlesResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, updatedTypeCandlesResponse.error as string]);
+      }
+    }
   };
 
   useEffect(() => {
     async function fetchData() {
-      try {
-        const typeCandles = await TypeCandlesApi.getAll();
-        setTypeCandlesData(typeCandles);
+      const candlesResponse = await CandlesApi.getAll();
+      if (candlesResponse.data && !candlesResponse.error) {
+        setCandlesData(candlesResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, candlesResponse.error as string]);
+      }
 
-        const numberOfLayers = await NumberOfLayersApi.getAll();
-        setNumberOfLayersData(numberOfLayers);
+      const typeCandlesResponse = await TypeCandlesApi.getAll();
+      if (typeCandlesResponse.data && !typeCandlesResponse.error) {
+        setTypeCandlesData(typeCandlesResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, typeCandlesResponse.error as string]);
+      }
 
-        const candles = await CandlesApi.getAll();
-        setCandlesData(candles);
-      } catch (error) {
-        console.error('Произошла ошибка при загрузке данных:', error);
+      const numberOfLayersResponse = await NumberOfLayersApi.getAll();
+      if (numberOfLayersResponse.data && !numberOfLayersResponse.error) {
+        setNumberOfLayersData(numberOfLayersResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, numberOfLayersResponse.error as string]);
       }
     }
 
@@ -136,6 +200,9 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         }
         deleteProduct={handleDeleteCandle}
       />
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
+      </div>
     </>
   );
 };

@@ -38,11 +38,11 @@ const CandleDetailsPage: FC = () => {
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const fetchTypeCandles: FetchTypeCandle = async () => {
-    try {
-      const data = await TypeCandlesApi.getAll();
-      return data;
-    } catch (error) {
-      console.error('Произошла ошибка при загрузке типов свечей:', error);
+    const typeCandlesResponse = await TypeCandlesApi.getAll();
+    if (typeCandlesResponse.data && !typeCandlesResponse.error) {
+      return typeCandlesResponse.data;
+    } else {
+      setErrorMessage([...errorMessage, typeCandlesResponse.error as string]);
       return [];
     }
   };
@@ -58,31 +58,31 @@ const CandleDetailsPage: FC = () => {
   };
 
   const fetchLayerColors: FetchProducts<LayerColor> = async () => {
-    try {
-      const data = await LayerColorsApi.getAll();
-      return data;
-    } catch (error) {
-      console.error('Произошла ошибка при загрузке типов свечей:', error);
+    const layerColorsResponse = await LayerColorsApi.getAll();
+    if (layerColorsResponse.data && !layerColorsResponse.error) {
+      return layerColorsResponse.data;
+    } else {
+      setErrorMessage([...errorMessage, layerColorsResponse.error as string]);
       return [];
     }
   };
 
   const fetchNumberOfLayer = async (): Promise<NumberOfLayer[]> => {
-    try {
-      const data = await NumberOfLayersApi.getAll();
-      return data;
-    } catch (error) {
-      console.error('Произошла ошибка при загрузке типов свечей:', error);
+    const numberOfLayersResponse = await NumberOfLayersApi.getAll();
+    if (numberOfLayersResponse.data && !numberOfLayersResponse.error) {
+      return numberOfLayersResponse.data;
+    } else {
+      setErrorMessage([...errorMessage, numberOfLayersResponse.error as string]);
       return [];
     }
   };
 
   const fetchSmells: FetchProducts<Smell> = async () => {
-    try {
-      const data = await SmellsApi.getAll();
-      return data;
-    } catch (error) {
-      console.error('Произошла ошибка при загрузке типов свечей:', error);
+    const smellsResponse = await SmellsApi.getAll();
+    if (smellsResponse.data && !smellsResponse.error) {
+      return smellsResponse.data;
+    } else {
+      setErrorMessage([...errorMessage, smellsResponse.error as string]);
       return [];
     }
   };
@@ -220,8 +220,12 @@ const CandleDetailsPage: FC = () => {
   useEffect(() => {
     async function fetchCandle() {
       if (id) {
-        const data = await CandlesApi.getById(id);
-        setCandleDetailData(data);
+        const candleResponse = await CandlesApi.getById(id);
+        if (candleResponse.data && !candleResponse.error) {
+          setCandleDetailData(candleResponse.data);
+        } else {
+          setErrorMessage([...errorMessage, candleResponse.error as string]);
+        }
       }
     }
 

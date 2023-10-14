@@ -4,8 +4,11 @@ import { useParams } from 'react-router-dom';
 import MainInfoLayerColor from '../../modules/admin/MainInfoLayerColor';
 import { LayerColor } from '../../types/LayerColor';
 import { LayerColorRequest } from '../../types/Requests/LayerColorRequest';
+import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 
 import { LayerColorsApi } from '../../services/LayerColorsApi';
+
+import Style from './LayerColorPage.module.css';
 
 type LayerColorParams = {
   id: string;
@@ -14,6 +17,8 @@ type LayerColorParams = {
 const LayerColorPage: FC = () => {
   const { id } = useParams<LayerColorParams>();
   const [layerColorData, setLayerColorData] = useState<LayerColor>();
+
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleChangesLayerColor = (updatedLayerColor: LayerColor) => {
     setLayerColorData((prevLayerColorData) => ({
@@ -31,15 +36,23 @@ const LayerColorPage: FC = () => {
         images: updatedItem.images,
         isActive: updatedItem.isActive,
       };
-      await LayerColorsApi.update(id, layerColorRequest);
+
+      const updatedLayerColorResponse = await LayerColorsApi.update(id, layerColorRequest);
+      if (updatedLayerColorResponse.error) {
+        setErrorMessage([...errorMessage, updatedLayerColorResponse.error as string]);
+      }
     }
   };
 
   useEffect(() => {
     async function fetchLayerColors() {
       if (id) {
-        const data = await LayerColorsApi.getById(id);
-        setLayerColorData(data);
+        const layerColorResponse = await LayerColorsApi.getById(id);
+        if (layerColorResponse.data && !layerColorResponse.error) {
+          setLayerColorData(layerColorResponse.data);
+        } else {
+          setErrorMessage([...errorMessage, layerColorResponse.error as string]);
+        }
       }
     }
 
@@ -56,6 +69,9 @@ const LayerColorPage: FC = () => {
             onSave={updateLayerColor}
           />
         )}
+      </div>
+      <div className={Style.popUpNotification}>
+        <ListErrorPopUp messages={errorMessage} />
       </div>
     </>
   );
