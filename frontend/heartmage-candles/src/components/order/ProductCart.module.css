@@ -23,7 +23,7 @@
   color: var(--color-222);
   font-size: var(--font-size-l);
   font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   margin-top: -8px;
 }
 .titleBlock {
@@ -43,7 +43,7 @@
   color: var(--color-blue);
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
 }
 .quantity {
   margin: 0;
@@ -66,7 +66,7 @@
   color: var(--color-777);
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
 }
 .paramsListInfo {
   display: flex;
@@ -81,7 +81,7 @@
   color: var(--color-aaa);
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
 }
 .paramsInfo {
   margin: 0;

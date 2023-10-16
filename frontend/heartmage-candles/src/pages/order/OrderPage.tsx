@@ -199,6 +199,8 @@ const OrderPage: FC = () => {
       if (orderItemsResponse.error) {
         setErrorMessage([...errorMessage, orderItemsResponse.error]);
       }
+
+      navigate('/orders/thank');
     } else {
       setErrorMessage((prev) => [...prev, ...errorMessages.flat()]);
     }

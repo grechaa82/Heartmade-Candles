@@ -21,7 +21,7 @@
 .textarea > label {
   font-weight: var(--font-weight-400);
   font-size: var(--font-size-m);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   color: var(--color-d9d9d9);
   position: absolute;
   top: 12px;
@@ -30,7 +30,7 @@
 .textarea > p {
   font-weight: var(--font-weight-400);
   font-size: var(--font-size-s);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   color: var(--color-d9d9d9);
   position: absolute;
   margin: 0;

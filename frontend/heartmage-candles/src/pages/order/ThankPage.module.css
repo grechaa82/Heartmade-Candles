@@ -1,0 +1,25 @@
+.thankBlock {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  align-items: center;
+}
+.thankBlock > h3 {
+  margin: 0;
+  color: var(--color-222);
+  font-size: var(--font-size-heading-2);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-110);
+  text-align: center;
+}
+.thankBtn > button {
+  border-color: var(--color-blue);
+}
+.thankBtn > button > p {
+  color: var(--color-blue);
+  font-weight: var(--font-weight-500);
+}

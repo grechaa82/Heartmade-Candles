@@ -71,7 +71,7 @@
   all: unset;
   font-size: var(--font-size-l);
   font-weight: var(--font-weight-500);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   color: var(--color-green);
 }
 .totalPrice {
@@ -85,13 +85,13 @@
   color: var(--color-blue);
   font-size: var(--font-size-s);
   font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
 }
 .price {
   font-size: var(--font-size-xl);
   color: var(--color-blue);
   font-weight: var(--font-weight-600);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
 }
 .priceCandle {
   position: absolute;
@@ -106,7 +106,7 @@
   color: var(--color-blue);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-600);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
 }
 
 .popUpNotification {

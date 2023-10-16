@@ -20,7 +20,7 @@
   font-size: var(--font-size-l);
   font-style: normal;
   font-weight: var(--font-weight-600);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   border: none;
   padding: 16px;
 }

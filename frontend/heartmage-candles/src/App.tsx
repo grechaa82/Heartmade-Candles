@@ -16,6 +16,7 @@ import OrderPage from './pages/order/OrderPage';
 import AuthPage from './pages/auth/AuthPage';
 
 import Style from './App.module.css';
+import ThankPage from './pages/order/ThankPage';
 
 function App() {
   return (
@@ -44,7 +45,10 @@ function App() {
           }
         />
         <Route path="constructor/" element={<ConstructorPage />} />
-        <Route path="orders/" element={<OrderPage />} />
+        <Route path="orders/">
+          <Route path="" element={<OrderPage />} />
+          <Route path="thank" element={<ThankPage />} />
+        </Route>
         <Route path="auth/" element={<AuthPage />} />
       </Routes>
     </>

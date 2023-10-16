@@ -8,7 +8,7 @@
   color: var(--color-blue);
   font-weight: var(--font-weight-600);
   font-size: var(--font-size-xl);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   padding: 14px 16px 16px 16px;
 }
 .popUpNotification {

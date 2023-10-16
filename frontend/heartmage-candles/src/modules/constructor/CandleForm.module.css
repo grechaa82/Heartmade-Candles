@@ -13,5 +13,5 @@
 }
 .addBtn > button > p {
   font-weight: var(--font-weight-500);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
 }

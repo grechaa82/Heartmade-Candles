@@ -13,7 +13,7 @@
   color: var(--Color-000);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
 }
 .totalPrice {
   color: var(--color-blue);
@@ -23,7 +23,7 @@
   color: var(--Color-222);
   font-size: var(--font-size-l);
   font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   margin-top: 16px;
   margin-bottom: 24px;
 }
@@ -35,7 +35,7 @@
   color: var(--color-fff);
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-500);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   width: 100%;
   display: flex;
   justify-content: center;

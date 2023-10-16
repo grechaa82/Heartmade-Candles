@@ -9,7 +9,7 @@
 .errorMessage > span {
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-500);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
 }
 .closeButton {
   all: unset;

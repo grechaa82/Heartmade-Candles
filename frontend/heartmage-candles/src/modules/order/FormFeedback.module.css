@@ -2,14 +2,14 @@
   color: var(--color-222);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-600);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   margin-bottom: 8px;
 }
 .description {
   color: var(--color-505050);
   font-size: var(--font-size-l);
   font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standart);
+  line-height: var(--line-height-standard);
   margin-bottom: 24px;
 }
 .form {
