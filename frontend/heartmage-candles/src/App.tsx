@@ -20,6 +20,7 @@ import AboutUs from './pages/home/AboutUsPage';
 import ContactPage from './pages/home/ContactPage';
 import ReviewPage from './pages/home/ReviewPage';
 import HelpPage from './pages/home/HelpPage';
+import HomePage from './pages/home/HomePage';
 
 import Style from './App.module.css';
 
@@ -55,16 +56,17 @@ function App() {
             <>
               <Header />
               <Routes>
+                <Route path="" element={<HomePage />} />
+                <Route path="aboutUs/" element={<AboutUs />} />
+                <Route path="contact/" element={<ContactPage />} />
+                <Route path="review/" element={<ReviewPage />} />
+                <Route path="help/" element={<HelpPage />} />
                 <Route path="constructor/" element={<ConstructorPage />} />
                 <Route path="orders/">
                   <Route path="" element={<OrderPage />} />
                   <Route path="thank" element={<ThankPage />} />
                 </Route>
                 <Route path="auth/" element={<AuthPage />} />
-                <Route path="aboutUs/" element={<AboutUs />} />
-                <Route path="contact/" element={<ContactPage />} />
-                <Route path="review/" element={<ReviewPage />} />
-                <Route path="help/" element={<ReviewPage />} />
               </Routes>
             </>
           }

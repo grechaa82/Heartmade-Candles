@@ -1,0 +1,56 @@
+.block {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.block > h3 {
+  margin: 0;
+  color: var(--color-222);
+  font-size: var(--font-size-heading-2);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-110);
+  text-align: center;
+  margin-bottom: 24px;
+}
+.block > p {
+  all: unset;
+  font-size: var(--font-size-l);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-standard);
+  margin-bottom: 32px;
+}
+.btnBlock {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+.btn > a {
+  all: unset;
+  font-weight: var(--font-weight-500);
+}
+.btn {
+  box-sizing: border-box;
+  border: 2px solid var(--color-blue);
+  border-radius: var(--border-radius-primary);
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 16px 16px 16px;
+  gap: 8px;
+  font-weight: var(--font-weight-500);
+  font-size: var(--font-size-l);
+  color: var(--color-blue);
+  font-weight: var(--font-weight-500);
+}
+btn:hover {
+  cursor: pointer;
+}
+.github {
+  border-color: var(--color-green);
+  color: var(--color-green);
+}
