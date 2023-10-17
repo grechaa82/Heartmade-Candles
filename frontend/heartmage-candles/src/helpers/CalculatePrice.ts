@@ -1,7 +1,7 @@
 import { ConfiguredCandleDetail } from '../typesV2/constructor/ConfiguredCandleDetail';
 
 export const calculatePrice = (candleDetail: ConfiguredCandleDetail): number => {
-  let totalPrice: number = candleDetail.candle.price;
+  let totalPrice = candleDetail.candle.price;
 
   if (candleDetail.decor) {
     totalPrice += candleDetail.decor.price;
@@ -27,5 +27,5 @@ export const calculatePrice = (candleDetail: ConfiguredCandleDetail): number => 
     totalPrice += candleDetail.wick.price;
   }
 
-  return Number(totalPrice.toFixed());
+  return totalPrice;
 };

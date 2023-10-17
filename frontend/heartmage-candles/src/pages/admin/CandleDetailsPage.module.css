@@ -2,8 +2,8 @@
   position: fixed;
   bottom: 0;
   right: 0;
-  background: var(--color-ligth-blue);
-  border: 2px solid var(--color-ligth-blue);
+  background: var(--color-light-blue);
+  border: 2px solid var(--color-light-blue);
   border-radius: var(--border-radius-secondary-large) 0px 0px;
   color: var(--color-blue);
   font-weight: var(--font-weight-600);

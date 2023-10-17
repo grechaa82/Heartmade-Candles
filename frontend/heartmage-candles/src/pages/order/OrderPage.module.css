@@ -18,6 +18,11 @@
 .backBtn {
   margin-bottom: -24px;
 }
+.backBtn > button {
+  border-radius: var(--border-radius-primary);
+  border: 2px solid var(--color-fafafa);
+  background: var(--color-fafafa);
+}
 .popUpNotification {
   position: absolute;
   bottom: 32px;

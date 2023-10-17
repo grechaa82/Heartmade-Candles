@@ -205,7 +205,7 @@ const ConstructorPage: FC = () => {
   };
 
   const calculatePriceConfiguredCandleDetail = (configuredCandleDetail: ConfiguredCandleDetail) => {
-    setPriceConfiguredCandleDetail(calculatePrice(configuredCandleDetail));
+    setPriceConfiguredCandleDetail(Math.round(calculatePrice(configuredCandleDetail)));
   };
 
   const getCreateOrderLink = (): string => {
@@ -214,10 +214,12 @@ const ConstructorPage: FC = () => {
   };
 
   function setNewTotalPrice(configuredCandleDetails: ConfiguredCandleDetail[]) {
-    let newTotalPrice = configuredCandleDetails.reduce(
-      (sum, detail) => sum + calculatePrice(detail) * detail.quantity,
-      0,
-    );
+    let newTotalPrice = 0;
+    for (const configuredCandleDetail of configuredCandleDetails) {
+      newTotalPrice += Math.round(
+        calculatePrice(configuredCandleDetail) * configuredCandleDetail.quantity,
+      );
+    }
     setTotalPrice(newTotalPrice);
   }
 

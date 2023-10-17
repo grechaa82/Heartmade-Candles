@@ -7,9 +7,9 @@
 .addBtn {
 }
 .addBtn > button {
-  background: var(--color-ligth-blue);
+  background: var(--color-light-blue);
   width: 100%;
-  border: 2px solid var(--color-ligth-blue);
+  border: 2px solid var(--color-light-blue);
 }
 .addBtn > button > p {
   font-weight: var(--font-weight-500);

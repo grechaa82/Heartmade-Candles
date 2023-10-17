@@ -2,7 +2,7 @@
   padding: 2px 4px;
   justify-content: center;
   align-items: center;
-  background: var(--color-ligth-blue);
+  background: var(--color-light-blue);
 }
 .leftCornerTag {
   border-radius: var(--border-radius-primary) 0px;

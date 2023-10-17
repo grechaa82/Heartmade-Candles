@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   margin: 0 32px;
-  height: 100vh;
+  height: calc(100vh - 5.5em);
 }
 
 .leftPanel {
@@ -32,13 +32,12 @@
   position: relative;
   width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
 }
 .hideCandleForm {
   border-radius: var(--border-radius-primary);
-  border: 2px solid var(--color-eee);
-  background: var(--color-eee);
+  border: 2px solid var(--color-fafafa);
+  background: var(--color-fafafa);
   display: flex;
   padding: 14px 16px 14px 16px;
   justify-content: center;
@@ -77,8 +76,8 @@
 .totalPrice {
   border-radius: 0px var(--border-radius-primary) var(--border-radius-primary)
     var(--border-radius-primary);
-  border: 2px solid var(--color-ligth-blue);
-  background: var(--color-ligth-blue);
+  border: 2px solid var(--color-light-blue);
+  background: var(--color-light-blue);
   padding: 14px 16px 16px 16px;
 }
 .title {
@@ -99,8 +98,8 @@
   right: 32px;
   border-radius: var(--border-radius-primary);
   padding: 14px 16px 16px 16px;
-  border: 2px solid var(--color-ligth-blue);
-  background: var(--color-ligth-blue);
+  border: 2px solid var(--color-light-blue);
+  background: var(--color-light-blue);
 }
 .priceCandle > span {
   color: var(--color-blue);

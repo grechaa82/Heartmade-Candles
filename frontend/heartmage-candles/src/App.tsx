@@ -14,9 +14,14 @@ import Navbar from './components/admin/Navbar';
 import ConstructorPage from './pages/constructor/ConstructorPage';
 import OrderPage from './pages/order/OrderPage';
 import AuthPage from './pages/auth/AuthPage';
+import ThankPage from './pages/order/ThankPage';
+import Header from './components/shared/Header';
+import AboutUs from './pages/home/AboutUsPage';
+import ContactPage from './pages/home/ContactPage';
+import ReviewPage from './pages/home/ReviewPage';
+import HelpPage from './pages/home/HelpPage';
 
 import Style from './App.module.css';
-import ThankPage from './pages/order/ThankPage';
 
 function App() {
   return (
@@ -44,12 +49,26 @@ function App() {
             </div>
           }
         />
-        <Route path="constructor/" element={<ConstructorPage />} />
-        <Route path="orders/">
-          <Route path="" element={<OrderPage />} />
-          <Route path="thank" element={<ThankPage />} />
-        </Route>
-        <Route path="auth/" element={<AuthPage />} />
+        <Route
+          path="*"
+          element={
+            <>
+              <Header />
+              <Routes>
+                <Route path="constructor/" element={<ConstructorPage />} />
+                <Route path="orders/">
+                  <Route path="" element={<OrderPage />} />
+                  <Route path="thank" element={<ThankPage />} />
+                </Route>
+                <Route path="auth/" element={<AuthPage />} />
+                <Route path="aboutUs/" element={<AboutUs />} />
+                <Route path="contact/" element={<ContactPage />} />
+                <Route path="review/" element={<ReviewPage />} />
+                <Route path="help/" element={<ReviewPage />} />
+              </Routes>
+            </>
+          }
+        />
       </Routes>
     </>
   );

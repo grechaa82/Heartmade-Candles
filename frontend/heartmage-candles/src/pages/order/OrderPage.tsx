@@ -131,8 +131,6 @@ const OrderPage: FC = () => {
       setConfiguredCandlesString(queryString);
 
       fetchData(queryString);
-
-      navigate('');
     }
 
     async function fetchData(configuredCandlesString: string) {
@@ -267,7 +265,7 @@ const OrderPage: FC = () => {
             text="Конструктор"
             onClick={handleNavigateToConstructor}
             icon={IconArrowLeftLarge}
-            color="#aaa"
+            color="#777"
           />
         </div>
         <ListProductsCart products={arrayCandleDetailWithQuantityAndPrice} />
