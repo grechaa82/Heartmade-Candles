@@ -18,7 +18,7 @@
   gap: 8px;
   align-items: center;
   position: absolute;
-  bottom: 24px;
+  bottom: 56px;
   left: 50%;
   transform: translate(-50%, 0%);
 }

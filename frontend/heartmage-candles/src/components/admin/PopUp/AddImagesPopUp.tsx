@@ -20,13 +20,13 @@ interface ImageWithFile {
 }
 
 const AddImagesPopUp: FC<AddImagesPopUpProps> = ({ onClose, uploadImages, updateImages }) => {
-  const [images, setImages] = useState<Image[]>([]);
+  const [images, setImages] = useState<Image[]>();
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
       const newFiles = Array.from(files);
-      const newFileNames = await handleUpload(newFiles);
+      const newFileNames = await uploadImages(newFiles);
       createImage(newFiles, newFileNames);
     }
   };
@@ -39,12 +39,8 @@ const AddImagesPopUp: FC<AddImagesPopUpProps> = ({ onClose, uploadImages, update
       },
       file: file,
     }));
-
-    setImages((prevImages) => [...prevImages, ...imageWithFiles.map((item) => item.image)]);
-  };
-
-  const handleUpload = (files: File[]): Promise<string[]> => {
-    return uploadImages(files);
+    const imagesToAdd: Image[] = imageWithFiles.map((item) => item.image);
+    setImages(imagesToAdd);
   };
 
   return (
@@ -69,7 +65,7 @@ const AddImagesPopUp: FC<AddImagesPopUpProps> = ({ onClose, uploadImages, update
             text="Добавить фотографию"
             icon={IconPlusLarge}
             onClick={() => {
-              updateImages(images);
+              updateImages(images ? images : []);
               onClose();
             }}
             color="#2e67ea"

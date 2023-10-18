@@ -56,13 +56,23 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
     setIsChangeImagesPopUpOpen(false);
   };
 
-  const handleRemoveImage = async (image: Image) => {
+  const handleDeleteImage = async (image: Image) => {
     let fileNames: string[] = [];
     fileNames.push(image.fileName);
-    await ImagesApi.deleteImages(fileNames);
+    const imagesResponse = await ImagesApi.deleteImages(fileNames);
+    if (imagesResponse.data && !imagesResponse.error) {
+      const newImagesState: Image[] = images.filter((i) => i.fileName !== image.fileName);
+      updateImages(newImagesState);
+    }
+  };
 
-    const newImagesState: Image[] = images.filter((i) => i.fileName !== image.fileName);
-    updateImages(newImagesState);
+  const handleUploadImage = async (files: File[]) => {
+    const imagesResponse = await ImagesApi.uploadImages(files);
+    if (imagesResponse.data && !imagesResponse.error) {
+      return imagesResponse.data;
+    } else {
+      return [];
+    }
   };
 
   if (images.length === 0) {
@@ -77,7 +87,7 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
         {isAddImagesPopUpOpen && (
           <AddImagesPopUp
             onClose={handleAddImagesPopUpClose}
-            uploadImages={ImagesApi.uploadImages}
+            uploadImages={handleUploadImage}
             updateImages={addImages}
           />
         )}
@@ -126,7 +136,7 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
       {isAddImagesPopUpOpen && (
         <AddImagesPopUp
           onClose={handleAddImagesPopUpClose}
-          uploadImages={ImagesApi.uploadImages}
+          uploadImages={handleUploadImage}
           updateImages={addImages}
         />
       )}
@@ -134,7 +144,7 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
         <ChangeImagesPopUp
           images={images}
           onClose={handleChangeImagesPopUpClose}
-          onRemove={handleRemoveImage}
+          onRemove={handleDeleteImage}
           updateImages={updateImages}
         />
       )}
