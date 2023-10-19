@@ -53,7 +53,7 @@ public class CandleTests
                 faker.Random.Number(1, 10000),
                 new[]
                 {
-                    Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value
+                    Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value
                 },
                 faker.Random.Bool(),
                 TypeCandle.Create(faker.Random.String(1, TypeCandle.MaxTitleLength), faker.Random.Number(1, 10000))
@@ -78,7 +78,7 @@ public class CandleTests
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             weightGrams: _faker.Random.Number(1, 10000),
             images: new[]
-                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
+                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value },
             isActive: _faker.Random.Bool(),
             typeCandle: TypeCandle.Create(
                 _faker.Random.String(1, TypeCandle.MaxTitleLength),
@@ -120,7 +120,7 @@ public class CandleTests
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             weightGrams: _faker.Random.Number(1, 10000),
             images: new[]
-                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
+                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value },
             isActive: _faker.Random.Bool(),
             typeCandle: TypeCandle.Create(
                 _faker.Random.String(1, TypeCandle.MaxTitleLength),
@@ -188,7 +188,7 @@ public class CandleTests
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             weightGrams: _faker.Random.Number(1, 10000),
             images: new[]
-                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
+                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value },
             isActive: _faker.Random.Bool(),
             typeCandle: typeCandle,
             createdAt: _faker.Date.Past());
@@ -218,7 +218,7 @@ public class CandleTests
             price: -10m,
             weightGrams: 0,
             images: new[]
-                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value },
+                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value },
             isActive: _faker.Random.Bool(),
             typeCandle: typeCandle,
             createdAt: _faker.Date.Past());
@@ -248,7 +248,7 @@ public class CandleTests
             price: price ?? faker.Random.Number(1, 10000) * faker.Random.Decimal(),
             weightGrams: weightGrams ?? faker.Random.Number(1, 10000),
             images: images ?? new[]
-                { Image.Create(faker.Random.String(1, Image.MaxAlternativeNameLenght), faker.Random.String()).Value },
+                { Image.Create(faker.Random.String(1, Image.MaxAlternativeNameLength), faker.Random.String()).Value },
             isActive: isActive ?? faker.Random.Bool(),
             typeCandle: typeCandle ?? TypeCandle.Create(
                 faker.Random.String(1, TypeCandle.MaxTitleLength),

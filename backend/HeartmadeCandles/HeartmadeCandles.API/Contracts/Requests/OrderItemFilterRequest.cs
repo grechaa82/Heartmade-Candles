@@ -10,7 +10,7 @@ public class OrderItemFilterRequest
 
     [Required] public int NumberOfLayerId { get; set; }
 
-    [Required] public int[] LayerColorIds { get; set; }
+    [Required] public required int[] LayerColorIds { get; set; }
 
     public int SmellId { get; set; }
 

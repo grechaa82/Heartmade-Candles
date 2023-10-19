@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.BL.Services;
 using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
@@ -47,7 +48,7 @@ public class CandleServiceTest
             .Verifiable();
 
         _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, decors))
-            .Returns(Task.CompletedTask)
+            .ReturnsAsync(Result.Success)
             .Verifiable();
 
         // Act
@@ -66,7 +67,7 @@ public class CandleServiceTest
             _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             new[]
             {
-                Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String()).Value
+                Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value
             },
             _faker.Random.Bool(),
             id == 0 ? _faker.Random.Number(1, 10000) : id);

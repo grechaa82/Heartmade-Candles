@@ -13,7 +13,7 @@ public class OrderItem
 
     public CandleDetail CandleDetail { get; }
     public int Quantity { get; }
-    public decimal Price => CalculatePrice() * Quantity;
+    public decimal Price => Math.Round(CalculatePrice() * Quantity);
     public OrderItemFilter OrderItemFilter { get; }
 
     public static Result<OrderItem> Create(CandleDetail candleDetail, int quantity, OrderItemFilter orderItemFilter)

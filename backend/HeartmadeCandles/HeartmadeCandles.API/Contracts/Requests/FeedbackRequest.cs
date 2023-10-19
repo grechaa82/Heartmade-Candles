@@ -6,7 +6,7 @@ public class FeedbackRequest
 {
     [Required] public FeedbackType Feedback { get; set; }
 
-    [Required] public string UserName { get; set; }
+    [Required] public required string UserName { get; set; }
 }
 
 public enum FeedbackType

@@ -4,7 +4,7 @@ namespace HeartmadeCandles.Admin.Core.Models;
 
 public class Image
 {
-    public const int MaxAlternativeNameLenght = 48;
+    public const int MaxAlternativeNameLength = 48;
 
     private Image(string fileName, string alternativeName)
     {
@@ -34,12 +34,12 @@ public class Image
                 Result.Failure<Image>($"'{nameof(alternativeName)}' cannot be null or whitespace"));
         }
 
-        if (!string.IsNullOrWhiteSpace(alternativeName) && alternativeName.Length > MaxAlternativeNameLenght)
+        if (!string.IsNullOrWhiteSpace(alternativeName) && alternativeName.Length > MaxAlternativeNameLength)
         {
             result = Result.Combine(
                 result,
                 Result.Failure<Image>(
-                    $"'{nameof(alternativeName)}' cannot be more than {MaxAlternativeNameLenght} characters"));
+                    $"'{nameof(alternativeName)}' cannot be more than {MaxAlternativeNameLength} characters"));
         }
 
         if (result.IsFailure)

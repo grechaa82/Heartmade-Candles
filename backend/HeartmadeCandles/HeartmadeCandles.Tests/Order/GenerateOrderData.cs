@@ -19,7 +19,7 @@ internal class GenerateOrderData
             new[]
             {
                 new HeartmadeCandles.Order.Core.Models.Image(
-                    _faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String())
+                    _faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String())
             }
         );
     }
@@ -34,7 +34,7 @@ internal class GenerateOrderData
             new[]
             {
                 new HeartmadeCandles.Order.Core.Models.Image(
-                    _faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String())
+                    _faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String())
             }
         );
     }
@@ -50,7 +50,7 @@ internal class GenerateOrderData
             new[]
             {
                 new HeartmadeCandles.Order.Core.Models.Image(
-                    _faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String())
+                    _faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String())
             }
         );
     }
@@ -86,7 +86,7 @@ internal class GenerateOrderData
             new[]
             {
                 new HeartmadeCandles.Order.Core.Models.Image(
-                    _faker.Random.String(1, Image.MaxAlternativeNameLenght), _faker.Random.String())
+                    _faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String())
             }
         );
     }

@@ -53,8 +53,12 @@ public class OrderRepository : IOrderRepository
             var decors = candleDetailEntity.CandleDecor
                 .Select(cd => MapToDecor(cd.Decor))
                 .FirstOrDefault();
-            var layerColors = candleDetailEntity.CandleLayerColor
-                .Select(cl => MapToLayerColor(cl.LayerColor))
+            var layerColorsDictionary =
+                candleDetailEntity.CandleLayerColor.ToDictionary(x => x.LayerColor.Id, x => x.LayerColor);
+            var layerColors = orderItemFilter.LayerColorIds
+                .Select(
+                    x => layerColorsDictionary.TryGetValue(x, out var layerColor) ? MapToLayerColor(layerColor) : null)
+                .Where(x => x != null)
                 .ToArray();
             var numberOfLayers = candleDetailEntity.CandleNumberOfLayer
                 .Select(cn => MapToNumberOfLayer(cn.NumberOfLayer))
@@ -66,17 +70,20 @@ public class OrderRepository : IOrderRepository
                 .Select(cw => MapToWick(cw.Wick))
                 .FirstOrDefault();
 
-            Array.Sort(
-                layerColors,
-                (x, y) => Array.IndexOf(orderItemFilter.LayerColorIds, x.Id)
-                    .CompareTo(Array.IndexOf(orderItemFilter.LayerColorIds, y.Id)));
-
             if (numberOfLayers == null)
             {
                 result = Result.Combine(
                     result,
                     Result.Failure<OrderItem[]>(
                         $"NumberOfLayer by id: {orderItemFilter.NumberOfLayerId} does not exist"));
+                continue;
+            }
+
+            if (!layerColors.Any())
+            {
+                result = Result.Combine(
+                    result,
+                    Result.Failure<OrderItem[]>("LayerColors does not exist"));
                 continue;
             }
 
@@ -91,7 +98,7 @@ public class OrderRepository : IOrderRepository
             var candleDetail = new CandleDetail(
                 candle,
                 decors,
-                layerColors,
+                layerColors!,
                 numberOfLayers,
                 smells,
                 wicks
@@ -159,7 +166,7 @@ public class OrderRepository : IOrderRepository
         );
     }
 
-    public Wick MapToWick(WickEntity wickEntity)
+    private Wick MapToWick(WickEntity wickEntity)
     {
         return new Wick(
             wickEntity.Id,
