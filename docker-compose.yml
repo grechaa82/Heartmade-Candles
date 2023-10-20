@@ -65,7 +65,6 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/nginx/certs
-      - .backend/HeartmadeCandles/HeartmadeCandles.API/StaticFiles:/app/StaticFiles
     ports:
       - 80:80
       - 443:443

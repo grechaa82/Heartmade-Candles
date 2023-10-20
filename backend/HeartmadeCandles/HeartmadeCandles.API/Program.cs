@@ -97,7 +97,7 @@ try
         {
             FileProvider = new PhysicalFileProvider(
                 Path.Combine(builder.Environment.ContentRootPath, "StaticFiles")),
-            RequestPath = "/StaticFiles"
+            RequestPath = "/api/StaticFiles"
         });
 
     app.UseAuthentication();
