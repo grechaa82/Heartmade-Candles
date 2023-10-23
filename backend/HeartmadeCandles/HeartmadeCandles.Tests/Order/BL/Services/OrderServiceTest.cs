@@ -26,13 +26,9 @@ public class OrderServiceTest
     public async Task Get_WhenValid_ShouldReturnValidOrderItems()
     {
         // Arrange
-        var orderItemFilters = new List<OrderItemFilter>();
-        for (var i = 0; i < _faker.Random.Number(1, 100); i++)
-            orderItemFilters.Add(GenerateOrderData.GenerateOrderItemFilter());
+        var orderItemFilters = GenerateOrderItemFilters();
 
-        var orderItems = new List<OrderItem>();
-        for (var i = 0; i < orderItemFilters.Count; i++)
-            orderItems.Add(GenerateOrderData.GenerateOrderItem(orderItemFilters[i]));
+        var orderItems = GenerateOrderItems(orderItemFilters, orderItemFilters.Count);
 
         _orderRepository.Setup(or => or.Get(orderItemFilters.ToArray()))
             .ReturnsAsync(Result.Success(orderItems.ToArray()))
@@ -43,15 +39,14 @@ public class OrderServiceTest
 
         // Assert
         Assert.True(result.IsSuccess);
+        _orderRepository.Verify();
     }
 
     [Fact]
     public async Task Get_WhenOneOrderItemInvalid_ShouldReturnFailure()
     {
         // Arrange
-        var orderItemFilters = new List<OrderItemFilter>();
-        for (var i = 0; i < _faker.Random.Number(1, 100); i++)
-            orderItemFilters.Add(GenerateOrderData.GenerateOrderItemFilter());
+        var orderItemFilters = GenerateOrderItemFilters();
 
         var invalidDecor = GenerateOrderData.GenerateDecor(_faker.Random.Number(1, 10000));
         var validOrderItem = GenerateOrderData.GenerateOrderItem(orderItemFilters[0]);
@@ -62,11 +57,8 @@ public class OrderServiceTest
         var invalidOrderItem = OrderItem.Create(
             invalidCandleDetail, validOrderItem.Quantity, validOrderItem.OrderItemFilter);
 
-        var orderItems = new List<OrderItem>();
+        var orderItems = GenerateOrderItems(orderItemFilters, orderItemFilters.Count - 1);
         orderItems.Add(invalidOrderItem.Value);
-
-        for (var i = 0; i < orderItemFilters.Count - 1; i++)
-            orderItems.Add(GenerateOrderData.GenerateOrderItem(orderItemFilters[i]));
 
         _orderRepository.Setup(or => or.Get(orderItemFilters.ToArray()))
             .ReturnsAsync(Result.Success(orderItems.ToArray()))
@@ -80,15 +72,14 @@ public class OrderServiceTest
         Assert.Equal(
             result.Error,
             $"Decor by id: {validOrderItem.CandleDetail.Decor?.Id} does not match with decor by id: {invalidOrderItem.Value.CandleDetail.Decor?.Id}");
+        _orderRepository.Verify();
     }
 
     [Fact]
     public async Task Get_WhenAllOrderItemInvalid_ShouldReturnFailure()
     {
         // Arrange
-        var orderItemFilters = new List<OrderItemFilter>();
-        for (var i = 0; i < _faker.Random.Number(1, 100); i++)
-            orderItemFilters.Add(GenerateOrderData.GenerateOrderItemFilter());
+        var orderItemFilters = GenerateOrderItemFilters();
 
         var orderItems = new List<OrderItem>();
         var validDecorIds = new List<int>();
@@ -133,5 +124,21 @@ public class OrderServiceTest
         // Assert
         Assert.True(result.IsFailure);
         Assert.Equal(errorMessage.ToString(), result.Error);
+        _orderRepository.Verify();
+    }
+
+    private List<OrderItemFilter> GenerateOrderItemFilters()
+    {
+        var orderItemFilters = new List<OrderItemFilter>();
+        for (var i = 0; i < _faker.Random.Number(1, 100); i++)
+            orderItemFilters.Add(GenerateOrderData.GenerateOrderItemFilter());
+        return orderItemFilters;
+    }
+
+    private List<OrderItem> GenerateOrderItems(List<OrderItemFilter> orderItemFilters, int count)
+    {
+        var orderItems = new List<OrderItem>();
+        for (var i = 0; i < count; i++) orderItems.Add(GenerateOrderData.GenerateOrderItem(orderItemFilters[i]));
+        return orderItems;
     }
 }

@@ -23,7 +23,7 @@ public class OrderController : Controller
     [HttpGet("{configuredCandlesString}")]
     public async Task<IActionResult> Get(string configuredCandlesString)
     {
-        var orderItemFilters = GetSplitedConfiguredCandlesString(configuredCandlesString)
+        var orderItemFilters = GetSplittedConfiguredCandlesString(configuredCandlesString)
             .Select(ParseUrlStringToOrderItemFilter)
             .ToArray();
 
@@ -62,7 +62,7 @@ public class OrderController : Controller
         return Ok(result);
     }
 
-    private string[] GetSplitedConfiguredCandlesString(string configuredCandlesString)
+    private string[] GetSplittedConfiguredCandlesString(string configuredCandlesString)
     {
         return configuredCandlesString.Split(".");
     }

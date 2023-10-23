@@ -62,17 +62,17 @@ public class OrderService : IOrderService
                         .Select(e => e.Error)));
         }
 
-        var orderResutl = Core.Models.Order.Create(
+        var orderResult = Core.Models.Order.Create(
             configuredCandlesString,
             orderItemsResult.Value,
             user,
             feedback);
-        if (orderResutl.IsFailure)
+        if (orderResult.IsFailure)
         {
-            return Result.Failure(orderResutl.Error);
+            return Result.Failure(orderResult.Error);
         }
 
-        var isMessageSend = await _orderNotificationHandler.OnCreateOrder(orderResutl.Value);
+        var isMessageSend = await _orderNotificationHandler.OnCreateOrder(orderResult.Value);
         if (isMessageSend.IsFailure)
         {
             return Result.Failure(result.Error);
