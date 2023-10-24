@@ -15,9 +15,10 @@ public class OrderService : IOrderService
         _orderNotificationHandler = orderNotificationHandler;
     }
 
-    public async Task<Result<OrderItem[]>> Get(OrderItemFilter[] orderItemFilters)
+    public async Task<Result<OrderItem[]>> Get(int orderId)
     {
-        var orderItemsResult = await _orderRepository.Get(orderItemFilters);
+        var orderItemsResult = await _orderRepository.Get(orderId);
+
         if (orderItemsResult.IsFailure)
         {
             return orderItemsResult;
@@ -26,24 +27,32 @@ public class OrderService : IOrderService
         var invalidOrderItems = orderItemsResult.Value
             .Select(o => o.CheckIsOrderItemMissing())
             .ToArray();
+
         if (invalidOrderItems.Any(o => o.IsFailure))
         {
             return Result.Failure<OrderItem[]>(
-                string.Join(", ", invalidOrderItems.Where(o => o.IsFailure).Select(e => e.Error)));
+                string.Join(
+                    ", ",
+                    invalidOrderItems.Where(o => o.IsFailure).Select(e => e.Error)));
         }
 
         return orderItemsResult.Value;
     }
 
-    public async Task<Result> CreateOrder(
+    public async Task<Result<int>> CreateOrder(OrderItemFilter[] orderItemFilters)
+    {
+        return await _orderRepository.CreateOrder(orderItemFilters);
+    }
+
+    public async Task<Result> CheckoutOrder(
         string configuredCandlesString,
-        OrderItemFilter[] OrderItemFilters,
+        int orderId,
         User user,
         Feedback feedback)
     {
         var result = Result.Success();
+        var orderItemsResult = await _orderRepository.Get(orderId);
 
-        var orderItemsResult = await _orderRepository.Get(OrderItemFilters);
         if (orderItemsResult.IsFailure)
         {
             return orderItemsResult;
@@ -52,6 +61,7 @@ public class OrderService : IOrderService
         var invalidOrderItems = orderItemsResult.Value
             .Select(o => o.CheckIsOrderItemMissing())
             .ToArray();
+
         if (invalidOrderItems.Any(o => o.IsFailure))
         {
             return Result.Failure(
@@ -67,12 +77,14 @@ public class OrderService : IOrderService
             orderItemsResult.Value,
             user,
             feedback);
+
         if (orderResult.IsFailure)
         {
             return Result.Failure(orderResult.Error);
         }
 
         var isMessageSend = await _orderNotificationHandler.OnCreateOrder(orderResult.Value);
+
         if (isMessageSend.IsFailure)
         {
             return Result.Failure(result.Error);
