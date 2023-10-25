@@ -15,13 +15,24 @@ public class OrderService : IOrderService
         _orderNotificationHandler = orderNotificationHandler;
     }
 
-    public async Task<Result<OrderItem[]>> Get(int orderId)
+    public async Task<Result<Core.Models.Order>> Get(int orderId)
     {
-        var orderItemsResult = await _orderRepository.Get(orderId);
+        var orderResult = await _orderRepository.GetOrder(orderId);
 
+        if (orderResult.IsFailure)
+        {
+            return orderResult;
+        }
+
+        return orderResult.Value;
+    }
+
+    public async Task<Result<int>> CreateOrder(OrderItemFilter[] orderItemFilters)
+    {
+        var orderItemsResult = await _orderRepository.GetOrderItems(orderItemFilters);
         if (orderItemsResult.IsFailure)
         {
-            return orderItemsResult;
+            return Result.Failure<int>(orderItemsResult.Error);
         }
 
         var invalidOrderItems = orderItemsResult.Value
@@ -30,18 +41,29 @@ public class OrderService : IOrderService
 
         if (invalidOrderItems.Any(o => o.IsFailure))
         {
-            return Result.Failure<OrderItem[]>(
-                string.Join(
-                    ", ",
-                    invalidOrderItems.Where(o => o.IsFailure).Select(e => e.Error)));
+            return Result.Failure<int>(
+                string.Join(", ", invalidOrderItems.Where(o => o.IsFailure).Select(e => e.Error)));
         }
 
-        return orderItemsResult.Value;
+        var orderResult = Core.Models.Order.Create("configuredCandlesString", orderItemsResult.Value, null, null, OrderStatus.Created);
+
+        if (orderResult.IsFailure)
+        {
+            return Result.Failure<int>(orderResult.Error);
+        }
+        
+        return await _orderRepository.CreateOrder(orderResult.Value);
     }
 
-    public async Task<Result<int>> CreateOrder(OrderItemFilter[] orderItemFilters)
+
+    public async Task<Result> UpdateOrderStatus(int orderId)
     {
-        return await _orderRepository.CreateOrder(orderItemFilters);
+        /*
+         * Сервис для обновления статуса заказа Task<Result> UpdateOrderStatus(int orderId)
+         * Нужно для обновления статуса из ТГ
+         */
+
+        return Result.Success();
     }
 
     public async Task<Result> CheckoutOrder(
@@ -50,44 +72,27 @@ public class OrderService : IOrderService
         User user,
         Feedback feedback)
     {
-        var result = Result.Success();
-        var orderItemsResult = await _orderRepository.Get(orderId);
-
-        if (orderItemsResult.IsFailure)
-        {
-            return orderItemsResult;
-        }
-
-        var invalidOrderItems = orderItemsResult.Value
-            .Select(o => o.CheckIsOrderItemMissing())
-            .ToArray();
-
-        if (invalidOrderItems.Any(o => o.IsFailure))
-        {
-            return Result.Failure(
-                string.Join(
-                    ", ",
-                    invalidOrderItems
-                        .Where(o => o.IsFailure)
-                        .Select(e => e.Error)));
-        }
-
-        var orderResult = Core.Models.Order.Create(
-            configuredCandlesString,
-            orderItemsResult.Value,
-            user,
-            feedback);
+        var orderResult = await _orderRepository.GetOrder(orderId);
 
         if (orderResult.IsFailure)
         {
-            return Result.Failure(orderResult.Error);
+            return orderResult;
         }
 
-        var isMessageSend = await _orderNotificationHandler.OnCreateOrder(orderResult.Value);
+        var newOrderResult = Core.Models.Order.Create(configuredCandlesString, orderResult.Value.OrderItems, user, feedback, OrderStatus.Issued);
 
-        if (isMessageSend.IsFailure)
+        var updateResult = await _orderRepository.UpdateOrder(newOrderResult.Value);
+
+        if (updateResult.IsFailure)
         {
-            return Result.Failure(result.Error);
+            return Result.Failure(updateResult.Error);
+        }
+
+        var notificationResult = await _orderNotificationHandler.OnCreateOrder(newOrderResult.Value);
+
+        if (notificationResult.IsFailure)
+        {
+            return Result.Failure(notificationResult.Error);
         }
 
         return Result.Success();

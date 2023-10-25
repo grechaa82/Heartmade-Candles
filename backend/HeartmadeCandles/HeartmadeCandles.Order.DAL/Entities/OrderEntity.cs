@@ -1,5 +1,4 @@
-﻿using HeartmadeCandles.Order.Core.Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HeartmadeCandles.Order.DAL.Entities;
 
@@ -24,7 +23,7 @@ public class OrderEntity
     [Column("totalQuantity")]
     public decimal TotalQuantity { get; set; }
 
-    public virtual required ICollection<OrderItemEntity> OrderItem { get; set; }
+    public virtual required ICollection<OrderItemEntity> OrderItems { get; set; }
 
     public virtual required OrderStatusEntity OrderStatus { get; set; }
 }

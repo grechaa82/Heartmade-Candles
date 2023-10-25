@@ -5,9 +5,11 @@ namespace HeartmadeCandles.Order.Core.Interfaces;
 
 public interface IOrderService
 {
-    Task<Result<OrderItem[]>> Get(int orderId);
+    Task<Result<Models.Order>> Get(int orderId);
 
     Task<Result<int>> CreateOrder(OrderItemFilter[] orderItemFilters);
+
+    Task<Result> UpdateOrderStatus(int orderId);
 
     Task<Result> CheckoutOrder(
         string configuredCandlesString,
