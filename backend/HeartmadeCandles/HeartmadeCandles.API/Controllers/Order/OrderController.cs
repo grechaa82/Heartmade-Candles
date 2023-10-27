@@ -1,5 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using HeartmadeCandles.API.Contracts.Requests;
+﻿using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +19,28 @@ public class OrderController : Controller
         _orderService = orderService;
         _logger = logger;
     }
+
+    #region MongoDbRegion
+
+    [HttpPost("v2")]
+    public async Task<IActionResult> MakeOrder(OrderItemRequestV2[] orderItems)
+    {
+        return Ok();
+    }
+
+    [HttpGet("v2/{orderDetailId:string}")]
+    public async Task<IActionResult> Get(string orderDetailId)
+    {
+        return Ok();
+    }
+
+    [HttpPost("v2")]
+    public async Task<IActionResult> Checkout(CreateOrderRequest createOrder)
+    {
+        return Ok();
+    }
+
+    #endregion
 
     [HttpGet("{orderId:int}")]
     public async Task<IActionResult> Get(int orderId)
@@ -57,7 +78,7 @@ public class OrderController : Controller
         return Ok(result.Value);
     }
 
-    [HttpPost(" checkout")]
+    [HttpPost("checkout")]
     public async Task<IActionResult> CheckoutOrder(CreateOrderRequest orderRequest)
     {
         var result = await _orderService.CheckoutOrder(

@@ -8,11 +8,13 @@ public class OrderService : IOrderService
 {
     private readonly IOrderNotificationHandler _orderNotificationHandler;
     private readonly IOrderRepository _orderRepository;
+    private readonly IMongoRepository _mongoRepository;
 
-    public OrderService(IOrderRepository orderRepository, IOrderNotificationHandler orderNotificationHandler)
+    public OrderService(IOrderRepository orderRepository, IOrderNotificationHandler orderNotificationHandler, IMongoRepository mongoRepository)
     {
         _orderRepository = orderRepository;
         _orderNotificationHandler = orderNotificationHandler;
+        _mongoRepository = mongoRepository;
     }
 
     public async Task<Result<Core.Models.Order>> Get(int orderId)
@@ -97,4 +99,31 @@ public class OrderService : IOrderService
 
         return Result.Success();
     }
+
+    #region MongoDbRegion
+
+    public async Task<Result<string>> MakeOrderV2(OrderDetailItemV2[] orderItems)
+    {
+        return await _mongoRepository.CreateOrderDetail(orderItems);
+    }
+
+    public async Task<Result<OrderDetail>> GetV2(string orderDetailId)
+    {
+        return await _mongoRepository.GetOrderDetailById(orderDetailId);
+    }
+
+    public async Task<Result> CheckoutV2(User user, Feedback feedback, string orderDetailId)
+    {
+        var order = new OrderV2
+        {
+            OrderDetailId = orderDetailId,
+            User = user,
+            Feedback = feedback,
+            Status = OrderStatus.Assembled,
+        };
+
+        return await _mongoRepository.CreateOrder(order);
+    }
+
+    #endregion
 }

@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Auth.BL", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Order.Bot", "HeartmadeCandles.Order.Bot\HeartmadeCandles.Order.Bot.csproj", "{339B79E1-12AA-4447-B3DE-85C36B79AB74}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Order.DAL.Mongo", "HeartmadeCandles.Order.DAL.Mongo\HeartmadeCandles.Order.DAL.Mongo.csproj", "{51F90E6F-A9CF-4CA4-99FE-52717AFB177E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +109,10 @@ Global
 		{339B79E1-12AA-4447-B3DE-85C36B79AB74}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{339B79E1-12AA-4447-B3DE-85C36B79AB74}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{339B79E1-12AA-4447-B3DE-85C36B79AB74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51F90E6F-A9CF-4CA4-99FE-52717AFB177E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51F90E6F-A9CF-4CA4-99FE-52717AFB177E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51F90E6F-A9CF-4CA4-99FE-52717AFB177E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51F90E6F-A9CF-4CA4-99FE-52717AFB177E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,6 +130,7 @@ Global
 		{D5879607-0957-4B93-A367-039EEF70E779} = {4B25FE1B-A2E3-4E58-A6F0-5BD967DBDA06}
 		{8A5CA9BD-C0BB-46A2-B18C-6DB2E686C600} = {4B25FE1B-A2E3-4E58-A6F0-5BD967DBDA06}
 		{339B79E1-12AA-4447-B3DE-85C36B79AB74} = {65ABB28C-423F-4E5D-80E0-84127B943BAD}
+		{51F90E6F-A9CF-4CA4-99FE-52717AFB177E} = {65ABB28C-423F-4E5D-80E0-84127B943BAD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D6110671-4E49-4702-832A-BE22583842C7}
