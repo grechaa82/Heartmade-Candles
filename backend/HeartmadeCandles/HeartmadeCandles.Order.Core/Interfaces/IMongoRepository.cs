@@ -5,7 +5,7 @@ namespace HeartmadeCandles.Order.Core.Interfaces;
 
 public interface IMongoRepository
 {
-    Task<Result<string>> CreateOrderDetail(OrderDetailItemV2[] orderItems);
+    Task<Result<string>> CreateOrderDetail(OrderDetail orderDetail);
 
     Task<Result<OrderDetail>> GetOrderDetailById(string id);
 

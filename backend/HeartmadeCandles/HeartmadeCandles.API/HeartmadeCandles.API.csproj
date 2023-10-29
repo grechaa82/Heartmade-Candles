@@ -56,6 +56,7 @@
     <ProjectReference Include="..\HeartmadeCandles.Order.BL\HeartmadeCandles.Order.BL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.Bot\HeartmadeCandles.Order.Bot.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.Core\HeartmadeCandles.Order.Core.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Order.DAL.Mongo\HeartmadeCandles.Order.DAL.Mongo.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.DAL\HeartmadeCandles.Order.DAL.csproj" />
   </ItemGroup>
 

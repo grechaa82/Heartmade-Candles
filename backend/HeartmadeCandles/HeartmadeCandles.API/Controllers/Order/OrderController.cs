@@ -22,27 +22,48 @@ public class OrderController : Controller
 
     #region MongoDbRegion
 
-    [HttpPost("v2")]
-    public async Task<IActionResult> MakeOrder(OrderItemRequestV2[] orderItems)
+    [HttpPost("orderDetail")]
+    public async Task<IActionResult> MakeOrder([FromBody] OrderDetailItemV2[] orderItems)
     {
-        return Ok();
+        var result = await _orderService.MakeOrderV2(orderItems);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Ok(result.Value);
     }
 
-    [HttpGet("v2/{orderDetailId:string}")]
+    [HttpGet("{orderDetailId}")]
     public async Task<IActionResult> Get(string orderDetailId)
     {
-        return Ok();
+        var result = await _orderService.GetV2(orderDetailId);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Ok(result.Value);
     }
 
-    [HttpPost("v2")]
-    public async Task<IActionResult> Checkout(CreateOrderRequest createOrder)
+    [HttpPost]
+    public async Task<IActionResult> Checkout([FromBody] User user, Feedback feedback, string orderDetailId)
     {
+        var result = await _orderService.CheckoutV2(user, feedback, orderDetailId);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+
         return Ok();
     }
 
     #endregion
 
-    [HttpGet("{orderId:int}")]
+    /* [HttpGet("{orderId:int}")]
     public async Task<IActionResult> Get(int orderId)
     {
         var result = await _orderService.Get(orderId);
@@ -98,7 +119,7 @@ public class OrderController : Controller
         }
 
         return Ok(result);
-    }
+    }*/
 
     private OrderItemFilter[] MapToOrderItemFilter(OrderItemFilterRequest[] items)
     {

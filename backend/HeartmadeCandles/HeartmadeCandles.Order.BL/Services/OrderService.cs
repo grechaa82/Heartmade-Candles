@@ -104,7 +104,12 @@ public class OrderService : IOrderService
 
     public async Task<Result<string>> MakeOrderV2(OrderDetailItemV2[] orderItems)
     {
-        return await _mongoRepository.CreateOrderDetail(orderItems);
+        var orderDetail = new OrderDetail
+        {
+            Items = orderItems,
+        };
+
+        return await _mongoRepository.CreateOrderDetail(orderDetail);
     }
 
     public async Task<Result<OrderDetail>> GetV2(string orderDetailId)

@@ -2,7 +2,7 @@
 
 public class OrderDetail
 {
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     public required OrderDetailItemV2[] Items { get; set; }
 
