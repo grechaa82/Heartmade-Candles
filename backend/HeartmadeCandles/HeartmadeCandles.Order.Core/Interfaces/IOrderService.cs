@@ -5,25 +5,11 @@ namespace HeartmadeCandles.Order.Core.Interfaces;
 
 public interface IOrderService
 {
-    Task<Result<Models.Order>> Get(int orderId);
+    Task<Result<OrderDetail>> GetOrderDetailById(string orderDetailId);
 
-    Task<Result<int>> CreateOrder(OrderItemFilter[] orderItemFilters);
+    Task<Result<string>> CreateOrderDetail(OrderDetailItem[] orderItems);
 
-    Task<Result> UpdateOrderStatus(int orderId);
+    Task<Result<Models.Order>> GetOrderById(string orderId);
 
-    Task<Result> CheckoutOrder(
-        string configuredCandlesString,
-        int orderId,
-        User user,
-        Feedback feedback);
-
-    #region MongoDbRegion
-
-    Task<Result<string>> MakeOrderV2(OrderDetailItemV2[] orderItems);
-
-    Task<Result<OrderDetail>> GetV2(string orderDetailId);
-
-    Task<Result> CheckoutV2(User user, Feedback feedback, string orderDetailId);
-
-    #endregion
+    Task<Result<string>> CreateOrder(User user, Feedback feedback, string orderDetailId);
 }

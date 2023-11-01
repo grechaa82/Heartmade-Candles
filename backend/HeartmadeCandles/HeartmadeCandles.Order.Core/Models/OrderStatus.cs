@@ -4,4 +4,3 @@ public enum OrderStatus
 {
     Created, Issued, Processed, Paid, Confirmed, Assembled, Sent
 }
-

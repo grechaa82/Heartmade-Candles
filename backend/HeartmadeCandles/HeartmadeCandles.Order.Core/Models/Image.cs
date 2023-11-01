@@ -9,5 +9,6 @@ public class Image
     }
 
     public string FileName { get; private set; }
+
     public string AlternativeName { get; private set; }
 }

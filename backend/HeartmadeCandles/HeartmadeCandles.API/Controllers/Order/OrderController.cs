@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.API.Contracts.Requests;
+﻿using HeartmadeCandles.API.Contracts.Order.Requests;
+using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,10 @@ public class OrderController : Controller
         _logger = logger;
     }
 
-    #region MongoDbRegion
-
-    [HttpPost("orderDetail")]
-    public async Task<IActionResult> MakeOrder([FromBody] OrderDetailItemV2[] orderItems)
+    [HttpGet("details/{orderDetailId}")]
+    public async Task<IActionResult> GetOrderDetailById(string orderDetailId)
     {
-        var result = await _orderService.MakeOrderV2(orderItems);
+        var result = await _orderService.GetOrderDetailById(orderDetailId);
 
         if (result.IsFailure)
         {
@@ -35,10 +34,23 @@ public class OrderController : Controller
         return Ok(result.Value);
     }
 
-    [HttpGet("{orderDetailId}")]
-    public async Task<IActionResult> Get(string orderDetailId)
+    [HttpPost("details/")]
+    public async Task<IActionResult> CreateOrderDetail(OrderDetailItemRequest[] orderDetailItems)
     {
-        var result = await _orderService.GetV2(orderDetailId);
+        var result = await _orderService.CreateOrderDetail(MapToOrderDetailItem(orderDetailItems));
+
+        if (result.IsFailure)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Ok(result.Value);
+    }
+
+    [HttpGet("{orderId}")]
+    public async Task<IActionResult> GetOrderById(string orderId)
+    {
+        var result = await _orderService.GetOrderById(orderId);
 
         if (result.IsFailure)
         {
@@ -49,92 +61,61 @@ public class OrderController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Checkout([FromBody] User user, Feedback feedback, string orderDetailId)
+    public async Task<IActionResult> CreateOrder(CreateOrderRequest orderRequest)
     {
-        var result = await _orderService.CheckoutV2(user, feedback, orderDetailId);
+        var result = await _orderService.CreateOrder(
+            MapToUser(orderRequest.User), 
+            MapToFeedback(orderRequest.Feedback), 
+            orderRequest.OrderDetailId);
 
         if (result.IsFailure)
         {
             return BadRequest(result.Error);
         }
 
-        return Ok();
-    }
-
-    #endregion
-
-    /* [HttpGet("{orderId:int}")]
-    public async Task<IActionResult> Get(int orderId)
-    {
-        var result = await _orderService.Get(orderId);
-
-        if (result.IsFailure)
-        {
-            _logger.LogError(
-                "Error: Failed in process {processName}, error message: {errorMessage}",
-                nameof(_orderService.Get),
-                result.Error);
-
-            return BadRequest($"Error: Failed in process {typeof(OrderItem)}, error message: {result.Error}");
-        }
-
         return Ok(result.Value);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateOrder(OrderItemFilterRequest[] orderItemFilter)
+    private OrderDetailItem[] MapToOrderDetailItem(OrderDetailItemRequest[] items)
     {
-        var result = await _orderService.CreateOrder(MapToOrderItemFilter(orderItemFilter));
+        List<OrderDetailItem> orderDetailItems = new List<OrderDetailItem>();
 
-        if (result.IsFailure)
+        foreach (var item in items)
         {
-            _logger.LogError(
-                "Error: Failed in process {processName}, error message: {errorMessage}",
-                nameof(_orderService.CreateOrder),
-                result.Error);
+            OrderDetailItem orderDetailItem = new OrderDetailItem
+            {
+                Candle = new Candle(
+                    item.Candle.Id,
+                    item.Candle.Title,
+                    item.Candle.Price,
+                    item.Candle.WeightGrams,
+                    item.Candle.Images.Select(i => new Image(i.FileName, i.AlternativeName)).ToArray(),
+                    new TypeCandle(item.Candle.TypeCandle.Id, item.Candle.TypeCandle.Title)),
+                Decor = item.Decor == null 
+                    ? null
+                    : new Decor(
+                        item.Decor.Id,
+                        item.Decor.Title,
+                        item.Decor.Price),
+                LayerColors = item.LayerColors.Select(lc => new LayerColor(
+                    lc.Id,
+                    lc.Title,
+                    lc.PricePerGram)).ToArray(),
+                NumberOfLayer = new NumberOfLayer(item.NumberOfLayer.Id, item.NumberOfLayer.Number),
+                Smell = item.Smell == null 
+                    ? null
+                    : new Smell(item.Smell.Id, item.Smell.Title, item.Smell.Price),
+                Wick = new Wick(item.Wick.Id, item.Wick.Title, item.Wick.Price),
+                Quantity = item.Quantity,
+                ConfigurationString = item.ConfigurationString
+            };
 
-            return BadRequest($"Error: Failed in process {typeof(OrderItem)}, error message: {result.Error}");
+            orderDetailItems.Add(orderDetailItem);
         }
 
-        return Ok(result.Value);
+        return orderDetailItems.ToArray();
     }
 
-    [HttpPost("checkout")]
-    public async Task<IActionResult> CheckoutOrder(CreateOrderRequest orderRequest)
-    {
-        var result = await _orderService.CheckoutOrder(
-            orderRequest.ConfiguredCandlesString,
-            orderRequest.OrderId,
-            MapToUser(orderRequest.User),
-            MapToFeedback(orderRequest.Feedback));
-
-        if (result.IsFailure)
-        {
-            _logger.LogError(
-                "Error: Failed in process {processName}, error message: {errorMessage}",
-                nameof(_orderService.CheckoutOrder),
-                result.Error);
-
-            return BadRequest($"Failed in process {typeof(OrderItem)}, error message: {result.Error}");
-        }
-
-        return Ok(result);
-    }*/
-
-    private OrderItemFilter[] MapToOrderItemFilter(OrderItemFilterRequest[] items)
-    {
-        return items
-            .Select(
-                item => new OrderItemFilter(
-                    item.CandleId,
-                    item.DecorId,
-                    item.NumberOfLayerId,
-                    item.LayerColorIds,
-                    item.SmellId,
-                    item.WickId,
-                    item.Quantity))
-            .ToArray();
-    }
 
     private User MapToUser(UserRequest item)
     {
