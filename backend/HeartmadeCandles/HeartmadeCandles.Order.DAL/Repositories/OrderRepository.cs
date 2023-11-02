@@ -22,7 +22,7 @@ public class OrderRepository : IOrderRepository
         _logger = logger;
     }
 
-    public async Task<Result<OrderDetail>> GetOrderDetailById(string orderDetailId)
+    public async Task<Result<Basket>> GetBasketById(string orderDetailId)
     {
         var orderDetailCollection = await _orderDetailCollection
             .Find(x => x.Id == orderDetailId)
@@ -33,20 +33,9 @@ public class OrderRepository : IOrderRepository
         return Result.Success(orderDetail);
     }
 
-    public async Task<Result<string>> CreateOrderDetail(OrderDetail orderDetail)
+    public async Task<Result<string>> CreateBasket(Basket orderDetail)
     {
-        var orderDetailItemsCollection = OrderDetailItemMapping.MapToOrderDetailItemCollection(orderDetail.Items);
-
-        var orderDetailCollection = new OrderDetailCollection()
-        {
-            Items = orderDetailItemsCollection,
-            TotalPrice = orderDetail.TotalPrice,
-            TotalQuantity = orderDetail.TotalQuantity,
-            TotalConfigurationString = orderDetail.TotalConfigurationString
-        };
-
-        await _orderDetailCollection.InsertOneAsync(orderDetailCollection);
-        return Result.Success(orderDetailCollection.Id);
+        throw new NotImplementedException();
     }
 
     public async Task<Result<Core.Models.Order>> GetOrderById(string orderId)
@@ -66,17 +55,11 @@ public class OrderRepository : IOrderRepository
 
         var order = OrderMapping.MapToOrder(orderCollection, orderDetailCollection);
 
-        var json = JsonSerializer.Serialize(order);
-        _logger.LogError($"OrderV2 {json}");
-
         return Result.Success(order);
     }
 
     public async Task<Result<string>> CreateOrder(Core.Models.Order order)
     {
-        var json = JsonSerializer.Serialize(order);
-        _logger.LogError($"OrderV2 {json}");
-
         var orderCollection = OrderMapping.MapToOrderCollection(order);
 
         await _orderCollection.InsertOneAsync(orderCollection);

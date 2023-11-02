@@ -5,9 +5,9 @@ namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class OrderDetailMapping
 {
-    public static OrderDetail MapToOrderDetail(OrderDetailCollection orderDetailCollection)
+    public static Basket MapToOrderDetail(OrderDetailCollection orderDetailCollection)
     {
-        return new OrderDetail
+        return new Basket
         {
             Id = orderDetailCollection.Id,
             Items = OrderDetailItemMapping.MapToOrderDetailItem(orderDetailCollection.Items),
@@ -15,7 +15,7 @@ internal class OrderDetailMapping
         };
     }
 
-    public static OrderDetailCollection MapToOrderDetailCollection(OrderDetail orderDetail)
+    public static OrderDetailCollection MapToOrderDetailCollection(Basket orderDetail)
     {
         return new OrderDetailCollection
         {

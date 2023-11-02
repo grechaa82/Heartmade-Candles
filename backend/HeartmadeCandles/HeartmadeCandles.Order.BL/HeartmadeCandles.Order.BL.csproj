@@ -5,6 +5,7 @@
   </ItemGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\HeartmadeCandles.Constructor.Core\HeartmadeCandles.Constructor.Core.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.Core\HeartmadeCandles.Order.Core.csproj" />
   </ItemGroup>
 	

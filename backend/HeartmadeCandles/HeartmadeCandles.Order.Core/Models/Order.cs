@@ -2,11 +2,11 @@
 
 public class Order
 {
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     public required string OrderDetailId { get; set; }
 
-    public OrderDetail? OrderDetail { get; set; }
+    public Basket? OrderDetail { get; set; }
     
     public required User User { get; set; }
 
@@ -14,4 +14,3 @@ public class Order
 
     public OrderStatus Status { get; set; }
 }
-

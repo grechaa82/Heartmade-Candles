@@ -5,13 +5,13 @@ namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class OrderDetailItemMapping
 {
-    public static OrderDetailItem[] MapToOrderDetailItem(OrderDetailItemCollection[] orderDetailItemsCollection)
+    public static BasketItem[] MapToOrderDetailItem(OrderDetailItemCollection[] orderDetailItemsCollection)
     {
-        var orderDetailItems = new List<OrderDetailItem>();
+        var orderDetailItems = new List<BasketItem>();
 
         foreach (var orderDetailItemCollection in orderDetailItemsCollection)
         {
-            var orderDetailItem = new OrderDetailItem
+            var orderDetailItem = new BasketItem
             {
                 Candle = CandleMapping.MapToCandle(orderDetailItemCollection.Candle),
                 Decor = DecorMapping.MapToDecor(orderDetailItemCollection.Decor ),
@@ -29,7 +29,7 @@ internal class OrderDetailItemMapping
         return orderDetailItems.ToArray();
     }
 
-    public static OrderDetailItemCollection[] MapToOrderDetailItemCollection(OrderDetailItem[] orderDetailItems)
+    public static OrderDetailItemCollection[] MapToOrderDetailItemCollection(BasketItem[] orderDetailItems)
     {
         var orderDetailItemsCollection = new List<OrderDetailItemCollection>();
 
