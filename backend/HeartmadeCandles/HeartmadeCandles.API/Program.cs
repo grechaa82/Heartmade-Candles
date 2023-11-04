@@ -8,8 +8,10 @@ using HeartmadeCandles.Constructor.DAL;
 using HeartmadeCandles.Order.BL;
 using HeartmadeCandles.Order.Bot;
 using HeartmadeCandles.Order.DAL;
+using HeartmadeCandles.Order.DAL.Mongo;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.FileProviders;
+using MongoDB.Driver;
 using Serilog;
 using Serilog.Enrichers.Span;
 
@@ -27,7 +29,6 @@ try
         loggingBuilder =>
         {
             loggingBuilder.ClearProviders();
-
             loggingBuilder.AddSerilog(logger, true);
         });
 
@@ -59,13 +60,21 @@ try
     builder.Services
         .AddOrderServices()
         .AddOrderRepositories()
-        .AddOrderDbContext(builder.Configuration)
         .AddOrderNotificationServices();
+
+    builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+    builder.Services.AddSingleton(options =>
+    {
+        var databaseSettings = builder.Configuration.GetSection("DatabaseSettings").Get<DatabaseSettings>();
+        var mongoDbClient = new MongoClient(databaseSettings.ConnectionString);
+
+        return mongoDbClient.GetDatabase(databaseSettings.DatabaseName);
+    });
 
     builder.Services.AddAuthServices();
 
     builder.Services.AddControllers().AddNewtonsoftJson();
-
+     
     builder.Services.AddEndpointsApiExplorer();
 
     builder.Services.AddHttpContextAccessor();
@@ -87,9 +96,9 @@ try
     }
 
     app.UseRateLimiter();
-
+    
     app.UseHttpsRedirection();
-
+    
     app.UseCors("AllowCors");
 
     app.UseStaticFiles(
@@ -103,9 +112,9 @@ try
     app.UseAuthentication();
 
     app.UseAuthorization();
-
+    
     app.MapControllers();
-
+    
     app.Run();
 }
 catch (Exception ex)

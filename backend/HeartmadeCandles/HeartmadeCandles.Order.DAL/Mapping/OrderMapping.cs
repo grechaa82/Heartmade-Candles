@@ -1,45 +1,44 @@
-﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Collections;
+﻿using HeartmadeCandles.Order.DAL.Documents;
 
 namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class OrderMapping
 {
-    public static Core.Models.Order MapToOrder(OrderCollection orderCollection)
+    public static Core.Models.Order MapToOrder(OrderDocument orderDocument)
     {
         return new Core.Models.Order
         {
-            Id = orderCollection.Id,
-            OrderDetailId = orderCollection.OrderDetailId,
-            OrderDetail = orderCollection.OrderDetail == null ? null : OrderDetailMapping.MapToOrderDetail(orderCollection.OrderDetail),
-            User = UserMapping.MapToUser(orderCollection.User),
-            Feedback = FeedbackMapping.MapToFeedback(orderCollection.Feedback),
-            Status = orderCollection.Status
+            Id = orderDocument.Id,
+            OrderDetailId = orderDocument.BasketId,
+            OrderDetail = orderDocument.Basket == null ? null : BasketMapping.MapToBasket(orderDocument.Basket),
+            User = UserMapping.MapToUser(orderDocument.User),
+            Feedback = FeedbackMapping.MapToFeedback(orderDocument.Feedback),
+            Status = orderDocument.Status
         };
     }
 
-    public static Core.Models.Order MapToOrder(OrderCollection orderCollection, OrderDetailCollection orderDetailCollection)
+    public static Core.Models.Order MapToOrder(OrderDocument orderDocument, BasketDocument basketDocument)
     {
         return new Core.Models.Order
         {
-            Id = orderCollection.Id,
-            OrderDetailId = orderCollection.OrderDetailId,
-            OrderDetail = OrderDetailMapping.MapToOrderDetail(orderDetailCollection),
-            User = UserMapping.MapToUser(orderCollection.User),
-            Feedback = FeedbackMapping.MapToFeedback(orderCollection.Feedback),
-            Status = orderCollection.Status
+            Id = orderDocument.Id,
+            OrderDetailId = orderDocument.BasketId,
+            OrderDetail = BasketMapping.MapToBasket(basketDocument),
+            User = UserMapping.MapToUser(orderDocument.User),
+            Feedback = FeedbackMapping.MapToFeedback(orderDocument.Feedback),
+            Status = orderDocument.Status
         };
     }
 
-    public static OrderCollection MapToOrderCollection(Core.Models.Order order)
+    public static OrderDocument MapToOrderDocument(Core.Models.Order order)
     {
-        return new OrderCollection
+        return new OrderDocument
         {
             Id = order.Id,
-            OrderDetailId = order.OrderDetailId,
-            OrderDetail = order.OrderDetail == null ? null : OrderDetailMapping.MapToOrderDetailCollection(order.OrderDetail),
-            User = UserMapping.MapToUserCollection(order.User),
-            Feedback = FeedbackMapping.MapToFeedbackCollection(order.Feedback),
+            BasketId = order.OrderDetailId,
+            Basket = order.OrderDetail == null ? null : BasketMapping.MapToBasketDocument(order.OrderDetail),
+            User = UserMapping.MapToUserDocument(order.User),
+            Feedback = FeedbackMapping.MapToFeedbackDocument(order.Feedback),
             Status = order.Status
         };
     }

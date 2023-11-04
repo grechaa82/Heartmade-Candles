@@ -1,6 +1,6 @@
-﻿namespace HeartmadeCandles.Order.DAL.Collections;
+﻿namespace HeartmadeCandles.Order.DAL.Documents;
 
-public class WickCollection
+public class WickDocument
 {
     public int Id { get; set; }
 

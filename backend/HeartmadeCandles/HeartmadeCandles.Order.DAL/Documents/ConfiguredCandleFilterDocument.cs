@@ -1,6 +1,6 @@
-﻿namespace HeartmadeCandles.Order.Core.Models;
+﻿namespace HeartmadeCandles.Order.DAL.Documents;
 
-public class ConfiguredCandleFilter
+public class ConfiguredCandleFilterDocument
 {
     public int CandleId { get; set; }
 

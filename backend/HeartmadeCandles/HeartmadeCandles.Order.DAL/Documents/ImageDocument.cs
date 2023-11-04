@@ -1,6 +1,6 @@
-﻿namespace HeartmadeCandles.Order.DAL.Collections;
+﻿namespace HeartmadeCandles.Order.DAL.Documents;
 
-public class ImageCollection
+public class ImageDocument
 {
     public string FileName { get; set; }
 

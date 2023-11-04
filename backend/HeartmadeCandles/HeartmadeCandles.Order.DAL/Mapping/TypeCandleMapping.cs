@@ -1,21 +1,21 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Collections;
+using HeartmadeCandles.Order.DAL.Documents;
 
 namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class TypeCandleMapping
 {
-    public static TypeCandle MapToTypeCandle(TypeCandleCollection typeCandleCollection)
+    public static TypeCandle MapToTypeCandle(TypeCandleDocument typeCandleDocument)
     {
         return new TypeCandle(
-            typeCandleCollection.Id,
-            typeCandleCollection.Title
+            typeCandleDocument.Id,
+            typeCandleDocument.Title
         );
     }
 
-    public static TypeCandleCollection MapToTypeCandleCollection(TypeCandle typeCandle)
+    public static TypeCandleDocument MapToTypeCandleDocument(TypeCandle typeCandle)
     {
-        return new TypeCandleCollection
+        return new TypeCandleDocument
         {
             Id = typeCandle.Id,
             Title = typeCandle.Title

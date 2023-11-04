@@ -30,41 +30,26 @@ public class OrderService : IOrderService
         return await _orderRepository.GetBasketById(orderDetailId);
     }
 
-    public async Task<Result<string>> CreateBasket(ConfiguredCandleFilter[] candleDetailsFilters)
+    public async Task<Result<string>> CreateBasket(ConfiguredCandleFilter[] configuredCandlesFilters)
     {
-        /*
-         * 1. Получить ConfiguredCandle[] из _constructorService.GetCandleDetailByFilter(candleDetailsFilters[i])
-         * 2. Проверить что на соответсвие
-         * 3. Создать BasketItem[]
-         * 4. Создать Basket
-         * 5. Сохранить в _orderRepository.CreateBasket(Basket basket)
-         * 6. Вернуть Basket.Id 
-         */
-
         var basketItems = new List<BasketItem>();
 
-        foreach (var candleDetailFilter in candleDetailsFilters)
+        foreach (var configuredCandleFilter in configuredCandlesFilters)
         {
-            Result<Constructor.Core.Models.CandleDetail> candleDetail = await _constructorService.GetCandleByFilter(
-                candleDetailFilter.CandleId,
-                candleDetailFilter.DecorId,
-                candleDetailFilter.NumberOfLayerId,
-                candleDetailFilter.LayerColorIds,
-                candleDetailFilter.SmellId,
-                candleDetailFilter.WickId);
+            Result<Constructor.Core.Models.CandleDetail> candleDetail = await _constructorService.GetCandleByFilter(MapToCandleDetailFilter(configuredCandleFilter));
 
             var configuredCandle = MapConstructorCandleDetailToOrderConfiguredCandle(candleDetail.Value);
 
-            var price = await _calculateService.CalculatePrice(configuredCandle);
+            var price = _calculateService.CalculatePrice(configuredCandle);
 
             var basketItem = new BasketItem
             {
                 ConfiguredCandle = configuredCandle,
                 Price = price.Value,
-                ConfiguredCandleFilter = candleDetailFilter
+                ConfiguredCandleFilter = configuredCandleFilter
             };
 
-            if (basketItem.CheckConsistencyConfiguredCandle().IsFailure)
+            if (basketItem.IsMatchingConfiguredCandle().IsFailure)
             {
                 throw new ArgumentException();
             }
@@ -89,21 +74,28 @@ public class OrderService : IOrderService
 
     public async Task<Result<string>> CreateOrder(User user, Feedback feedback, string basketId)
     {
-        /*
-         * 1. Получить корзину из Mongo var basket = _orderRepository.GetBasketById(basketId)
-         * 2. Получить ConfiguredCandle[] по настройке из корзины var currentStateConfiguredCandle _constructorService.GetCandleDetailByFilter(basket.Items[i].ConfiguredCandleFilter)
-         * 3. Проверить если currentStateConfiguredCandle != basket.Items[i] то нужно сказать, что состояние этой корзины устарело, измените конфигурацию свечи
-         * 4. Создать Order[]
-         * 5. Сохранить в _orderRepository.CreateOrder(Order order)
-         * 6. Вернуть Order.Id
-         */
+        var basket = await _orderRepository.GetBasketById(basketId);
+
+        foreach (var basketItem in basket.Value.Items)
+        {
+            var currentStateCandleDetail =
+                await _constructorService.GetCandleByFilter(MapToCandleDetailFilter(basketItem.ConfiguredCandleFilter));
+
+            var currentStateConfiguredCandle =
+                MapConstructorCandleDetailToOrderConfiguredCandle(currentStateCandleDetail.Value);
+
+            if (basketItem.IsComparedConfiguredCandles(currentStateConfiguredCandle).IsFailure)
+            {
+                throw new ArgumentException();
+            }
+        }
 
         var order = new Core.Models.Order
         {
             OrderDetailId = basketId,
             User = user,
             Feedback = feedback,
-            Status = OrderStatus.Assembled,
+            Status = OrderStatus.Assembled
         };
 
         return await _orderRepository.CreateOrder(order);
@@ -125,43 +117,65 @@ public class OrderService : IOrderService
                 ? MapConstructorSmellToOrderSmell(candleDetail.Smells[0]) 
                 : null,
             Wick = candleDetail.Wicks.Any() 
-                ? MapConstructoroWickToOrderWick(candleDetail.Wicks[0]) 
+                ? MapConstructorWickToOrderWick(candleDetail.Wicks[0]) 
                 : throw new InvalidCastException()
         };
     }
 
     private Core.Models.Candle MapConstructorCandleToOrderCandle(Constructor.Core.Models.Candle candle)
     {
-        throw new NotImplementedException();
+        return new Core.Models.Candle(
+            candle.Id,
+            candle.Title,
+            candle.Price,
+            candle.WeightGrams,
+            MapConstructorImageToOrderImage(candle.Images));
     }
 
     private Core.Models.Decor MapConstructorDecorToOrderDecor(Constructor.Core.Models.Decor decor)
     {
-        throw new NotImplementedException();
+        return new Core.Models.Decor(decor.Id, decor.Title, decor.Price);
     }
 
     private Core.Models.LayerColor[] MapConstructorLayerColorsToOrderLayerColors(Constructor.Core.Models.LayerColor[] layerColor)
     {
-        throw new NotImplementedException();
+        return layerColor
+            .Select(x => new Core.Models.LayerColor(x.Id, x.Title, x.PricePerGram))
+            .ToArray();
     }
 
     private Core.Models.NumberOfLayer MapConstructorNumberOfLayerToOrderNumberOfLayer(Constructor.Core.Models.NumberOfLayer numberOfLayer)
     {
-        throw new NotImplementedException();
+        return new Core.Models.NumberOfLayer(numberOfLayer.Id, numberOfLayer.Number);
     }
 
     private Core.Models.Smell MapConstructorSmellToOrderSmell(Constructor.Core.Models.Smell smell)
     {
-        throw new NotImplementedException();
+        return new Core.Models.Smell(smell.Id, smell.Title, smell.Price);
     }
 
-    private Core.Models.Wick MapConstructoroWickToOrderWick(Constructor.Core.Models.Wick wick)
+    private Core.Models.Wick MapConstructorWickToOrderWick(Constructor.Core.Models.Wick wick)
     {
-        throw new NotImplementedException();
+        return new Core.Models.Wick(wick.Id, wick.Title, wick.Price);
     }
 
     private Core.Models.Image[] MapConstructorImageToOrderImage(Constructor.Core.Models.Image[] image)
     {
-        throw new NotImplementedException(); ;
+        return image
+            .Select(x => new Core.Models.Image(x.FileName, x.AlternativeName))
+            .ToArray();
+    }
+
+    private CandleDetailFilter MapToCandleDetailFilter(ConfiguredCandleFilter filter)
+    {
+        return new CandleDetailFilter
+        {
+            CandleId = filter.CandleId,
+            DecorId = filter.DecorId,
+            NumberOfLayerId = filter.NumberOfLayerId,
+            LayerColorIds = filter.LayerColorIds,
+            SmellId = filter.SmellId,
+            WickId = filter.WickId
+        };
     }
 }

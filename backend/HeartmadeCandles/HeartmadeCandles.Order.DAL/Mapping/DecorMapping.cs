@@ -1,22 +1,22 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Collections;
+using HeartmadeCandles.Order.DAL.Documents;
 
 namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class DecorMapping
 {
-    public static Decor MapToDecor(DecorCollection decorCollection)
+    public static Decor MapToDecor(DecorDocument decorDocument)
     {
         return new Decor(
-            decorCollection.Id,
-            decorCollection.Title,
-            decorCollection.Price
+            decorDocument.Id,
+            decorDocument.Title,
+            decorDocument.Price
         );
     }
 
-    public static DecorCollection MapToDecorCollection(Decor decor)
+    public static DecorDocument MapToDecorDocument(Decor decor)
     {
-        return new DecorCollection
+        return new DecorDocument
         {
             Id = decor.Id,
             Title = decor.Title,

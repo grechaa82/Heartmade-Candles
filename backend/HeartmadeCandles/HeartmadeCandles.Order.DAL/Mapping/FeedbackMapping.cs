@@ -1,20 +1,20 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Collections;
+using HeartmadeCandles.Order.DAL.Documents;
 
 namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class FeedbackMapping
 {
-    public static Feedback MapToFeedback(FeedbackCollection feedbackCollection)
+    public static Feedback MapToFeedback(FeedbackDocument feedbackDocument)
     {
         return new Feedback(
-            feedbackCollection.TypeFeedback,
-            feedbackCollection.UserName);
+            feedbackDocument.TypeFeedback,
+            feedbackDocument.UserName);
     }
 
-    public static FeedbackCollection MapToFeedbackCollection(Feedback feedback)
+    public static FeedbackDocument MapToFeedbackDocument(Feedback feedback)
     {
-        return new FeedbackCollection
+        return new FeedbackDocument
         {
             TypeFeedback = feedback.TypeFeedback,
             UserName = feedback.UserName

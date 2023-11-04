@@ -36,18 +36,20 @@ public class BasketController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateBasket(CandleDetailFilterRequest[] candleDetailsFiltersRequest)
     {
-        var candleDetailsFilters = candleDetailsFiltersRequest.Select(
-            x => new ConfiguredCandleFilter(
-            {
-                CandleId = x.CandleId,
-                DecorId = x.DecorId,
-                NumberOfLayerId = x.NumberOfLayerId,
-                LayerColorIds = x.LayerColorIds,
-                SmellId = x.SmellId,
-                WickId = x.WickId
-            }).ToArray();
+        var configuredCandlesFilters= candleDetailsFiltersRequest
+            .Select(
+                x => new ConfiguredCandleFilter
+                {
+                    CandleId = x.CandleId,
+                    DecorId = x.DecorId,
+                    NumberOfLayerId = x.NumberOfLayerId,
+                    LayerColorIds = x.LayerColorIds,
+                    SmellId = x.SmellId,
+                    WickId = x.WickId
+                })
+            .ToArray();
 
-        var result = await _orderService.CreateBasket(candleDetailsFilters);
+        var result = await _orderService.CreateBasket(configuredCandlesFilters);
 
         if (result.IsFailure)
         {
@@ -55,45 +57,5 @@ public class BasketController : Controller
         }
 
         return Ok(result.Value);
-    }
-
-    private BasketItem[] MapToOrderDetailItem(OrderDetailItemRequest[] items)
-    {
-        List<BasketItem> orderDetailItems = new List<BasketItem>();
-
-        foreach (var item in items)
-        {
-            BasketItem orderDetailItem = new BasketItem
-            {
-                Candle = new Candle(
-                    item.Candle.Id,
-                    item.Candle.Title,
-                    item.Candle.Price,
-                    item.Candle.WeightGrams,
-                    item.Candle.Images.Select(i => new Image(i.FileName, i.AlternativeName)).ToArray(),
-                    new TypeCandle(item.Candle.TypeCandle.Id, item.Candle.TypeCandle.Title)),
-                Decor = item.Decor == null
-                    ? null
-                    : new Decor(
-                        item.Decor.Id,
-                        item.Decor.Title,
-                        item.Decor.Price),
-                LayerColors = item.LayerColors.Select(lc => new LayerColor(
-                    lc.Id,
-                    lc.Title,
-                    lc.PricePerGram)).ToArray(),
-                NumberOfLayer = new NumberOfLayer(item.NumberOfLayer.Id, item.NumberOfLayer.Number),
-                Smell = item.Smell == null
-                    ? null
-                    : new Smell(item.Smell.Id, item.Smell.Title, item.Smell.Price),
-                Wick = new Wick(item.Wick.Id, item.Wick.Title, item.Wick.Price),
-                Quantity = item.Quantity,
-                ConfigurationString = item.ConfigurationString
-            };
-
-            orderDetailItems.Add(orderDetailItem);
-        }
-
-        return orderDetailItems.ToArray();
     }
 }

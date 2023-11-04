@@ -9,11 +9,5 @@ public interface IConstructorService
 
     Task<Result<CandleDetail>> GetCandleDetailById(int candleId);
 
-    Task<Result<CandleDetail>> GetCandleByFilter(
-        int candleId,
-        int? decorId,
-        int numberOfLayerId,
-        int[] layerColorIds,
-        int? smellId,
-        int wickId);
+    Task<Result<CandleDetail>> GetCandleByFilter(CandleDetailFilter candleDetailFilter);
 }

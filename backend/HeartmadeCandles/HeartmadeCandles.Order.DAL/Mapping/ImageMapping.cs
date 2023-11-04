@@ -1,19 +1,19 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Collections;
+using HeartmadeCandles.Order.DAL.Documents;
 
 namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class ImageMapping
 {
-    public static Image[] MapToImages(ImageCollection[] imagesCollection)
+    public static Image[] MapToImages(ImageDocument[] imagesDocuments)
     {
         var images = new List<Image>();
 
-        foreach (var imageCollection in imagesCollection)
+        foreach (var imageDocument in imagesDocuments)
         {
             var image = new Image(
-                imageCollection.FileName,
-                imageCollection.AlternativeName);
+                imageDocument.FileName,
+                imageDocument.AlternativeName);
 
             images.Add(image);
         }
@@ -21,21 +21,21 @@ internal class ImageMapping
         return images.ToArray();
     }
 
-    public static ImageCollection[] MapToImagesCollection(Image[] images)
+    public static ImageDocument[] MapToImagesDocument(Image[] images)
     {
-        var imageCollections = new List<ImageCollection>();
+        var imageDocuments = new List<ImageDocument>();
 
         foreach (var image in images)
         {
-            var imageCollection = new ImageCollection
+            var imageDocument = new ImageDocument
             {
                 FileName = image.FileName,
                 AlternativeName = image.AlternativeName
             };
 
-            imageCollections.Add(imageCollection);
+            imageDocuments.Add(imageDocument);
         }
 
-        return imageCollections.ToArray();
+        return imageDocuments.ToArray();
     }
 }

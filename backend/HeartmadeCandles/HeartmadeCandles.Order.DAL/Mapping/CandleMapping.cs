@@ -1,32 +1,30 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Collections;
+using HeartmadeCandles.Order.DAL.Documents;
 
 namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class CandleMapping
 {
-    public static Candle MapToCandle(CandleCollection candleCollection)
+    public static Candle MapToCandle(CandleDocument candleDocument)
     {
         return new Candle(
-            candleCollection.Id,
-            candleCollection.Title,
-            candleCollection.Price,
-            candleCollection.WeightGrams,
-            ImageMapping.MapToImages(candleCollection.Images),
-            TypeCandleMapping.MapToTypeCandle(candleCollection.TypeCandle)
+            candleDocument.Id,
+            candleDocument.Title,
+            candleDocument.Price,
+            candleDocument.WeightGrams,
+            ImageMapping.MapToImages(candleDocument.Images)
         );
     }
 
-    public static CandleCollection MapToCandleCollection(Candle candle)
+    public static CandleDocument MapToCandleDocument(Candle candle)
     {
-        return new CandleCollection
+        return new CandleDocument
         {
             Id = candle.Id,
             Title = candle.Title,
             Price = candle.Price,
             WeightGrams = candle.WeightGrams,
-            Images = ImageMapping.MapToImagesCollection(candle.Images),
-            TypeCandle = TypeCandleMapping.MapToTypeCandleCollection(candle.TypeCandle)
+            Images = ImageMapping.MapToImagesDocument(candle.Images)
         };
     }
 }

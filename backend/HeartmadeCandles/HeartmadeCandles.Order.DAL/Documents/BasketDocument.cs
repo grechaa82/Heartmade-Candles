@@ -1,19 +1,17 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace HeartmadeCandles.Order.DAL.Collections;
+namespace HeartmadeCandles.Order.DAL.Documents;
 
-public class OrderDetailCollection
+public class BasketDocument
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
-    public required OrderDetailItemCollection[] Items { get; set; }
+    public required BasketItemDocument[] Items { get; set; }
 
     public decimal TotalPrice { get; set; }
 
     public int TotalQuantity { get; set; }
-
-    public required string TotalConfigurationString { get; set; }
 }

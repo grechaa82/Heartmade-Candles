@@ -1,20 +1,20 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Collections;
+using HeartmadeCandles.Order.DAL.Documents;
 
 namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class LayerColorMapping
 {
-    public static LayerColor[] MapToLayerColors(LayerColorCollection[] layerColorsCollection)
+    public static LayerColor[] MapToLayerColors(LayerColorDocument[] layerColorsDocuments)
     {
         var layerColors= new List<LayerColor>();
 
-        foreach (var layerColorCollection in layerColorsCollection)
+        foreach (var layerColorDocument in layerColorsDocuments)
         {
             var layerColor= new LayerColor(
-                layerColorCollection.Id,
-                layerColorCollection.Title,
-                layerColorCollection.PricePerGram
+                layerColorDocument.Id,
+                layerColorDocument.Title,
+                layerColorDocument.PricePerGram
             );
 
             layerColors.Add(layerColor);
@@ -23,22 +23,22 @@ internal class LayerColorMapping
         return layerColors.ToArray();
     }
 
-    public static LayerColorCollection[] MapToLayerColorsCollection(LayerColor[] layerColors)
+    public static LayerColorDocument[] MapToLayerColorsDocument(LayerColor[] layerColors)
     {
-        var layerColorsCollection = new List<LayerColorCollection>();
+        var layerColorDocuments = new List<LayerColorDocument>();
 
         foreach (var layerColor in layerColors)
         {
-            var layerColorCollection = new LayerColorCollection
+            var layerColorDocument = new LayerColorDocument
             {
                 Id = layerColor.Id,
                 Title = layerColor.Title,
                 PricePerGram = layerColor.PricePerGram,
             };
 
-            layerColorsCollection.Add(layerColorCollection);
+            layerColorDocuments.Add(layerColorDocument);
         }
 
-        return layerColorsCollection.ToArray();
+        return layerColorDocuments.ToArray();
     }
 }

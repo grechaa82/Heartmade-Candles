@@ -1,6 +1,6 @@
-﻿namespace HeartmadeCandles.Order.DAL.Collections;
+﻿namespace HeartmadeCandles.Order.DAL.Documents;
 
-public class SmellCollection
+public class SmellDocument
 {
     public int Id { get; set; }
 

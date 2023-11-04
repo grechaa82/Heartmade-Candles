@@ -1,6 +1,6 @@
-﻿namespace HeartmadeCandles.Order.DAL.Collections;
+﻿namespace HeartmadeCandles.Order.DAL.Documents;
 
-public class UserCollection
+public class UserDocument
 {
     public string FirstName { get; set; }
 

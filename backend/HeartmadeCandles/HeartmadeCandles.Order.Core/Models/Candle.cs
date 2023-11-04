@@ -7,15 +7,13 @@ public class Candle
         string title,
         decimal price,
         int weightGrams,
-        Image[] images,
-        TypeCandle typeCandle)
+        Image[] images)
     {
         Id = id;
         Title = title;
         Price = price;
         WeightGrams = weightGrams;
         Images = images;
-        TypeCandle = typeCandle;
     }
 
     public int Id { get; private set; }
@@ -27,6 +25,4 @@ public class Candle
     public int WeightGrams { get; private set; }
 
     public Image[] Images { get; private set; }
-
-    public TypeCandle TypeCandle { get; private set; }
 }

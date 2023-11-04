@@ -1,21 +1,21 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Collections;
+using HeartmadeCandles.Order.DAL.Documents;
 
 namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class WickMapping
 {
-    public static Wick MapToWick(WickCollection wickCollection)
+    public static Wick MapToWick(WickDocument wickDocument)
     {
         return new Wick(
-            wickCollection.Id,
-            wickCollection.Title,
-            wickCollection.Price);
+            wickDocument.Id,
+            wickDocument.Title,
+            wickDocument.Price);
     }
 
-    public static WickCollection MapToWickCollection(Wick wick)
+    public static WickDocument MapToWickDocument(Wick wick)
     {
-        return new WickCollection
+        return new WickDocument
         {
             Id = wick.Id,
             Title = wick.Title,

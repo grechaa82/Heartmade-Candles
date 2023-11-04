@@ -5,5 +5,5 @@ namespace HeartmadeCandles.Order.Core.Interfaces;
 
 public interface ICalculateService
 {
-    Task<Result<decimal>> CalculatePrice(ConfiguredCandle configuredCandle);
+    Result<decimal> CalculatePrice(ConfiguredCandle configuredCandle);
 }

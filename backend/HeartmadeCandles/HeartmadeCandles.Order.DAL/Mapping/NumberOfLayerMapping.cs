@@ -1,21 +1,21 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Collections;
+using HeartmadeCandles.Order.DAL.Documents;
 
 namespace HeartmadeCandles.Order.DAL.Mapping;
 
 internal class NumberOfLayerMapping
 {
-    public static NumberOfLayer MapToNumberOfLayer(NumberOfLayerCollection numberOfLayerCollection)
+    public static NumberOfLayer MapToNumberOfLayer(NumberOfLayerDocument numberOfLayerDocument)
     {
         return new NumberOfLayer(
-            numberOfLayerCollection.Id,
-            numberOfLayerCollection.Number
+            numberOfLayerDocument.Id,
+            numberOfLayerDocument.Number
         );
     }
 
-    public static NumberOfLayerCollection MapToNumberOfLayerCollection(NumberOfLayer numberOfLayer)
+    public static NumberOfLayerDocument MapToNumberOfLayerDocument(NumberOfLayer numberOfLayer)
     {
-        return new NumberOfLayerCollection
+        return new NumberOfLayerDocument
         {
             Id = numberOfLayer.Id,
             Number = numberOfLayer.Number

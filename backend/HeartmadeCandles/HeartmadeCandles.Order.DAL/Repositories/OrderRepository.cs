@@ -2,68 +2,81 @@
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using MongoDB.Driver;
-using HeartmadeCandles.Order.DAL.Collections;
+using HeartmadeCandles.Order.DAL.Documents;
 using HeartmadeCandles.Order.DAL.Mapping;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 
 namespace HeartmadeCandles.Order.DAL.Repositories;
 
 public class OrderRepository : IOrderRepository
 {
-    private readonly IMongoCollection<OrderCollection> _orderCollection;
-    private readonly IMongoCollection<OrderDetailCollection> _orderDetailCollection;
+    private readonly IMongoCollection<OrderDocument> _orderCollection;
+    private readonly IMongoCollection<BasketDocument> _basketCollection;
     private readonly ILogger<OrderRepository> _logger;
 
     public OrderRepository(IMongoDatabase mongoDatabase, ILogger<OrderRepository> logger)
     {
-        _orderCollection = mongoDatabase.GetCollection<OrderCollection>("order");
-        _orderDetailCollection = mongoDatabase.GetCollection<OrderDetailCollection>("orderDetail");
+        _orderCollection = mongoDatabase.GetCollection<OrderDocument>("order");
+        _basketCollection = mongoDatabase.GetCollection<BasketDocument>("basket");
         _logger = logger;
     }
 
-    public async Task<Result<Basket>> GetBasketById(string orderDetailId)
+    public async Task<Result<Basket>> GetBasketById(string basketId)
     {
-        var orderDetailCollection = await _orderDetailCollection
-            .Find(x => x.Id == orderDetailId)
+        var basketDocument = await _basketCollection
+            .Find(x => x.Id == basketId)
             .FirstOrDefaultAsync();
 
-        var orderDetail = OrderDetailMapping.MapToOrderDetail(orderDetailCollection);
+        if (basketDocument == null)
+        {
+            return Result.Failure<Basket>($"Basket by id: {basketId} does not exist");
+        }
+
+        var orderDetail = BasketMapping.MapToBasket(basketDocument);
 
         return Result.Success(orderDetail);
     }
 
-    public async Task<Result<string>> CreateBasket(Basket orderDetail)
+    public async Task<Result<string>> CreateBasket(Basket basket)
     {
-        throw new NotImplementedException();
+        var basketDocument = new BasketDocument
+        {
+            Items = BasketItemMapping.MapToBasketItemDocument(basket.Items),
+            TotalPrice = basket.TotalPrice,
+            TotalQuantity = basket.TotalQuantity
+        };
+
+        await _basketCollection.InsertOneAsync(basketDocument);
+
+        return Result.Success(basketDocument.Id);
     }
 
     public async Task<Result<Core.Models.Order>> GetOrderById(string orderId)
     {
-        var orderCollection = await _orderCollection
+        var orderDocument = await _orderCollection
             .Find(x => x.Id == orderId)
             .FirstOrDefaultAsync();
 
-        if (orderCollection == null)
+        if (orderDocument == null)
         {
-            return Result.Failure<Core.Models.Order>("OrderV2 does not exist");
+            return Result.Failure<Core.Models.Order>($"Order by id: {orderId} does not exist");
         }
 
-        var orderDetailCollection = await _orderDetailCollection
-            .Find(x => x.Id == orderCollection.OrderDetailId)
+        var basketDocument = await _basketCollection
+            .Find(x => x.Id == orderDocument.BasketId)
             .FirstOrDefaultAsync();
 
-        var order = OrderMapping.MapToOrder(orderCollection, orderDetailCollection);
+        var order = OrderMapping.MapToOrder(orderDocument, basketDocument);
 
         return Result.Success(order);
     }
 
     public async Task<Result<string>> CreateOrder(Core.Models.Order order)
     {
-        var orderCollection = OrderMapping.MapToOrderCollection(order);
+        var orderDocument = OrderMapping.MapToOrderDocument(order);
 
-        await _orderCollection.InsertOneAsync(orderCollection);
+        await _orderCollection.InsertOneAsync(orderDocument);
 
-        return Result.Success(orderCollection.Id);
+        return Result.Success(orderDocument.Id);
     }
 }

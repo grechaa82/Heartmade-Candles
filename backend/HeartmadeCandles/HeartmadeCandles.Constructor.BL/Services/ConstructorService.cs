@@ -24,9 +24,8 @@ public class ConstructorService : IConstructorService
             .ToResult($"Candle with id '{candleId}' does not exist");
     }
 
-    public Task<Result<CandleDetail>> GetCandleByFilter(int candleId, int? decorId, int numberOfLayerId, int[] layerColorIds, int? smellId, int wickId)
+    public async Task<Result<CandleDetail>> GetCandleByFilter(CandleDetailFilter candleDetailFilter)
     {
-        // return await _constructorRepository.GetCandleByFilter(int candleId, int decorId, int numberOfLayerId, int[] layerColorIds, int smellId, int wickId);
-        throw new NotImplementedException();
+        return await _constructorRepository.GetCandleByFilter(candleDetailFilter);
     }
 }
