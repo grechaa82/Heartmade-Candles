@@ -45,7 +45,8 @@ public class BasketController : Controller
                     NumberOfLayerId = x.NumberOfLayerId,
                     LayerColorIds = x.LayerColorIds,
                     SmellId = x.SmellId,
-                    WickId = x.WickId
+                    WickId = x.WickId,
+                    Quantity = x.Quantity,
                 })
             .ToArray();
 

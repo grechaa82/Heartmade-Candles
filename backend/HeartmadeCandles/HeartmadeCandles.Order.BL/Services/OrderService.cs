@@ -3,6 +3,7 @@ using HeartmadeCandles.Constructor.Core.Interfaces;
 using HeartmadeCandles.Constructor.Core.Models;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
+using Microsoft.Extensions.Logging;
 
 namespace HeartmadeCandles.Order.BL.Services;
 
@@ -12,17 +13,20 @@ public class OrderService : IOrderService
     private readonly IOrderRepository _orderRepository;
     private readonly IConstructorService _constructorService;
     private readonly ICalculateService _calculateService;
+    private readonly ILogger<OrderService> _logger;
 
     public OrderService(
         IOrderRepository orderRepository, 
         IOrderNotificationHandler orderNotificationHandler, 
         IConstructorService constructorService,
-        ICalculateService calculateService)
+        ICalculateService calculateService,
+        ILogger<OrderService> logger)
     {
         _orderRepository = orderRepository;
         _orderNotificationHandler = orderNotificationHandler;
         _constructorService = constructorService;
         _calculateService = calculateService;
+        _logger = logger;
     }
 
     public async Task<Result<Basket>> GetBasketById(string orderDetailId)
@@ -49,9 +53,10 @@ public class OrderService : IOrderService
                 ConfiguredCandleFilter = configuredCandleFilter
             };
 
-            if (basketItem.IsMatchingConfiguredCandle().IsFailure)
+            var isMatchingConfiguredCandle = basketItem.IsMatchingConfiguredCandle();
+            if (isMatchingConfiguredCandle.IsFailure)
             {
-                throw new ArgumentException();
+                return Result.Failure<string>(isMatchingConfiguredCandle.Error);
             }
 
             basketItems.Add(basketItem);
@@ -84,21 +89,35 @@ public class OrderService : IOrderService
             var currentStateConfiguredCandle =
                 MapConstructorCandleDetailToOrderConfiguredCandle(currentStateCandleDetail.Value);
 
-            if (basketItem.IsComparedConfiguredCandles(currentStateConfiguredCandle).IsFailure)
+            var isComparedConfiguredCandles = basketItem.IsComparedConfiguredCandles(currentStateConfiguredCandle);
+            if (isComparedConfiguredCandles.IsFailure)
             {
-                throw new ArgumentException();
+                return Result.Failure<string>(isComparedConfiguredCandles.Error);
             }
         }
 
         var order = new Core.Models.Order
         {
-            OrderDetailId = basketId,
+            Basket = basket.Value,
+            BasketId = basketId,
             User = user,
             Feedback = feedback,
             Status = OrderStatus.Assembled
         };
 
-        return await _orderRepository.CreateOrder(order);
+        var createOrderResult = await _orderRepository.CreateOrder(order);
+        if (createOrderResult.IsFailure)
+        {
+            return Result.Failure<string>(createOrderResult.Error);
+        }
+
+        var onCreateOrderResult = await _orderNotificationHandler.OnCreateOrder(order);
+        if (onCreateOrderResult.IsFailure)
+        {
+            return Result.Failure<string>(onCreateOrderResult.Error);
+        }
+
+        return Result.Success(createOrderResult.Value);
     }
 
     private ConfiguredCandle MapConstructorCandleDetailToOrderConfiguredCandle(Constructor.Core.Models.CandleDetail candleDetail)
@@ -106,15 +125,15 @@ public class OrderService : IOrderService
         return new ConfiguredCandle
         {
             Candle = MapConstructorCandleToOrderCandle(candleDetail.Candle),
-            Decor = candleDetail.Decors.Any() 
-                ? MapConstructorDecorToOrderDecor(candleDetail.Decors[0]) 
+            Decor = candleDetail.Decors.FirstOrDefault() != null
+                ? MapConstructorDecorToOrderDecor(candleDetail.Decors[0])
                 : null,
             LayerColors = MapConstructorLayerColorsToOrderLayerColors(candleDetail.LayerColors),
-            NumberOfLayer = candleDetail.Decors.Any() 
+            NumberOfLayer = candleDetail.NumberOfLayers.Any() 
                 ? MapConstructorNumberOfLayerToOrderNumberOfLayer(candleDetail.NumberOfLayers[0]) 
                 : throw new InvalidCastException(),
-            Smell = candleDetail.Smells.Any() 
-                ? MapConstructorSmellToOrderSmell(candleDetail.Smells[0]) 
+            Smell = candleDetail.Smells.FirstOrDefault() != null
+                ? MapConstructorSmellToOrderSmell(candleDetail.Smells[0])
                 : null,
             Wick = candleDetail.Wicks.Any() 
                 ? MapConstructorWickToOrderWick(candleDetail.Wicks[0]) 

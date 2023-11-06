@@ -4,7 +4,6 @@ using HeartmadeCandles.Order.Core.Models;
 using MongoDB.Driver;
 using HeartmadeCandles.Order.DAL.Documents;
 using HeartmadeCandles.Order.DAL.Mapping;
-using Microsoft.Extensions.Logging;
 
 namespace HeartmadeCandles.Order.DAL.Repositories;
 
@@ -12,13 +11,11 @@ public class OrderRepository : IOrderRepository
 {
     private readonly IMongoCollection<OrderDocument> _orderCollection;
     private readonly IMongoCollection<BasketDocument> _basketCollection;
-    private readonly ILogger<OrderRepository> _logger;
 
-    public OrderRepository(IMongoDatabase mongoDatabase, ILogger<OrderRepository> logger)
+    public OrderRepository(IMongoDatabase mongoDatabase)
     {
         _orderCollection = mongoDatabase.GetCollection<OrderDocument>("order");
         _basketCollection = mongoDatabase.GetCollection<BasketDocument>("basket");
-        _logger = logger;
     }
 
     public async Task<Result<Basket>> GetBasketById(string basketId)
