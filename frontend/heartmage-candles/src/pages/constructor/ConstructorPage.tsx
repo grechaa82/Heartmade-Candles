@@ -18,10 +18,12 @@ import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import { calculatePrice } from '../../helpers/CalculatePrice';
 import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 import ImageSlider from '../../components/constructor/ImageSlider';
-
-import Style from './ConstructorPage.module.css';
+import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
 
 import { ConstructorApi } from '../../services/ConstructorApi';
+import { BasketApi } from '../../services/BasketApi';
+
+import Style from './ConstructorPage.module.css';
 
 const ConstructorPage: FC = () => {
   const [candleDetail, setCandleDetail] = useState<CandleDetail>();
@@ -208,9 +210,34 @@ const ConstructorPage: FC = () => {
     setPriceConfiguredCandleDetail(Math.round(calculatePrice(configuredCandleDetail)));
   };
 
-  const getCreateOrderLink = (): string => {
-    var configuredCandlesString = location.search;
-    return `/orders${configuredCandlesString}`;
+  const handleOnCreateBasket = async () => {
+    if (configuredCandleDetails.length > 0) {
+      const candleDetailFilterRequests: CandleDetailFilterRequest[] = [];
+
+      configuredCandleDetails.forEach((configuredCandleDetail) => {
+        const filterRequest: CandleDetailFilterRequest = {
+          candleId: configuredCandleDetail.candle.id,
+          decorId: configuredCandleDetail.decor?.id,
+          numberOfLayerId: configuredCandleDetail.numberOfLayer!.id,
+          layerColorIds: configuredCandleDetail.layerColors!.map((layerColor) => layerColor.id),
+          smellId: configuredCandleDetail.smell?.id,
+          wickId: configuredCandleDetail.wick!.id,
+          quantity: configuredCandleDetail.quantity,
+        };
+
+        candleDetailFilterRequests.push(filterRequest);
+      });
+
+      var basketIdResponse = await BasketApi.createBasket(candleDetailFilterRequests);
+
+      if (basketIdResponse.data && !basketIdResponse.error) {
+        navigate(`/baskets/${basketIdResponse.data}`);
+      } else {
+        setErrorMessage([...errorMessage, basketIdResponse.error as string]);
+      }
+    } else {
+      setErrorMessage([...errorMessage, 'В корзине пока пусто, добавьте свечи']);
+    }
   };
 
   function setNewTotalPrice(configuredCandleDetails: ConfiguredCandleDetail[]) {
@@ -254,7 +281,7 @@ const ConstructorPage: FC = () => {
         )}
         <div className={Style.orderInfo}>
           <div className={Style.orderBtn}>
-            <Link to={getCreateOrderLink()}>Заказать</Link>
+            <button onClick={() => handleOnCreateBasket()}>Заказать</button>
           </div>
           <div className={Style.totalPrice}>
             <span className={Style.title}>Итого </span>

@@ -1,10 +1,8 @@
 import { FC, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
-import { OrderItemFilter } from '../../typesV2/shared/OrderItemFilter';
-import { OrderItem } from '../../typesV2/order/OrderItem';
+import { Basket } from '../../typesV2/order/Basket';
 import { CreateOrderRequest } from '../../typesV2/order/CreateOrderRequest';
-import { OrderItemFilterRequest } from '../../typesV2/order/OrderItemFilterRequest';
 import ListProductsCart from '../../modules/order/ListProductsCart';
 import FormPersonalData, { ItemFormPersonalData } from '../../modules/order/FormPersonalData';
 import FormFeedback, { ItemFormFeedback } from '../../modules/order/FormFeedback';
@@ -16,15 +14,21 @@ import IconWhatsapp from '../../UI/IconWhatsapp';
 import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import { ParseToFilter } from '../../typesV2/order/ConfiguredCandleFilter';
 
 import { OrdersApi } from '../../services/OrdersApi';
+import { BasketApi } from '../../services/BasketApi';
 
-import Style from './OrderPage.module.css';
+import Style from './BasketPage.module.css';
+
+type BasketParams = {
+  id: string;
+};
 
 const OrderPage: FC = () => {
-  const [arrayCandleDetailWithQuantityAndPrice, setArrayCandleDetailWithQuantityAndPrice] =
-    useState<OrderItem[]>([]);
-  const [configuredCandlesString, setConfiguredCandlesString] = useState<string | undefined>();
+  const { id } = useParams<BasketParams>();
+  const [basket, setBasket] = useState<Basket>();
+
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -32,7 +36,6 @@ const OrderPage: FC = () => {
   const [selectedTypeFeedback, setTypeFeedback] = useState<feedbackType>();
   const [username, setUsername] = useState<string>('');
 
-  const location = useLocation();
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
@@ -123,64 +126,28 @@ const OrderPage: FC = () => {
   ];
 
   useEffect(() => {
-    if (!configuredCandlesString) {
-      const searchParams = new URLSearchParams(location.search);
-
-      let queryString = decodeURIComponent(searchParams.toString().replace(/=$/, ''));
-
-      setConfiguredCandlesString(queryString);
-
-      fetchData(queryString);
-    }
-
-    async function fetchData(configuredCandlesString: string) {
-      const orderItemsResponse = await OrdersApi.get(configuredCandlesString);
-      if (orderItemsResponse.data && !orderItemsResponse.error) {
-        setArrayCandleDetailWithQuantityAndPrice(orderItemsResponse.data);
-      } else {
-        setErrorMessage([...errorMessage, orderItemsResponse.error as string]);
+    async function fetchData() {
+      if (id) {
+        const basketResponse = await BasketApi.getById(id);
+        if (basketResponse.data && !basketResponse.error) {
+          setBasket(basketResponse.data);
+        } else {
+          setErrorMessage([...errorMessage, basketResponse.error as string]);
+        }
       }
     }
-  }, []);
 
-  function calculateTotalPrice(arrayCandleDetails: OrderItem[]) {
-    let price = 0;
-    arrayCandleDetails.map((item) => (price += item.price));
-    return price;
-  }
-
-  function calculateTotalQuantity(arrayCandleDetails: OrderItem[]) {
-    let totalQuantity = 0;
-    arrayCandleDetails.map((item) => (totalQuantity += item.quantity));
-    return totalQuantity;
-  }
+    fetchData();
+  }, [id]);
 
   async function createOrder() {
     var { canCreateOrder, errorMessages }: { canCreateOrder: boolean; errorMessages: string[] } =
       isValidUserData();
 
-    if (canCreateOrder && configuredCandlesString) {
-      const orderItemFilters = configuredCandlesString
-        .split('.')
-        .map((filter) => OrderItemFilter.parseToOrderItemFilter(filter));
-
-      const orderItemFilterRequests: OrderItemFilterRequest[] = orderItemFilters.map(
-        (orderItemFilter: OrderItemFilter) => {
-          return {
-            candleId: orderItemFilter.candleId,
-            decorId: orderItemFilter.decorId ? orderItemFilter.decorId : 0,
-            numberOfLayerId: orderItemFilter.numberOfLayerId,
-            layerColorIds: orderItemFilter.layerColorIds,
-            smellId: orderItemFilter.smellId ? orderItemFilter.smellId : 0,
-            wickId: orderItemFilter.wickId,
-            quantity: orderItemFilter.quantity,
-          };
-        },
-      );
-
+    if (canCreateOrder && basket) {
       const createOrderRequest: CreateOrderRequest = {
-        configuredCandlesString: configuredCandlesString,
-        orderItemFilters: orderItemFilterRequests,
+        configuredCandlesString: getConfiguredCandlesFilter(),
+        basketId: basket.id,
         user: {
           firstName: firstName,
           lastName: lastName,
@@ -193,14 +160,20 @@ const OrderPage: FC = () => {
         },
       };
 
+      console.log('1');
       const orderItemsResponse = await OrdersApi.createOrder(createOrderRequest);
-      if (orderItemsResponse.error) {
-        setErrorMessage([...errorMessage, orderItemsResponse.error]);
+      console.log('2');
+      if (orderItemsResponse.data && !orderItemsResponse.error) {
+        console.log('3');
+        navigate('/orders/thank');
+      } else {
+        console.log('4');
+        setErrorMessage([...errorMessage, orderItemsResponse.error as string]);
       }
-
-      navigate('/orders/thank');
+      console.log('5');
     } else {
       setErrorMessage((prev) => [...prev, ...errorMessages.flat()]);
+      console.log('6');
     }
   }
 
@@ -250,8 +223,16 @@ const OrderPage: FC = () => {
     return { canCreateOrder, errorMessages };
   }
 
+  const getConfiguredCandlesFilter = () => {
+    if (basket) {
+      return basket.items.map((item) => ParseToFilter(item.configuredCandleFilter)).join('.');
+    }
+
+    return '';
+  };
+
   const handleNavigateToConstructor = () => {
-    navigate(`/constructor?${configuredCandlesString}`);
+    navigate(`/constructor?${getConfiguredCandlesFilter()}`);
   };
 
   return (
@@ -259,26 +240,30 @@ const OrderPage: FC = () => {
       <div className={Style.popUpNotification}>
         <ListErrorPopUp messages={errorMessage} />
       </div>
-      <div className={Style.leftPanel}>
-        <div className={Style.backBtn}>
-          <ButtonWithIcon
-            text="Конструктор"
-            onClick={handleNavigateToConstructor}
-            icon={IconArrowLeftLarge}
-            color="#777"
-          />
-        </div>
-        <ListProductsCart products={arrayCandleDetailWithQuantityAndPrice} />
-        <FormPersonalData itemsFormPersonalData={itemsFormPersonalData} />
-        <FormFeedback itemsFormFeedbacks={itemsFormFeedback} />
-      </div>
-      <div className={Style.rightPanel}>
-        <TotalPricePanel
-          totalPrice={calculateTotalPrice(arrayCandleDetailWithQuantityAndPrice)}
-          totalQuantityProduct={calculateTotalQuantity(arrayCandleDetailWithQuantityAndPrice)}
-          onCreateOrder={createOrder}
-        />
-      </div>
+      {basket && (
+        <>
+          <div className={Style.leftPanel}>
+            <div className={Style.backBtn}>
+              <ButtonWithIcon
+                text="Конструктор"
+                onClick={handleNavigateToConstructor}
+                icon={IconArrowLeftLarge}
+                color="#777"
+              />
+            </div>
+            <ListProductsCart products={basket.items} />
+            <FormPersonalData itemsFormPersonalData={itemsFormPersonalData} />
+            <FormFeedback itemsFormFeedbacks={itemsFormFeedback} />
+          </div>
+          <div className={Style.rightPanel}>
+            <TotalPricePanel
+              totalPrice={basket.totalPrice}
+              totalQuantityProduct={basket.totalQuantity}
+              onCreateOrder={createOrder}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

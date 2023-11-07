@@ -1,4 +1,4 @@
-export interface OrderItemFilterRequest {
+export interface CandleDetailFilterRequest {
   candleId: number;
   decorId?: number;
   numberOfLayerId: number;
