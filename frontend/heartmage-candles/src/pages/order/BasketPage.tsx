@@ -160,20 +160,14 @@ const OrderPage: FC = () => {
         },
       };
 
-      console.log('1');
       const orderItemsResponse = await OrdersApi.createOrder(createOrderRequest);
-      console.log('2');
       if (orderItemsResponse.data && !orderItemsResponse.error) {
-        console.log('3');
-        navigate('/orders/thank');
+        navigate(`/orders/${orderItemsResponse.data}/thank`);
       } else {
-        console.log('4');
         setErrorMessage([...errorMessage, orderItemsResponse.error as string]);
       }
-      console.log('5');
     } else {
       setErrorMessage((prev) => [...prev, ...errorMessages.flat()]);
-      console.log('6');
     }
   }
 

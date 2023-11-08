@@ -40,14 +40,17 @@ public class OrderController : Controller
         var result = await _orderService.CreateOrder(
             MapToUser(orderRequest.User), 
             MapToFeedback(orderRequest.Feedback), 
-            orderRequest.OrderDetailId);
+            orderRequest.BasketId);
 
         if (result.IsFailure)
         {
             return BadRequest(result.Error);
         }
 
-        return Ok(result.Value);
+        return Ok(new IdResponse
+        {
+            Id = result.Value
+        });
     }
     
     private User MapToUser(UserRequest item)

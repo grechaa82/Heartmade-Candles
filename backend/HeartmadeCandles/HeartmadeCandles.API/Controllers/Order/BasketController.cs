@@ -3,6 +3,7 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Newtonsoft.Json;
 
 namespace HeartmadeCandles.API.Controllers.Order;
 
@@ -57,6 +58,14 @@ public class BasketController : Controller
             return BadRequest(result.Error);
         }
 
-        return Ok(result.Value);
+        return Ok(new IdResponse
+        {
+            Id = result.Value
+        });
     }
+}
+
+public class IdResponse
+{
+    public string Id { get; set; }
 }
