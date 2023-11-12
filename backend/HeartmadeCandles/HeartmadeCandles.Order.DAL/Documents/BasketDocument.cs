@@ -14,4 +14,6 @@ public class BasketDocument
     public decimal TotalPrice { get; set; }
 
     public int TotalQuantity { get; set; }
+
+    public required string FilterString { get; set; }
 }

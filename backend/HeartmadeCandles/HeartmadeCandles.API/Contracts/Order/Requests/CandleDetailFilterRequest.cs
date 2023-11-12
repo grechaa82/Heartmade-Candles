@@ -7,7 +7,7 @@ public class CandleDetailFilterRequest
     [Required]
     public int CandleId { get; set; }
 
-    public int DecorId { get; set; }
+    public int? DecorId { get; set; }
 
     [Required]
     public int NumberOfLayerId { get; set; }
@@ -15,11 +15,13 @@ public class CandleDetailFilterRequest
     [Required]
     public required int[] LayerColorIds { get; set; }
 
-    public int SmellId { get; set; }
+    public int? SmellId { get; set; }
 
     [Required]
     public int WickId { get; set; }
 
     [Required]
     public int Quantity { get; set; }
+
+    public string? FilterString { get; set; }
 }

@@ -1,5 +1,5 @@
 import { Basket } from '../typesV2/order/Basket';
-import { CandleDetailFilterRequest } from '../typesV2/order/CandleDetailFilterRequest';
+import { CandleDetailFilterBasketRequest } from '../typesV2/order/CandleDetailFilterBasketRequest';
 import { ApiResponse } from './ApiResponse';
 
 import { apiUrl } from '../config';
@@ -21,13 +21,13 @@ export const BasketApi = {
     }
   },
   createBasket: async (
-    candleDetailFilterRequests: CandleDetailFilterRequest[],
+    candleDetailFilterBasketRequest: CandleDetailFilterBasketRequest
   ): Promise<ApiResponse<string>> => {
     try {
       const response = await fetch(`${apiUrl}/baskets`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(candleDetailFilterRequests),
+        body: JSON.stringify(candleDetailFilterBasketRequest),
       });
       if (response.ok) {
         var data = (await response.json()) as IdResponse;

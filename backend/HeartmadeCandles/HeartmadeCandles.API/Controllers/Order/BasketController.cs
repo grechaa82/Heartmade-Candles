@@ -3,7 +3,6 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Newtonsoft.Json;
 
 namespace HeartmadeCandles.API.Controllers.Order;
 
@@ -12,10 +11,10 @@ namespace HeartmadeCandles.API.Controllers.Order;
 [EnableRateLimiting("ConcurrencyPolicy")]
 public class BasketController : Controller
 {
-    private readonly ILogger<OrderController> _logger;
+    private readonly ILogger<BasketController> _logger;
     private readonly IOrderService _orderService;
 
-    public BasketController(IOrderService orderService, ILogger<OrderController> logger)
+    public BasketController(IOrderService orderService, ILogger<BasketController> logger)
     {
         _orderService = orderService;
         _logger = logger;
@@ -35,9 +34,9 @@ public class BasketController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateBasket(CandleDetailFilterRequest[] candleDetailsFiltersRequest)
+    public async Task<IActionResult> CreateBasket([FromBody] ConfiguredCandleBasketRequest configuredCandleBasketRequest)
     {
-        var configuredCandlesFilters= candleDetailsFiltersRequest
+        var configuredCandlesFilters= configuredCandleBasketRequest.CandleDetailFilterRequests
             .Select(
                 x => new ConfiguredCandleFilter
                 {
@@ -51,7 +50,11 @@ public class BasketController : Controller
                 })
             .ToArray();
 
-        var result = await _orderService.CreateBasket(configuredCandlesFilters);
+        var result = await _orderService.CreateBasket(new ConfiguredCandleBasket
+        {
+            ConfiguredCandleFilters = configuredCandlesFilters,
+            ConfiguredCandleFiltersString = configuredCandleBasketRequest.ConfiguredCandleFiltersString
+        });
 
         if (result.IsFailure)
         {

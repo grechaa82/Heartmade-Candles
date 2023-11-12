@@ -40,7 +40,8 @@ public class OrderRepository : IOrderRepository
         {
             Items = BasketItemMapping.MapToBasketItemDocument(basket.Items),
             TotalPrice = basket.TotalPrice,
-            TotalQuantity = basket.TotalQuantity
+            TotalQuantity = basket.TotalQuantity,
+            FilterString = basket.FilterString,
         };
 
         await _basketCollection.InsertOneAsync(basketDocument);

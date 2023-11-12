@@ -34,11 +34,11 @@ public class OrderService : IOrderService
         return await _orderRepository.GetBasketById(orderDetailId);
     }
 
-    public async Task<Result<string>> CreateBasket(ConfiguredCandleFilter[] configuredCandlesFilters)
+    public async Task<Result<string>> CreateBasket(ConfiguredCandleBasket configuredCandleBasket)
     {
         var basketItems = new List<BasketItem>();
 
-        foreach (var configuredCandleFilter in configuredCandlesFilters)
+        foreach (var configuredCandleFilter in configuredCandleBasket.ConfiguredCandleFilters)
         {
             Result<Constructor.Core.Models.CandleDetail> candleDetail = await _constructorService.GetCandleByFilter(MapToCandleDetailFilter(configuredCandleFilter));
 
@@ -64,7 +64,8 @@ public class OrderService : IOrderService
 
         var basket = new Basket
         {
-            Items = basketItems.ToArray()
+            Items = basketItems.ToArray(),
+            FilterString = configuredCandleBasket.ConfiguredCandleFiltersString
         };
 
         var basketIdResult = await _orderRepository.CreateBasket(basket);

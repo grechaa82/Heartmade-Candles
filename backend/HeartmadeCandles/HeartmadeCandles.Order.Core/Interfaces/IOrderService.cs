@@ -7,7 +7,7 @@ public interface IOrderService
 {
     Task<Result<Basket>> GetBasketById(string orderDetailId);
 
-    Task<Result<string>> CreateBasket(ConfiguredCandleFilter[] configuredCandlesFilters);
+    Task<Result<string>> CreateBasket(ConfiguredCandleBasket configuredCandleBasket);
 
     Task<Result<Models.Order>> GetOrderById(string orderId);
 

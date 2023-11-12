@@ -9,4 +9,6 @@ public class Basket
     public decimal TotalPrice => Items.Sum(x => x.Price * x.Quantity);
 
     public int TotalQuantity => Items.Sum(x => x.Quantity);
+
+    public required string FilterString { get; set; }
 }

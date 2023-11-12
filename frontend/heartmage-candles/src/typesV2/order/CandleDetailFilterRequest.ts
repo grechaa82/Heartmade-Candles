@@ -6,4 +6,5 @@ export interface CandleDetailFilterRequest {
   smellId?: number;
   wickId: number;
   quantity: number;
+  filterString: string;
 }

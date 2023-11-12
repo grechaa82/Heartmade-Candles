@@ -16,6 +16,10 @@ public class OrderNotificationHandler : IOrderNotificationHandler
     {
         try
         {
+            if (order.Basket == null)
+            {
+                return Result.Failure("Basket cannot be null");
+            }
             var orderText = GetMessageInMarkdownMode(order);
 
             await _client.SendTextMessageAsync(_chatId, orderText);
@@ -32,14 +36,7 @@ public class OrderNotificationHandler : IOrderNotificationHandler
     {
         var message = new StringBuilder();
 
-        var filterString = "Error";
-        if (order.Basket != null)
-        {
-            var filtersStrings = order.Basket.Items.Select(x => x.ConfiguredCandleFilter.GetFilterString());
-            filterString = string.Join(".", filtersStrings);
-        }
-
-        message.AppendLine($"Строка конфигурации: {filterString}");
+        message.AppendLine($"Строка конфигурации: {order.Basket.FilterString}");
         message.AppendLine(" ");
         message.AppendLine(
             $"Информация о покупателя: {order.User.FirstName} {order.User.LastName}, {order.User.Phone}, " +

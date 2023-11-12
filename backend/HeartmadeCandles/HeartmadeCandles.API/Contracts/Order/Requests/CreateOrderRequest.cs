@@ -9,7 +9,7 @@ public class CreateOrderRequest
     public required string ConfiguredCandlesString { get; set; }
 
     [Required]
-    public required string OrderDetailId { get; set; }
+    public required string BasketId { get; set; }
 
     [Required]
     public required UserRequest User { get; set; }
