@@ -46,20 +46,18 @@ public class OrderService : IOrderService
 
             var price = _calculateService.CalculatePrice(configuredCandle);
 
-            var basketItem = new BasketItem
-            {
-                ConfiguredCandle = configuredCandle,
-                Price = price.Value,
-                ConfiguredCandleFilter = configuredCandleFilter
-            };
+            var basketItemResult = BasketItem.Create(
+                configuredCandle: configuredCandle,
+                price: price.Value,
+                configuredCandleFilter: configuredCandleFilter
+            );
 
-            var isMatchingConfiguredCandle = basketItem.IsMatchingConfiguredCandle();
-            if (isMatchingConfiguredCandle.IsFailure)
+            if (basketItemResult.IsFailure)
             {
-                return Result.Failure<string>(isMatchingConfiguredCandle.Error);
+                return Result.Failure<string>(basketItemResult.Error);
             }
 
-            basketItems.Add(basketItem);
+            basketItems.Add(basketItemResult.Value);
         }
 
         var basket = new Basket
@@ -90,7 +88,7 @@ public class OrderService : IOrderService
             var currentStateConfiguredCandle =
                 MapConstructorCandleDetailToOrderConfiguredCandle(currentStateCandleDetail.Value);
 
-            var isComparedConfiguredCandles = basketItem.IsComparedConfiguredCandles(currentStateConfiguredCandle);
+            var isComparedConfiguredCandles = basketItem.Compare(currentStateConfiguredCandle);
             if (isComparedConfiguredCandles.IsFailure)
             {
                 return Result.Failure<string>(isComparedConfiguredCandles.Error);

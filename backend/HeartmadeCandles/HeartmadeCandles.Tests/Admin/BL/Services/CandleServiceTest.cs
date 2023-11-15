@@ -10,12 +10,10 @@ namespace HeartmadeCandles.UnitTests.Admin.BL.Services;
 public class CandleServiceTest
 {
     private static readonly Faker _faker = new();
-
     private readonly Mock<ICandleRepository> _candleRepositoryMock = new(MockBehavior.Strict);
     private readonly Mock<IDecorRepository> _decorRepositoryMock = new(MockBehavior.Strict);
     private readonly Mock<ILayerColorRepository> _layerColorRepositoryMock = new(MockBehavior.Strict);
     private readonly Mock<INumberOfLayerRepository> _numberOfLayerRepositoryMock = new(MockBehavior.Strict);
-
     private readonly CandleService _service;
     private readonly Mock<ISmellRepository> _smellRepositoryMock = new(MockBehavior.Strict);
     private readonly Mock<ITypeCandleRepository> _typeCandleRepositoryMock = new(MockBehavior.Strict);
@@ -38,10 +36,18 @@ public class CandleServiceTest
     {
         // Arrange
         var id = _faker.Random.Number(1, 100);
-        var ids = new[] { 1, 2, 3 };
+
+        var ids = new[]
+        {
+            1,
+            2,
+            3
+        };
 
         var decors = new Decor[ids.Length];
-        for (var i = 0; i < ids.Length; i++) decors[i] = GenerateDecor(i);
+
+        for (var i = 0; i < ids.Length; i++)
+            decors[i] = GenerateDecor(i);
 
         _decorRepositoryMock.Setup(d => d.GetByIds(ids))
             .ReturnsAsync(decors)
@@ -67,10 +73,15 @@ public class CandleServiceTest
             _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             new[]
             {
-                Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value
+                Image.Create(
+                        _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                        _faker.Random.String())
+                    .Value
             },
             _faker.Random.Bool(),
-            id == 0 ? _faker.Random.Number(1, 10000) : id);
+            id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id);
 
         return decor.Value;
     }
@@ -80,7 +91,13 @@ public class CandleServiceTest
     {
         // Arrange
         var id = _faker.Random.Number(1, 100);
-        var ids = new[] { 1, 2, 3 };
+
+        var ids = new[]
+        {
+            1,
+            2,
+            3
+        };
 
         _decorRepositoryMock.Setup(d => d.GetByIds(ids))
             .ReturnsAsync(Array.Empty<Decor>())
@@ -99,10 +116,19 @@ public class CandleServiceTest
     {
         // Arrange
         var id = _faker.Random.Number(1, 100);
-        var ids = new[] { 1, 2, 3, 4 };
+
+        var ids = new[]
+        {
+            1,
+            2,
+            3,
+            4
+        };
 
         var decors = new Decor[ids.Length - 1];
-        for (var i = 0; i < decors.Length; i++) decors[ids[i] - 1] = GenerateDecor(ids[i]);
+
+        for (var i = 0; i < decors.Length; i++)
+            decors[ids[i] - 1] = GenerateDecor(ids[i]);
 
         var idsToCheck = ids.Take(3).ToArray();
 

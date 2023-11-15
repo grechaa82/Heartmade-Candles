@@ -11,14 +11,13 @@ internal class BasketItemMapping
 
         foreach (var basketItemDocument in basketItemsDocument)
         {
-            var basketItem = new BasketItem
-            {
-                ConfiguredCandle = ConfiguredCandleMapping.MapToConfiguredCandle(basketItemDocument.ConfiguredCandle),
-                Price = basketItemDocument.Price,
-                ConfiguredCandleFilter = ConfiguredCandleFilterMapping.MapToConfiguredCandleFilter(basketItemDocument.ConfiguredCandleFilter)
-            };
+            var basketItem = BasketItem.Create(
+                configuredCandle: ConfiguredCandleMapping.MapToConfiguredCandle(basketItemDocument.ConfiguredCandle),
+                price: basketItemDocument.Price,
+                configuredCandleFilter: ConfiguredCandleFilterMapping.MapToConfiguredCandleFilter(basketItemDocument.ConfiguredCandleFilter)
+            );
 
-            orderDetailItems.Add(basketItem);
+            orderDetailItems.Add(basketItem.Value);
         }
 
         return orderDetailItems.ToArray();

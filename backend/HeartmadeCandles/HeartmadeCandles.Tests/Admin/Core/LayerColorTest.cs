@@ -46,7 +46,10 @@ public class LayerColorTest
                 faker.Random.Number(1, 10000),
                 new[]
                 {
-                    Image.Create(faker.Random.String(1, Image.MaxAlternativeNameLength), faker.Random.String()).Value
+                    Image.Create(
+                            faker.Random.String(1, Image.MaxAlternativeNameLength),
+                            faker.Random.String())
+                        .Value
                 },
                 faker.Random.Bool()
             };
@@ -67,7 +70,12 @@ public class LayerColorTest
             description: _faker.Random.String(1, LayerColor.MaxDescriptionLength),
             pricePerGram: _faker.Random.Number(1, 10000),
             images: new[]
-                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value },
+            {
+                Image.Create(
+                        _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                        _faker.Random.String())
+                    .Value
+            },
             isActive: _faker.Random.Bool());
 
         // Assert
@@ -104,7 +112,12 @@ public class LayerColorTest
             description: description,
             pricePerGram: _faker.Random.Number(1, 10000),
             images: new[]
-                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value },
+            {
+                Image.Create(
+                        _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                        _faker.Random.String())
+                    .Value
+            },
             isActive: _faker.Random.Bool());
 
         // Assert
@@ -123,7 +136,10 @@ public class LayerColorTest
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal($"'description' cannot be more than {LayerColor.MaxDescriptionLength} characters", result.Error);
+
+        Assert.Equal(
+            $"'description' cannot be more than {LayerColor.MaxDescriptionLength} characters",
+            result.Error);
     }
 
     [Fact]
@@ -147,8 +163,14 @@ public class LayerColorTest
         var title = "   ";
         var description = "";
         var pricePerGram = -10.0m;
+
         var images = new[]
-            { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value };
+        {
+            Image.Create(
+                    _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                    _faker.Random.String())
+                .Value
+        };
 
         // Act
         var result = Make(
@@ -159,6 +181,7 @@ public class LayerColorTest
 
         // Assert
         Assert.True(result.IsFailure);
+
         Assert.Equal(
             "'title' cannot be null or whitespace, 'description' cannot be null or whitespace, 'pricePerGram' cannot be 0 or less",
             result.Error);
@@ -179,8 +202,14 @@ public class LayerColorTest
             title: title ?? faker.Random.String(1, LayerColor.MaxTitleLength),
             description: description ?? faker.Random.String(1, LayerColor.MaxDescriptionLength),
             pricePerGram: pricePerGram ?? faker.Random.Number(1, 10000),
-            images: images ?? new[]
-                { Image.Create(faker.Random.String(1, Image.MaxAlternativeNameLength), faker.Random.String()).Value },
+            images: images
+                    ?? new[]
+                    {
+                        Image.Create(
+                                faker.Random.String(1, Image.MaxAlternativeNameLength),
+                                faker.Random.String())
+                            .Value
+                    },
             isActive: isActive ?? faker.Random.Bool());
     }
 }

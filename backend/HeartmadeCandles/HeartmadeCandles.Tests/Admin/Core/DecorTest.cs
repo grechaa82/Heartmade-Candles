@@ -27,7 +27,10 @@ public class DecorTest
             price,
             new[]
             {
-                Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value
+                Image.Create(
+                        _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                        _faker.Random.String())
+                    .Value
             },
             isActive,
             id);
@@ -49,7 +52,10 @@ public class DecorTest
                 faker.Random.Number(1, 10000) * faker.Random.Decimal(),
                 new[]
                 {
-                    Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value
+                    Image.Create(
+                            _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                            _faker.Random.String())
+                        .Value
                 },
                 faker.Random.Bool()
             };
@@ -70,7 +76,12 @@ public class DecorTest
             description: _faker.Random.String(1, Decor.MaxDescriptionLength),
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             images: new[]
-                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value },
+            {
+                Image.Create(
+                        _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                        _faker.Random.String())
+                    .Value
+            },
             isActive: _faker.Random.Bool());
 
         // Assert
@@ -107,7 +118,12 @@ public class DecorTest
             description: description,
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
             images: new[]
-                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value },
+            {
+                Image.Create(
+                        _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                        _faker.Random.String())
+                    .Value
+            },
             isActive: _faker.Random.Bool());
 
         // Assert
@@ -126,7 +142,10 @@ public class DecorTest
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal($"'description' cannot be more than {Decor.MaxDescriptionLength} characters", result.Error);
+
+        Assert.Equal(
+            $"'description' cannot be more than {Decor.MaxDescriptionLength} characters",
+            result.Error);
     }
 
     [Fact]
@@ -150,8 +169,14 @@ public class DecorTest
         var title = "   ";
         var description = "";
         var price = -10.0m;
+
         var images = new[]
-            { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value };
+        {
+            Image.Create(
+                    _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                    _faker.Random.String())
+                .Value
+        };
 
         // Act
         var result = Make(
@@ -162,6 +187,7 @@ public class DecorTest
 
         // Assert
         Assert.True(result.IsFailure);
+
         Assert.Equal(
             "'title' cannot be null or whitespace, 'description' cannot be null or whitespace, 'price' cannot be 0 or less",
             result.Error);
@@ -182,9 +208,14 @@ public class DecorTest
             title: title ?? faker.Random.String(1, Decor.MaxTitleLength),
             description: description ?? faker.Random.String(1, Decor.MaxDescriptionLength),
             price: price ?? faker.Random.Number(1, 10000) * faker.Random.Decimal(),
-            images: images ?? new[]
-                { Image.Create(_faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String()).Value },
-            isActive: isActive ?? faker.Random.Bool()
-        );
+            images: images
+                    ?? new[]
+                    {
+                        Image.Create(
+                                _faker.Random.String(1, Image.MaxAlternativeNameLength),
+                                _faker.Random.String())
+                            .Value
+                    },
+            isActive: isActive ?? faker.Random.Bool());
     }
 }

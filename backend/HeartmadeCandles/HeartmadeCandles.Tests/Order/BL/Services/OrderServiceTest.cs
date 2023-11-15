@@ -49,13 +49,13 @@ public class OrderServiceTest
         var invalidDecor = GenerateOrderData.GenerateDecor(_faker.Random.Number(1, 10000));
         var validOrderItem = GenerateOrderData.GenerateOrderItem(orderItemFilters[0]);
 
-        var invalidCandleDetail = new CandleDetail(
-            validOrderItem.CandleDetail.Candle,
+        var invalidCandleDetail = new ConfiguredCandle(
+            validOrderItem.ConfiguredCandle.Candle,
             invalidDecor,
-            validOrderItem.CandleDetail.LayerColors,
-            validOrderItem.CandleDetail.NumberOfLayer,
-            validOrderItem.CandleDetail.Smell,
-            validOrderItem.CandleDetail.Wick);
+            validOrderItem.ConfiguredCandle.LayerColors,
+            validOrderItem.ConfiguredCandle.NumberOfLayer,
+            validOrderItem.ConfiguredCandle.Smell,
+            validOrderItem.ConfiguredCandle.Wick);
 
         var invalidOrderItem = OrderItem.Create(
             invalidCandleDetail,
@@ -77,7 +77,7 @@ public class OrderServiceTest
 
         Assert.Equal(
             result.Error,
-            $"Decor by id: {validOrderItem.CandleDetail.Decor?.Id} does not match with decor by id: {invalidOrderItem.Value.CandleDetail.Decor?.Id}");
+            $"Decor by id: {validOrderItem.ConfiguredCandle.Decor?.Id} does not match with decor by id: {invalidOrderItem.Value.ConfiguredCandle.Decor?.Id}");
 
         _orderRepository.Verify();
     }
@@ -96,21 +96,21 @@ public class OrderServiceTest
             var invalidDecor = GenerateOrderData.GenerateDecor(_faker.Random.Number(1, 10000));
             var validOrderItem = GenerateOrderData.GenerateOrderItem(orderItemFilters[0]);
 
-            var invalidCandleDetail = new CandleDetail(
-                validOrderItem.CandleDetail.Candle,
+            var invalidCandleDetail = new ConfiguredCandle(
+                validOrderItem.ConfiguredCandle.Candle,
                 invalidDecor,
-                validOrderItem.CandleDetail.LayerColors,
-                validOrderItem.CandleDetail.NumberOfLayer,
-                validOrderItem.CandleDetail.Smell,
-                validOrderItem.CandleDetail.Wick);
+                validOrderItem.ConfiguredCandle.LayerColors,
+                validOrderItem.ConfiguredCandle.NumberOfLayer,
+                validOrderItem.ConfiguredCandle.Smell,
+                validOrderItem.ConfiguredCandle.Wick);
 
             var invalidOrderItem = OrderItem.Create(
                 invalidCandleDetail,
                 validOrderItem.Quantity,
                 validOrderItem.OrderItemFilter);
 
-            validDecorIds.Add(validOrderItem.CandleDetail.Decor?.Id ?? 0);
-            invalidDecorIds.Add(invalidOrderItem.Value.CandleDetail.Decor?.Id ?? 0);
+            validDecorIds.Add(validOrderItem.ConfiguredCandle.Decor?.Id ?? 0);
+            invalidDecorIds.Add(invalidOrderItem.Value.ConfiguredCandle.Decor?.Id ?? 0);
             orderItems.Add(invalidOrderItem.Value);
         }
 

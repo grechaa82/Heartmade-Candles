@@ -4,133 +4,165 @@ namespace HeartmadeCandles.Order.Core.Models;
 
 public class BasketItem
 {
-    public required ConfiguredCandle ConfiguredCandle { get; set; }
+    private BasketItem(
+        ConfiguredCandle configuredCandle,
+        decimal price,
+        ConfiguredCandleFilter configuredCandleFilter)
+    {
+        ConfiguredCandle = configuredCandle;
+        Price = price;
+        ConfiguredCandleFilter = configuredCandleFilter;
+    }
 
-    public decimal Price { get; set; }
+    public ConfiguredCandle ConfiguredCandle { get; }
+
+    public decimal Price { get; }
 
     public int Quantity => ConfiguredCandleFilter.Quantity;
 
-    public required ConfiguredCandleFilter ConfiguredCandleFilter { get; set; }
+    public ConfiguredCandleFilter ConfiguredCandleFilter { get; }
 
-    public Result IsMatchingConfiguredCandle()
+    public static Result<BasketItem> Create(
+        ConfiguredCandle configuredCandle, 
+        decimal price, 
+        ConfiguredCandleFilter configuredCandleFilter)
     {
         var result = Result.Success();
 
-        if (ConfiguredCandle.Candle.Id != ConfiguredCandleFilter.CandleId)
+        if (price <= 0)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<BasketItem>($"'{nameof(price)}' cannot be 0 or less"));
+        }
+
+        if (configuredCandle.Candle.Id != configuredCandleFilter.CandleId)
         {
             result = Result.Combine(
                 result,
                 Result.Failure(
-                    $"Candle by id: {ConfiguredCandleFilter.CandleId} does not match with candle by id: {ConfiguredCandle.Candle.Id}"));
+                    $"Candle by id: {configuredCandleFilter.CandleId} does not match with candle by id: {configuredCandle.Candle.Id}"));
         }
 
-        if (ConfiguredCandleFilter.DecorId != 0)
+        if (configuredCandleFilter.DecorId != 0)
         {
-            if (ConfiguredCandle.Decor == null)
+            if (configuredCandle.Decor == null)
             {
                 result = Result.Combine(
                     result,
                     Result.Failure(
-                        $"Decor by id: {ConfiguredCandleFilter.DecorId} is not found"));
+                        $"Decor by id: {configuredCandleFilter.DecorId} is not found"));
             }
-            else if (ConfiguredCandle.Decor.Id != ConfiguredCandleFilter.DecorId)
+            else if (configuredCandle.Decor.Id != configuredCandleFilter.DecorId)
             {
                 result = Result.Combine(
                     result,
                     Result.Failure(
-                        $"Decor by id: {ConfiguredCandleFilter.DecorId} does not match with decor by id: {ConfiguredCandle.Decor.Id}"));
+                        $"Decor by id: {configuredCandleFilter.DecorId} does not match with decor by id: {configuredCandle.Decor.Id}"));
             }
-        }
-        else if (ConfiguredCandle.Decor != null)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"Decor by id: {ConfiguredCandleFilter.DecorId} is found, but it should not be in"));
-        }
-
-        if (ConfiguredCandle.NumberOfLayer.Id != ConfiguredCandleFilter.NumberOfLayerId)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"NumberOfLayer by id: {ConfiguredCandleFilter.NumberOfLayerId} does not match with numberOfLayer by id: {ConfiguredCandle.NumberOfLayer.Id}"));
-        }
-
-        if (ConfiguredCandle.LayerColors.Any() && ConfiguredCandle.NumberOfLayer.Number != ConfiguredCandle.LayerColors.Length)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"Number of layers '{ConfiguredCandle.NumberOfLayer.Number}' does not match the actual number '{ConfiguredCandle.LayerColors.Length}'"));
-        }
-
-        if (!ConfiguredCandle.LayerColors.Any())
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    "LayerColors cannot be null or empty"));
-        }
-
-        if (ConfiguredCandle.LayerColors.Length != ConfiguredCandleFilter.LayerColorIds.Length)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    "Length of LayerColorIds is incorrect"));
         }
         else
         {
-            for (var i = 0; i < ConfiguredCandleFilter.LayerColorIds.Length; i++)
-                if (ConfiguredCandleFilter.LayerColorIds[i] != ConfiguredCandle.LayerColors[i].Id)
+            if (configuredCandle.Decor != null)
+            {
+                result = Result.Combine(
+                    result,
+                    Result.Failure(
+                        $"Decor by id: {configuredCandle.Decor.Id} is found, but it should not be in"));
+            }
+        }
+
+
+        if (configuredCandle.NumberOfLayer.Id != configuredCandleFilter.NumberOfLayerId)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure(
+                    $"NumberOfLayer by id: {configuredCandleFilter.NumberOfLayerId} does not match with numberOfLayer by id: {configuredCandle.NumberOfLayer.Id}"));
+        }
+
+        if (configuredCandle.LayerColors.Any() && configuredCandle.NumberOfLayer.Number != configuredCandle.LayerColors.Length)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure(
+                    $"Number of layers '{configuredCandle.NumberOfLayer.Number}' does not match the actual number '{configuredCandle.LayerColors.Length}'"));
+        }
+
+        if (!configuredCandle.LayerColors.Any())
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure(
+                    $"{nameof(configuredCandle.LayerColors)} cannot be null or empty"));
+        }
+
+        if (configuredCandle.LayerColors.Length != configuredCandleFilter.LayerColorIds.Length)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure(
+                    $"Length of {nameof(configuredCandleFilter.LayerColorIds)} is incorrect"));
+        }
+        else
+        {
+            for (var i = 0; i < configuredCandleFilter.LayerColorIds.Length; i++)
+                if (configuredCandleFilter.LayerColorIds[i] != configuredCandle.LayerColors[i].Id)
                 {
                     result = Result.Combine(
                         result,
                         Result.Failure(
-                            $"LayerColor by id: {ConfiguredCandleFilter.LayerColorIds[i]} does not match with layerColor by id: {ConfiguredCandle.LayerColors[i].Id}"));
+                            $"LayerColor by id: {configuredCandleFilter.LayerColorIds[i]} does not match with layerColor by id: {configuredCandle.LayerColors[i].Id}"));
                 }
         }
 
-        if (ConfiguredCandle.Wick.Id != ConfiguredCandleFilter.WickId)
+        if (configuredCandle.Wick.Id != configuredCandleFilter.WickId)
         {
             result = Result.Combine(
                 result,
                 Result.Failure(
-                    $"Wick by id: {ConfiguredCandleFilter.WickId} does not match with wick by id: {ConfiguredCandle.Wick.Id}"));
+                    $"Wick by id: {configuredCandleFilter.WickId} does not match with wick by id: {configuredCandle.Wick.Id}"));
         }
 
-        if (ConfiguredCandleFilter.SmellId != 0)
+        if (configuredCandleFilter.SmellId != 0)
         {
-            if (ConfiguredCandle.Smell == null)
+            if (configuredCandle.Smell == null)
             {
                 result = Result.Combine(
                     result,
                     Result.Failure(
-                        $"Smell by id: {ConfiguredCandleFilter.SmellId} is not found"));
+                        $"Smell by id: {configuredCandleFilter.SmellId} is not found"));
             }
-            else if (ConfiguredCandle.Smell.Id != ConfiguredCandleFilter.SmellId)
+            else if (configuredCandle.Smell.Id != configuredCandleFilter.SmellId)
             {
                 result = Result.Combine(
                     result,
                     Result.Failure(
-                        $"Smell by id: {ConfiguredCandleFilter.SmellId} does not match with smell by id: {ConfiguredCandle.Smell.Id}"));
+                        $"Smell by id: {configuredCandleFilter.SmellId} does not match with smell by id: {configuredCandle.Smell.Id}"));
             }
         }
-        else if (ConfiguredCandle.Smell != null)
+        else
         {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"Smell by id: {ConfiguredCandleFilter.SmellId} is found, but it should not be in"));
+            if (configuredCandle.Smell != null)
+            {
+                result = Result.Combine(
+                    result,
+                    Result.Failure(
+                        $"Smell by id: {configuredCandle.Smell.Id} is found, but it should not be in"));
+            }
         }
 
-        return result.IsFailure
-            ? Result.Failure(result.Error)
-            : Result.Success();
+        if (result.IsFailure)
+        {
+            return Result.Failure<BasketItem>(result.Error);
+        }
+
+        var basketItem = new BasketItem(configuredCandle, price, configuredCandleFilter);
+
+        return Result.Success(basketItem);
     }
 
-    public Result IsComparedConfiguredCandles(ConfiguredCandle configuredCandle)
+    public Result Compare(ConfiguredCandle configuredCandle)
     {
         var result = Result.Success();
 
@@ -164,7 +196,7 @@ public class BasketItem
             result = Result.Combine(
                 result,
                 Result.Failure(
-                    $"Decor by id: {configuredCandle.Decor.Id} is found, but it should not be in"));
+                    $"Decor by id: {configuredCandle.Decor?.Id} is found, but it should not be in"));
         }
 
         if (ConfiguredCandle.NumberOfLayer.Id != configuredCandle.NumberOfLayer.Id)
