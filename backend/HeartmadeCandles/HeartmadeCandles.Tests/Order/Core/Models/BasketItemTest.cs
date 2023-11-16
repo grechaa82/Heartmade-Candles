@@ -54,13 +54,13 @@ public class BasketItemTest
 
         // Act
         var result = BasketItem.Create(
-            configuredCandle: candleDetail, 
-            price: price, 
+            configuredCandle: candleDetail,
+            price: price,
             configuredCandleFilter: orderItemFilter);
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal("'price' cannot be 0 or less", result.Error);
+        Assert.Equal("'Price' cannot be 0 or less", result.Error);
     }
 
     [Fact]
@@ -273,7 +273,7 @@ public class BasketItemTest
         // Arrange
         var configuredCandleFilter = GenerateOrderData.GenerateConfiguredCandleFilter();
         var basketItem = GenerateOrderData.GenerateBasketItem(configuredCandleFilter);
-        
+
         var newConfiguredCandle = new ConfiguredCandle
         {
             Candle = basketItem.ConfiguredCandle.Candle,
@@ -296,7 +296,7 @@ public class BasketItemTest
         Assert.True(result.IsFailure);
         Assert.NotEqual(newConfiguredCandle.NumberOfLayer.Number, basketItem.ConfiguredCandle.NumberOfLayer.Number);
         Assert.Equal(
-            $"Number of layers '{newConfiguredCandle.NumberOfLayer.Number}' does not match the actual number '{basketItem.ConfiguredCandle.LayerColors.Length}'",
+            $"The configured layer colors and their count do not match the specified criteria",
             result.Error);
     }
 
@@ -360,7 +360,7 @@ public class BasketItemTest
         Assert.True(result.IsFailure);
         Assert.NotEmpty(newConfiguredCandle.LayerColors);
         Assert.NotEqual(basketItem.ConfiguredCandle.LayerColors.Length, newConfiguredCandle.LayerColors.Length);
-        Assert.Contains($"Length of {nameof(configuredCandleFilter.LayerColorIds)} is incorrect", result.Error);
+        Assert.Contains($"The configured layer colors and their count do not match the specified criteria", result.Error);
     }
 
     [Fact]
@@ -381,7 +381,7 @@ public class BasketItemTest
         // Assert
         Assert.True(result.IsFailure);
         Assert.NotEqual(basketItem.ConfiguredCandleFilter.LayerColorIds[0], basketItem.ConfiguredCandle.LayerColors[0].Id);
-        Assert.Equal($"LayerColor by id: {configuredCandleFilter.LayerColorIds[0]} does not match with layerColor by id: {basketItem.ConfiguredCandle.LayerColors[0].Id}", 
+        Assert.Equal($"LayerColor by id: {configuredCandleFilter.LayerColorIds[0]} does not match with layerColor by id: {basketItem.ConfiguredCandle.LayerColors[0].Id}",
             result.Error);
     }
 
@@ -555,4 +555,39 @@ public class BasketItemTest
         Assert.Null(newConfiguredCandle.Smell);
         Assert.Equal(newConfiguredCandleFilter.SmellId, 0);
     }
+
+    /*[Fact]
+    public void Create_IdCandleAndIdWickNotMatch_ReturnFailure()
+    {
+        // Arrange
+        var configuredCandleFilter = GenerateOrderData.GenerateConfiguredCandleFilter();
+        var basketItem = GenerateOrderData.GenerateBasketItem(configuredCandleFilter);
+
+        var newConfiguredCandleFilter = new ConfiguredCandleFilter
+        {
+            CandleId = _faker.Random.Number(0, 10000),
+            DecorId = configuredCandleFilter.DecorId,
+            NumberOfLayerId = configuredCandleFilter.NumberOfLayerId,
+            LayerColorIds = configuredCandleFilter.LayerColorIds,
+            SmellId = configuredCandleFilter.SmellId,
+            WickId = _faker.Random.Number(0, 10000),
+            Quantity = configuredCandleFilter.Quantity,
+            FilterString = configuredCandleFilter.FilterString
+        };
+
+        // Act
+        var result = BasketItem.Create(
+            configuredCandle: basketItem.ConfiguredCandle,
+            price: basketItem.Price,
+            configuredCandleFilter: newConfiguredCandleFilter);
+
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.NotEqual(newConfiguredCandleFilter.CandleId, basketItem.ConfiguredCandle.Candle.Id);
+        Assert.NotEqual(newConfiguredCandleFilter.WickId, basketItem.ConfiguredCandle.Wick.Id);
+        Assert.Equal(
+            $"Candle by id: {newConfiguredCandleFilter.CandleId} does not match with candle by id: {basketItem.ConfiguredCandle.Candle.Id}"
+            + ", " + $"Wick by id: {newConfiguredCandleFilter.WickId} does not match with wick by id: {basketItem.ConfiguredCandle.Wick.Id}",
+            result.Error);
+    }*/
 }

@@ -23,28 +23,37 @@ public class BasketItem
     public ConfiguredCandleFilter ConfiguredCandleFilter { get; }
 
     public static Result<BasketItem> Create(
-        ConfiguredCandle configuredCandle, 
-        decimal price, 
+        ConfiguredCandle configuredCandle,
+        decimal price,
+        ConfiguredCandleFilter configuredCandleFilter)
+    {
+        return Result.Success(new BasketItem(configuredCandle, price, configuredCandleFilter))
+            .Ensure(x => x.IsValidPrice(price), $"'{nameof(Price)}' cannot be 0 or less")
+            .Ensure(x => x.CompareIds(x.ConfiguredCandle.Candle.Id, x.ConfiguredCandleFilter.CandleId),
+                $"Candle by id: {configuredCandleFilter.CandleId} does not match with candle by id: {configuredCandle.Candle.Id}")
+            .Check(x => x.ValidateDecor(x.ConfiguredCandle, x.ConfiguredCandleFilter))
+            .Ensure(x => x.CompareIds(x.ConfiguredCandle.NumberOfLayer.Id, x.ConfiguredCandleFilter.NumberOfLayerId),
+                $"NumberOfLayer by id: {configuredCandleFilter.NumberOfLayerId} does not " +
+                $"match with numberOfLayer by id: {configuredCandle.NumberOfLayer.Id}")
+            .Check(x => x.ValidateSmell(x.ConfiguredCandle, x.ConfiguredCandleFilter))
+            .Ensure(x => x.CompareIds(x.ConfiguredCandle.Wick.Id, x.ConfiguredCandleFilter.WickId),
+                $"Wick by id: {configuredCandleFilter.WickId} does not match with wick by id: {configuredCandle.Wick.Id}")
+            .Ensure(x => x.ConfiguredCandle.LayerColors.Any(), $"{nameof(configuredCandle.LayerColors)} cannot be null or empty")
+            .Ensure(x => x.ConfiguredCandle.LayerColors.Length == x.ConfiguredCandle.NumberOfLayer.Number 
+                    && x.ConfiguredCandle.NumberOfLayer.Number == x.ConfiguredCandleFilter.LayerColorIds.Length,
+                $"The configured layer colors and their count do not match the specified criteria")
+            .Check(x => x.ValidateLayerColors(x.ConfiguredCandle, x.ConfiguredCandleFilter));
+    }
+
+    private bool IsValidPrice(decimal price) => price > 0;
+
+    private Result ValidateDecor(
+        ConfiguredCandle configuredCandle,
         ConfiguredCandleFilter configuredCandleFilter)
     {
         var result = Result.Success();
 
-        if (price <= 0)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure<BasketItem>($"'{nameof(price)}' cannot be 0 or less"));
-        }
-
-        if (configuredCandle.Candle.Id != configuredCandleFilter.CandleId)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"Candle by id: {configuredCandleFilter.CandleId} does not match with candle by id: {configuredCandle.Candle.Id}"));
-        }
-
-        if (configuredCandleFilter.DecorId != 0)
+        if (configuredCandleFilter.DecorId.HasValue && configuredCandleFilter.DecorId != 0)
         {
             if (configuredCandle.Decor == null)
             {
@@ -61,7 +70,7 @@ public class BasketItem
                         $"Decor by id: {configuredCandleFilter.DecorId} does not match with decor by id: {configuredCandle.Decor.Id}"));
             }
         }
-        else
+        else if (configuredCandleFilter.DecorId == null || configuredCandleFilter.DecorId == 0)
         {
             if (configuredCandle.Decor != null)
             {
@@ -72,57 +81,14 @@ public class BasketItem
             }
         }
 
+        return result;
+    }
 
-        if (configuredCandle.NumberOfLayer.Id != configuredCandleFilter.NumberOfLayerId)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"NumberOfLayer by id: {configuredCandleFilter.NumberOfLayerId} does not match with numberOfLayer by id: {configuredCandle.NumberOfLayer.Id}"));
-        }
-
-        if (configuredCandle.LayerColors.Any() && configuredCandle.NumberOfLayer.Number != configuredCandle.LayerColors.Length)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"Number of layers '{configuredCandle.NumberOfLayer.Number}' does not match the actual number '{configuredCandle.LayerColors.Length}'"));
-        }
-
-        if (!configuredCandle.LayerColors.Any())
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"{nameof(configuredCandle.LayerColors)} cannot be null or empty"));
-        }
-
-        if (configuredCandle.LayerColors.Length != configuredCandleFilter.LayerColorIds.Length)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"Length of {nameof(configuredCandleFilter.LayerColorIds)} is incorrect"));
-        }
-        else
-        {
-            for (var i = 0; i < configuredCandleFilter.LayerColorIds.Length; i++)
-                if (configuredCandleFilter.LayerColorIds[i] != configuredCandle.LayerColors[i].Id)
-                {
-                    result = Result.Combine(
-                        result,
-                        Result.Failure(
-                            $"LayerColor by id: {configuredCandleFilter.LayerColorIds[i]} does not match with layerColor by id: {configuredCandle.LayerColors[i].Id}"));
-                }
-        }
-
-        if (configuredCandle.Wick.Id != configuredCandleFilter.WickId)
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure(
-                    $"Wick by id: {configuredCandleFilter.WickId} does not match with wick by id: {configuredCandle.Wick.Id}"));
-        }
+    private Result ValidateSmell(
+    ConfiguredCandle configuredCandle,
+    ConfiguredCandleFilter configuredCandleFilter)
+    {
+        var result = Result.Success();
 
         if (configuredCandleFilter.SmellId != 0)
         {
@@ -152,14 +118,29 @@ public class BasketItem
             }
         }
 
-        if (result.IsFailure)
+        return result;
+    }
+
+    private bool CompareIds(int idToCompare, int referenceId) => idToCompare == referenceId;
+
+    private Result ValidateLayerColors(
+        ConfiguredCandle configuredCandle,
+        ConfiguredCandleFilter configuredCandleFilter)
+    {
+        var result = Result.Success();
+
+        for (var i = 0; i < configuredCandleFilter.LayerColorIds.Length; i++)
         {
-            return Result.Failure<BasketItem>(result.Error);
+            if (configuredCandleFilter.LayerColorIds[i] != configuredCandle.LayerColors[i].Id)
+            {
+                result = Result.Combine(
+                    result,
+                    Result.Failure(
+                        $"LayerColor by id: {configuredCandleFilter.LayerColorIds[i]} does not match with layerColor by id: {configuredCandle.LayerColors[i].Id}"));
+            }
         }
 
-        var basketItem = new BasketItem(configuredCandle, price, configuredCandleFilter);
-
-        return Result.Success(basketItem);
+        return result;
     }
 
     public Result Compare(ConfiguredCandle configuredCandle)
