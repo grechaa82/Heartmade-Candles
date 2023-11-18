@@ -60,7 +60,7 @@ public class BasketItemTest
 
         // Assert
         Assert.True(result.IsFailure);
-        Assert.Equal("'Price' cannot be 0 or less", result.Error);
+        Assert.Equal($"{nameof(result.Value.Price)} cannot be 0 or less", result.Error);
     }
 
     [Fact]
@@ -92,7 +92,8 @@ public class BasketItemTest
         Assert.True(result.IsFailure);
         Assert.NotEqual(newConfiguredCandleFilter.CandleId, basketItem.ConfiguredCandle.Candle.Id);
         Assert.Equal(
-            $"Candle by id: {newConfiguredCandleFilter.CandleId} does not match with candle by id: {basketItem.ConfiguredCandle.Candle.Id}",
+            $"{nameof(basketItem.ConfiguredCandle.Candle)} by id: {newConfiguredCandleFilter.CandleId} " +
+            $"does not match with {nameof(basketItem.ConfiguredCandle.Candle)} by id: {basketItem.ConfiguredCandle.Candle.Id}",
             result.Error);
     }
 
@@ -124,7 +125,7 @@ public class BasketItemTest
         Assert.True(basketItem.ConfiguredCandleFilter.DecorId != 0);
         Assert.True(newConfiguredCandle.Decor == null);
         Assert.Equal(
-            $"Decor by id: {basketItem.ConfiguredCandleFilter.DecorId} is not found",
+            $"{nameof(basketItem.ConfiguredCandle.Decor)} by id: {basketItem.ConfiguredCandleFilter.DecorId} is not found",
             result.Error);
     }
 
@@ -156,7 +157,8 @@ public class BasketItemTest
         Assert.True(basketItem.ConfiguredCandleFilter.DecorId != 0);
         Assert.NotNull(newConfiguredCandle.Decor);
         Assert.Equal(
-            $"Decor by id: {basketItem.ConfiguredCandleFilter.DecorId} does not match with decor by id: {newConfiguredCandle.Decor?.Id}",
+            $"{nameof(basketItem.ConfiguredCandle.Decor)} by id: {basketItem.ConfiguredCandleFilter.DecorId} " +
+            $"does not match with {nameof(basketItem.ConfiguredCandle.Decor)} by id: {newConfiguredCandle.Decor?.Id}",
             result.Error);
     }
 
@@ -189,7 +191,7 @@ public class BasketItemTest
         Assert.NotNull(configuredCandle.Decor);
         Assert.NotEqual(configuredCandle.Decor.Id, newConfiguredCandleFilter.DecorId);
         Assert.Equal(
-            $"Decor by id: {configuredCandle.Decor.Id} is found, but it should not be in",
+            $"{nameof(configuredCandle.Decor)} by id: {configuredCandle.Decor.Id} is found, but it should not be in",
             result.Error);
     }
 
@@ -263,7 +265,8 @@ public class BasketItemTest
         Assert.True(result.IsFailure);
         Assert.NotEqual(newConfiguredCandleFilter.NumberOfLayerId, basketItem.ConfiguredCandle.NumberOfLayer.Id);
         Assert.Equal(
-            $"NumberOfLayer by id: {newConfiguredCandleFilter.NumberOfLayerId} does not match with numberOfLayer by id: {basketItem.ConfiguredCandle.NumberOfLayer.Id}",
+            $"{nameof(basketItem.ConfiguredCandle.NumberOfLayer)} by id: {newConfiguredCandleFilter.NumberOfLayerId} " +
+            $"does not match with {nameof(basketItem.ConfiguredCandle.NumberOfLayer)} by id: {basketItem.ConfiguredCandle.NumberOfLayer.Id}",
             result.Error);
     }
 
@@ -295,7 +298,7 @@ public class BasketItemTest
         // Assert
         Assert.True(result.IsFailure);
         Assert.NotEqual(newConfiguredCandle.NumberOfLayer.Number, basketItem.ConfiguredCandle.NumberOfLayer.Number);
-        Assert.Equal(
+        Assert.Contains(
             $"The configured layer colors and their count do not match the specified criteria",
             result.Error);
     }
@@ -381,7 +384,8 @@ public class BasketItemTest
         // Assert
         Assert.True(result.IsFailure);
         Assert.NotEqual(basketItem.ConfiguredCandleFilter.LayerColorIds[0], basketItem.ConfiguredCandle.LayerColors[0].Id);
-        Assert.Equal($"LayerColor by id: {configuredCandleFilter.LayerColorIds[0]} does not match with layerColor by id: {basketItem.ConfiguredCandle.LayerColors[0].Id}",
+        Assert.Equal($"{nameof(basketItem.ConfiguredCandle.LayerColors)} by id: {configuredCandleFilter.LayerColorIds[0]} " +
+            $"does not match with {nameof(basketItem.ConfiguredCandle.LayerColors)} by id: {basketItem.ConfiguredCandle.LayerColors[0].Id}",
             result.Error);
     }
 
@@ -414,7 +418,8 @@ public class BasketItemTest
         Assert.True(result.IsFailure);
         Assert.NotEqual(newConfiguredCandleFilter.WickId, basketItem.ConfiguredCandle.Wick.Id);
         Assert.Equal(
-            $"Wick by id: {newConfiguredCandleFilter.WickId} does not match with wick by id: {basketItem.ConfiguredCandle.Wick.Id}",
+            $"{nameof(basketItem.ConfiguredCandle.Wick)} by id: {newConfiguredCandleFilter.WickId} " +
+            $"does not match with {nameof(basketItem.ConfiguredCandle.Wick)} by id: {basketItem.ConfiguredCandle.Wick.Id}",
             result.Error);
     }
 
@@ -446,7 +451,7 @@ public class BasketItemTest
         Assert.True(basketItem.ConfiguredCandleFilter.DecorId != 0);
         Assert.True(newConfiguredCandle.Smell == null);
         Assert.Equal(
-            $"Smell by id: {basketItem.ConfiguredCandleFilter.SmellId} is not found",
+            $"{nameof(basketItem.ConfiguredCandle.Smell)} by id: {basketItem.ConfiguredCandleFilter.SmellId} is not found",
             result.Error);
     }
 
@@ -478,7 +483,8 @@ public class BasketItemTest
         Assert.True(basketItem.ConfiguredCandleFilter.SmellId != 0);
         Assert.NotNull(newConfiguredCandle.Smell);
         Assert.Equal(
-            $"Smell by id: {basketItem.ConfiguredCandleFilter.SmellId} does not match with smell by id: {newConfiguredCandle.Smell?.Id}",
+            $"{nameof(basketItem.ConfiguredCandle.Smell)} by id: {basketItem.ConfiguredCandleFilter.SmellId} " +
+            $"does not match with {nameof(basketItem.ConfiguredCandle.Smell)} by id: {newConfiguredCandle.Smell?.Id}",
             result.Error);
     }
 
@@ -511,7 +517,7 @@ public class BasketItemTest
         Assert.NotNull(configuredCandle.Smell);
         Assert.NotEqual(configuredCandle.Smell.Id, newConfiguredCandleFilter.SmellId);
         Assert.Equal(
-            $"Smell by id: {configuredCandle.Smell.Id} is found, but it should not be in",
+            $"{nameof(configuredCandle.Smell)} by id: {configuredCandle.Smell.Id} is found, but it should not be in",
             result.Error);
     }
 
@@ -556,7 +562,7 @@ public class BasketItemTest
         Assert.Equal(newConfiguredCandleFilter.SmellId, 0);
     }
 
-    /*[Fact]
+    [Fact]
     public void Create_IdCandleAndIdWickNotMatch_ReturnFailure()
     {
         // Arrange
@@ -585,9 +591,63 @@ public class BasketItemTest
         Assert.True(result.IsFailure);
         Assert.NotEqual(newConfiguredCandleFilter.CandleId, basketItem.ConfiguredCandle.Candle.Id);
         Assert.NotEqual(newConfiguredCandleFilter.WickId, basketItem.ConfiguredCandle.Wick.Id);
-        Assert.Equal(
-            $"Candle by id: {newConfiguredCandleFilter.CandleId} does not match with candle by id: {basketItem.ConfiguredCandle.Candle.Id}"
-            + ", " + $"Wick by id: {newConfiguredCandleFilter.WickId} does not match with wick by id: {basketItem.ConfiguredCandle.Wick.Id}",
+        Assert.Contains(
+            $"{nameof(basketItem.ConfiguredCandle.Wick)} by id: {newConfiguredCandleFilter.WickId} " +
+            $"does not match with {nameof(basketItem.ConfiguredCandle.Wick)} by id: {basketItem.ConfiguredCandle.Wick.Id}",
             result.Error);
-    }*/
+        Assert.Contains(
+            $"{nameof(basketItem.ConfiguredCandle.Candle)} by id: {newConfiguredCandleFilter.CandleId} " +
+            $"does not match with {nameof(basketItem.ConfiguredCandle.Candle)} by id: {basketItem.ConfiguredCandle.Candle.Id}",
+           result.Error);
+    }
+
+    [Theory]
+    [MemberData(nameof(GenerateData))]
+    public void Compare_ValidParameters_ReturnsSuccess(
+    ConfiguredCandle candleDetail,
+    decimal price,
+    ConfiguredCandleFilter configuredCandleFilter)
+    {
+        // Arrange
+        var basketItem = BasketItem.Create(
+            configuredCandle: candleDetail,
+            price: price,
+            configuredCandleFilter: configuredCandleFilter);
+
+        // Act
+        var result = basketItem.Value.Compare(basketItem.Value.ConfiguredCandle); ;
+
+        // Assert
+        Assert.True(result.IsSuccess);
+    }
+
+    [Fact]
+    public void Compare_IdCandleNotMatch_ReturnFailure()
+    {
+        // Arrange
+
+        var basketItem = GenerateOrderData.GenerateBasketItem();
+
+        var newConfiguredCandle = new ConfiguredCandle
+        {
+            Candle = GenerateOrderData.GenerateCandle(),
+            Decor = basketItem.ConfiguredCandle.Decor,
+            LayerColors = basketItem.ConfiguredCandle.LayerColors,
+            NumberOfLayer = basketItem.ConfiguredCandle.NumberOfLayer,
+            Smell = basketItem.ConfiguredCandle.Smell,
+            Wick = basketItem.ConfiguredCandle.Wick
+        };
+
+        // Act
+
+        var result = basketItem.Compare(newConfiguredCandle);
+
+        // Assert
+        Assert.True(result.IsFailure);
+        Assert.Equal($"{nameof(basketItem.ConfiguredCandle.Candle)} by id: {basketItem.ConfiguredCandle.Candle.Id} " +
+            $"does not match with {nameof(basketItem.ConfiguredCandle.Candle)} by id: {newConfiguredCandle.Candle.Id}", 
+            result.Error);
+    }
+
+    // TODO: Дописать тесты для метода Compare
 }

@@ -71,18 +71,45 @@ internal class GenerateOrderData
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal());
     }
 
-    public static ConfiguredCandle GenerateConfiguredCandle()
+    public static ConfiguredCandle GenerateConfiguredCandle(
+        Candle? candle = null, 
+        Decor? decor = null, 
+        List<LayerColor>? layerColors = null, 
+        NumberOfLayer? numberOfLayer = null, 
+        Smell? smell = null, 
+        Wick? wick = null)
     {
-        var candle = GenerateCandle();
-        var numberOfLayer = GenerateNumberOfLayer(_faker.Random.Number(1, 100));
-        var layerColors = new List<LayerColor>();
+        if (candle == null)
+        {
+            candle = GenerateCandle();
+        }
 
-        for (var i = 0; i < numberOfLayer.Number; i++)
-            layerColors.Add(GenerateLayerColor());
+        if (numberOfLayer == null)
+        {
+            numberOfLayer = GenerateNumberOfLayer(_faker.Random.Number(1, 100));
+        }
 
-        var decor = GenerateDecor();
-        var smell = GenerateSmell();
-        var wick = GenerateWick();
+        if (layerColors == null)
+        {
+            layerColors = new List<LayerColor>();
+            for (var i = 0; i < numberOfLayer.Number; i++)
+                layerColors.Add(GenerateLayerColor());
+        }
+
+        if (decor == null)
+        {
+            decor = GenerateDecor();
+        }
+
+        if (smell == null)
+        {
+            smell = GenerateSmell();
+        }
+
+        if (wick == null)
+        {
+            wick = GenerateWick();
+        }
 
         return new ConfiguredCandle
         {
@@ -170,5 +197,10 @@ internal class GenerateOrderData
             configuredCandleFilter);
 
         return orderItem.Value;
+    }
+
+    public static BasketItem GenerateBasketItem()
+    {
+        return GenerateBasketItem(GenerateConfiguredCandleFilter());
     }
 }
