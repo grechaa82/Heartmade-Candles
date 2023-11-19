@@ -26,6 +26,44 @@ public class BasketItemTest
         Assert.True(result.IsSuccess);
     }
 
+    [Fact]
+    public void Create_WithoutDecor_ReturnsSuccess()
+    {
+        // Arrange
+        var basketItem = GenerateOrderData.GenerateBasketItem();
+
+        var newConfiguredCandleFilter = new ConfiguredCandleFilter
+        {
+            CandleId  = basketItem.ConfiguredCandleFilter.CandleId,
+            DecorId = 0,
+            NumberOfLayerId  = basketItem.ConfiguredCandleFilter.NumberOfLayerId,
+            LayerColorIds  = basketItem.ConfiguredCandleFilter.LayerColorIds,
+            SmellId  = basketItem.ConfiguredCandleFilter.SmellId,
+            WickId  = basketItem.ConfiguredCandleFilter.WickId,
+            Quantity  = basketItem.ConfiguredCandleFilter.Quantity,
+            FilterString  = basketItem.ConfiguredCandleFilter.FilterString
+        };
+
+        var newConfiguredCandle = new ConfiguredCandle
+        {
+            Candle = basketItem.ConfiguredCandle.Candle,
+            Decor = null,
+            LayerColors = basketItem.ConfiguredCandle.LayerColors,
+            NumberOfLayer = basketItem.ConfiguredCandle.NumberOfLayer,
+            Smell = basketItem.ConfiguredCandle.Smell,
+            Wick = basketItem.ConfiguredCandle.Wick
+        };
+
+        // Act
+        var result = BasketItem.Create(
+            configuredCandle: newConfiguredCandle,
+            price: basketItem.Price,
+            configuredCandleFilter: newConfiguredCandleFilter);
+
+        // Assert
+        Assert.True(result.IsSuccess);
+    }
+
     public static IEnumerable<object[]> GenerateData()
     {
         for (var i = 0; i < 100; i++)

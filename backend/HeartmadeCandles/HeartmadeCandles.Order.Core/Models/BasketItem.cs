@@ -191,14 +191,11 @@ public class BasketItem
 
     private static Result CheckEntityExistenceAndMismatch<T>(T? expectedEntity, T? actualEntity, string entityName) where T : class
     {
-        if (expectedEntity != null && actualEntity != null)
+        if (expectedEntity != null && actualEntity == null)
         {
-            if (!expectedEntity.Equals(actualEntity))
-            {
-                return Result.Failure($"{entityName} does not match the expected {entityName}");
-            }
+            return Result.Failure($"{entityName} does not match the expected");
         }
-        else if (actualEntity != null)
+        else if (expectedEntity == null && actualEntity != null)
         {
             return Result.Failure($"{entityName} is found, but it should not be in");
         }
@@ -212,7 +209,7 @@ public class BasketItem
         {
             return Result.Failure($"{entityName} by id: {actualEntity} is found, but it should not be in");
         }
-        else if (expectedEntity != 0 && actualEntity == null)
+        if ((expectedEntity == 0 || expectedEntity == null) && actualEntity != null)
         {
             return Result.Failure($"{entityName} by id: {expectedEntity} is not found");
         }

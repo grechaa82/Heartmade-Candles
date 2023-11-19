@@ -12,18 +12,18 @@ namespace HeartmadeCandles.API.Controllers.Order;
 public class BasketController : Controller
 {
     private readonly ILogger<BasketController> _logger;
-    private readonly IOrderService _orderService;
+    private readonly IBasketService _basketService;
 
-    public BasketController(IOrderService orderService, ILogger<BasketController> logger)
+    public BasketController(IBasketService basketService, ILogger<BasketController> logger)
     {
-        _orderService = orderService;
+        _basketService = basketService;
         _logger = logger;
     }
 
-    [HttpGet("{orderDetailId}")]
-    public async Task<IActionResult> GetBasketById(string orderDetailId)
+    [HttpGet("{basketId}")]
+    public async Task<IActionResult> GetBasketById(string basketId)
     {
-        var result = await _orderService.GetBasketById(orderDetailId);
+        var result = await _basketService.GetBasketById(basketId);
 
         if (result.IsFailure)
         {
@@ -50,7 +50,7 @@ public class BasketController : Controller
                 })
             .ToArray();
 
-        var result = await _orderService.CreateBasket(new ConfiguredCandleBasket
+        var result = await _basketService.CreateBasket(new ConfiguredCandleBasket
         {
             ConfiguredCandleFilters = configuredCandlesFilters,
             ConfiguredCandleFiltersString = configuredCandleBasketRequest.ConfiguredCandleFiltersString

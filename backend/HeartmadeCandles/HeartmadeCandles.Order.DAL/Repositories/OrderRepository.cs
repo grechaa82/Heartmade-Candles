@@ -18,38 +18,7 @@ public class OrderRepository : IOrderRepository
         _basketCollection = mongoDatabase.GetCollection<BasketDocument>("basket");
     }
 
-    public async Task<Result<Basket>> GetBasketById(string basketId)
-    {
-        var basketDocument = await _basketCollection
-            .Find(x => x.Id == basketId)
-            .FirstOrDefaultAsync();
-
-        if (basketDocument == null)
-        {
-            return Result.Failure<Basket>($"Basket by id: {basketId} does not exist");
-        }
-
-        var orderDetail = BasketMapping.MapToBasket(basketDocument);
-
-        return Result.Success(orderDetail);
-    }
-
-    public async Task<Result<string>> CreateBasket(Basket basket)
-    {
-        var basketDocument = new BasketDocument
-        {
-            Items = BasketItemMapping.MapToBasketItemDocument(basket.Items),
-            TotalPrice = basket.TotalPrice,
-            TotalQuantity = basket.TotalQuantity,
-            FilterString = basket.FilterString,
-        };
-
-        await _basketCollection.InsertOneAsync(basketDocument);
-
-        return Result.Success(basketDocument.Id);
-    }
-
-    public async Task<Result<Core.Models.Order>> GetOrderById(string orderId)
+    public async Task<Maybe<Core.Models.Order>> GetOrderById(string orderId)
     {
         var orderDocument = await _orderCollection
             .Find(x => x.Id == orderId)
@@ -57,7 +26,7 @@ public class OrderRepository : IOrderRepository
 
         if (orderDocument == null)
         {
-            return Result.Failure<Core.Models.Order>($"Order by id: {orderId} does not exist");
+            return Maybe<Core.Models.Order>.None;
         }
 
         var basketDocument = await _basketCollection
@@ -66,7 +35,7 @@ public class OrderRepository : IOrderRepository
 
         var order = OrderMapping.MapToOrder(orderDocument, basketDocument);
 
-        return Result.Success(order);
+        return order;
     }
 
     public async Task<Result<string>> CreateOrder(Core.Models.Order order)

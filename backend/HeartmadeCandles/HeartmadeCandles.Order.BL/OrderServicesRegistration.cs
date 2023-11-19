@@ -10,7 +10,8 @@ public static class OrderServicesRegistration
     {
         services
             .AddScoped<IOrderService, OrderService>()
-            .AddScoped<ICalculateService, CalculateService>();
+            .AddScoped<ICalculateService, CalculateService>()
+            .AddScoped<IBasketService, BasketService>();
 
         return services;
     }
