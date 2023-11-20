@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
 namespace HeartmadeCandles.API.Contracts.Order.Requests;
 
 public class ConfiguredCandleBasketRequest
 {
-    [Required, JsonPropertyName("candleDetailFilterRequests")]
+    [Required]
     public required CandleDetailFilterRequest[] CandleDetailFilterRequests { get; set; }
 
-    [Required, JsonPropertyName("configuredCandleFiltersString")]
+    [Required]
     public required string ConfiguredCandleFiltersString { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using HeartmadeCandles.Order.Core.Models;
+using HeartmadeCandles.UnitTests.Admin.Core;
 
 namespace HeartmadeCandles.UnitTests.Order;
 
@@ -199,8 +200,30 @@ internal class GenerateOrderData
         return orderItem.Value;
     }
 
-    public static BasketItem GenerateBasketItem()
+    public static BasketItem GenerateBasketItem() =>  GenerateBasketItem(GenerateConfiguredCandleFilter());
+
+    public static Basket GenerateBasket()
     {
-        return GenerateBasketItem(GenerateConfiguredCandleFilter());
+        return new Basket 
+        {
+            Id = Guid.NewGuid().ToString(),
+            Items = Enumerable
+                .Range(0, _faker.Random.Number(1, 100))
+                .Select(_ => GenerateBasketItem())
+                .ToArray(),
+            FilterString = _faker.Random.String()
+        };
+    }
+
+    public static ConfiguredCandleBasket GenerateConfiguredCandleBasket()
+    {
+        return new ConfiguredCandleBasket
+        {
+            ConfiguredCandleFilters = Enumerable
+                .Range(0, _faker.Random.Number(1, 100))
+                .Select(_ => GenerateConfiguredCandleFilter())
+                .ToArray(),
+            ConfiguredCandleFiltersString = _faker.Random.String()
+        };
     }
 }

@@ -28,53 +28,7 @@ public class BasketItem
         decimal price,
         ConfiguredCandleFilter configuredCandleFilter)
     {
-        // Результом будет один Result.Failure (Вот этот почти всегда "The configured layer colors and their count do not match the specified criteria")
-        var resultV1 = Result.Success()
-            .BindIf(price <= 0, () => Result.Failure($"{nameof(Price)} cannot be 0 or less"))
-            .Bind(() => CheckIdMismatch(
-                expectedId: configuredCandleFilter.CandleId,
-                actualId: configuredCandle.Candle.Id,
-                entityName: nameof(configuredCandle.Candle)))
-            .BindIf(configuredCandleFilter.DecorId != 0 && configuredCandle.Decor != null,
-                () => CheckIdMismatch(
-                    expectedId: configuredCandleFilter.DecorId,
-                    actualId: configuredCandle.Decor?.Id,
-                    entityName: nameof(configuredCandle.Decor)))
-            .Bind(() => CheckEntityExistenceAndMismatch(
-                expectedEntity: configuredCandleFilter.DecorId,
-                actualEntity: configuredCandle.Decor?.Id,
-                entityName: nameof(configuredCandle.Decor)))
-            .Bind(() => CheckIdMismatch(
-                expectedId: configuredCandleFilter.NumberOfLayerId,
-                actualId: configuredCandle.NumberOfLayer.Id,
-                entityName: nameof(configuredCandle.NumberOfLayer)))
-            .Bind(() => CheckLayerColorCountMatchAndNotEmpty(
-                layerColors: configuredCandle.LayerColors,
-                expectedCount: configuredCandle.NumberOfLayer.Number))
-            .Bind(() => CheckLayerColorsIdsMatch(
-                expectedLayerColorIds: configuredCandleFilter.LayerColorIds,
-                actualLayerColorIds: configuredCandle.LayerColors.Select(lc => lc.Id).ToArray()))
-            .BindIf(configuredCandle.LayerColors.Length == configuredCandle.NumberOfLayer.Number
-                    && configuredCandle.NumberOfLayer.Number == configuredCandleFilter.LayerColorIds.Length,
-                () => Result.Failure($"The configured layer colors and their count do not match the specified criteria"))
-            .BindIf(configuredCandleFilter.SmellId != 0 && configuredCandle.Smell != null,
-                () => CheckIdMismatch(
-                    expectedId: configuredCandleFilter.SmellId,
-                    actualId: configuredCandle.Smell?.Id,
-                    entityName: nameof(configuredCandle.Smell)))
-            .Bind(() => CheckEntityExistenceAndMismatch(
-                expectedEntity: configuredCandleFilter.SmellId,
-                actualEntity: configuredCandle.Smell?.Id,
-                entityName: nameof(configuredCandle.Smell)))
-            .Bind(() => CheckIdMismatch(
-                expectedId: configuredCandleFilter.WickId,
-                actualId: configuredCandle.Wick.Id,
-                entityName: nameof(configuredCandle.Wick)))
-            .Map(() => new BasketItem(configuredCandle, price, configuredCandleFilter))
-            .TapError(error => Result.Failure<BasketItem>(error));
-
-        // Результом с комбинированным Result.Failure
-        var resultV2 = Result.Combine(
+        return Result.Combine(
             Result.FailureIf(price <= 0, $"{nameof(Price)} cannot be 0 or less"),
             CheckIdMismatch(
                 expectedId: configuredCandleFilter.CandleId,
@@ -120,8 +74,6 @@ public class BasketItem
                 entityName: nameof(configuredCandle.Wick))
         )
         .Map(() => new BasketItem(configuredCandle, price, configuredCandleFilter));
-
-        return resultV2;
     }
 
     public Result Compare(ConfiguredCandle configuredCandle)
@@ -209,13 +161,17 @@ public class BasketItem
         {
             return Result.Failure($"{entityName} by id: {actualEntity} is found, but it should not be in");
         }
-        if ((expectedEntity == 0 || expectedEntity == null) && actualEntity != null)
+        else if ((expectedEntity == 0 || expectedEntity == null) && actualEntity != null)
         {
             return Result.Failure($"{entityName} by id: {expectedEntity} is not found");
         }
         else if (expectedEntity == null && actualEntity != null)
         {
             return Result.Failure($"{entityName} is found, but it should not be in");
+        }
+        else if (expectedEntity != 0 && actualEntity == null)
+        {
+            return Result.Failure($"{entityName} by id: {expectedEntity} is not found");
         }
 
         return Result.Success();
