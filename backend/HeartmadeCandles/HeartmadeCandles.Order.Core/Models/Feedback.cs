@@ -9,5 +9,6 @@ public class Feedback
     }
 
     public string TypeFeedback { get; private set; }
+
     public string UserName { get; private set; }
 }

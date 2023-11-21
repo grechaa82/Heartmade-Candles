@@ -8,7 +8,7 @@ public static class OrderNotificationServicesRegistration
     public static IServiceCollection AddOrderNotificationServices(this IServiceCollection services)
     {
         services.AddScoped<IOrderNotificationHandler, OrderNotificationHandler>();
-
+        
         return services;
     }
 }

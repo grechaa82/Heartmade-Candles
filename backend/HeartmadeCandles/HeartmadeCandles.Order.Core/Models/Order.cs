@@ -1,54 +1,16 @@
-﻿using CSharpFunctionalExtensions;
-
-namespace HeartmadeCandles.Order.Core.Models;
+﻿namespace HeartmadeCandles.Order.Core.Models;
 
 public class Order
 {
-    private Order(
-        string configuredCandlesString,
-        OrderItem[] orderItems,
-        User user,
-        Feedback feedback)
-    {
-        ConfiguredCandlesString = configuredCandlesString;
-        OrderItems = orderItems;
-        User = user;
-        Feedback = feedback;
-    }
+    public string? Id { get; set; }
 
-    public string ConfiguredCandlesString { get; private set; }
-    public OrderItem[] OrderItems { get; }
-    public User User { get; private set; }
-    public Feedback Feedback { get; private set; }
-    public decimal TotalPrice => OrderItems.Sum(c => c.Price);
-    public int TotalQuantity => OrderItems.Sum(c => c.Quantity);
+    public required string BasketId { get; set; }
 
-    public static Result<Order> Create(
-        string configuredCandlesString,
-        OrderItem[] orderItems,
-        User user,
-        Feedback feedback)
-    {
-        var result = Result.Success();
+    public Basket? Basket { get; set; }
+    
+    public required User User { get; set; }
 
-        if (string.IsNullOrWhiteSpace(configuredCandlesString))
-        {
-            result = Result.Combine(
-                result,
-                Result.Failure<Order>($"'{nameof(configuredCandlesString)}' cannot be null or whitespace"));
-        }
+    public required Feedback Feedback { get; set; }
 
-        if (result.IsFailure)
-        {
-            return Result.Failure<Order>(result.Error);
-        }
-
-        var order = new Order(
-            configuredCandlesString,
-            orderItems,
-            user,
-            feedback);
-
-        return Result.Success(order);
-    }
+    public OrderStatus Status { get; set; }
 }

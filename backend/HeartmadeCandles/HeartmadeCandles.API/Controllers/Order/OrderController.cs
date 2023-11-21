@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.API.Contracts.Requests;
+﻿using HeartmadeCandles.API.Contracts.Order.Requests;
+using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -20,22 +21,14 @@ public class OrderController : Controller
         _logger = logger;
     }
 
-    [HttpGet("{configuredCandlesString}")]
-    public async Task<IActionResult> Get(string configuredCandlesString)
+    [HttpGet("{orderId}")]
+    public async Task<IActionResult> GetOrderById(string orderId)
     {
-        var orderItemFilters = GetSplittedConfiguredCandlesString(configuredCandlesString)
-            .Select(ParseUrlStringToOrderItemFilter)
-            .ToArray();
-
-        var result = await _orderService.Get(orderItemFilters);
+        var result = await _orderService.GetOrderById(orderId);
 
         if (result.IsFailure)
         {
-            _logger.LogError(
-                "Error: Failed in process {processName}, error message: {errorMessage}",
-                nameof(_orderService.Get),
-                result.Error);
-            return BadRequest($"Error: Failed in process {typeof(OrderItem)}, error message: {result.Error}");
+            return BadRequest(result.Error);
         }
 
         return Ok(result.Value);
@@ -45,89 +38,21 @@ public class OrderController : Controller
     public async Task<IActionResult> CreateOrder(CreateOrderRequest orderRequest)
     {
         var result = await _orderService.CreateOrder(
-            orderRequest.ConfiguredCandlesString,
-            MapToOrderItemFilter(orderRequest.OrderItemFilters),
-            MapToUser(orderRequest.User),
-            MapToFeedback(orderRequest.Feedback));
+            MapToUser(orderRequest.User), 
+            MapToFeedback(orderRequest.Feedback), 
+            orderRequest.BasketId);
 
         if (result.IsFailure)
         {
-            _logger.LogError(
-                "Error: Failed in process {processName}, error message: {errorMessage}",
-                nameof(_orderService.CreateOrder),
-                result.Error);
-            return BadRequest($"Failed in process {typeof(OrderItem)}, error message: {result.Error}");
+            return BadRequest(result.Error);
         }
 
-        return Ok(result);
-    }
-
-    private string[] GetSplittedConfiguredCandlesString(string configuredCandlesString)
-    {
-        return configuredCandlesString.Split(".");
-    }
-
-    private OrderItemFilter ParseUrlStringToOrderItemFilter(string configuredCandlesString)
-    {
-        var candleParts = configuredCandlesString.Split('~');
-        var candleId = GetValue(candleParts, "c");
-        var decorId = GetValue(candleParts, "d");
-        var numberOfLayerId = GetValue(candleParts, "n");
-        var layerColorIds = GetArrayValue(candleParts, "l");
-        var smellId = GetValue(candleParts, "s");
-        var wickId = GetValue(candleParts, "w");
-        var quantity = GetValue(candleParts, "q");
-
-        int GetValue(string[] parts, string key)
+        return Ok(new IdResponse
         {
-            var valueString = parts.FirstOrDefault(part => part.StartsWith(key + "-"))?.Substring(key.Length + 1);
-
-            if (valueString != null)
-            {
-                var value = int.Parse(valueString);
-                return value;
-            }
-
-            return 0;
-        }
-
-        int[] GetArrayValue(string[] parts, string key)
-        {
-            var value = parts.FirstOrDefault(part => part.StartsWith(key + "-"))?.Substring(key.Length + 1);
-            if (value != null)
-            {
-                var values = value.Split('_');
-                return values.Select(int.Parse).ToArray();
-            }
-
-            return Array.Empty<int>();
-        }
-
-        return new OrderItemFilter(
-            candleId,
-            decorId,
-            numberOfLayerId,
-            layerColorIds,
-            smellId,
-            wickId,
-            quantity);
+            Id = result.Value
+        });
     }
-
-    private OrderItemFilter[] MapToOrderItemFilter(OrderItemFilterRequest[] items)
-    {
-        return items
-            .Select(
-                item => new OrderItemFilter(
-                    item.CandleId,
-                    item.DecorId,
-                    item.NumberOfLayerId,
-                    item.LayerColorIds,
-                    item.SmellId,
-                    item.WickId,
-                    item.Quantity))
-            .ToArray();
-    }
-
+    
     private User MapToUser(UserRequest item)
     {
         return new User(item.FirstName, item.LastName, item.Phone, item.Email);

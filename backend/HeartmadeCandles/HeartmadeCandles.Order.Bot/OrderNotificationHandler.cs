@@ -16,6 +16,10 @@ public class OrderNotificationHandler : IOrderNotificationHandler
     {
         try
         {
+            if (order.Basket == null)
+            {
+                return Result.Failure("Basket cannot be null");
+            }
             var orderText = GetMessageInMarkdownMode(order);
 
             await _client.SendTextMessageAsync(_chatId, orderText);
@@ -32,37 +36,39 @@ public class OrderNotificationHandler : IOrderNotificationHandler
     {
         var message = new StringBuilder();
 
-        message.AppendLine($"Строка конфигурации: {order.ConfiguredCandlesString}");
+        message.AppendLine($"Строка конфигурации: {order.Basket.FilterString}");
         message.AppendLine(" ");
         message.AppendLine(
             $"Информация о покупателя: {order.User.FirstName} {order.User.LastName}, {order.User.Phone}, " +
             $"{(string.IsNullOrEmpty(order.User.Email) ? "N/A" : order.User.Email)}");
         message.AppendLine($"Обратная связь: {order.Feedback.TypeFeedback} {order.Feedback.UserName}");
         message.AppendLine(" ");
-        message.AppendLine(GetInformationAboutCandles(order.OrderItems));
-        message.AppendLine($"Общая количество: {order.TotalQuantity}");
-        message.AppendLine($"Общая стоимость: {order.TotalPrice}");
+        message.AppendLine(GetInformationAboutCandles(order.Basket.Items));
+        message.AppendLine($"Общая количество: {order.Basket.TotalQuantity}");
+        message.AppendLine($"Общая стоимость: {order.Basket.TotalPrice}");
 
         return message.ToString();
     }
 
-    private static string GetInformationAboutCandles(OrderItem[] candles)
+    private static string GetInformationAboutCandles(BasketItem[] basketItems)
     {
         var message = new StringBuilder();
 
-        for (var i = 0; i < candles.Length; i++)
+        foreach (var item in basketItems)
         {
             message.AppendLine(
-                $"Свеча: {candles[i].CandleDetail.Candle.Title}, {candles[i].Quantity} шт, {candles[i].Price} р");
-            message.AppendLine($"Количество слоев: {candles[i].CandleDetail.NumberOfLayer.Number}");
+                $"Свеча: {item.ConfiguredCandle.Candle.Title}, {item.Quantity} шт, {item.Price} р");
+            message.AppendLine($"Количество слоев: {item.ConfiguredCandle.NumberOfLayer.Number}");
             message.AppendLine("Слои: ");
-            for (var j = 0; j < candles[i].CandleDetail.LayerColors.Length; j++)
-                message.AppendLine($"{j + 1}. {candles[i].CandleDetail.LayerColors[j].Title}");
+            foreach (var color in item.ConfiguredCandle.LayerColors)
+            {
+                message.AppendLine($"{Array.IndexOf(item.ConfiguredCandle.LayerColors, color) + 1}. {color.Title}");
+            }
             message.AppendLine(
-                $"Декор: {(candles[i].CandleDetail.Decor == null ? "N/A" : candles[i].CandleDetail.Decor.Title)}");
+                $"Декор: {(item.ConfiguredCandle.Decor == null ? "N/A" : item.ConfiguredCandle.Decor?.Title)}");
             message.AppendLine(
-                $"Запах: {(candles[i].CandleDetail.Smell == null ? "N/A" : candles[i].CandleDetail.Smell.Title)}");
-            message.AppendLine($"Фитиль: {candles[i].CandleDetail.Wick.Title}");
+                $"Запах: {(item.ConfiguredCandle.Smell == null ? "N/A" : item.ConfiguredCandle.Smell?.Title)}");
+            message.AppendLine($"Фитиль: {item.ConfiguredCandle.Wick.Title}");
             message.AppendLine(" ");
         }
 

@@ -24,11 +24,12 @@ public class ConstructorRepository : IConstructorRepository
             .ToArrayAsync();
 
         var result = items.Select(
-            c => new CandleTypeWithCandles
-            {
-                Type = c.Key,
-                Candles = c.Select(candle => MapToCandle(candle)).ToArray()
-            }).ToArray();
+                c => new CandleTypeWithCandles
+                {
+                    Type = c.Key,
+                    Candles = c.Select(candle => MapToCandle(candle)).ToArray()
+                })
+            .ToArray();
 
         return Result.Success(result);
     }
@@ -60,8 +61,69 @@ public class ConstructorRepository : IConstructorRepository
         var decors = candleDetailEntity.CandleDecor
             .Select(cd => MapToDecor(cd.Decor))
             .ToArray();
+
         var layerColors = candleDetailEntity.CandleLayerColor
             .Select(cl => MapToLayerColor(cl.LayerColor))
+            .ToArray();
+
+        var numberOfLayers = candleDetailEntity.CandleNumberOfLayer
+            .Select(cn => MapToNumberOfLayer(cn.NumberOfLayer))
+            .ToArray();
+
+        var smells = candleDetailEntity.CandleSmell
+            .Select(cs => MapToSmell(cs.Smell))
+            .ToArray();
+
+        var wicks = candleDetailEntity.CandleWick
+            .Select(cw => MapToWick(cw.Wick))
+            .ToArray();
+
+        return new CandleDetail
+        {
+            Candle = candle,
+            Decors = decors,
+            LayerColors = layerColors,
+            NumberOfLayers = numberOfLayers,
+            Smells = smells,
+            Wicks = wicks
+        };
+    }
+
+    public async Task<Result<CandleDetail>> GetCandleByFilter(CandleDetailFilter candleDetailFilter)
+    {
+        var candleDetailEntity = await _context.Candle
+            .AsNoTracking()
+            .Include(t => t.TypeCandle)
+            .Include(cd => cd.CandleDecor.Where(d => d.Decor.Id == candleDetailFilter.DecorId && d.Decor.IsActive))
+            .ThenInclude(d => d.Decor)
+            .Include(
+                cl => cl.CandleLayerColor.Where(
+                    l => candleDetailFilter.LayerColorIds.Contains(l.LayerColor.Id) && l.LayerColor.IsActive))
+            .ThenInclude(l => l.LayerColor)
+            .Include(cn => cn.CandleNumberOfLayer.Where(n => n.NumberOfLayer.Id == candleDetailFilter.NumberOfLayerId))
+            .ThenInclude(n => n.NumberOfLayer)
+            .Include(cs => cs.CandleSmell.Where(s => s.Smell.Id == candleDetailFilter.SmellId && s.Smell.IsActive))
+            .ThenInclude(s => s.Smell)
+            .Include(cw => cw.CandleWick.Where(w => w.Wick.Id == candleDetailFilter.WickId && w.Wick.IsActive))
+            .ThenInclude(w => w.Wick)
+            .FirstOrDefaultAsync(c => c.Id == candleDetailFilter.CandleId && c.IsActive);
+
+        if (candleDetailEntity == null)
+        {
+            return Result.Failure<CandleDetail>($"Candle by id: {candleDetailFilter.CandleId} does not exist");
+        }
+
+        var candle = MapToCandle(candleDetailEntity);
+
+        var decors = candleDetailEntity.CandleDecor
+            .Select(cd => MapToDecor(cd.Decor))
+            .ToArray();
+        var layerColorsDictionary =
+            candleDetailEntity.CandleLayerColor.ToDictionary(x => x.LayerColor.Id, x => x.LayerColor);
+        var layerColors = candleDetailFilter.LayerColorIds
+            .Select(
+                x => layerColorsDictionary.TryGetValue(x, out var layerColor) ? MapToLayerColor(layerColor) : null)
+            .Where(x => x != null)
             .ToArray();
         var numberOfLayers = candleDetailEntity.CandleNumberOfLayer
             .Select(cn => MapToNumberOfLayer(cn.NumberOfLayer))
@@ -73,11 +135,28 @@ public class ConstructorRepository : IConstructorRepository
             .Select(cw => MapToWick(cw.Wick))
             .ToArray();
 
+        if (!numberOfLayers.Any())
+        {
+            return Result.Failure<CandleDetail>(
+                $"NumberOfLayer by id: {candleDetailFilter.NumberOfLayerId} does not exist");
+        }
+
+        if (!layerColors.Any())
+        {
+            return Result.Failure<CandleDetail>("LayerColors does not exist");
+
+        }
+
+        if (!wicks.Any())
+        {
+            return Result.Failure<CandleDetail>($"Wick by id: {candleDetailFilter.WickId} does not exist");
+        }
+
         return new CandleDetail
         {
             Candle = candle,
             Decors = decors,
-            LayerColors = layerColors,
+            LayerColors = layerColors!,
             NumberOfLayers = numberOfLayers,
             Smells = smells,
             Wicks = wicks
@@ -164,6 +243,7 @@ public class ConstructorRepository : IConstructorRepository
                 FileName = imageEntity.FileName,
                 AlternativeName = imageEntity.AlternativeName
             };
+
             images.Add(image);
         }
 

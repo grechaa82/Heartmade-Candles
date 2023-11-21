@@ -1,6 +1,6 @@
 ﻿using Bogus;
 using HeartmadeCandles.Order.Core.Models;
-using Image = HeartmadeCandles.Admin.Core.Models.Image;
+using HeartmadeCandles.UnitTests.Admin.Core;
 
 namespace HeartmadeCandles.UnitTests.Order;
 
@@ -8,103 +8,122 @@ internal class GenerateOrderData
 {
     private static readonly Faker _faker = new();
 
-    public static Candle GenerateCandle(int id = 0)
+   public static Candle GenerateCandle(int id = 0)
     {
         return new Candle(
-            id == 0 ? _faker.Random.Number(1, 10000) : id,
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxTitleLength),
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxDescriptionLength),
-            _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
-            _faker.Random.Number(1, 10000),
-            new[]
+            id: id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
+            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxTitleLength),
+            price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+            weightGrams: _faker.Random.Number(1, 10000),
+            images: new[]
             {
-                new HeartmadeCandles.Order.Core.Models.Image(
-                    _faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String())
-            }
-        );
+                new Image(
+                    _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Image.MaxAlternativeNameLength),
+                    _faker.Random.String())
+            });
     }
 
     public static Decor GenerateDecor(int id = 0)
     {
         return new Decor(
-            id == 0 ? _faker.Random.Number(1, 10000) : id,
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxTitleLength),
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxDescriptionLength),
-            _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
-            new[]
-            {
-                new HeartmadeCandles.Order.Core.Models.Image(
-                    _faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String())
-            }
-        );
+            id: id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
+            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxTitleLength),
+            price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal());
     }
 
     public static LayerColor GenerateLayerColor(int id = 0)
     {
-        return new LayerColor
-        (
-            id == 0 ? _faker.Random.Number(1, 10000) : id,
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxTitleLength),
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxDescriptionLength),
-            _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
-            new[]
-            {
-                new HeartmadeCandles.Order.Core.Models.Image(
-                    _faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String())
-            }
-        );
+        return new LayerColor(
+            id:id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
+            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxTitleLength),
+            pricePerGram: _faker.Random.Number(1, 10000) * _faker.Random.Decimal());
     }
 
-    public static NumberOfLayer GenerateNumberOfLayer(int id = 0)
+    public static NumberOfLayer GenerateNumberOfLayer(int number, int id = 0)
     {
-        var number = id == 0 ? _faker.Random.Number(1, 10000) : id;
-        return new NumberOfLayer
-        (
-            number, number
-        );
+        return new NumberOfLayer(
+            id: id == 0 ? _faker.Random.Number(1, 10000) : id, 
+            number: number);
     }
 
     public static Smell GenerateSmell(int id = 0)
     {
-        return new Smell
-        (
-            id == 0 ? _faker.Random.Number(1, 10000) : id,
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxTitleLength),
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxDescriptionLength),
-            _faker.Random.Number(1, 10000) * _faker.Random.Decimal()
-        );
+        return new Smell(
+            id: id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
+            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxTitleLength),
+            price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal());
     }
 
     public static Wick GenerateWick(int id = 0)
     {
-        return new Wick
-        (
-            id == 0 ? _faker.Random.Number(1, 10000) : id,
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxTitleLength),
-            _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxDescriptionLength),
-            _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
-            new[]
-            {
-                new HeartmadeCandles.Order.Core.Models.Image(
-                    _faker.Random.String(1, Image.MaxAlternativeNameLength), _faker.Random.String())
-            }
-        );
+        return new Wick(
+            id: id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
+            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxTitleLength),
+            price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal());
     }
 
-    public static CandleDetail GenerateCandleDetail()
+    public static ConfiguredCandle GenerateConfiguredCandle(
+        Candle? candle = null, 
+        Decor? decor = null, 
+        List<LayerColor>? layerColors = null, 
+        NumberOfLayer? numberOfLayer = null, 
+        Smell? smell = null, 
+        Wick? wick = null)
     {
-        var candle = GenerateCandle();
-        var numberOfLayer = GenerateNumberOfLayer();
-        var layerColors = new List<LayerColor>();
-        for (var i = 0; i < numberOfLayer.Number; i++) layerColors.Add(GenerateLayerColor());
-        var decor = GenerateDecor();
-        var smell = GenerateSmell();
-        var wick = GenerateWick();
+        if (candle == null)
+        {
+            candle = GenerateCandle();
+        }
 
-        return new CandleDetail(candle, decor, layerColors.ToArray(), numberOfLayer, smell, wick);
+        if (numberOfLayer == null)
+        {
+            numberOfLayer = GenerateNumberOfLayer(_faker.Random.Number(1, 100));
+        }
+
+        if (layerColors == null)
+        {
+            layerColors = new List<LayerColor>();
+            for (var i = 0; i < numberOfLayer.Number; i++)
+                layerColors.Add(GenerateLayerColor());
+        }
+
+        if (decor == null)
+        {
+            decor = GenerateDecor();
+        }
+
+        if (smell == null)
+        {
+            smell = GenerateSmell();
+        }
+
+        if (wick == null)
+        {
+            wick = GenerateWick();
+        }
+
+        return new ConfiguredCandle
+        {
+            Candle = candle,
+            Decor = decor,
+            LayerColors = layerColors.ToArray(),
+            NumberOfLayer = numberOfLayer,
+            Smell = smell,
+            Wick = wick
+        };
     }
 
-    public static OrderItemFilter GenerateOrderItemFilter(CandleDetail candleDetail, int quantity)
+    public static ConfiguredCandleFilter GenerateConfiguredCandleFilter(ConfiguredCandle candleDetail, int quantity)
     {
         var candleId = candleDetail.Candle.Id;
         var decorId = candleDetail.Decor?.Id ?? 0;
@@ -113,14 +132,23 @@ internal class GenerateOrderData
         var smellId = candleDetail.Smell?.Id ?? 0;
         var wickId = candleDetail.Wick.Id;
 
-        return new OrderItemFilter(candleId, decorId, numberOfLayerId, layerColorIds, smellId, wickId, quantity);
+        return new ConfiguredCandleFilter
+        {
+            CandleId  = candleId,
+            DecorId  = decorId,
+            NumberOfLayerId  = numberOfLayerId,
+            LayerColorIds  = layerColorIds,
+            SmellId  = smellId,
+            WickId  = wickId,
+            Quantity  = quantity,
+            FilterString  = _faker.Random.String()
+        };
     }
 
-    public static OrderItemFilter GenerateOrderItemFilter()
+    public static ConfiguredCandleFilter GenerateConfiguredCandleFilter()
     {
-        var candleDetail = GenerateCandleDetail();
+        var candleDetail = GenerateConfiguredCandle();
         var quantity = _faker.Random.Number(1, 100);
-
         var candleId = candleDetail.Candle.Id;
         var decorId = candleDetail.Decor?.Id ?? 0;
         var numberOfLayerId = candleDetail.NumberOfLayer.Id;
@@ -128,24 +156,74 @@ internal class GenerateOrderData
         var smellId = candleDetail.Smell?.Id ?? 0;
         var wickId = candleDetail.Wick.Id;
 
-        return new OrderItemFilter(candleId, decorId, numberOfLayerId, layerColorIds, smellId, wickId, quantity);
+        return new ConfiguredCandleFilter
+        {
+            CandleId  = candleId,
+            DecorId  = decorId,
+            NumberOfLayerId  = numberOfLayerId,
+            LayerColorIds  = layerColorIds,
+            SmellId  = smellId,
+            WickId  = wickId,
+            Quantity  = quantity,
+            FilterString  = _faker.Random.String()
+        };
     }
 
-    public static OrderItem GenerateOrderItem(OrderItemFilter orderItemFilter)
+    public static BasketItem GenerateBasketItem(ConfiguredCandleFilter configuredCandleFilter)
     {
-        var candle = GenerateCandle(orderItemFilter.CandleId);
-        var decor = GenerateDecor(orderItemFilter.DecorId);
+        var candle = GenerateCandle(configuredCandleFilter.CandleId);
+        var decor = configuredCandleFilter.DecorId.HasValue ? GenerateDecor((int)configuredCandleFilter.DecorId) : null;
+        var numberOfLayer = GenerateNumberOfLayer(configuredCandleFilter.LayerColorIds.Length, configuredCandleFilter.NumberOfLayerId);
+        
         var layerColors = new List<LayerColor>();
-        for (var i = 0; i < orderItemFilter.LayerColorIds.Length; i++)
-            layerColors.Add(GenerateLayerColor(orderItemFilter.LayerColorIds[i]));
-        var numberOfLayer = GenerateNumberOfLayer(orderItemFilter.NumberOfLayerId);
-        var smell = GenerateSmell(orderItemFilter.SmellId);
-        var wick = GenerateWick(orderItemFilter.WickId);
+        for (var i = 0; i < numberOfLayer.Number; i++)
+            layerColors.Add(GenerateLayerColor(configuredCandleFilter.LayerColorIds[i]));
 
-        var candleDetail = new CandleDetail(candle, decor, layerColors.ToArray(), numberOfLayer, smell, wick);
+        var smell = configuredCandleFilter.SmellId.HasValue ? GenerateSmell((int)configuredCandleFilter.SmellId) : null;
+        var wick = GenerateWick(configuredCandleFilter.WickId);
 
-        var orderItem = OrderItem.Create(candleDetail, orderItemFilter.Quantity, orderItemFilter);
+        var configuredCandle = new ConfiguredCandle
+        {
+            Candle = candle,
+            Decor = decor,
+            LayerColors = layerColors.ToArray(),
+            NumberOfLayer = numberOfLayer,
+            Smell = smell,
+            Wick = wick
+        };
+
+        var orderItem = BasketItem.Create(
+            configuredCandle,
+            configuredCandleFilter.Quantity,
+            configuredCandleFilter);
 
         return orderItem.Value;
+    }
+
+    public static BasketItem GenerateBasketItem() =>  GenerateBasketItem(GenerateConfiguredCandleFilter());
+
+    public static Basket GenerateBasket()
+    {
+        return new Basket 
+        {
+            Id = Guid.NewGuid().ToString(),
+            Items = Enumerable
+                .Range(0, _faker.Random.Number(1, 100))
+                .Select(_ => GenerateBasketItem())
+                .ToArray(),
+            FilterString = _faker.Random.String()
+        };
+    }
+
+    public static ConfiguredCandleBasket GenerateConfiguredCandleBasket()
+    {
+        return new ConfiguredCandleBasket
+        {
+            ConfiguredCandleFilters = Enumerable
+                .Range(0, _faker.Random.Number(1, 100))
+                .Select(_ => GenerateConfiguredCandleFilter())
+                .ToArray(),
+            ConfiguredCandleFiltersString = _faker.Random.String()
+        };
     }
 }

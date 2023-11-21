@@ -5,8 +5,7 @@ namespace HeartmadeCandles.Order.Core.Interfaces;
 
 public interface IOrderService
 {
-    Task<Result<OrderItem[]>> Get(OrderItemFilter[] OrderItemFilters);
+    Task<Result<Models.Order>> GetOrderById(string orderId);
 
-    Task<Result> CreateOrder(string configuredCandlesString, OrderItemFilter[] OrderItemFilters, User user,
-        Feedback feedback);
+    Task<Result<string>> CreateOrder(User user, Feedback feedback, string basketId);
 }

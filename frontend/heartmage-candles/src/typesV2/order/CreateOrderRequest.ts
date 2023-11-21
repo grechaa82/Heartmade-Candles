@@ -1,10 +1,9 @@
 import { Feedback } from './Feedback';
-import { OrderItemFilterRequest } from './OrderItemFilterRequest';
 import { User } from './User';
 
 export interface CreateOrderRequest {
   configuredCandlesString: string;
-  orderItemFilters: OrderItemFilterRequest[];
+  basketId: string;
   user: User;
   feedback: Feedback;
 }

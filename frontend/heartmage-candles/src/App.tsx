@@ -12,7 +12,7 @@ import AllWickPage from './pages/admin/AllWickPage';
 import WickPage from './pages/admin/WickPage';
 import Navbar from './components/admin/Navbar';
 import ConstructorPage from './pages/constructor/ConstructorPage';
-import OrderPage from './pages/order/OrderPage';
+import BasketPage from './pages/order/BasketPage';
 import AuthPage from './pages/auth/AuthPage';
 import ThankPage from './pages/order/ThankPage';
 import Header from './components/shared/Header';
@@ -62,8 +62,8 @@ function App() {
                 <Route path="review/" element={<ReviewPage />} />
                 <Route path="help/" element={<HelpPage />} />
                 <Route path="constructor/" element={<ConstructorPage />} />
-                <Route path="orders/">
-                  <Route path="" element={<OrderPage />} />
+                <Route path="baskets/:id" element={<BasketPage />} />
+                <Route path="orders/:id">
                   <Route path="thank" element={<ThankPage />} />
                 </Route>
                 <Route path="auth/" element={<AuthPage />} />
