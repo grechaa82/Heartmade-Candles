@@ -27,6 +27,10 @@ public class BasketController : Controller
 
         if (result.IsFailure)
         {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_basketService.GetBasketById),
+                result.Error);
             return BadRequest(result.Error);
         }
 
@@ -58,6 +62,10 @@ public class BasketController : Controller
 
         if (result.IsFailure)
         {
+             _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_basketService.CreateBasket),
+                result.Error);
             return BadRequest(result.Error);
         }
 

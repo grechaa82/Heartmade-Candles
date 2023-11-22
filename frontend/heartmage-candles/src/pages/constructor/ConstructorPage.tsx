@@ -255,12 +255,16 @@ const ConstructorPage: FC = () => {
       configuredCandleDetails.forEach((configuredCandleDetail) => {
         const filterRequest: CandleDetailFilterRequest = {
           candleId: configuredCandleDetail.candle.id,
-          decorId: configuredCandleDetail.decor?.id,
+          decorId: configuredCandleDetail.decor
+            ? configuredCandleDetail.decor.id
+            : 0,
           numberOfLayerId: configuredCandleDetail.numberOfLayer!.id,
           layerColorIds: configuredCandleDetail.layerColors!.map(
             (layerColor) => layerColor.id
           ),
-          smellId: configuredCandleDetail.smell?.id,
+          smellId: configuredCandleDetail.smell
+            ? configuredCandleDetail.smell.id
+            : 0,
           wickId: configuredCandleDetail.wick!.id,
           quantity: configuredCandleDetail.quantity,
           filterString: configuredCandleDetail.getFilter(),

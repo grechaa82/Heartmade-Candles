@@ -28,6 +28,10 @@ public class OrderController : Controller
 
         if (result.IsFailure)
         {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_orderService.GetOrderById),
+                result.Error);
             return BadRequest(result.Error);
         }
 
@@ -44,6 +48,10 @@ public class OrderController : Controller
 
         if (result.IsFailure)
         {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_orderService.CreateOrder),
+                result.Error);
             return BadRequest(result.Error);
         }
 
