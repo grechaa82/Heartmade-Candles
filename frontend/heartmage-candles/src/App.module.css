@@ -1,18 +1,28 @@
 .AdminContent {
-  padding: 32px 32px 32px 0;
   display: flex;
   justify-content: center;
   max-width: 1920px;
   margin: auto;
+  margin: 0 32px;
 }
 
 .AdminContainer {
   max-width: 1300px;
   display: flex;
   flex-direction: column;
-  padding-left: 32px;
-  margin: auto;
+  margin: 32px auto 0;
+  padding: 0 32px;
 }
 .AdminContainer > div {
   margin-bottom: 32px;
+}
+@media only screen and (max-width: 992px) {
+  .AdminContent {
+    flex-direction: column;
+    margin: 0 16px;
+  }
+  .AdminContainer {
+    padding: 0;
+    margin: 24px 0;
+  }
 }

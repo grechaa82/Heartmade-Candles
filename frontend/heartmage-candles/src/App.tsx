@@ -31,23 +31,29 @@ function App() {
         <Route
           path="admin/*"
           element={
-            <div className={Style.AdminContent}>
-              <Navbar />
-              <main className={Style.AdminContainer}>
-                <Routes>
-                  <Route path="candles" element={<AllCandlePage />} />
-                  <Route path="candles/:id" element={<CandleDetailsPage />} />
-                  <Route path="decors" element={<AllDecorsPage />} />
-                  <Route path="decors/:id" element={<DecorsPage />} />
-                  <Route path="layerColors" element={<AllLayerColorPage />} />
-                  <Route path="layerColors/:id" element={<LayerColorPage />} />
-                  <Route path="smells" element={<AllSmellPage />} />
-                  <Route path="smells/:id" element={<SmellPage />} />
-                  <Route path="wicks" element={<AllWickPage />} />
-                  <Route path="wicks/:id" element={<WickPage />} />
-                </Routes>
-              </main>
-            </div>
+            <>
+              <Header />
+              <div className={Style.AdminContent}>
+                <Navbar />
+                <main className={Style.AdminContainer}>
+                  <Routes>
+                    <Route path="candles" element={<AllCandlePage />} />
+                    <Route path="candles/:id" element={<CandleDetailsPage />} />
+                    <Route path="decors" element={<AllDecorsPage />} />
+                    <Route path="decors/:id" element={<DecorsPage />} />
+                    <Route path="layerColors" element={<AllLayerColorPage />} />
+                    <Route
+                      path="layerColors/:id"
+                      element={<LayerColorPage />}
+                    />
+                    <Route path="smells" element={<AllSmellPage />} />
+                    <Route path="smells/:id" element={<SmellPage />} />
+                    <Route path="wicks" element={<AllWickPage />} />
+                    <Route path="wicks/:id" element={<WickPage />} />
+                  </Routes>
+                </main>
+              </div>
+            </>
           }
         />
         <Route

@@ -1,11 +1,25 @@
 .header {
   padding: 16px 0;
   margin: 0 32px;
+  border-bottom: 4px solid var(--color-eee);
+  height: 3rem;
+  transition: opacity 0.4s, visibility 0.4s, transform 0.4s;
+  opacity: 0;
+  visibility: hidden;
+}
+.visible {
+  position: sticky;
+  top: 0;
+  z-index: 101;
+  background: var(--color-fff);
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 4px solid var(--color-eee);
-  height: 3rem;
 }
 .navbar {
   display: flex;
@@ -18,30 +32,90 @@
   font-size: var(--font-size-l);
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
+  cursor: pointer;
 }
 .navLinkConstructor {
-  color: var(--color-blue);
+  color: var(--color-505050);
 }
 .navLinkCatalog {
   color: var(--color-green);
 }
 .rightPart {
+}
+.helpLink {
+  all: unset;
+  color: var(--color-aaa);
+  font-size: var(--font-size-l);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-standard);
+  cursor: pointer;
+}
+.helpLink:hover {
+  color: var(--color-blue);
+}
+.burgerMenu {
   display: flex;
-  gap: 32px;
+  justify-content: space-between;
   align-items: center;
 }
-.rightPart > p {
-  padding: 0;
-  margin: 0;
-  color: var(--color-aaa);
-  font-size: var(--font-size-m);
-  font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standard);
-}
-.rightPart > a {
+.altLogo {
   all: unset;
-  color: var(--color-blue);
-  font-size: var(--font-size-m);
-  font-weight: var(--font-weight-400);
+  display: none;
+  color: var(--color-222);
+  font-size: var(--font-size-heading-3);
+  font-weight: var(--font-weight-500);
   line-height: var(--line-height-standard);
+  cursor: pointer;
+}
+.burgerMenuIcon {
+  all: unset;
+  display: none;
+}
+.open {
+  transform: translateY(0);
+}
+
+@media only screen and (max-width: 992px) {
+  .header {
+    margin: 0 16px;
+  }
+  .navbar a:last-child {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .navbar a:last-child {
+    display: block;
+  }
+  .header {
+    height: fit-content;
+  }
+  .menu {
+    display: none;
+  }
+  .open {
+    background-color: var(--color-fff);
+    display: flex;
+    z-index: 100;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    flex-direction: column;
+    gap: 32px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-top: 32px;
+  }
+  .open > .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .mainLogo {
+    display: none;
+  }
+  .burgerMenuIcon,
+  .altLogo {
+    display: flex;
+  }
 }
