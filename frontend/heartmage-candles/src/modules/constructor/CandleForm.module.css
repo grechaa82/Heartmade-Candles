@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 48px;
-  width: min-content;
 }
 .addBtn {
 }
@@ -14,4 +13,32 @@
 .addBtn > button > p {
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-standard);
+}
+.mainInfo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.mainInfo > p {
+  margin: 0;
+  padding: 0;
+  color: var(--color-000);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-standard);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hideCandleForm {
+  all: unset;
+  border-radius: var(--border-radius-primary);
+  border: 2px solid var(--color-eee);
+  display: flex;
+  padding: 16px;
+  justify-content: center;
+  align-items: center;
+}
+.hideCandleForm > svg > path {
+  fill: var(--color-aaa);
 }

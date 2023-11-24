@@ -6,6 +6,7 @@
   padding: 32px;
   position: relative;
   margin: auto;
+  min-width: 31.25rem;
 }
 .mainImage {
   width: 100%;

@@ -10,9 +10,9 @@
   display: inline-block;
   font-size: var(--font-size-xl);
   font-style: normal;
-  font-weight: var(--font-weight-600);
+  font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
-  color: var(--color-505050);
+  color: var(--color-777);
   margin: 0 0 16px 0;
   padding: 0;
 }

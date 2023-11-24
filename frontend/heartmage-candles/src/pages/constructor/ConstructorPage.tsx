@@ -54,7 +54,7 @@ const ConstructorPage: FC = () => {
     }
   }
 
-  function hideCandleForm() {
+  function handleHideCandleForm() {
     setErrorMessage([]);
     setCandleDetail(undefined);
   }
@@ -74,7 +74,7 @@ const ConstructorPage: FC = () => {
       ...prev,
       configuredCandleDetailToAdd,
     ]);
-    hideCandleForm();
+    handleHideCandleForm();
   };
 
   function convertToCandleString(value: ConfiguredCandleDetail[]): string {
@@ -323,11 +323,6 @@ const ConstructorPage: FC = () => {
         {candleDetail && (
           <>
             <ImageSlider images={candleDetail.candle.images} />
-            <div className={Style.hideCandleForm}>
-              <button onClick={() => hideCandleForm()}>
-                <IconArrowLeftLarge color="#777" />
-              </button>
-            </div>
             <div className={Style.priceCandle}>
               <span>{priceConfiguredCandleDetail} р</span>
             </div>
@@ -349,6 +344,7 @@ const ConstructorPage: FC = () => {
             candleDetail={candleDetail}
             addCandleDetail={addConfiguredCandleDetailToListProductsCart}
             calculatePriceCandleDetail={calculatePriceConfiguredCandleDetail}
+            hideCandleForm={handleHideCandleForm}
           />
         ) : !candleTypeWithCandles ? (
           <CandleSelectionPanelSkeleton />
