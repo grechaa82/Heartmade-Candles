@@ -21,7 +21,7 @@ export interface CandleFormProps {
   addCandleDetail: (configuredCandleDetail: ConfiguredCandleDetail) => void;
   calculatePriceCandleDetail: (
     configuredCandleDetail: ConfiguredCandleDetail
-  ) => void;
+  ) => number;
   hideCandleForm: () => void;
 }
 
@@ -31,6 +31,8 @@ const CandleForm: FC<CandleFormProps> = ({
   calculatePriceCandleDetail,
   hideCandleForm,
 }) => {
+  const [priceConfiguredCandleDetail, setPriceConfiguredCandleDetail] =
+    useState<number>(0);
   const [configuredCandleDetailState, setConfiguredCandleDetailState] =
     useState<ConfiguredCandleDetail>(
       new ConfiguredCandleDetail(
@@ -197,7 +199,9 @@ const CandleForm: FC<CandleFormProps> = ({
   };
 
   useEffect(() => {
-    calculatePriceCandleDetail(configuredCandleDetailState);
+    setPriceConfiguredCandleDetail(
+      calculatePriceCandleDetail(configuredCandleDetailState)
+    );
   }, [configuredCandleDetailState]);
 
   return (
@@ -210,7 +214,9 @@ const CandleForm: FC<CandleFormProps> = ({
           >
             <IconArrowLeftLarge />
           </button>
-          <p>{configuredCandleDetailState.candle.title}</p>
+          <p className={Style.title}>
+            {configuredCandleDetailState.candle.title}
+          </p>
         </div>
         <TagSelector
           title="Количество слоев *"
@@ -274,13 +280,19 @@ const CandleForm: FC<CandleFormProps> = ({
           }
           onSelectProduct={handleWickState}
         />
-        <div className={Style.addBtn}>
-          <ButtonWithIcon
-            color="#2E67EA"
-            text="Добавить свечу"
-            icon={IconPlusLarge}
-            onClick={() => handleAddCandleDetail()}
-          />
+        <div className={Style.configurationInfoBlock}>
+          <div className={Style.priceBlock}>
+            <span className={Style.priceTitle}>Свеча на</span>
+            <span className={Style.price}>{priceConfiguredCandleDetail} р</span>
+          </div>
+          <div className={Style.addBtn}>
+            <ButtonWithIcon
+              color="#2E67EA"
+              text="Добавить"
+              icon={IconPlusLarge}
+              onClick={() => handleAddCandleDetail()}
+            />
+          </div>
         </div>
       </div>
     </>
