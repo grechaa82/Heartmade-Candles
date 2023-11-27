@@ -308,7 +308,11 @@ const ConstructorPage: FC = () => {
       <div className={Style.popUpNotification}>
         <ListErrorPopUp messages={errorMessage} />
       </div>
-      <div className={Style.leftPanel}>
+      <div
+        className={`${Style.leftPanel} ${
+          configuredCandleDetails.length === 0 ? Style.noElements : ''
+        }`}
+      >
         <ListProductsCart
           products={configuredCandleDetails}
           onChangeCandleDetailWithQuantity={handleChangeConfiguredCandleDetail}

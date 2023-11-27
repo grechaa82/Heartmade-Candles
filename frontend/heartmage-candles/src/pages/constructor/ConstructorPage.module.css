@@ -114,3 +114,45 @@
   transform: translate(-50%, 0%);
   z-index: 50;
 }
+
+@media (max-width: 1100px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+    gap: 24px;
+  }
+  .leftPanel {
+    overflow-y: unset;
+    overflow-x: auto;
+  }
+  .leftPanel {
+    padding: 24px 0;
+    border-bottom: 4px solid var(--color-eee);
+    border-right: none;
+  }
+  .rightPanel {
+    padding: 0;
+    padding-top: 24px;
+    border-top: 4px solid var(--color-eee);
+    border-left: none;
+  }
+  .rightPanel {
+    overflow-y: visible;
+  }
+  .imagePanel {
+    overflow: unset;
+    display: block;
+  }
+  .imageBlock {
+    min-width: 18.75rem;
+  }
+  .noElements {
+    display: none;
+  }
+}
+
+@media (max-width: 992px) {
+  .container {
+    margin: 0 16px;
+  }
+}

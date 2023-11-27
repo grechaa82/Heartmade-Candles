@@ -39,3 +39,12 @@
   border: 2px solid var(--color-light-green);
   background: var(--color-light-green);
 }
+
+@media (max-width: 1100px) {
+  .listProductsCart {
+    flex-direction: row;
+  }
+  .infoBlock {
+    display: none;
+  }
+}
