@@ -4,8 +4,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Basket } from '../../typesV2/order/Basket';
 import { CreateOrderRequest } from '../../typesV2/order/CreateOrderRequest';
 import ListProductsCart from '../../modules/order/ListProductsCart';
-import FormPersonalData, { ItemFormPersonalData } from '../../modules/order/FormPersonalData';
-import FormFeedback, { ItemFormFeedback } from '../../modules/order/FormFeedback';
+import FormPersonalData, {
+  ItemFormPersonalData,
+} from '../../modules/order/FormPersonalData';
+import FormFeedback, {
+  ItemFormFeedback,
+} from '../../modules/order/FormFeedback';
 import TotalPricePanel from '../../modules/order/TotalPricePanel';
 import { feedbackType } from '../../typesV2/order/Feedback';
 import IconTelegram from '../../UI/IconTelegram';
@@ -50,7 +54,9 @@ const OrderPage: FC = () => {
   };
 
   const validatePhone = (value: string) => {
-    return /^((8|\+7|7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?\d{3}[\- ]?\d{2}[\- ]?\d{2}?$/.test(value);
+    return /^((8|\+7|7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?\d{3}[\- ]?\d{2}[\- ]?\d{2}?$/.test(
+      value
+    );
   };
 
   const validateTelegramAndInstagram = (value: string) => {
@@ -108,7 +114,8 @@ const OrderPage: FC = () => {
       onChangeSelectedForm: setTypeFeedback,
       onChangeUsername: setUsername,
       isRequired: true,
-      isSelected: selectedTypeFeedback === feedbackType.Instagram ? true : false,
+      isSelected:
+        selectedTypeFeedback === feedbackType.Instagram ? true : false,
       validation: validateTelegramAndInstagram,
       icon: IconInstagram,
     },
@@ -141,8 +148,10 @@ const OrderPage: FC = () => {
   }, [id]);
 
   async function createOrder() {
-    var { canCreateOrder, errorMessages }: { canCreateOrder: boolean; errorMessages: string[] } =
-      isValidUserData();
+    var {
+      canCreateOrder,
+      errorMessages,
+    }: { canCreateOrder: boolean; errorMessages: string[] } = isValidUserData();
 
     if (canCreateOrder && basket) {
       const createOrderRequest: CreateOrderRequest = {
@@ -160,7 +169,9 @@ const OrderPage: FC = () => {
         },
       };
 
-      const orderItemsResponse = await OrdersApi.createOrder(createOrderRequest);
+      const orderItemsResponse = await OrdersApi.createOrder(
+        createOrderRequest
+      );
       if (orderItemsResponse.data && !orderItemsResponse.error) {
         navigate(`/orders/${orderItemsResponse.data}/thank`);
       } else {
@@ -171,7 +182,10 @@ const OrderPage: FC = () => {
     }
   }
 
-  function isValidUserData(): { canCreateOrder: boolean; errorMessages: string[] } {
+  function isValidUserData(): {
+    canCreateOrder: boolean;
+    errorMessages: string[];
+  } {
     let canCreateOrder = true;
     const errorMessages: string[] = [];
 
@@ -219,7 +233,9 @@ const OrderPage: FC = () => {
 
   const getConfiguredCandlesFilter = () => {
     if (basket) {
-      return basket.items.map((item) => ParseToFilter(item.configuredCandleFilter)).join('.');
+      return basket.items
+        .map((item) => ParseToFilter(item.configuredCandleFilter))
+        .join('.');
     }
 
     return '';
@@ -242,7 +258,7 @@ const OrderPage: FC = () => {
                 text="Конструктор"
                 onClick={handleNavigateToConstructor}
                 icon={IconArrowLeftLarge}
-                color="#777"
+                color="#aaa"
               />
             </div>
             <ListProductsCart products={basket.items} />

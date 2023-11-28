@@ -7,6 +7,8 @@
 .panel p {
   margin: 0;
 }
+.infoBlock {
+}
 .totalPriceBlock {
   display: flex;
   justify-content: space-between;
@@ -39,5 +41,43 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 14px 0 16px 0;
+  padding: 0.875rem 1rem 1rem 1rem;
+  align-items: center;
+}
+
+@media (max-width: 1100px) {
+  .panel {
+    width: auto;
+    display: flex;
+    padding: 0;
+    justify-content: space-between;
+    border-top: 4px solid var(--color-eee);
+    background: var(--color-fff);
+    padding: 1.5rem 0;
+    border-radius: 0;
+    align-items: center;
+  }
+  .createOrder {
+    width: auto;
+    padding: 0.875rem 1rem 1rem 1rem;
+  }
+  .infoBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .totalPriceBlock {
+    font-size: var(--font-size-l);
+    gap: 1rem;
+  }
+  .totalQuantityBlock {
+    margin: 0;
+    font-size: var(--font-size-m);
+  }
+}
+
+@media (max-width: 480px) {
+  .totalPriceBlock > p:first-child {
+    display: none;
+  }
 }

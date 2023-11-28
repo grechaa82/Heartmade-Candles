@@ -155,4 +155,7 @@
   .container {
     margin: 0 16px;
   }
+  .rightPanel {
+    padding-bottom: 7.5rem;
+  }
 }

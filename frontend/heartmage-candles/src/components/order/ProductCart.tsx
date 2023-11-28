@@ -23,12 +23,17 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
       <div className={Style.mainInfo}>
         <div className={Style.image}>
           {firstImage && (
-            <img src={`${apiUrlToImage}/${firstImage.fileName}`} alt={firstImage.alternativeName} />
+            <img
+              src={`${apiUrlToImage}/${firstImage.fileName}`}
+              alt={firstImage.alternativeName}
+            />
           )}
         </div>
         <div className={Style.info}>
           <div className={Style.titleBlock}>
-            <p className={Style.title}>{product.configuredCandle.candle.title}</p>
+            <p className={Style.title}>
+              {product.configuredCandle.candle.title}
+            </p>
             <button
               className={Style.showMoreInfoBtn}
               type="button"
@@ -38,47 +43,59 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
               <IconChevronDownLarge color="#2e67ea" />
             </button>
           </div>
-          <p className={Style.quantity}>{product.quantity} шт</p>
-          <p className={Style.price}>{product.price} p</p>
+          <div className={Style.secondaryBlock}>
+            <p className={Style.quantity}>{product.quantity} шт</p>
+            <p className={Style.price}>{product.price} p</p>
+          </div>
         </div>
       </div>
       {showMoreInfo && (
         <div className={Style.paramsBlock}>
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Количество слоев</p>
-            <p className={Style.paramsInfo}>{product.configuredCandle.numberOfLayer.number}</p>
+            <p className={Style.paramsInfo}>
+              {product.configuredCandle.numberOfLayer.number}
+            </p>
           </div>
           <span className={Style.separator} />
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Цвета слоев</p>
             <div className={Style.paramsListInfo}>
-              {product.configuredCandle.layerColors?.map((layerColor, index) => (
-                <div className={Style.paramsListInfoItem} key={index}>
-                  <span>{index + 1}</span>
-                  <p className={Style.paramsInfo}>{layerColor.title}</p>
-                </div>
-              ))}
+              {product.configuredCandle.layerColors?.map(
+                (layerColor, index) => (
+                  <div className={Style.paramsListInfoItem} key={index}>
+                    <span>{index + 1}</span>
+                    <p className={Style.paramsInfo}>{layerColor.title}</p>
+                  </div>
+                )
+              )}
             </div>
           </div>
           <span className={Style.separator} />
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Декор</p>
             {product.configuredCandle.decor && (
-              <p className={Style.paramsInfo}>{product.configuredCandle.decor.title}</p>
+              <p className={Style.paramsInfo}>
+                {product.configuredCandle.decor.title}
+              </p>
             )}
           </div>
           <span className={Style.separator} />
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Запах</p>
             {product.configuredCandle.smell && (
-              <p className={Style.paramsInfo}>{product.configuredCandle.smell.title}</p>
+              <p className={Style.paramsInfo}>
+                {product.configuredCandle.smell.title}
+              </p>
             )}
           </div>
           <span className={Style.separator} />
           <div className={Style.params}>
             <p className={Style.paramsTitle}>Фитиль</p>
             {product.configuredCandle.wick && (
-              <p className={Style.paramsInfo}>{product.configuredCandle.wick.title}</p>
+              <p className={Style.paramsInfo}>
+                {product.configuredCandle.wick.title}
+              </p>
             )}
           </div>
         </div>

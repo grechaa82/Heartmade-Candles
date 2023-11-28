@@ -32,7 +32,11 @@ const Input: FC<InputProps> = ({
   const isValid = validation ? validation(value) : true;
 
   return (
-    <div className={`${Style.input} ${!isValid && value ? Style.invalidInput : ''}`}>
+    <div
+      className={`${Style.input} ${
+        !isValid && value ? Style.invalidInput : ''
+      }`}
+    >
       <label>
         {label}
         {required && !value && <span> *</span>}

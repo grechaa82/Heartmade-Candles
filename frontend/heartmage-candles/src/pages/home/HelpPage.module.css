@@ -1,11 +1,9 @@
 .block {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 89vh;
 }
 .block > h3 {
   margin: 0;
@@ -14,7 +12,7 @@
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-110);
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;
 }
 .block > p {
   all: unset;
@@ -22,11 +20,12 @@
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
   margin-bottom: 32px;
+  text-align: center;
 }
 .btnBlock {
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: 1.5rem;
 }
 .btn > a {
   all: unset;
@@ -40,8 +39,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 14px 16px 16px 16px;
-  gap: 8px;
+  padding: 0.875rem 1rem 1rem 1rem;
+  gap: 0.5rem;
   font-weight: var(--font-weight-500);
   font-size: var(--font-size-l);
   color: var(--color-blue);
@@ -53,4 +52,20 @@ btn:hover {
 .github {
   border-color: var(--color-green);
   color: var(--color-green);
+}
+
+@media (max-width: 992px) {
+  .block {
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
+}
+@media (max-width: 768px) {
+  .block > h3 {
+    font-size: var(--font-size-heading-3);
+    font-weight: var(--font-weight-600);
+  }
+  .block > p {
+    font-size: var(--font-size-l);
+  }
 }
