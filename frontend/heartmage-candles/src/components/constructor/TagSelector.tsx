@@ -29,7 +29,9 @@ const TagSelector: FC<TagSelectorProps> = ({
             tag={tag}
             onSelectTag={onSelectTag}
             onDeselectTag={onDeselectTag}
-            isSelected={selectedData?.some((selectedData) => selectedData.id === tag.id)}
+            isSelected={selectedData?.some(
+              (selectedData) => selectedData.id === tag.id
+            )}
           />
         ))}
       </div>

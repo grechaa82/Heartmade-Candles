@@ -26,7 +26,8 @@ const Product: FC<ProductProps> = ({
   isSelected = false,
   index,
 }) => {
-  const firstImage = product.images && product.images.length > 0 ? product.images[0] : null;
+  const firstImage =
+    product.images && product.images.length > 0 ? product.images[0] : null;
 
   const getProductLink = (): string => {
     return pageUrl ? `/constructor/${pageUrl}/${product.id}` : '';
@@ -48,7 +49,9 @@ const Product: FC<ProductProps> = ({
         </button>
         <div className={Style.descriptionMenu}>
           <p className={Style.descriptionMenuTitle}>{product.title}</p>
-          <p className={Style.descriptionMenuDescription}>{product.description}</p>
+          <p className={Style.descriptionMenuDescription}>
+            {product.description}
+          </p>
         </div>
       </div>
       {onSelectProduct ? (
@@ -89,7 +92,9 @@ const Product: FC<ProductProps> = ({
           />
         )}
       </div>
-      <div className={Style.price}>{<CornerTag number={product.price} type="price" />}</div>
+      <div className={Style.price}>
+        {<CornerTag number={product.price} type="price" />}
+      </div>
     </div>
   );
 };

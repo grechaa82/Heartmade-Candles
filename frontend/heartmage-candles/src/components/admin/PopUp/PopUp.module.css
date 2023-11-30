@@ -30,3 +30,17 @@
   background-color: transparent;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .popUp {
+    overflow: auto;
+    position: relative;
+    background-color: var(--color-fff);
+    z-index: 101;
+    border-radius: var(--border-radius-primary);
+    width: 100%;
+    margin: auto;
+    height: 100%;
+    min-width: auto;
+  }
+}

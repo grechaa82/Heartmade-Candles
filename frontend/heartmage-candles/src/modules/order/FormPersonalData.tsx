@@ -16,7 +16,9 @@ export interface ItemFormPersonalData {
   validation: (value: string) => boolean;
 }
 
-const FormPersonalData: FC<FormPersonalDataProps> = ({ itemsFormPersonalData }) => {
+const FormPersonalData: FC<FormPersonalDataProps> = ({
+  itemsFormPersonalData,
+}) => {
   return (
     <div>
       <div className={Style.title}>Личные данные</div>

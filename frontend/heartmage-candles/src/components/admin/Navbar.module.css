@@ -1,34 +1,52 @@
 .navbar {
   float: left;
-  min-width: 160px;
-  padding: 0 32px 32px 32px;
+  width: min-content;
   display: flex;
   flex-direction: column;
-  position: relative;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  border-right: 4px solid var(--color-eee);
+  padding: 32px 24px;
+  height: 100%;
+  background: var(--color-fff);
+  height: auto;
+  z-index: 100;
 }
-
+.navBlock {
+  display: flex;
+  gap: 32px;
+  flex-direction: column;
+}
 .navbarItem {
-  padding: 12px 16px;
   text-decoration: none;
-  color: var(--color-222);
+  color: var(--color-505050);
   font-size: var(--font-size-l);
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
 }
-
 .active {
-  color: var(--color-blue);
+  color: var(--color-000);
   font-size: var(--font-size-l);
-  font-weight: var(--font-weight-400);
+  font-weight: var(--font-weight-600);
   line-height: var(--line-height-standard);
 }
-
-.border {
-  position: absolute;
-  top: -32px;
-  right: 0;
-  height: 100vh;
-  width: 2px;
-  background-color: var(--color-eee);
-  position: absolute;
+.navLinkAuth {
+}
+@media only screen and (max-width: 992px) {
+  .navbar {
+    overflow-x: scroll;
+    flex-direction: row;
+    border: none;
+    padding: 22px 0 24px 0;
+    border-bottom: 4px solid var(--color-eee);
+    width: auto;
+    gap: 32px;
+  }
+  .navBlock {
+    flex-direction: row;
+  }
+  .navbar::-webkit-scrollbar {
+    display: none;
+  }
 }

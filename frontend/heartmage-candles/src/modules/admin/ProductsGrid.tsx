@@ -1,4 +1,11 @@
-import { FC, useState, useEffect, ReactNode, cloneElement, ReactElement } from 'react';
+import {
+  FC,
+  useState,
+  useEffect,
+  ReactNode,
+  cloneElement,
+  ReactElement,
+} from 'react';
 
 import { BaseProduct } from '../../types/BaseProduct';
 import ProductBlock from '../../components/admin/ProductBlock';
@@ -41,7 +48,17 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
 
   return (
     <div className={Style.candlesGrid}>
-      <h2>{title}</h2>
+      <div className={Style.titleBlock}>
+        <h2>{title}</h2>
+        {popUpComponent && (
+          <ButtonWithIcon
+            icon={IconPlusLarge}
+            text="Добавить"
+            onClick={handlePopUpOpen}
+            color="#2E67EA"
+          />
+        )}
+      </div>
       <div className={Style.grid}>
         {products.map((item: BaseProduct) => (
           <ProductBlock
@@ -60,14 +77,6 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
             }
           />
         ))}
-        {popUpComponent && (
-          <ButtonWithIcon
-            icon={IconPlusLarge}
-            text="Добавить"
-            onClick={handlePopUpOpen}
-            color="#2E67EA"
-          />
-        )}
       </div>
       {isPopUpOpen &&
         cloneElement(popUpComponent as ReactElement, {

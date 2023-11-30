@@ -22,3 +22,9 @@
   flex-direction: column;
   gap: 8px;
 }
+
+@media (max-width: 576px) {
+  .form {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

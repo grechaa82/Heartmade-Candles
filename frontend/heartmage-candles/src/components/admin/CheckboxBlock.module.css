@@ -9,8 +9,9 @@
   align-items: center;
 }
 .label {
+  width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   gap: 24px;
   padding: 14px 16px 16px 16px;

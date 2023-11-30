@@ -1,8 +1,7 @@
 import { FC, useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import ListProductsCart from '../../modules/constructor/ListProductsCart';
-import ListProductsCartSkeleton from '../../modules/constructor/ListProductsCartSkeleton';
 import CandleForm from '../../modules/constructor/CandleForm';
 import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
 import {
@@ -14,12 +13,12 @@ import { OrderItemFilter } from '../../typesV2/shared/OrderItemFilter';
 import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
 import CandleSelectionPanelSkeleton from '../../modules/constructor/CandleSelectionPanelSkeleton';
 import { CandleTypeWithCandles } from '../../typesV2/constructor/CandleTypeWithCandles';
-import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import { calculatePrice } from '../../helpers/CalculatePrice';
 import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
 import ImageSlider from '../../components/constructor/ImageSlider';
 import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
 import { CandleDetailFilterBasketRequest } from '../../typesV2/order/CandleDetailFilterBasketRequest';
+import ConstructorBanner1 from '../../assets/constructor-banner-1.png';
 
 import { ConstructorApi } from '../../services/ConstructorApi';
 import { BasketApi } from '../../services/BasketApi';
@@ -54,7 +53,7 @@ const ConstructorPage: FC = () => {
     }
   }
 
-  function hideCandleForm() {
+  function handleHideCandleForm() {
     setErrorMessage([]);
     setCandleDetail(undefined);
   }
@@ -74,7 +73,7 @@ const ConstructorPage: FC = () => {
       ...prev,
       configuredCandleDetailToAdd,
     ]);
-    hideCandleForm();
+    handleHideCandleForm();
   };
 
   function convertToCandleString(value: ConfiguredCandleDetail[]): string {
@@ -237,10 +236,12 @@ const ConstructorPage: FC = () => {
 
   const calculatePriceConfiguredCandleDetail = (
     configuredCandleDetail: ConfiguredCandleDetail
-  ) => {
-    setPriceConfiguredCandleDetail(
-      Math.round(calculatePrice(configuredCandleDetail))
+  ): number => {
+    const priceConfiguredCandleDetail = Math.round(
+      calculatePrice(configuredCandleDetail)
     );
+    setPriceConfiguredCandleDetail(priceConfiguredCandleDetail);
+    return priceConfiguredCandleDetail;
   };
 
   const handleOnCreateBasket = async () => {
@@ -307,41 +308,29 @@ const ConstructorPage: FC = () => {
       <div className={Style.popUpNotification}>
         <ListErrorPopUp messages={errorMessage} />
       </div>
-      <div className={Style.leftPanel}>
-        {isConfiguredCandleDetailLoading ? (
-          <ListProductsCartSkeleton />
-        ) : (
-          <ListProductsCart
-            products={configuredCandleDetails}
-            onChangeCandleDetailWithQuantity={
-              handleChangeConfiguredCandleDetail
-            }
-          />
-        )}
+      <div
+        className={`${Style.leftPanel} ${
+          configuredCandleDetails.length === 0 ? Style.noElements : ''
+        }`}
+      >
+        <ListProductsCart
+          products={configuredCandleDetails}
+          onChangeCandleDetailWithQuantity={handleChangeConfiguredCandleDetail}
+          price={totalPrice}
+          onCreateBasket={handleOnCreateBasket}
+        />
       </div>
       <div className={Style.imagePanel}>
-        {candleDetail && (
-          <>
-            <ImageSlider images={candleDetail.candle.images} />
-            <div className={Style.hideCandleForm}>
-              <button onClick={() => hideCandleForm()}>
-                <IconArrowLeftLarge color="#777" />
-              </button>
-            </div>
-            <div className={Style.priceCandle}>
-              <span>{priceConfiguredCandleDetail} р</span>
-            </div>
-          </>
+        {candleDetail ? (
+          <ImageSlider images={candleDetail.candle.images} />
+        ) : (
+          <div className={Style.imageBlock}>
+            <img
+              alt="Explanation of how the constructor works"
+              src={ConstructorBanner1}
+            />
+          </div>
         )}
-        <div className={Style.orderInfo}>
-          <div className={Style.orderBtn}>
-            <button onClick={() => handleOnCreateBasket()}>Заказать</button>
-          </div>
-          <div className={Style.totalPrice}>
-            <span className={Style.title}>Итого </span>
-            <span className={Style.price}>{totalPrice} р</span>
-          </div>
-        </div>
       </div>
       <div className={Style.rightPanel}>
         {candleDetail ? (
@@ -349,6 +338,7 @@ const ConstructorPage: FC = () => {
             candleDetail={candleDetail}
             addCandleDetail={addConfiguredCandleDetailToListProductsCart}
             calculatePriceCandleDetail={calculatePriceConfiguredCandleDetail}
+            hideCandleForm={handleHideCandleForm}
           />
         ) : !candleTypeWithCandles ? (
           <CandleSelectionPanelSkeleton />

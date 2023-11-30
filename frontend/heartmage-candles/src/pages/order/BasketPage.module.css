@@ -1,17 +1,17 @@
 .container {
   max-width: 1440px;
-  padding: 24px 32px;
+  padding: 1.5rem 2rem;
   margin-left: auto;
   margin-right: auto;
   display: flex;
   justify-content: space-between;
-  gap: 128px;
+  gap: 2rem;
 }
 .leftPanel {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 3rem;
 }
 .rightPanel {
 }
@@ -20,13 +20,28 @@
 }
 .backBtn > button {
   border-radius: var(--border-radius-primary);
-  border: 2px solid var(--color-fafafa);
-  background: var(--color-fafafa);
+  border: 2px solid var(--color-eee);
+  background: var(--color-fff);
 }
 .popUpNotification {
   position: absolute;
-  bottom: 32px;
+  bottom: 2rem;
   left: 50%;
   transform: translate(-50%, 0%);
   z-index: 50;
+}
+
+@media (max-width: 1100px) {
+  .container {
+    flex-direction: column;
+  }
+  .rightPanel {
+    position: sticky;
+    bottom: 0;
+  }
+}
+@media (max-width: 992px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
 }

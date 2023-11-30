@@ -19,7 +19,11 @@ interface ImageSliderProps {
   addImages: (images: Image[]) => void;
 }
 
-const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) => {
+const ImageSlider: FC<ImageSliderProps> = ({
+  images,
+  updateImages,
+  addImages,
+}) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isAddImagesPopUpOpen, setIsAddImagesPopUpOpen] = useState(false);
   const [isChangeImagesPopUpOpen, setIsChangeImagesPopUpOpen] = useState(false);
@@ -61,7 +65,9 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
     fileNames.push(image.fileName);
     const imagesResponse = await ImagesApi.deleteImages(fileNames);
     if (!imagesResponse.error) {
-      const newImagesState: Image[] = images.filter((i) => i.fileName !== image.fileName);
+      const newImagesState: Image[] = images.filter(
+        (i) => i.fileName !== image.fileName
+      );
       updateImages(newImagesState);
     }
   };
@@ -77,9 +83,12 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
 
   if (images.length === 0) {
     return (
-      <div className={Style.image}>
+      <div className={Style.imageSlider}>
         <div className={Style.changesImages}>
-          <button className={Style.iconUploadImages} onClick={handleAddImagesPopUpOpen}>
+          <button
+            className={Style.iconUploadImages}
+            onClick={handleAddImagesPopUpOpen}
+          >
             <IconDownloadLarge color="#6FCF97" />
           </button>
         </div>
@@ -96,11 +105,13 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
   }
 
   return (
-    <div className={Style.image}>
-      <img
-        src={`${apiUrlToImage}/${images[currentImageIndex].fileName}`}
-        alt={images[currentImageIndex].alternativeName}
-      />
+    <div className={Style.imageSlider}>
+      <div className={Style.image}>
+        <img
+          src={`${apiUrlToImage}/${images[currentImageIndex].fileName}`}
+          alt={images[currentImageIndex].alternativeName}
+        />
+      </div>
       <div className={Style.slider}>
         <button
           className={Style.iconChevronBtn}
@@ -126,10 +137,16 @@ const ImageSlider: FC<ImageSliderProps> = ({ images, updateImages, addImages }) 
         </button>
       </div>
       <div className={Style.changesImages}>
-        <button className={Style.iconChangeImages} onClick={handleChangeImagesPopUpOpen}>
+        <button
+          className={Style.iconChangeImages}
+          onClick={handleChangeImagesPopUpOpen}
+        >
           <IconViewListLarge color="#6FCF97" />
         </button>
-        <button className={Style.iconUploadImages} onClick={handleAddImagesPopUpOpen}>
+        <button
+          className={Style.iconUploadImages}
+          onClick={handleAddImagesPopUpOpen}
+        >
           <IconDownloadLarge color="#6FCF97" />
         </button>
       </div>
