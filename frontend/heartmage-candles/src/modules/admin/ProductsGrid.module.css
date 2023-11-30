@@ -2,7 +2,24 @@
   max-width: 1301px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 0.5rem;
+}
+.titleBlock {
+  display: flex;
+  margin-bottom: 1.5rem;
+  gap: 2rem;
+  align-items: flex-end;
+}
+.titleBlock > h2 {
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-heading-2);
+  line-height: var(--line-height-standard);
+  margin: 0;
+  color: var(--color-aaa);
+}
+.titleBlock > button {
+  border: none;
+  padding: 0.5rem 0;
 }
 @media screen and (max-width: 1320px) {
   .grid {
@@ -10,16 +27,14 @@
   }
 }
 
-@media screen and (max-width: 990px) {
+@media screen and (max-width: 768px) {
   .grid {
     grid-template-columns: 1fr;
   }
-}
-
-.candlesGrid > h2 {
-  font-weight: var(--font-weight-600);
-  font-size: var(--font-size-heading-2);
-  line-height: var(--line-height-110);
-  margin: 0 0 24px 0;
-  color: var(--color-aaa);
+  .titleBlock {
+    align-items: start;
+  }
+  .titleBlock > h2 {
+    font-size: var(--font-size-xl);
+  }
 }

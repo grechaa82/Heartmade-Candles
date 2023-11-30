@@ -1,4 +1,11 @@
-import { FC, useState, useEffect, ReactNode, cloneElement, ReactElement } from 'react';
+import {
+  FC,
+  useState,
+  useEffect,
+  ReactNode,
+  cloneElement,
+  ReactElement,
+} from 'react';
 
 import InputTag from '../../components/admin/InputTag';
 import { TagData } from '../../components/shared/Tag';
@@ -62,7 +69,17 @@ const TagsGrid: FC<TagsGridProps> = ({
 
   return (
     <div className={Style.tabsInput}>
-      <h2>{title}</h2>
+      <div className={Style.titleBlock}>
+        <h2>{title}</h2>
+        {popUpComponent && (
+          <ButtonWithIcon
+            icon={IconPlusLarge}
+            text="Добавить"
+            onClick={handlePopUpOpen}
+            color="#2E67EA"
+          />
+        )}
+      </div>
       <div className={Style.content}>
         <InputTag
           tags={selectedTags}
@@ -71,17 +88,13 @@ const TagsGrid: FC<TagsGridProps> = ({
           onDelete={onDelete}
         />
         {onSave && isModified && !popUpComponent && (
-          <button type="button" className={Style.saveButton} onClick={handleOnSave}>
+          <button
+            type="button"
+            className={Style.saveButton}
+            onClick={handleOnSave}
+          >
             Сохранить
           </button>
-        )}
-        {popUpComponent && (
-          <ButtonWithIcon
-            icon={IconPlusLarge}
-            text="Добавить"
-            onClick={handlePopUpOpen}
-            color="#2E67EA"
-          />
         )}
         {isPopUpOpen &&
           cloneElement(popUpComponent as ReactElement, {

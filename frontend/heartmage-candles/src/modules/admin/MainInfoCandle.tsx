@@ -1,6 +1,8 @@
 import { FC, useState, useEffect, ChangeEvent } from 'react';
 
-import ButtonDropdown, { optionData } from '../../components/shared/ButtonDropdown';
+import ButtonDropdown, {
+  optionData,
+} from '../../components/shared/ButtonDropdown';
 import CheckboxBlock from '../../components/admin/CheckboxBlock';
 import Textarea from '../../components/admin/Textarea';
 import { Candle } from '../../types/Candle';
@@ -66,7 +68,9 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
   };
 
   const handleChangeTypeCandle = (id: string) => {
-    const selectedTypeCandle = typesCandle.find((typeCandle) => typeCandle.id.toString() === id);
+    const selectedTypeCandle = typesCandle.find(
+      (typeCandle) => typeCandle.id.toString() === id
+    );
     if (selectedTypeCandle) {
       setCandle((prev) => ({
         ...prev,
@@ -90,7 +94,10 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
   };
 
   const handleChangeImages = (images: Image[]) => {
-    const newCandle: Candle = { ...candle, images: [...candle.images, ...images] };
+    const newCandle: Candle = {
+      ...candle,
+      images: [...candle.images, ...images],
+    };
     setCandle(newCandle);
     onChangesCandle(newCandle);
     if (onSave) {
@@ -124,7 +131,11 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemPrice}`}>
-          <Textarea text={candle.price.toString()} label="Стоимость" onChange={handleChangePrice} />
+          <Textarea
+            text={candle.price.toString()}
+            label="Стоимость"
+            onChange={handleChangePrice}
+          />
         </div>
         <div className={`${Style.formItem} ${Style.itemWeightGrams}`}>
           <Textarea
@@ -141,7 +152,11 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
           />
         </div>
         <div className={`${Style.formItem} ${Style.itemActive}`}>
-          <CheckboxBlock text="Активна" checked={candle.isActive} onChange={handleChangeIsActive} />
+          <CheckboxBlock
+            text="Активна"
+            checked={candle.isActive}
+            onChange={handleChangeIsActive}
+          />
         </div>
         <div className={`${Style.formItem} ${Style.itemDescription}`}>
           <Textarea

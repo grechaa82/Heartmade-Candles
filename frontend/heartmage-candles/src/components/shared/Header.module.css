@@ -10,7 +10,7 @@
 .visible {
   position: sticky;
   top: 0;
-  z-index: 101;
+  z-index: 99;
   background: var(--color-fff);
   opacity: 1;
   visibility: visible;
