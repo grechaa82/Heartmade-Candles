@@ -59,6 +59,11 @@ public class CandleService : ICandleService
 
     public async Task<Result> UpdateDecor(int candleId, int[] decorIds)
     {
+        if (!decorIds.Any())
+        {
+            return await _decorRepository.UpdateCandleDecor(candleId, Array.Empty<Decor>());
+        }
+
         var decors = await _decorRepository.GetByIds(decorIds);
 
         if (!decors.HasValue || decors.Value.Length != decorIds.Length)
@@ -68,13 +73,16 @@ public class CandleService : ICandleService
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _decorRepository.UpdateCandleDecor(candleId, decors.Value);
-
-        return Result.Success();
+        return await _decorRepository.UpdateCandleDecor(candleId, decors.Value);
     }
 
     public async Task<Result> UpdateLayerColor(int candleId, int[] layerColorIds)
     {
+        if (!layerColorIds.Any())
+        {
+            return Result.Failure("'LayerColor' cannot be empty");
+        }
+
         var layerColors = await _layerColorRepository.GetByIds(layerColorIds);
 
         if (!layerColors.HasValue || layerColors.Value.Length != layerColorIds.Length)
@@ -84,13 +92,16 @@ public class CandleService : ICandleService
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _layerColorRepository.UpdateCandleLayerColor(candleId, layerColors.Value);
-
-        return Result.Success();
+        return await _layerColorRepository.UpdateCandleLayerColor(candleId, layerColors.Value);
     }
 
     public async Task<Result> UpdateNumberOfLayer(int candleId, int[] numberOfLayerIds)
     {
+        if (!numberOfLayerIds.Any())
+        {
+            return Result.Failure("'NumberOfLayer' cannot be empty");
+        }
+
         var numberOfLayers = await _numberOfLayerRepository.GetByIds(numberOfLayerIds);
 
         if (!numberOfLayers.HasValue || numberOfLayers.Value.Length != numberOfLayerIds.Length)
@@ -100,13 +111,16 @@ public class CandleService : ICandleService
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _numberOfLayerRepository.UpdateCandleNumberOfLayer(candleId, numberOfLayers.Value);
-
-        return Result.Success();
+        return await _numberOfLayerRepository.UpdateCandleNumberOfLayer(candleId, numberOfLayers.Value);
     }
 
     public async Task<Result> UpdateSmell(int candleId, int[] smellIds)
     {
+        if (!smellIds.Any())
+        {
+            return await _smellRepository.UpdateCandleSmell(candleId, Array.Empty<Smell>());
+        } 
+
         var smells = await _smellRepository.GetByIds(smellIds);
 
         if (!smells.HasValue || smells.Value.Length != smellIds.Length)
@@ -116,13 +130,16 @@ public class CandleService : ICandleService
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _smellRepository.UpdateCandleSmell(candleId, smells.Value);
-
-        return Result.Success();
+        return await _smellRepository.UpdateCandleSmell(candleId, smells.Value);
     }
 
     public async Task<Result> UpdateWick(int candleId, int[] wickIds)
     {
+        if (!wickIds.Any())
+        {
+            return Result.Failure("'Wick' cannot be empty");
+        }
+
         var wicks = await _wickRepository.GetByIds(wickIds);
 
         if (!wicks.HasValue || wicks.Value.Length != wickIds.Length)
@@ -132,8 +149,6 @@ public class CandleService : ICandleService
             return Result.Failure<int[]>($"'{missingIdsString}' these ids do not exist");
         }
 
-        await _wickRepository.UpdateCandleWick(candleId, wicks.Value);
-
-        return Result.Success();
+        return await _wickRepository.UpdateCandleWick(candleId, wicks.Value);
     }
 }
