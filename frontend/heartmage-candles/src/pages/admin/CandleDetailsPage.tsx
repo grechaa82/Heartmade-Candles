@@ -1,7 +1,9 @@
 import { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import MainInfoCandle, { FetchTypeCandle } from '../../modules/admin/MainInfoCandle';
+import MainInfoCandle, {
+  FetchTypeCandle,
+} from '../../modules/admin/MainInfoCandle';
 import { CandleDetail } from '../../types/CandleDetail';
 import ProductsGrid, { FetchProducts } from '../../modules/admin/ProductsGrid';
 import TagsGrid from '../../modules/admin/TagsGrid';
@@ -72,7 +74,10 @@ const CandleDetailsPage: FC = () => {
     if (numberOfLayersResponse.data && !numberOfLayersResponse.error) {
       return numberOfLayersResponse.data;
     } else {
-      setErrorMessage([...errorMessage, numberOfLayersResponse.error as string]);
+      setErrorMessage([
+        ...errorMessage,
+        numberOfLayersResponse.error as string,
+      ]);
       return [];
     }
   };
@@ -129,11 +134,15 @@ const CandleDetailsPage: FC = () => {
     setCandleDetailData(newCandleDetailData);
   };
 
-  const handleChangesNumberOfLayers = (updatedNumberOfLayers: TagData[]): void => {
-    const numberOfLayers: NumberOfLayer[] = updatedNumberOfLayers.map((tagData) => ({
-      id: tagData.id,
-      number: parseInt(tagData.text),
-    }));
+  const handleChangesNumberOfLayers = (
+    updatedNumberOfLayers: TagData[]
+  ): void => {
+    const numberOfLayers: NumberOfLayer[] = updatedNumberOfLayers.map(
+      (tagData) => ({
+        id: tagData.id,
+        number: parseInt(tagData.text),
+      })
+    );
 
     const newCandleDetailData: CandleDetail = {
       ...candleDetailData!,
@@ -182,7 +191,16 @@ const CandleDetailsPage: FC = () => {
     if (id) {
       const updatedDecors = updatedItems as Decor[];
       const ids = updatedDecors.map((d) => d.id);
-      await CandlesApi.updateDecor(id, ids);
+
+      const candleDecorsResponse = await CandlesApi.updateDecor(id, ids);
+      if (candleDecorsResponse.data && !candleDecorsResponse.error) {
+        setCandleDetailData(candleDecorsResponse.data);
+      } else {
+        setErrorMessage([
+          ...errorMessage,
+          candleDecorsResponse.error as string,
+        ]);
+      }
     }
   };
 
@@ -190,14 +208,41 @@ const CandleDetailsPage: FC = () => {
     if (id) {
       const updatedLayerColors = updatedItems as LayerColor[];
       const ids = updatedLayerColors.map((l) => l.id);
-      await CandlesApi.updateLayerColor(id, ids);
+
+      const candleLayerColorsResponse = await CandlesApi.updateLayerColor(
+        id,
+        ids
+      );
+      if (candleLayerColorsResponse.data && !candleLayerColorsResponse.error) {
+        setCandleDetailData(candleLayerColorsResponse.data);
+      } else {
+        setErrorMessage([
+          ...errorMessage,
+          candleLayerColorsResponse.error as string,
+        ]);
+      }
     }
   };
 
   const updateCandleNumberOfLayers = async (updatedItems: TagData[]) => {
     if (id) {
       const ids = updatedItems.map((n) => n.id);
-      await CandlesApi.updateNumberOfLayer(id, ids);
+
+      const candleNumberOfLayersResponse = await CandlesApi.updateNumberOfLayer(
+        id,
+        ids
+      );
+      if (
+        candleNumberOfLayersResponse.data &&
+        !candleNumberOfLayersResponse.error
+      ) {
+        setCandleDetailData(candleNumberOfLayersResponse.data);
+      } else {
+        setErrorMessage([
+          ...errorMessage,
+          candleNumberOfLayersResponse.error as string,
+        ]);
+      }
     }
   };
 
@@ -205,7 +250,16 @@ const CandleDetailsPage: FC = () => {
     if (id) {
       const updatedSmells = updatedItems as Smell[];
       const ids = updatedSmells.map((s) => s.id);
-      await CandlesApi.updateSmell(id, ids);
+
+      const candleSmellsResponse = await CandlesApi.updateSmell(id, ids);
+      if (candleSmellsResponse.data && !candleSmellsResponse.error) {
+        setCandleDetailData(candleSmellsResponse.data);
+      } else {
+        setErrorMessage([
+          ...errorMessage,
+          candleSmellsResponse.error as string,
+        ]);
+      }
     }
   };
 
@@ -213,7 +267,13 @@ const CandleDetailsPage: FC = () => {
     if (id) {
       const updatedWicks = updatedItems as Wick[];
       const ids = updatedWicks.map((w) => w.id);
-      await CandlesApi.updateWick(id, ids);
+
+      const candleWicksResponse = await CandlesApi.updateWick(id, ids);
+      if (candleWicksResponse.data && !candleWicksResponse.error) {
+        setCandleDetailData(candleWicksResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, candleWicksResponse.error as string]);
+      }
     }
   };
 

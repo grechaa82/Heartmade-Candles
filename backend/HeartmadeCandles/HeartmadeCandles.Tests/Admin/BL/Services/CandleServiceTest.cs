@@ -32,7 +32,7 @@ public class CandleServiceTest
     }
 
     [Fact]
-    public async Task UpdateDecor_WhenValid_ShouldReturnFailureAsync()
+    public async Task UpdateDecor_WhenValid_ReturnSuccess()
     {
         // Arrange
         var id = _faker.Random.Number(1, 100);
@@ -86,8 +86,25 @@ public class CandleServiceTest
         return decor.Value;
     }
 
+    private static int[] GenerateIntArray(int count = 0)
+    {
+        if(count == 0)
+        {
+            count = _faker.Random.Number(1, 100);
+        }
+
+        var array = new int[count];
+        foreach (var i in Enumerable.Range(0, count))
+        {
+            array[i] = _faker.Random.Number(1, 100);
+        }
+
+        return array;
+    }
+
+
     [Fact]
-    public async Task UpdateDecor_WhenAllDecorsNotExist_ShouldReturnFailureAsync()
+    public async Task UpdateDecor_WhenAllDecorsNotExist_ReturnFailure()
     {
         // Arrange
         var id = _faker.Random.Number(1, 100);
@@ -112,7 +129,7 @@ public class CandleServiceTest
     }
 
     [Fact]
-    public async Task UpdateDecor_WhenOneDecorNotExist_ShouldReturnFailureAsync()
+    public async Task UpdateDecor_WhenOneDecorNotExist_ReturnFailure()
     {
         // Arrange
         var id = _faker.Random.Number(1, 100);
@@ -142,5 +159,23 @@ public class CandleServiceTest
         // Assert
         Assert.True(result.IsFailure);
         Assert.Equal("'4' these ids do not exist", result.Error);
+    }
+
+    [Fact]
+    public async Task UpdateDecor_WhenEmptyArrayIds_ReturnSuccess()
+    {
+        // Arrange
+        var id = _faker.Random.Number(1, 100);
+
+        _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, Array.Empty<Decor>()))
+            .ReturnsAsync(Result.Success)
+            .Verifiable();
+
+        // Act
+        var result = await _service.UpdateDecor(id, Array.Empty<int>());
+
+        // Assert
+        Assert.True(result.IsSuccess);
+        _decorRepositoryMock.Verify();
     }
 }
