@@ -21,64 +21,65 @@ import ContactPage from './pages/home/ContactPage';
 import ReviewPage from './pages/home/ReviewPage';
 import HelpPage from './pages/home/HelpPage';
 import HomePage from './pages/home/HomePage';
+import NotFoundPage from './pages/home/NotFoundPage';
 
 import Style from './App.module.css';
 
 function App() {
   return (
-    <>
-      <Routes>
-        <Route
-          path="admin/*"
-          element={
-            <>
-              <Header />
-              <div className={Style.AdminContent}>
-                <Navbar />
-                <main className={Style.AdminContainer}>
-                  <Routes>
-                    <Route path="candles" element={<AllCandlePage />} />
-                    <Route path="candles/:id" element={<CandleDetailsPage />} />
-                    <Route path="decors" element={<AllDecorsPage />} />
-                    <Route path="decors/:id" element={<DecorsPage />} />
-                    <Route path="layerColors" element={<AllLayerColorPage />} />
-                    <Route
-                      path="layerColors/:id"
-                      element={<LayerColorPage />}
-                    />
-                    <Route path="smells" element={<AllSmellPage />} />
-                    <Route path="smells/:id" element={<SmellPage />} />
-                    <Route path="wicks" element={<AllWickPage />} />
-                    <Route path="wicks/:id" element={<WickPage />} />
-                  </Routes>
-                </main>
-              </div>
-            </>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <>
-              <Header />
-              <Routes>
-                <Route path="" element={<HomePage />} />
-                <Route path="aboutUs/" element={<AboutUs />} />
-                <Route path="contact/" element={<ContactPage />} />
-                <Route path="review/" element={<ReviewPage />} />
-                <Route path="help/" element={<HelpPage />} />
-                <Route path="constructor/" element={<ConstructorPage />} />
-                <Route path="baskets/:id" element={<BasketPage />} />
-                <Route path="orders/:id">
-                  <Route path="thank" element={<ThankPage />} />
-                </Route>
-                <Route path="auth/" element={<AuthPage />} />
-              </Routes>
-            </>
-          }
-        />
-      </Routes>
-    </>
+    <Routes>
+      <Route
+        path="admin/*"
+        element={
+          <>
+            <Header />
+            <div className={Style.AdminContent}>
+              <Navbar />
+              <main className={Style.AdminContainer}>
+                <Routes>
+                  <Route index element={<AllCandlePage />} path="candles" />
+                  <Route element={<CandleDetailsPage />} path="candles/:id" />
+                  <Route index element={<AllDecorsPage />} path="decors" />
+                  <Route element={<DecorsPage />} path="decors/:id" />
+                  <Route
+                    index
+                    element={<AllLayerColorPage />}
+                    path="layerColors"
+                  />
+                  <Route element={<LayerColorPage />} path="layerColors/:id" />
+                  <Route index element={<AllSmellPage />} path="smells" />
+                  <Route element={<SmellPage />} path="smells/:id" />
+                  <Route index element={<AllWickPage />} path="wicks" />
+                  <Route element={<WickPage />} path="wicks/:id" />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </main>
+            </div>
+          </>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <>
+            <Header />
+            <Routes>
+              <Route index element={<HomePage />} />
+              <Route element={<AboutUs />} path="aboutUs" />
+              <Route element={<ContactPage />} path="contact" />
+              <Route element={<ReviewPage />} path="review" />
+              <Route element={<HelpPage />} path="help" />
+              <Route element={<ConstructorPage />} path="constructor" />
+              <Route element={<BasketPage />} path="baskets/:id" />
+              <Route element={<ThankPage />} path="orders/:id/thank" />
+              <Route element={<AuthPage />} path="auth" />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </>
+        }
+      />
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   );
 }
 
