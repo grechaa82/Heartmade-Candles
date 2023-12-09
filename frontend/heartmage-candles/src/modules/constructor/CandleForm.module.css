@@ -52,12 +52,13 @@
   background: var(--color-fff);
   padding: 1.5rem 0;
   position: sticky;
-  bottom: -0.25rem;
+  bottom: 0;
+  z-index: 50;
 }
 .configurationInfoBlock::before {
   content: '';
   position: absolute;
-  top: -0.5rem;
+  top: 0;
   right: -0.5rem;
   bottom: -0.5rem;
   left: -0.5rem;
