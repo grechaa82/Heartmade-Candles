@@ -43,6 +43,7 @@
   flex: 2;
   display: flex;
   flex-direction: column;
+  margin: 1.5rem 0;
 }
 .imageBlock {
   padding: 32px;
@@ -119,7 +120,6 @@
   .container {
     flex-direction: column;
     height: auto;
-    gap: 24px;
   }
   .leftPanel {
     overflow-y: unset;
