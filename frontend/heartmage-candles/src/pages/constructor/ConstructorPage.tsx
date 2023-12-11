@@ -19,6 +19,7 @@ import ImageSlider from '../../components/constructor/ImageSlider';
 import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
 import { CandleDetailFilterBasketRequest } from '../../typesV2/order/CandleDetailFilterBasketRequest';
 import ConstructorBanner1 from '../../assets/constructor-banner-1.png';
+import ListProductsCartSkeleton from '../../modules/constructor/ListProductsCartSkeleton';
 
 import { ConstructorApi } from '../../services/ConstructorApi';
 import { BasketApi } from '../../services/BasketApi';
@@ -313,12 +314,18 @@ const ConstructorPage: FC = () => {
           configuredCandleDetails.length === 0 ? Style.noElements : ''
         }`}
       >
-        <ListProductsCart
-          products={configuredCandleDetails}
-          onChangeCandleDetailWithQuantity={handleChangeConfiguredCandleDetail}
-          price={totalPrice}
-          onCreateBasket={handleOnCreateBasket}
-        />
+        {isConfiguredCandleDetailLoading ? (
+          <ListProductsCartSkeleton />
+        ) : (
+          <ListProductsCart
+            products={configuredCandleDetails}
+            onChangeCandleDetailWithQuantity={
+              handleChangeConfiguredCandleDetail
+            }
+            price={totalPrice}
+            onCreateBasket={handleOnCreateBasket}
+          />
+        )}
       </div>
       <div className={Style.imagePanel}>
         {candleDetail ? (

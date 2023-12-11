@@ -1,24 +1,88 @@
-.listProductsCartSkeleton {
+.listProductsCart {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1rem;
   align-items: center;
+  width: fit-content;
+  height: 100%;
 }
 .productCartSkeleton {
   display: flex;
 }
 .imageSkeleton {
-  width: 72px;
-  height: 72px;
+  width: 4.5rem;
+  height: 4.5rem;
 }
 .quantityManagementSkeleton {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-left: 4px;
+  gap: 1rem;
+  margin-left: 0.25rem;
   justify-content: center;
 }
 .iconBtnSkeleton {
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+.infoBlock {
+  display: flex;
+  gap: 0.5rem;
+  border-top: 0.25rem solid var(--color-eee);
+  background: var(--color-fff);
+  padding: 1rem 0;
+  position: sticky;
+  bottom: 0;
+  flex-direction: column;
+  margin-top: auto;
+}
+.priceBlock {
+  display: flex;
+  flex-direction: column;
+}
+.priceTitle {
+  color: var(--color-blue);
+  font-size: var(--font-size-s);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-standard);
+}
+.price {
+  min-height: 2.25rem;
+  min-width: 6.25rem;
+}
+.createBtn > button {
+  width: 100%;
+  border-radius: var(--border-radius-primary);
+  border: 0.125rem solid var(--color-eee);
+  background: var(--color-eee);
+}
+.createBtn > button > p {
+  color: var(--color-aaa);
+}
+
+@media (max-width: 1100px) {
+  .listProductsCart {
+    flex-direction: row;
+  }
+  .infoBlock {
+    position: fixed;
+    display: flex;
+    border-top: 0.25rem solid var(--color-eee);
+    background: var(--color-fff);
+    padding: 1.5rem 0;
+    width: 94vw;
+    flex-direction: row;
+    justify-content: space-between;
+    background: var(--color-fff);
+    z-index: 49;
+  }
+  .infoBlock::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -2rem;
+    bottom: -2rem;
+    left: -2rem;
+    background-color: var(--color-fff);
+    z-index: -1;
+  }
 }

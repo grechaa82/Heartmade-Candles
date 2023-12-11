@@ -11,7 +11,10 @@ export interface CandleSelectionPanelProps {
   onSelectCandle: (product: ImageProduct) => void;
 }
 
-const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({ data, onSelectCandle }) => {
+const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({
+  data,
+  onSelectCandle,
+}) => {
   return (
     <div className={Style.content}>
       {data &&
