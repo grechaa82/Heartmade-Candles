@@ -332,10 +332,12 @@ const ConstructorPage: FC = () => {
           <ImageSlider images={candleDetail.candle.images} />
         ) : (
           <div className={Style.imageBlock}>
-            <img
-              alt="Explanation of how the constructor works"
-              src={ConstructorBanner1}
-            />
+            <div className={Style.image}>
+              <img
+                alt="Explanation of how the constructor works"
+                src={ConstructorBanner1}
+              />
+            </div>
           </div>
         )}
       </div>

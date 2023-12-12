@@ -47,11 +47,13 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
 
   return (
     <div className={Style.imageBlock}>
-      <img
-        className={Style.mainImage}
-        src={`${apiUrlToImage}/${images[currentImageIndex].fileName}`}
-        alt={images[currentImageIndex].alternativeName}
-      />
+      <div className={Style.image}>
+        <img
+          className={Style.mainImage}
+          src={`${apiUrlToImage}/${images[currentImageIndex].fileName}`}
+          alt={images[currentImageIndex].alternativeName}
+        />
+      </div>
       <div className={Style.slider}>
         <button
           className={Style.iconChevronBtn}
