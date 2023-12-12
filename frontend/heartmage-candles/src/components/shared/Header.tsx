@@ -2,6 +2,7 @@ import { FC, useState, useEffect } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 
 import Logo from '../../UI/Logo';
+import LogoSmall from '../../UI/LogoSmall';
 import IconMenuLarge from '../../UI/IconMenuLarge';
 
 import Style from './Header.module.css';
@@ -36,8 +37,8 @@ const Header: FC = () => {
       className={visible ? `${Style.header} ${Style.visible}` : Style.header}
     >
       <div className={Style.burgerMenu}>
-        <NavLink className={Style.altLogo} onClick={toggleMenu} to="/">
-          lcf
+        <NavLink className={Style.altLogo} to="/">
+          <LogoSmall />
         </NavLink>
         <button className={Style.burgerMenuIcon} onClick={toggleMenu}>
           <IconMenuLarge />
