@@ -4,7 +4,7 @@ import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { Decor } from '../../types/Decor';
 import { DecorRequest } from '../../types/Requests/DecorRequest';
 import CreateDecorPopUp from '../../components/admin/PopUp/CreateDecorPopUp';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { DecorsApi } from '../../services/DecorsApi';
 
@@ -33,7 +33,10 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
       if (updatedDecorsResponse.data && !updatedDecorsResponse.error) {
         setDecorsData(updatedDecorsResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedDecorsResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedDecorsResponse.error as string,
+        ]);
       }
     }
   };
@@ -47,7 +50,10 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
       if (updatedDecorsResponse.data && !updatedDecorsResponse.error) {
         setDecorsData(updatedDecorsResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedDecorsResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedDecorsResponse.error as string,
+        ]);
       }
     }
   };
@@ -79,9 +85,7 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
         }
         deleteProduct={handleDeleteDecor}
       />
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

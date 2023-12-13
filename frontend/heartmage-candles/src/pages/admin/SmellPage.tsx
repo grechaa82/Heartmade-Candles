@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import MainInfoSmell from '../../modules/admin/MainInfoSmell';
 import { Smell } from '../../types/Smell';
 import { SmellRequest } from '../../types/Requests/SmellRequest';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { SmellsApi } from '../../services/SmellsApi';
 
@@ -38,7 +38,10 @@ const SmellPage: FC = () => {
 
       const updatedSmellResponse = await SmellsApi.update(id, smellRequest);
       if (updatedSmellResponse.error) {
-        setErrorMessage([...errorMessage, updatedSmellResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedSmellResponse.error as string,
+        ]);
       }
     }
   };
@@ -69,9 +72,7 @@ const SmellPage: FC = () => {
           />
         )}
       </div>
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

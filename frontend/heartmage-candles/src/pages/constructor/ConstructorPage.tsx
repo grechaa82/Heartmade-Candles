@@ -14,7 +14,7 @@ import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel
 import CandleSelectionPanelSkeleton from '../../modules/constructor/CandleSelectionPanelSkeleton';
 import { CandleTypeWithCandles } from '../../typesV2/constructor/CandleTypeWithCandles';
 import { calculatePrice } from '../../helpers/CalculatePrice';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import ImageSlider from '../../components/constructor/ImageSlider';
 import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
 import { CandleDetailFilterBasketRequest } from '../../typesV2/order/CandleDetailFilterBasketRequest';
@@ -306,9 +306,7 @@ const ConstructorPage: FC = () => {
 
   return (
     <div className={Style.container}>
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
       <div
         className={`${Style.leftPanel} ${
           configuredCandleDetails.length === 0 ? Style.noElements : ''

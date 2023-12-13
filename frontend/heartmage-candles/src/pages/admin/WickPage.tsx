@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import MainInfoWick from '../../modules/admin/MainInfoWick';
 import { Wick } from '../../types/Wick';
 import { WickRequest } from '../../types/Requests/WickRequest';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { WicksApi } from '../../services/WicksApi';
 
@@ -63,12 +63,14 @@ const WickPage: FC = () => {
     <>
       <div className="wicks">
         {wickData && (
-          <MainInfoWick data={wickData} onChangesWick={handleChangesWick} onSave={updateWick} />
+          <MainInfoWick
+            data={wickData}
+            onChangesWick={handleChangesWick}
+            onSave={updateWick}
+          />
         )}
       </div>
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

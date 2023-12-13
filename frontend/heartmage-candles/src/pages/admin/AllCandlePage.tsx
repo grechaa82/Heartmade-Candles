@@ -12,7 +12,7 @@ import { CandleRequest } from '../../types/Requests/CandleRequest';
 import CreateTagPopUp from '../../components/admin/PopUp/CreateTagPopUp';
 import { NumberOfLayerRequest } from '../../types/Requests/NumberOfLayerRequest';
 import { TypeCandleRequest } from '../../types/Requests/TypeCandleRequest';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { CandlesApi } from '../../services/CandlesApi';
 import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
@@ -24,7 +24,9 @@ export interface AllCandlePageProps {}
 
 const AllCandlePage: FC<AllCandlePageProps> = () => {
   const [typeCandlesData, setTypeCandlesData] = useState<TypeCandle[]>([]);
-  const [numberOfLayersData, setNumberOfLayersData] = useState<NumberOfLayer[]>([]);
+  const [numberOfLayersData, setNumberOfLayersData] = useState<NumberOfLayer[]>(
+    []
+  );
   const [candlesData, setCandlesData] = useState<Candle[]>([]);
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
@@ -48,7 +50,10 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       if (updatedCandlesResponse.data && !updatedCandlesResponse.error) {
         setCandlesData(updatedCandlesResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedCandlesResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedCandlesResponse.error as string,
+        ]);
       }
     }
   };
@@ -62,7 +67,10 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       if (updatedCandlesResponse.data && !updatedCandlesResponse.error) {
         setCandlesData(updatedCandlesResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedCandlesResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedCandlesResponse.error as string,
+        ]);
       }
     }
   };
@@ -77,10 +85,16 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       setErrorMessage([...errorMessage, response.error as string]);
     } else {
       const updatedNumberOfLayersResponse = await NumberOfLayersApi.getAll();
-      if (updatedNumberOfLayersResponse.data && !updatedNumberOfLayersResponse.error) {
+      if (
+        updatedNumberOfLayersResponse.data &&
+        !updatedNumberOfLayersResponse.error
+      ) {
         setNumberOfLayersData(updatedNumberOfLayersResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedNumberOfLayersResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedNumberOfLayersResponse.error as string,
+        ]);
       }
     }
   };
@@ -95,10 +109,16 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       setErrorMessage([...errorMessage, response.error as string]);
     } else {
       const updatedTypeCandlesResponse = await TypeCandlesApi.getAll();
-      if (updatedTypeCandlesResponse.data && !updatedTypeCandlesResponse.error) {
+      if (
+        updatedTypeCandlesResponse.data &&
+        !updatedTypeCandlesResponse.error
+      ) {
         setTypeCandlesData(updatedTypeCandlesResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedTypeCandlesResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedTypeCandlesResponse.error as string,
+        ]);
       }
     }
   };
@@ -109,10 +129,16 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       setErrorMessage([...errorMessage, response.error as string]);
     } else {
       const updatedNumberOfLayersResponse = await NumberOfLayersApi.getAll();
-      if (updatedNumberOfLayersResponse.data && !updatedNumberOfLayersResponse.error) {
+      if (
+        updatedNumberOfLayersResponse.data &&
+        !updatedNumberOfLayersResponse.error
+      ) {
         setNumberOfLayersData(updatedNumberOfLayersResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedNumberOfLayersResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedNumberOfLayersResponse.error as string,
+        ]);
       }
     }
   };
@@ -123,10 +149,16 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       setErrorMessage([...errorMessage, response.error as string]);
     } else {
       const updatedTypeCandlesResponse = await TypeCandlesApi.getAll();
-      if (updatedTypeCandlesResponse.data && !updatedTypeCandlesResponse.error) {
+      if (
+        updatedTypeCandlesResponse.data &&
+        !updatedTypeCandlesResponse.error
+      ) {
         setTypeCandlesData(updatedTypeCandlesResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedTypeCandlesResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedTypeCandlesResponse.error as string,
+        ]);
       }
     }
   };
@@ -151,7 +183,10 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       if (numberOfLayersResponse.data && !numberOfLayersResponse.error) {
         setNumberOfLayersData(numberOfLayersResponse.data);
       } else {
-        setErrorMessage([...errorMessage, numberOfLayersResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          numberOfLayersResponse.error as string,
+        ]);
       }
     }
 
@@ -200,9 +235,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         }
         deleteProduct={handleDeleteCandle}
       />
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

@@ -4,7 +4,7 @@ import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { LayerColor } from '../../types/LayerColor';
 import { LayerColorRequest } from '../../types/Requests/LayerColorRequest';
 import CreateLayerColorPopUp from '../../components/admin/PopUp/CreateLayerColorPopUp';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { LayerColorsApi } from '../../services/LayerColorsApi';
 
@@ -30,10 +30,16 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
       setErrorMessage([...errorMessage, response.error as string]);
     } else {
       const updatedLayerColorsResponse = await LayerColorsApi.getAll();
-      if (updatedLayerColorsResponse.data && !updatedLayerColorsResponse.error) {
+      if (
+        updatedLayerColorsResponse.data &&
+        !updatedLayerColorsResponse.error
+      ) {
         setLayerColorData(updatedLayerColorsResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedLayerColorsResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedLayerColorsResponse.error as string,
+        ]);
       }
     }
   };
@@ -44,10 +50,16 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
       setErrorMessage([...errorMessage, response.error as string]);
     } else {
       const updatedLayerColorsResponse = await LayerColorsApi.getAll();
-      if (updatedLayerColorsResponse.data && !updatedLayerColorsResponse.error) {
+      if (
+        updatedLayerColorsResponse.data &&
+        !updatedLayerColorsResponse.error
+      ) {
         setLayerColorData(updatedLayerColorsResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedLayerColorsResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedLayerColorsResponse.error as string,
+        ]);
       }
     }
   };
@@ -79,9 +91,7 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
         }
         deleteProduct={handleDeleteLayerColor}
       />
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };
