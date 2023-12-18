@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import ListProductsCart from '../../modules/constructor/ListProductsCart';
@@ -43,9 +43,11 @@ const ConstructorPage: FC = () => {
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
+  const blockCandleFormRef = useRef<HTMLDivElement>(null);
+
   async function showCandleForm(candleId: number) {
     const candleDetailResponse = await ConstructorApi.getCandleById(
-      candleId.toString()
+      candleId.toString(),
     );
     if (candleDetailResponse.data && !candleDetailResponse.error) {
       setCandleDetail(candleDetailResponse.data);
@@ -60,10 +62,10 @@ const ConstructorPage: FC = () => {
   }
 
   const addConfiguredCandleDetailToListProductsCart = (
-    configuredCandleDetailToAdd: ConfiguredCandleDetail
+    configuredCandleDetailToAdd: ConfiguredCandleDetail,
   ): void => {
     const validCandleDetail: string[] = checkConfiguredCandleDetail(
-      configuredCandleDetailToAdd
+      configuredCandleDetailToAdd,
     );
     if (validCandleDetail.length > 0) {
       setErrorMessage((prev) => [...prev, ...validCandleDetail.flat()]);
@@ -96,7 +98,7 @@ const ConstructorPage: FC = () => {
   };
 
   const checkConfiguredCandleDetail = (
-    configuredCandleDetail: ConfiguredCandleDetail
+    configuredCandleDetail: ConfiguredCandleDetail,
   ): string[] => {
     const errorMessageInConfiguredCandleDetail: string[] = [];
     const errorMessageParts: string[] = [];
@@ -112,8 +114,8 @@ const ConstructorPage: FC = () => {
     if (errorMessageParts.length > 0) {
       errorMessageInConfiguredCandleDetail.push(
         `Не выбрано следующее обязательное поле(я): ${errorMessageParts.join(
-          ', '
-        )}`
+          ', ',
+        )}`,
       );
     }
     if (
@@ -121,7 +123,7 @@ const ConstructorPage: FC = () => {
       configuredCandleDetail.layerColors?.length
     ) {
       errorMessageInConfiguredCandleDetail.push(
-        'Количество слоев не совпадает с количеством выбранных цветовых слоев'
+        'Количество слоев не совпадает с количеством выбранных цветовых слоев',
       );
     }
     return errorMessageInConfiguredCandleDetail;
@@ -187,19 +189,19 @@ const ConstructorPage: FC = () => {
   }, [location.search]);
 
   async function getValidConfiguredCandleDetail(
-    orderItemFilters: OrderItemFilter[]
+    orderItemFilters: OrderItemFilter[],
   ) {
     let validConfiguredCandleDetail: ConfiguredCandleDetail[] = [];
     let allErrorMessages: string[] = [];
 
     for (const filter of orderItemFilters) {
       const candleDetailResponse = await ConstructorApi.getCandleById(
-        filter.candleId.toString()
+        filter.candleId.toString(),
       );
       if (candleDetailResponse.data && !candleDetailResponse.error) {
         const validationResult = validateConfiguredCandleDetail(
           candleDetailResponse.data,
-          filter
+          filter,
         );
 
         if (Array.isArray(validationResult)) {
@@ -222,7 +224,7 @@ const ConstructorPage: FC = () => {
   }
 
   const handleChangeConfiguredCandleDetail = (
-    value: ConfiguredCandleDetail[]
+    value: ConfiguredCandleDetail[],
   ) => {
     navigate('');
     addQueryString(convertToCandleString(value));
@@ -231,15 +233,18 @@ const ConstructorPage: FC = () => {
   };
 
   const handleSelectCandle = (candle: ImageProduct) => {
+    if (blockCandleFormRef.current) {
+      blockCandleFormRef.current.scrollTop = 0;
+    }
     showCandleForm(candle.id);
     setPriceConfiguredCandleDetail(0);
   };
 
   const calculatePriceConfiguredCandleDetail = (
-    configuredCandleDetail: ConfiguredCandleDetail
+    configuredCandleDetail: ConfiguredCandleDetail,
   ): number => {
     const priceConfiguredCandleDetail = Math.round(
-      calculatePrice(configuredCandleDetail)
+      calculatePrice(configuredCandleDetail),
     );
     setPriceConfiguredCandleDetail(priceConfiguredCandleDetail);
     return priceConfiguredCandleDetail;
@@ -250,7 +255,7 @@ const ConstructorPage: FC = () => {
       let candleDetailFilterBasketRequest: CandleDetailFilterBasketRequest = {
         candleDetailFilterRequests: [],
         configuredCandleFiltersString: convertToCandleString(
-          configuredCandleDetails
+          configuredCandleDetails,
         ),
       };
 
@@ -262,7 +267,7 @@ const ConstructorPage: FC = () => {
             : 0,
           numberOfLayerId: configuredCandleDetail.numberOfLayer!.id,
           layerColorIds: configuredCandleDetail.layerColors!.map(
-            (layerColor) => layerColor.id
+            (layerColor) => layerColor.id,
           ),
           smellId: configuredCandleDetail.smell
             ? configuredCandleDetail.smell.id
@@ -273,12 +278,12 @@ const ConstructorPage: FC = () => {
         };
 
         candleDetailFilterBasketRequest.candleDetailFilterRequests.push(
-          filterRequest
+          filterRequest,
         );
       });
 
       var basketIdResponse = await BasketApi.createBasket(
-        candleDetailFilterBasketRequest
+        candleDetailFilterBasketRequest,
       );
 
       if (basketIdResponse.data && !basketIdResponse.error) {
@@ -298,7 +303,8 @@ const ConstructorPage: FC = () => {
     let newTotalPrice = 0;
     for (const configuredCandleDetail of configuredCandleDetails) {
       newTotalPrice += Math.round(
-        calculatePrice(configuredCandleDetail) * configuredCandleDetail.quantity
+        calculatePrice(configuredCandleDetail) *
+          configuredCandleDetail.quantity,
       );
     }
     setTotalPrice(newTotalPrice);
@@ -339,7 +345,7 @@ const ConstructorPage: FC = () => {
           </div>
         )}
       </div>
-      <div className={Style.rightPanel}>
+      <div className={Style.rightPanel} ref={blockCandleFormRef}>
         {candleDetail ? (
           <CandleForm
             candleDetail={candleDetail}

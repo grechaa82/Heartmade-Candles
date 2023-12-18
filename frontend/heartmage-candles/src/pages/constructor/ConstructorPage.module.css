@@ -18,6 +18,7 @@
 .rightPanel,
 .leftPanel {
   overflow-y: auto;
+  scroll-behavior: smooth;
 }
 .rightPanel::-webkit-scrollbar,
 .leftPanel::-webkit-scrollbar {
