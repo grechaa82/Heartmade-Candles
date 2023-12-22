@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import CornerTag from './CornerTag';
@@ -6,6 +6,7 @@ import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import Tag from '../shared/Tag';
 import IconAlertCircleLarge from '../../UI/IconAlertCircleLarge';
 import { apiUrlToImage } from '../../config';
+import InfoBlockPopUp from './InfoBlockPopUp';
 
 import Style from './Product.module.css';
 
@@ -26,6 +27,10 @@ const Product: FC<ProductProps> = ({
   isSelected = false,
   index,
 }) => {
+  const [showInfoBlockPopup, setShowInfoBlockPopup] = useState(false);
+  const elementRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+
   const firstImage =
     product.images && product.images.length > 0 ? product.images[0] : null;
 
@@ -41,18 +46,56 @@ const Product: FC<ProductProps> = ({
     }
   };
 
+  const handleMouseOver = () => {
+    setShowInfoBlockPopup(true);
+    const element = elementRef.current;
+    if (element) {
+      const rect = element.getBoundingClientRect();
+      const x = rect.left;
+      const y = rect.top;
+      setPosition({ x, y });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setShowInfoBlockPopup(false);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      handleMouseLeave();
+    };
+
+    if (showInfoBlockPopup) {
+      document.addEventListener('scroll', handleScroll);
+    } else {
+      document.removeEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      document.removeEventListener('scroll', handleScroll);
+    };
+  }, [showInfoBlockPopup]);
+
   return (
     <div className={Style.product}>
-      <div className={Style.descriptionWrapper}>
+      <div
+        className={Style.descriptionWrapper}
+        onMouseEnter={handleMouseOver}
+        onMouseLeave={handleMouseLeave}
+        ref={elementRef}
+      >
         <button className={Style.descriptionBtn}>
           <IconAlertCircleLarge color="#aaa" />
         </button>
-        <div className={Style.descriptionMenu}>
-          <p className={Style.descriptionMenuTitle}>{product.title}</p>
-          <p className={Style.descriptionMenuDescription}>
-            {product.description}
-          </p>
-        </div>
+        {showInfoBlockPopup && (
+          <InfoBlockPopUp
+            title={product.title}
+            description={product.description}
+            x={position.x}
+            y={position.y}
+          />
+        )}
       </div>
       {onSelectProduct ? (
         <button
