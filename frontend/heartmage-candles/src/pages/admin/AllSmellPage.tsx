@@ -4,7 +4,7 @@ import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { Smell } from '../../types/Smell';
 import { SmellRequest } from '../../types/Requests/SmellRequest';
 import CreateSmellPopUp from '../../components/admin/PopUp/CreateSmellPopUp';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { SmellsApi } from '../../services/SmellsApi';
 
@@ -32,7 +32,10 @@ const AllSmellPage: React.FC<AllSmellPageProps> = () => {
       if (updatedSmellsResponse.data && !updatedSmellsResponse.error) {
         setSmellsData(updatedSmellsResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedSmellsResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedSmellsResponse.error as string,
+        ]);
       }
     }
   };
@@ -46,7 +49,10 @@ const AllSmellPage: React.FC<AllSmellPageProps> = () => {
       if (updatedSmellsResponse.data && !updatedSmellsResponse.error) {
         setSmellsData(updatedSmellsResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedSmellsResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedSmellsResponse.error as string,
+        ]);
       }
     }
   };
@@ -78,9 +84,7 @@ const AllSmellPage: React.FC<AllSmellPageProps> = () => {
         }
         deleteProduct={handleDeleteSmell}
       />
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

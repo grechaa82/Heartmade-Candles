@@ -44,50 +44,19 @@
   right: -0.375rem;
   box-sizing: border-box;
 }
+
 .indexTag {
   position: absolute;
   top: 8px;
   left: 8px;
 }
+
 .descriptionWrapper {
   position: absolute;
   top: 8px;
   right: 8px;
 }
+
 .descriptionBtn {
   all: unset;
-}
-.descriptionMenu {
-  display: none;
-}
-.descriptionWrapper:hover .descriptionMenu {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 14px 16px;
-  min-width: 240px;
-  position: absolute;
-  top: 24px;
-  right: 0;
-  transform: translate(50%, 0%);
-  border-radius: var(--border-radius-primary);
-  border: 2px solid var(--color-eee);
-  background: var(--color-fff);
-  z-index: 101;
-}
-.descriptionMenu > p {
-  padding: 0;
-  margin: 0;
-}
-.descriptionMenuTitle {
-  color: var(--color-000);
-  font-size: var(--font-size-l);
-  font-weight: var(--font-weight-500);
-  line-height: var(--line-height-standard);
-}
-.descriptionMenuDescription {
-  color: var(--color-222);
-  font-size: var(--font-size-m);
-  font-weight: var(--font-weight-400);
-  line-height: var(--line-height-standard);
 }

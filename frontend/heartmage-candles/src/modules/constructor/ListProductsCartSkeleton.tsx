@@ -1,6 +1,7 @@
 import { FC } from 'react';
 
 import Skeleton from '../../components/shared/skeleton';
+import Button from '../../components/shared/Button';
 
 import Style from './ListProductsCartSkeleton.module.css';
 
@@ -24,14 +25,29 @@ const ListProductsCartSkeleton: FC = () => {
   );
 
   return (
-    <div className={Style.listProductsCartSkeleton}>
-      {countProductsCartSkeleton.map((item, index) => {
+    <div className={Style.listProductsCart}>
+      {countProductsCartSkeleton.map((_, index) => {
         return (
           <div className={Style.productCartSkeleton} key={index}>
             {productsCartSkeleton}
           </div>
         );
       })}
+      <div className={Style.infoBlock}>
+        <div className={Style.priceBlock}>
+          <span className={Style.priceTitle}>Итого</span>
+          <span className={Style.price}>
+            <Skeleton />
+          </span>
+        </div>
+        <div className={Style.createBtn}>
+          <Button
+            color="#6FCF97"
+            text="Заказать"
+            onClick={() => console.log()}
+          />
+        </div>
+      </div>
     </div>
   );
 };

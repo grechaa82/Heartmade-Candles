@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import MainInfoLayerColor from '../../modules/admin/MainInfoLayerColor';
 import { LayerColor } from '../../types/LayerColor';
 import { LayerColorRequest } from '../../types/Requests/LayerColorRequest';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { LayerColorsApi } from '../../services/LayerColorsApi';
 
@@ -37,9 +37,15 @@ const LayerColorPage: FC = () => {
         isActive: updatedItem.isActive,
       };
 
-      const updatedLayerColorResponse = await LayerColorsApi.update(id, layerColorRequest);
+      const updatedLayerColorResponse = await LayerColorsApi.update(
+        id,
+        layerColorRequest
+      );
       if (updatedLayerColorResponse.error) {
-        setErrorMessage([...errorMessage, updatedLayerColorResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedLayerColorResponse.error as string,
+        ]);
       }
     }
   };
@@ -51,7 +57,10 @@ const LayerColorPage: FC = () => {
         if (layerColorResponse.data && !layerColorResponse.error) {
           setLayerColorData(layerColorResponse.data);
         } else {
-          setErrorMessage([...errorMessage, layerColorResponse.error as string]);
+          setErrorMessage([
+            ...errorMessage,
+            layerColorResponse.error as string,
+          ]);
         }
       }
     }
@@ -70,9 +79,7 @@ const LayerColorPage: FC = () => {
           />
         )}
       </div>
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

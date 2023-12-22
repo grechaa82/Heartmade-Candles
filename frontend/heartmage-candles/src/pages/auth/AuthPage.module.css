@@ -26,10 +26,3 @@
   padding-top: 30px;
   padding-bottom: 34px;
 }
-.popUpNotification {
-  position: absolute;
-  bottom: 32px;
-  left: 50%;
-  transform: translate(-50%, 0%);
-  z-index: 50;
-}

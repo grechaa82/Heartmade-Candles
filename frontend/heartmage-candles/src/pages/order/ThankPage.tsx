@@ -18,10 +18,10 @@ const ThankPage: FC = () => {
   };
 
   return (
-    <div className={Style.thankBlock}>
+    <div className={Style.block}>
       <h3>Спасибо за оформление заказа!</h3>
       <p>Скоро мы свяжемся для уточнений по-вашему заказу: {id}</p>
-      <div className={Style.thankBtn}>
+      <div className={Style.btn}>
         <Button text="Создать еще свечу" onClick={handleButtonClick} />
       </div>
     </div>

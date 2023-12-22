@@ -1,0 +1,31 @@
+.descriptionMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  width: 300px;
+  transform: translate(0%, 24px);
+  border-radius: var(--border-radius-primary);
+  border: 2px solid var(--color-eee);
+  background: var(--color-fff);
+  z-index: 101;
+}
+
+.descriptionMenu>p {
+  padding: 0;
+  margin: 0;
+}
+
+.descriptionMenuTitle {
+  color: var(--color-000);
+  font-size: var(--font-size-l);
+  font-weight: var(--font-weight-500);
+  line-height: var(--line-height-standard);
+}
+
+.descriptionMenuDescription {
+  color: var(--color-222);
+  font-size: var(--font-size-m);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-standard);
+}

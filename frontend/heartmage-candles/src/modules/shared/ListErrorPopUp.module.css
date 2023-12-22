@@ -1,0 +1,13 @@
+.popUpNotification {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  z-index: 200;
+}
+.listErrorPopUp {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}

@@ -4,7 +4,7 @@ import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { Wick } from '../../types/Wick';
 import { WickRequest } from '../../types/Requests/WickRequest';
 import CreateWickPopUp from '../../components/admin/PopUp/CreateWickPopUp';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { WicksApi } from '../../services/WicksApi';
 
@@ -33,7 +33,10 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
       if (updatedWicksResponse.data && !updatedWicksResponse.error) {
         setWicksData(updatedWicksResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedWicksResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedWicksResponse.error as string,
+        ]);
       }
     }
   };
@@ -47,7 +50,10 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
       if (updatedWicksResponse.data && !updatedWicksResponse.error) {
         setWicksData(updatedWicksResponse.data);
       } else {
-        setErrorMessage([...errorMessage, updatedWicksResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedWicksResponse.error as string,
+        ]);
       }
     }
   };
@@ -79,9 +85,7 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
         }
         deleteProduct={handleDeleteWick}
       />
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

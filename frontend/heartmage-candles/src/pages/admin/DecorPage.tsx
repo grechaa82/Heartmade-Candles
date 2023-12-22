@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import MainInfoDecor from '../../modules/admin/MainInfoDecor';
 import { Decor } from '../../types/Decor';
 import { DecorRequest } from '../../types/Requests/DecorRequest';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { DecorsApi } from '../../services/DecorsApi';
 
@@ -39,7 +39,10 @@ const DecorPage: FC = () => {
 
       const updatedDecorResponse = await DecorsApi.update(id, decorRequest);
       if (updatedDecorResponse.error) {
-        setErrorMessage([...errorMessage, updatedDecorResponse.error as string]);
+        setErrorMessage([
+          ...errorMessage,
+          updatedDecorResponse.error as string,
+        ]);
       }
     }
   };
@@ -70,9 +73,7 @@ const DecorPage: FC = () => {
           />
         )}
       </div>
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

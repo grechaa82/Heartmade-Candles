@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 
 import Input from '../../components/shared/Input';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { AuthApi } from '../../services/AuthApi';
 
@@ -33,15 +33,18 @@ const AuthPage: FC = () => {
       <div className={Style.container}>
         <form onSubmit={handleSubmit} className={Style.form}>
           <Input label="Логин" required value={login} onChange={setLogin} />
-          <Input label="Пароль" required value={password} onChange={setPassword} />
+          <Input
+            label="Пароль"
+            required
+            value={password}
+            onChange={setPassword}
+          />
           <button className={Style.loginBtn} type="submit">
             Войти
           </button>
         </form>
       </div>
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

@@ -16,7 +16,7 @@ import { Wick } from '../../types/Wick';
 import { BaseProduct } from '../../types/BaseProduct';
 import { TagData } from '../../components/shared/Tag';
 import AddProductPopUp from '../../components/admin/PopUp/AddProductPopUp';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { CandlesApi } from '../../services/CandlesApi';
 import { DecorsApi } from '../../services/DecorsApi';
@@ -384,9 +384,7 @@ const CandleDetailsPage: FC = () => {
           }
         />
       )}
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
     </>
   );
 };

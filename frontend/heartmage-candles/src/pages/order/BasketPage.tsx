@@ -17,7 +17,7 @@ import IconInstagram from '../../UI/IconInstagram';
 import IconWhatsapp from '../../UI/IconWhatsapp';
 import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
-import ListErrorPopUp from '../../modules/constructor/ListErrorPopUp';
+import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import { ParseToFilter } from '../../typesV2/order/ConfiguredCandleFilter';
 
 import { OrdersApi } from '../../services/OrdersApi';
@@ -247,9 +247,7 @@ const OrderPage: FC = () => {
 
   return (
     <div className={Style.container}>
-      <div className={Style.popUpNotification}>
-        <ListErrorPopUp messages={errorMessage} />
-      </div>
+      <ListErrorPopUp messages={errorMessage} />
       {basket && (
         <>
           <div className={Style.leftPanel}>
