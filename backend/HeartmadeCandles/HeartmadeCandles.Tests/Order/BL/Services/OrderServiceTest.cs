@@ -1,9 +1,8 @@
-﻿using System.Text;
-using Bogus;
+﻿using Bogus;
 using CSharpFunctionalExtensions;
+using HeartmadeCandles.Constructor.Core.Interfaces;
 using HeartmadeCandles.Order.BL.Services;
 using HeartmadeCandles.Order.Core.Interfaces;
-using HeartmadeCandles.Order.Core.Models;
 using Moq;
 
 namespace HeartmadeCandles.UnitTests.Order.BL.Services;
@@ -13,150 +12,55 @@ public class OrderServiceTest
     private static readonly Faker _faker = new();
     private readonly Mock<IOrderNotificationHandler> _orderNotificationHandler = new(MockBehavior.Strict);
     private readonly Mock<IOrderRepository> _orderRepository = new(MockBehavior.Strict);
+    private readonly Mock<IBasketRepository> _basketRepository = new(MockBehavior.Strict);
+    private readonly Mock<IConstructorService> _constructorService = new(MockBehavior.Strict);
     private readonly OrderService _service;
 
-    /* public OrderServiceTest()
+    public OrderServiceTest()
     {
         _service = new OrderService(
-            _orderRepository.Object,
-            _orderNotificationHandler.Object);
+            _orderRepository.Object, 
+            _basketRepository.Object, 
+            _orderNotificationHandler.Object, 
+            _constructorService.Object);
     }
 
     [Fact]
-    public async Task Get_WhenValid_ShouldReturnValidOrderItems()
+    public async Task GetOrderById_ValidId_ReturnValidOrder()
     {
         // Arrange
-        var orderItemFilters = GenerateOrderItemFilters();
-        var orderItems = GenerateOrderItems(orderItemFilters, orderItemFilters.Count);
+        var orderId = Guid.NewGuid().ToString();
+        var order = GenerateOrderData.GenerateOrder();
 
-        _orderRepository.Setup(or => or.GetOrder(orderItemFilters.ToArray()))
-            .ReturnsAsync(Result.Success(orderItems.ToArray()))
+        _orderRepository.Setup(br => br.GetOrderById(orderId))
+            .ReturnsAsync(order)
             .Verifiable();
 
         // Act
-        var result = await _service.Get(orderItemFilters.ToArray());
+        var result = await _service.GetOrderById(orderId);
 
         // Assert
         Assert.True(result.IsSuccess);
+        Assert.Equal(order, result.Value);
         _orderRepository.Verify();
     }
 
     [Fact]
-    public async Task Get_WhenOneOrderItemInvalid_ShouldReturnFailure()
+    public async Task GetOrderById_InvalidId_ReturnFailure()
     {
         // Arrange
-        var orderItemFilters = GenerateOrderItemFilters();
-        var invalidDecor = GenerateOrderData.GenerateDecor(_faker.Random.Number(1, 10000));
-        var validOrderItem = GenerateOrderData.GenerateOrderItem(orderItemFilters[0]);
+        var orderId = "invalidId";
 
-        var invalidCandleDetail = new ConfiguredCandle(
-            validOrderItem.ConfiguredCandle.Candle,
-            invalidDecor,
-            validOrderItem.ConfiguredCandle.LayerColors,
-            validOrderItem.ConfiguredCandle.NumberOfLayer,
-            validOrderItem.ConfiguredCandle.Smell,
-            validOrderItem.ConfiguredCandle.Wick);
-
-        var invalidOrderItem = OrderItem.Create(
-            invalidCandleDetail,
-            validOrderItem.Quantity,
-            validOrderItem.OrderItemFilter);
-
-        var orderItems = GenerateOrderItems(orderItemFilters, orderItemFilters.Count - 1);
-        orderItems.Add(invalidOrderItem.Value);
-
-        _orderRepository.Setup(or => or.GetOrder(orderItemFilters.ToArray()))
-            .ReturnsAsync(Result.Success(orderItems.ToArray()))
+        _orderRepository.Setup(br => br.GetOrderById(orderId))
+            .ReturnsAsync(Maybe<HeartmadeCandles.Order.Core.Models.Order>.None)
             .Verifiable();
 
         // Act
-        var result = await _service.Get(orderItemFilters.ToArray());
+        var result = await _service.GetOrderById(orderId);
 
         // Assert
         Assert.True(result.IsFailure);
-
-        Assert.Equal(
-            result.Error,
-            $"Decor by id: {validOrderItem.ConfiguredCandle.Decor?.Id} does not match with decor by id: {invalidOrderItem.Value.ConfiguredCandle.Decor?.Id}");
-
+        Assert.Equal($"Order by id: {orderId} does not exist", result.Error);
         _orderRepository.Verify();
     }
-
-    [Fact]
-    public async Task Get_WhenAllOrderItemInvalid_ShouldReturnFailure()
-    {
-        // Arrange
-        var orderItemFilters = GenerateOrderItemFilters();
-        var orderItems = new List<OrderItem>();
-        var validDecorIds = new List<int>();
-        var invalidDecorIds = new List<int>();
-
-        for (var i = 0; i < orderItemFilters.Count; i++)
-        {
-            var invalidDecor = GenerateOrderData.GenerateDecor(_faker.Random.Number(1, 10000));
-            var validOrderItem = GenerateOrderData.GenerateOrderItem(orderItemFilters[0]);
-
-            var invalidCandleDetail = new ConfiguredCandle(
-                validOrderItem.ConfiguredCandle.Candle,
-                invalidDecor,
-                validOrderItem.ConfiguredCandle.LayerColors,
-                validOrderItem.ConfiguredCandle.NumberOfLayer,
-                validOrderItem.ConfiguredCandle.Smell,
-                validOrderItem.ConfiguredCandle.Wick);
-
-            var invalidOrderItem = OrderItem.Create(
-                invalidCandleDetail,
-                validOrderItem.Quantity,
-                validOrderItem.OrderItemFilter);
-
-            validDecorIds.Add(validOrderItem.ConfiguredCandle.Decor?.Id ?? 0);
-            invalidDecorIds.Add(invalidOrderItem.Value.ConfiguredCandle.Decor?.Id ?? 0);
-            orderItems.Add(invalidOrderItem.Value);
-        }
-
-        _orderRepository.Setup(or => or.GetOrder(orderItemFilters.ToArray()))
-            .ReturnsAsync(Result.Success(orderItems.ToArray()))
-            .Verifiable();
-
-        var errorMessage = new StringBuilder();
-
-        for (var i = 0; i < validDecorIds.Count && i < invalidDecorIds.Count; i++)
-        {
-            if (i > 0)
-            {
-                errorMessage.Append(", ");
-            }
-
-            errorMessage.Append(
-                $"Decor by id: {validDecorIds[i]} does not match with decor by id: {invalidDecorIds[i]}");
-        }
-
-        // Act
-        var result = await _service.Get(orderItemFilters.ToArray());
-
-        // Assert
-        Assert.True(result.IsFailure);
-        Assert.Equal(errorMessage.ToString(), result.Error);
-        _orderRepository.Verify();
-    }
-
-    private List<OrderItemFilter> GenerateOrderItemFilters()
-    {
-        var orderItemFilters = new List<OrderItemFilter>();
-
-        for (var i = 0; i < _faker.Random.Number(1, 100); i++)
-            orderItemFilters.Add(GenerateOrderData.GenerateOrderItemFilter());
-
-        return orderItemFilters;
-    }
-
-    private List<OrderItem> GenerateOrderItems(List<OrderItemFilter> orderItemFilters, int count)
-    {
-        var orderItems = new List<OrderItem>();
-
-        for (var i = 0; i < count; i++)
-            orderItems.Add(GenerateOrderData.GenerateOrderItem(orderItemFilters[i]));
-
-        return orderItems;
-    }*/
 }

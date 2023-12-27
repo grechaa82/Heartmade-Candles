@@ -1,7 +1,6 @@
 ﻿using Bogus;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Constructor.Core.Interfaces;
-using HeartmadeCandles.Constructor.Core.Models;
 using HeartmadeCandles.Order.BL.Services;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
