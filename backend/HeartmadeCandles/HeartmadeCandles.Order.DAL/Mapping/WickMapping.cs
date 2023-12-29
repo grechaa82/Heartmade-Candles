@@ -7,10 +7,12 @@ internal class WickMapping
 {
     public static Wick MapToWick(WickDocument wickDocument)
     {
-        return new Wick(
-            wickDocument.Id,
-            wickDocument.Title,
-            wickDocument.Price);
+        return new Wick
+        {
+            Id = wickDocument.Id,
+            Title = wickDocument.Title,
+            Price = wickDocument.Price
+        };
     }
 
     public static WickDocument MapToWickDocument(Wick wick)

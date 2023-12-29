@@ -40,10 +40,10 @@ public class OrderService : IOrderService
         foreach (var basketItem in basket.Value.Items)
         {
             var currentStateCandleDetail =
-                await _constructorService.GetCandleByFilter(Mapping.MapToCandleDetailFilter(basketItem.ConfiguredCandleFilter));
+                await _constructorService.GetCandleByFilter(OrderMapping.MapToCandleDetailFilter(basketItem.ConfiguredCandleFilter));
 
             var currentStateConfiguredCandle =
-                Mapping.MapConstructorCandleDetailToOrderConfiguredCandle(currentStateCandleDetail.Value);
+                OrderMapping.MapConstructorCandleDetailToOrderConfiguredCandle(currentStateCandleDetail.Value);
 
             var isComparedConfiguredCandles = basketItem.Compare(currentStateConfiguredCandle);
             if (isComparedConfiguredCandles.IsFailure)

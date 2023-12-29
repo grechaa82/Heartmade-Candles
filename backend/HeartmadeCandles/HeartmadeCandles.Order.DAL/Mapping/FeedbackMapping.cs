@@ -7,9 +7,11 @@ internal class FeedbackMapping
 {
     public static Feedback MapToFeedback(FeedbackDocument feedbackDocument)
     {
-        return new Feedback(
-            feedbackDocument.TypeFeedback,
-            feedbackDocument.UserName);
+        return new Feedback
+        {
+            TypeFeedback = feedbackDocument.TypeFeedback,
+            UserName = feedbackDocument.UserName
+        };
     }
 
     public static FeedbackDocument MapToFeedbackDocument(Feedback feedback)

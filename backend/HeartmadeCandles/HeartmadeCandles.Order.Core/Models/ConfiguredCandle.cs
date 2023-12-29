@@ -2,15 +2,15 @@
 
 public class ConfiguredCandle
 {
-    public required Candle Candle { get; set; }
+    public required Candle Candle { get; init; }
     
-    public Decor? Decor { get; set; }
+    public Decor? Decor { get; init; }
     
-    public required LayerColor[] LayerColors { get; set; }
+    public required LayerColor[] LayerColors { get; init; }
     
-    public required NumberOfLayer NumberOfLayer { get; set; }
+    public required NumberOfLayer NumberOfLayer { get; init; }
     
-    public Smell? Smell { get; set; }
+    public Smell? Smell { get; init; }
     
-    public required Wick Wick { get; set; }
+    public required Wick Wick { get; init; }
 }

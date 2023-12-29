@@ -7,11 +7,12 @@ internal class DecorMapping
 {
     public static Decor MapToDecor(DecorDocument decorDocument)
     {
-        return new Decor(
-            decorDocument.Id,
-            decorDocument.Title,
-            decorDocument.Price
-        );
+        return new Decor
+        {
+            Id = decorDocument.Id,
+            Title = decorDocument.Title,
+            Price = decorDocument.Price
+        };
     }
 
     public static DecorDocument MapToDecorDocument(Decor decor)

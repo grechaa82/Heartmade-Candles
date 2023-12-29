@@ -2,13 +2,7 @@
 
 public class Image
 {
-    public Image(string fileName, string alternativeName)
-    {
-        FileName = fileName;
-        AlternativeName = alternativeName;
-    }
+    public required string FileName { get; init; }
 
-    public string FileName { get; private set; }
-
-    public string AlternativeName { get; private set; }
+    public required string AlternativeName { get; init; }
 }

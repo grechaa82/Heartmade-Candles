@@ -3,7 +3,7 @@ using HeartmadeCandles.Order.Core.Models;
 
 namespace HeartmadeCandles.Order.BL;
 
-internal class Mapping
+public class OrderMapping
 {
     public static ConfiguredCandle MapConstructorCandleDetailToOrderConfiguredCandle(Constructor.Core.Models.CandleDetail candleDetail)
     {
@@ -28,45 +28,75 @@ internal class Mapping
 
     public static Core.Models.Candle MapConstructorCandleToOrderCandle(Constructor.Core.Models.Candle candle)
     {
-        return new Core.Models.Candle(
-            candle.Id,
-            candle.Title,
-            candle.Price,
-            candle.WeightGrams,
-            MapConstructorImageToOrderImage(candle.Images));
+        return new Core.Models.Candle
+        {
+            Id = candle.Id,
+            Title = candle.Title,
+            Price = candle.Price,
+            WeightGrams = candle.WeightGrams,
+            Images = MapConstructorImageToOrderImage(candle.Images)
+        };
     }
 
     public static Core.Models.Decor MapConstructorDecorToOrderDecor(Constructor.Core.Models.Decor decor)
     {
-        return new Core.Models.Decor(decor.Id, decor.Title, decor.Price);
+        return new Core.Models.Decor
+        {
+            Id = decor.Id, 
+            Title = decor.Title,
+            Price = decor.Price
+        };
     }
 
     public static Core.Models.LayerColor[] MapConstructorLayerColorsToOrderLayerColors(Constructor.Core.Models.LayerColor[] layerColor)
     {
         return layerColor
-            .Select(x => new Core.Models.LayerColor(x.Id, x.Title, x.PricePerGram))
+            .Select(x => new Core.Models.LayerColor
+                {
+                    Id = x.Id, 
+                    Title = x.Title,
+                    PricePerGram = x.PricePerGram
+                })
             .ToArray();
     }
 
     public static Core.Models.NumberOfLayer MapConstructorNumberOfLayerToOrderNumberOfLayer(Constructor.Core.Models.NumberOfLayer numberOfLayer)
     {
-        return new Core.Models.NumberOfLayer(numberOfLayer.Id, numberOfLayer.Number);
+        return new Core.Models.NumberOfLayer
+        {
+            Id =numberOfLayer.Id,
+            Number = numberOfLayer.Number
+        };
     }
 
     public static Core.Models.Smell MapConstructorSmellToOrderSmell(Constructor.Core.Models.Smell smell)
     {
-        return new Core.Models.Smell(smell.Id, smell.Title, smell.Price);
+        return new Core.Models.Smell
+        {
+            Id = smell.Id, 
+            Title = smell.Title, 
+            Price = smell.Price
+        };
     }
 
     public static Core.Models.Wick MapConstructorWickToOrderWick(Constructor.Core.Models.Wick wick)
     {
-        return new Core.Models.Wick(wick.Id, wick.Title, wick.Price);
+        return new Core.Models.Wick
+        {
+            Id = wick.Id, 
+            Title = wick.Title, 
+            Price = wick.Price
+        };
     }
 
     public static Core.Models.Image[] MapConstructorImageToOrderImage(Constructor.Core.Models.Image[] image)
     {
         return image
-            .Select(x => new Core.Models.Image(x.FileName, x.AlternativeName))
+            .Select(x => new Core.Models.Image
+                {
+                    FileName = x.FileName,
+                    AlternativeName = x.AlternativeName
+                })
             .ToArray();
     }
 

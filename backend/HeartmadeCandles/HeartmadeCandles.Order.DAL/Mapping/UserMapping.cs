@@ -7,11 +7,13 @@ internal class UserMapping
 {
     public static User MapToUser(UserDocument userDocument)
     {
-        return new User(
-            userDocument.FirstName,
-            userDocument.LastName,
-            userDocument.Phone,
-            userDocument.Email);
+        return new User
+        {
+            FirstName = userDocument.FirstName,
+            LastName = userDocument.LastName,
+            Phone = userDocument.Phone,
+            Email = userDocument.Email
+        };
     }
 
     public static UserDocument MapToUserDocument(User user)

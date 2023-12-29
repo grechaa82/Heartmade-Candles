@@ -2,21 +2,11 @@
 
 public class LayerColor
 {
-    public LayerColor(
-        int id,
-        string title,
-        decimal pricePerGram)
-    {
-        Id = id;
-        Title = title;
-        PricePerGram = pricePerGram;
-    }
+    public int Id { get; init; }
 
-    public int Id { get; private set; }
+    public required string Title { get; init; }
 
-    public string Title { get; private set; }
-
-    public decimal PricePerGram { get; }
+    public required decimal PricePerGram { get; init; }
 
     public decimal CalculatePriceForGrams(int grams)
     {

@@ -2,7 +2,7 @@
 
 public class ConfiguredCandleBasket
 {
-    public required ConfiguredCandleFilter[] ConfiguredCandleFilters { get; set; }
+    public required ConfiguredCandleFilter[] ConfiguredCandleFilters { get; init; }
 
-    public required string ConfiguredCandleFiltersString { get; set; }
+    public required string ConfiguredCandleFiltersString { get; init; }
 }

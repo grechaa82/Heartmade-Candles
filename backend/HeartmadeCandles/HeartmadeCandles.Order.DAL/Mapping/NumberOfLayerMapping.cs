@@ -7,10 +7,11 @@ internal class NumberOfLayerMapping
 {
     public static NumberOfLayer MapToNumberOfLayer(NumberOfLayerDocument numberOfLayerDocument)
     {
-        return new NumberOfLayer(
-            numberOfLayerDocument.Id,
-            numberOfLayerDocument.Number
-        );
+        return new NumberOfLayer
+        {
+            Id =numberOfLayerDocument.Id,
+            Number = numberOfLayerDocument.Number
+        };
     }
 
     public static NumberOfLayerDocument MapToNumberOfLayerDocument(NumberOfLayer numberOfLayer)

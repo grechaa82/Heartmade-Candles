@@ -11,10 +11,11 @@ internal class ImageMapping
 
         foreach (var imageDocument in imagesDocuments)
         {
-            var image = new Image(
-                imageDocument.FileName,
-                imageDocument.AlternativeName);
-
+            var image = new Image
+            {
+                FileName = imageDocument.FileName,
+                AlternativeName = imageDocument.AlternativeName
+            };
             images.Add(image);
         }
 

@@ -7,10 +7,11 @@ internal class TypeCandleMapping
 {
     public static TypeCandle MapToTypeCandle(TypeCandleDocument typeCandleDocument)
     {
-        return new TypeCandle(
-            typeCandleDocument.Id,
-            typeCandleDocument.Title
-        );
+        return new TypeCandle
+        {
+            Id = typeCandleDocument.Id,
+            Title = typeCandleDocument.Title
+        };
     }
 
     public static TypeCandleDocument MapToTypeCandleDocument(TypeCandle typeCandle)

@@ -36,9 +36,9 @@ public class BasketService : IBasketService
 
         foreach (var configuredCandleFilter in configuredCandleBasket.ConfiguredCandleFilters)
         {
-            Result<Constructor.Core.Models.CandleDetail> candleDetail = await _constructorService.GetCandleByFilter(Mapping.MapToCandleDetailFilter(configuredCandleFilter));
+            Result<Constructor.Core.Models.CandleDetail> candleDetail = await _constructorService.GetCandleByFilter(OrderMapping.MapToCandleDetailFilter(configuredCandleFilter));
 
-            var configuredCandle = Mapping.MapConstructorCandleDetailToOrderConfiguredCandle(candleDetail.Value);
+            var configuredCandle = OrderMapping.MapConstructorCandleDetailToOrderConfiguredCandle(candleDetail.Value);
 
             var price = _calculateService.CalculatePrice(configuredCandle);
 
@@ -66,5 +66,4 @@ public class BasketService : IBasketService
 
         return basketIdResult;
     }
-
 }

@@ -7,11 +7,12 @@ internal class SmellMapping
 {
     public static Smell MapToSmell(SmellDocument smellDocument)
     {
-        return new Smell(
-            smellDocument.Id,
-            smellDocument.Title,
-            smellDocument.Price
-        );
+        return new Smell
+        {
+            Id = smellDocument.Id,
+            Title = smellDocument.Title,
+            Price = smellDocument.Price
+        };
     }
 
     public static SmellDocument MapToSmellDocument(Smell smell)

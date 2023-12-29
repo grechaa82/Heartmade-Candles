@@ -7,13 +7,14 @@ internal class CandleMapping
 {
     public static Candle MapToCandle(CandleDocument candleDocument)
     {
-        return new Candle(
-            candleDocument.Id,
-            candleDocument.Title,
-            candleDocument.Price,
-            candleDocument.WeightGrams,
-            ImageMapping.MapToImages(candleDocument.Images)
-        );
+        return new Candle
+        {
+            Id = candleDocument.Id,
+            Title = candleDocument.Title,
+            Price = candleDocument.Price,
+            WeightGrams = candleDocument.WeightGrams,
+            Images = ImageMapping.MapToImages(candleDocument.Images)
+        };
     }
 
     public static CandleDocument MapToCandleDocument(Candle candle)

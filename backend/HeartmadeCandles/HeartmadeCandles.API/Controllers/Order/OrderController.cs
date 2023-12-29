@@ -63,11 +63,21 @@ public class OrderController : Controller
     
     private User MapToUser(UserRequest item)
     {
-        return new User(item.FirstName, item.LastName, item.Phone, item.Email);
+        return new User
+        {
+            FirstName = item.FirstName,
+            LastName = item.LastName,
+            Phone = item.Phone,
+            Email = item.Email
+        };
     }
 
     private Feedback MapToFeedback(FeedbackRequest item)
     {
-        return new Feedback(item.Feedback.ToString(), item.UserName);
+        return new Feedback
+        {
+            TypeFeedback = item.Feedback.ToString(),
+            UserName = item.UserName
+        };
     }
 }

@@ -11,12 +11,12 @@ internal class LayerColorMapping
 
         foreach (var layerColorDocument in layerColorsDocuments)
         {
-            var layerColor= new LayerColor(
-                layerColorDocument.Id,
-                layerColorDocument.Title,
-                layerColorDocument.PricePerGram
-            );
-
+            var layerColor = new LayerColor
+            {
+                Id = layerColorDocument.Id,
+                Title = layerColorDocument.Title,
+                PricePerGram = layerColorDocument.PricePerGram
+            };
             layerColors.Add(layerColor);
         }
 

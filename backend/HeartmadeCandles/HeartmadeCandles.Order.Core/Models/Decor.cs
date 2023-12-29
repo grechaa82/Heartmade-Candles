@@ -2,19 +2,9 @@
 
 public class Decor
 {
-    public Decor(
-        int id,
-        string title,
-        decimal price)
-    {
-        Id = id;
-        Title = title;
-        Price = price;
-    }
+    public int Id { get; init; }
 
-    public int Id { get; private set; }
+    public required string Title { get; init; }
 
-    public string Title { get; private set; }
-
-    public decimal Price { get; private set; }
+    public required decimal Price { get; init; }
 }

@@ -9,66 +9,80 @@ internal class GenerateOrderData
 
    public static Candle GenerateCandle(int id = 0)
     {
-        return new Candle(
-            id: id == 0
+        return new Candle
+        {
+            Id = id == 0
                 ? _faker.Random.Number(1, 10000)
                 : id,
-            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxTitleLength),
-            price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
-            weightGrams: _faker.Random.Number(1, 10000),
-            images: new[]
+            Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxTitleLength),
+            Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+            WeightGrams = _faker.Random.Number(1, 10000),
+            Images = new[]
             {
-                new Image(
-                    _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Image.MaxAlternativeNameLength),
-                    _faker.Random.String())
-            });
+                new Image
+                {
+                    FileName = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Image.MaxAlternativeNameLength),
+                    AlternativeName = _faker.Random.String()
+                }
+            }
+        };
     }
 
     public static Decor GenerateDecor(int id = 0)
     {
-        return new Decor(
-            id: id == 0
+        return new Decor
+        {
+            Id = id == 0
                 ? _faker.Random.Number(1, 10000)
                 : id,
-            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxTitleLength),
-            price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal());
+            Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxTitleLength),
+            Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal()
+        };
     }
 
     public static LayerColor GenerateLayerColor(int id = 0)
     {
-        return new LayerColor(
-            id:id == 0
+        return new LayerColor
+        {
+            Id = id == 0
                 ? _faker.Random.Number(1, 10000)
                 : id,
-            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxTitleLength),
-            pricePerGram: _faker.Random.Number(1, 10000) * _faker.Random.Decimal());
+            Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxTitleLength),
+            PricePerGram = _faker.Random.Number(1, 10000) * _faker.Random.Decimal()
+        };
     }
 
     public static NumberOfLayer GenerateNumberOfLayer(int number, int id = 0)
     {
-        return new NumberOfLayer(
-            id: id == 0 ? _faker.Random.Number(1, 10000) : id, 
-            number: number);
+        return new NumberOfLayer
+        {
+            Id = id == 0 ? _faker.Random.Number(1, 10000) : id,
+            Number = number
+        };
     }
 
     public static Smell GenerateSmell(int id = 0)
     {
-        return new Smell(
-            id: id == 0
+        return new Smell
+        {
+            Id = id == 0
                 ? _faker.Random.Number(1, 10000)
                 : id,
-            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxTitleLength),
-            price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal());
+            Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxTitleLength),
+            Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal()
+        };
     }
 
     public static Wick GenerateWick(int id = 0)
     {
-        return new Wick(
-            id: id == 0
+        return new Wick
+        {
+            Id = id == 0
                 ? _faker.Random.Number(1, 10000)
                 : id,
-            title: _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxTitleLength),
-            price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal());
+            Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxTitleLength),
+            Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal()
+        };
     }
 
     public static ConfiguredCandle GenerateConfiguredCandle(
@@ -230,18 +244,22 @@ internal class GenerateOrderData
     {
         var user = _faker.Person;
 
-        return new User(
-            user.FirstName,
-            user.LastName,
-            user.Phone,
-            user.Email);
+        return new User
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Phone = user.Phone,
+            Email = user.Email
+        };
     }
 
     private static Feedback GenerateFeedback()
     {
-        return new Feedback(
-            _faker.Random.String(), 
-            _faker.Random.String());
+        return new Feedback
+        {
+            TypeFeedback = _faker.Random.String(),
+            UserName = _faker.Random.String()
+        };
     }
 
     public static HeartmadeCandles.Order.Core.Models.Order GenerateOrder()
