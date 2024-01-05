@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Constructor.Core.Interfaces;
+using HeartmadeCandles.Constructor.Core.Models;
 using HeartmadeCandles.Order.BL.Services;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
@@ -66,7 +67,46 @@ public class BasketServiceTest
     [Fact]
     public async Task CreateBasket_ValidConfiguredCandleBasket_ReturnValidBasketId()
     {
+        // Arrange
+        var configuredCandleBasket = GenerateOrderData.GenerateConfiguredCandleBasket();
 
+        _constructorService.Setup(cs => cs.GetCandleByFilter(It.IsAny<CandleDetailFilter>()))
+            .ReturnsAsync((CandleDetailFilter expectedFilter) =>
+            {
+                var candleDetails = configuredCandleBasket.ConfiguredCandleFilters
+                    .Select(filter => GenerateConstructorData.GenerateCandleDetail(new ConfiguredCandleFilter
+                    {
+                        CandleId = filter.CandleId,
+                        DecorId = filter.DecorId,
+                        NumberOfLayerId = filter.NumberOfLayerId,
+                        LayerColorIds = filter.LayerColorIds,
+                        SmellId = filter.SmellId,
+                        WickId = filter.WickId
+                    }))
+                    .ToList();
+                return candleDetails.FirstOrDefault(cd =>
+                    cd.Candle.Id == expectedFilter.CandleId
+                    && cd.Decors.Any(x => x.Id == expectedFilter.DecorId));
+            })
+            .Verifiable();
+
+        _calculateService.Setup(cs => cs.CalculatePrice(It.IsAny<ConfiguredCandle>()))
+            .Returns(Result.Success(_faker.Random.Number(1, 10000) * _faker.Random.Decimal()))
+            .Verifiable();
+
+        _basketRepository.Setup(br => br.CreateBasket(It.IsAny<Basket>()))
+            .ReturnsAsync(Guid.NewGuid().ToString())
+            .Verifiable();
+
+        // Act
+        var result = await _service.CreateBasket(configuredCandleBasket);
+
+        Assert.True(result.IsSuccess);
+        Assert.NotEmpty(result.Value);
+        Assert.NotNull(result.Value);
+        _constructorService.Verify();
+        _calculateService.Verify();
+        _basketRepository.Verify();
     }
 
     [Fact]
@@ -86,5 +126,4 @@ public class BasketServiceTest
     {
 
     }
-
 }

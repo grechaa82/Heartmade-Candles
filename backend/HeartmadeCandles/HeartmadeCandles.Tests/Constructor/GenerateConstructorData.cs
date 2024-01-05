@@ -19,12 +19,34 @@ public class GenerateConstructorData
             Wicks = GenerateWicks(_faker.Random.Number(1, 100)),
         };
     }
+    
+    public static CandleDetail GenerateCandleDetail(HeartmadeCandles.Order.Core.Models.ConfiguredCandleFilter configuredCandleFilter)
+    {
+        return new CandleDetail
+        {
+            Candle = GenerateCandle(configuredCandleFilter.CandleId),
+            Decors = new Decor[] { GenerateDecor(configuredCandleFilter.DecorId ?? 0) },
+            LayerColors = configuredCandleFilter.LayerColorIds
+                .Select(x => GenerateLayerColor(x))
+                .ToArray(),
+            NumberOfLayers = new NumberOfLayer[] 
+            {
+                GenerateNumberOfLayer(
+                    configuredCandleFilter.NumberOfLayerId, 
+                    configuredCandleFilter.LayerColorIds.Length)
+            },                
+            Smells = new Smell[] { GenerateSmell(configuredCandleFilter.SmellId ?? 0) },
+            Wicks = new Wick[] { GenerateWick(configuredCandleFilter.WickId) },
+        };
+    }
 
-    public static Candle GenerateCandle()
+    public static Candle GenerateCandle(int id = 0)
     {
         return new Candle
         {
-            Id = _faker.Random.Number(1, 10000),
+            Id = id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxDescriptionLength),
             Price =  _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
@@ -33,11 +55,13 @@ public class GenerateConstructorData
         };
     }
 
-    public static Decor GenerateDecor()
+    public static Decor GenerateDecor(int id = 0)
     {
         return new Decor
         {  
-            Id = _faker.Random.Number(1, 10000),
+            Id = id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxDescriptionLength),
             Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
@@ -57,11 +81,13 @@ public class GenerateConstructorData
         return decors;
     }
 
-    public static LayerColor GenerateLayerColor()
+    public static LayerColor GenerateLayerColor(int id = 0)
     {
         return new LayerColor
         {
-            Id = _faker.Random.Number(1, 10000),
+            Id = id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxDescriptionLength),
             PricePerGram = _faker.Random.Number(1, 10000),
@@ -81,12 +107,16 @@ public class GenerateConstructorData
         return layerColors;
     }
 
-    public static NumberOfLayer GenerateNumberOfLayer()
+    public static NumberOfLayer GenerateNumberOfLayer(int id = 0, int number = 0)
     {
         return new NumberOfLayer
         {
-            Id = _faker.Random.Number(1, 10000),
-            Number = _faker.Random.Number(1, 10000)
+            Id = id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
+            Number = number == 0
+                ? _faker.Random.Number(1, 10000)
+                : number
         };
     }
 
@@ -102,14 +132,16 @@ public class GenerateConstructorData
         return numberOfLayers;
     }
 
-    public static Smell GenerateSmell()
+    public static Smell GenerateSmell(int id = 0)
     {
         return new Smell
         {
-            Id = _faker.Random.Number(1, 10000),
+            Id = id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxDescriptionLength),
-             Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
+            Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
         };
     }
 
@@ -125,11 +157,13 @@ public class GenerateConstructorData
         return smells;
     }
 
-    public static Wick GenerateWick()
+    public static Wick GenerateWick(int id = 0)
     {
         return new Wick
         {
-            Id = _faker.Random.Number(1, 10000),
+            Id = id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxDescriptionLength),
             Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
@@ -149,11 +183,13 @@ public class GenerateConstructorData
         return wicks;
     }
 
-    public static TypeCandle GenerateTypeCandle()
+    public static TypeCandle GenerateTypeCandle(int id = 0)
     {
         return new TypeCandle
         {
-            Id = _faker.Random.Number(1, 10000),
+            Id = id == 0
+                ? _faker.Random.Number(1, 10000)
+                : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.TypeCandle.MaxTitleLength)
         };
     }

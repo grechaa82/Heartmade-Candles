@@ -5,7 +5,7 @@ namespace HeartmadeCandles.UnitTests.Order;
 
 internal class GenerateOrderData
 {
-    private static readonly Faker _faker = new();
+   private static readonly Faker _faker = new();
 
    public static Candle GenerateCandle(int id = 0)
     {
@@ -225,6 +225,18 @@ internal class GenerateOrderData
                 .Select(_ => GenerateBasketItem())
                 .ToArray(),
             FilterString = _faker.Random.String()
+        };
+    }
+
+    public static Basket GenerateBasket(ConfiguredCandleBasket configuredCandleBasket)
+    {
+        return new Basket 
+        {
+            Id = Guid.NewGuid().ToString(),
+            Items = configuredCandleBasket.ConfiguredCandleFilters
+                .Select(x => GenerateBasketItem(x))
+                .ToArray(),
+            FilterString = configuredCandleBasket.ConfiguredCandleFiltersString
         };
     }
 
