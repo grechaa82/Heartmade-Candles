@@ -9,7 +9,7 @@ public class DecorTest
     private static readonly Faker _faker = new("ru");
 
     [Theory]
-    [MemberData(nameof(GenerateData))]
+    [MemberData(nameof(GenerateTestDataForCreateValidParameters))]
     public void Create_ValidParameters_ReturnsSuccess(
         int id,
         string title,
@@ -39,14 +39,14 @@ public class DecorTest
         Assert.True(result.IsSuccess);
     }
 
-    public static IEnumerable<object[]> GenerateData()
+    public static IEnumerable<object[]> GenerateTestDataForCreateValidParameters()
     {
         var faker = new Faker();
 
         for (var i = 0; i < 100; i++)
             yield return new object[]
             {
-                faker.Random.Number(1, 10000),
+                GenerateData.GenerateId(),
                 faker.Random.String(1, Decor.MaxTitleLength),
                 faker.Random.String(1, Decor.MaxDescriptionLength),
                 faker.Random.Number(1, 10000) * faker.Random.Decimal(),
@@ -71,7 +71,7 @@ public class DecorTest
 
         // Act
         var result = Decor.Create(
-            id: _faker.Random.Number(1, 10000),
+            id: GenerateData.GenerateId(),
             title: title,
             description: _faker.Random.String(1, Decor.MaxDescriptionLength),
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
@@ -113,7 +113,7 @@ public class DecorTest
 
         // Act
         var result = Decor.Create(
-            id: _faker.Random.Number(1, 10000),
+            id: GenerateData.GenerateId(),
             title: _faker.Random.String(1, Decor.MaxTitleLength),
             description: description,
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
@@ -204,7 +204,7 @@ public class DecorTest
         var faker = new Faker();
 
         return Decor.Create(
-            id: id ?? faker.Random.Number(1, 10000),
+            id: id ?? GenerateData.GenerateId(),
             title: title ?? faker.Random.String(1, Decor.MaxTitleLength),
             description: description ?? faker.Random.String(1, Decor.MaxDescriptionLength),
             price: price ?? faker.Random.Number(1, 10000) * faker.Random.Decimal(),

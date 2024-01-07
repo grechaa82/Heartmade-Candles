@@ -9,7 +9,7 @@ public class LayerColorTest
     private static readonly Faker _faker = new("ru");
 
     [Theory]
-    [MemberData(nameof(GenerateData))]
+    [MemberData(nameof(GenerateTestDataForCreateValidParameters))]
     public void Create_ValidParameters_ReturnsSuccess(
         int id,
         string title,
@@ -33,14 +33,14 @@ public class LayerColorTest
         Assert.True(result.IsSuccess);
     }
 
-    public static IEnumerable<object[]> GenerateData()
+    public static IEnumerable<object[]> GenerateTestDataForCreateValidParameters()
     {
         var faker = new Faker();
 
         for (var i = 0; i < 100; i++)
             yield return new object[]
             {
-                faker.Random.Number(1, 10000),
+                GenerateData.GenerateId(),
                 faker.Random.String(1, LayerColor.MaxTitleLength),
                 faker.Random.String(1, LayerColor.MaxDescriptionLength),
                 faker.Random.Number(1, 10000),
@@ -65,7 +65,7 @@ public class LayerColorTest
 
         // Act
         var result = LayerColor.Create(
-            id: _faker.Random.Number(1, 10000),
+            id: GenerateData.GenerateId(),
             title: title,
             description: _faker.Random.String(1, LayerColor.MaxDescriptionLength),
             pricePerGram: _faker.Random.Number(1, 10000),
@@ -107,7 +107,7 @@ public class LayerColorTest
 
         // Act
         var result = LayerColor.Create(
-            id: _faker.Random.Number(1, 10000),
+            id: GenerateData.GenerateId(),
             title: _faker.Random.String(1, LayerColor.MaxTitleLength),
             description: description,
             pricePerGram: _faker.Random.Number(1, 10000),
@@ -198,7 +198,7 @@ public class LayerColorTest
         var faker = new Faker();
 
         return LayerColor.Create(
-            id: id ?? faker.Random.Number(1, 10000),
+            id: id ?? GenerateData.GenerateId(),
             title: title ?? faker.Random.String(1, LayerColor.MaxTitleLength),
             description: description ?? faker.Random.String(1, LayerColor.MaxDescriptionLength),
             pricePerGram: pricePerGram ?? faker.Random.Number(1, 10000),

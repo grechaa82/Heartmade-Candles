@@ -45,7 +45,7 @@ public class GenerateConstructorData
         return new Candle
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxDescriptionLength),
@@ -60,7 +60,7 @@ public class GenerateConstructorData
         return new Decor
         {  
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxDescriptionLength),
@@ -86,7 +86,7 @@ public class GenerateConstructorData
         return new LayerColor
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxDescriptionLength),
@@ -112,7 +112,7 @@ public class GenerateConstructorData
         return new NumberOfLayer
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Number = number == 0
                 ? _faker.Random.Number(1, 10000)
@@ -137,7 +137,7 @@ public class GenerateConstructorData
         return new Smell
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxDescriptionLength),
@@ -162,7 +162,7 @@ public class GenerateConstructorData
         return new Wick
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxTitleLength),
             Description = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxDescriptionLength),
@@ -188,7 +188,7 @@ public class GenerateConstructorData
         return new TypeCandle
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.TypeCandle.MaxTitleLength)
         };

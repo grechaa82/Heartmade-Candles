@@ -29,7 +29,7 @@ public class OrderServiceTest
     public async Task GetOrderById_ValidId_ReturnValidOrder()
     {
         // Arrange
-        var orderId = Guid.NewGuid().ToString();
+        var orderId = GenerateData.GenerateStringId();
         var order = GenerateOrderData.GenerateOrder();
 
         _orderRepository.Setup(br => br.GetOrderById(orderId))
@@ -49,7 +49,7 @@ public class OrderServiceTest
     public async Task GetOrderById_InvalidId_ReturnFailure()
     {
         // Arrange
-        var orderId = "invalidId";
+        var orderId = GenerateData.GenerateStringId();
 
         _orderRepository.Setup(br => br.GetOrderById(orderId))
             .ReturnsAsync(Maybe<HeartmadeCandles.Order.Core.Models.Order>.None)

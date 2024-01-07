@@ -9,7 +9,7 @@ public class CandleTests
     private static readonly Faker _faker = new("ru");
 
     [Theory]
-    [MemberData(nameof(GenerateData))]
+    [MemberData(nameof(GenerateTestDataForCreateValidParameters))]
     public void Create_ValidParameters_ReturnsSuccess(
         int id,
         string title,
@@ -39,14 +39,14 @@ public class CandleTests
         Assert.True(result.IsSuccess);
     }
 
-    public static IEnumerable<object[]> GenerateData()
+    public static IEnumerable<object[]> GenerateTestDataForCreateValidParameters()
     {
         var faker = new Faker();
 
         for (var i = 0; i < 100; i++)
             yield return new object[]
             {
-                faker.Random.Number(1, 10000),
+                GenerateData.GenerateId(),
                 faker.Random.String(1, Candle.MaxTitleLength),
                 faker.Random.String(1, Candle.MaxDescriptionLength),
                 faker.Random.Number(1, 10000) * faker.Random.Decimal(),
@@ -61,7 +61,7 @@ public class CandleTests
                 faker.Random.Bool(),
                 TypeCandle.Create(
                         faker.Random.String(1, TypeCandle.MaxTitleLength),
-                        faker.Random.Number(1, 10000))
+                        GenerateData.GenerateId())
                     .Value,
                 faker.Date.Past()
             };
@@ -77,7 +77,7 @@ public class CandleTests
 
         // Act
         var result = Candle.Create(
-            id: _faker.Random.Number(1, 10000),
+            id: GenerateData.GenerateId(),
             title: title,
             description: _faker.Random.String(1, Candle.MaxDescriptionLength),
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
@@ -92,7 +92,7 @@ public class CandleTests
             isActive: _faker.Random.Bool(),
             typeCandle: TypeCandle.Create(
                     _faker.Random.String(1, TypeCandle.MaxTitleLength),
-                    _faker.Random.Number(1, 10000))
+                    GenerateData.GenerateId())
                 .Value,
             createdAt: _faker.Date.Past());
 
@@ -125,7 +125,7 @@ public class CandleTests
 
         // Act
         var result = Candle.Create(
-            id: _faker.Random.Number(1, 10000),
+            id: GenerateData.GenerateId(),
             title: _faker.Random.String(1, Candle.MaxTitleLength),
             description: description,
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
@@ -140,7 +140,7 @@ public class CandleTests
             isActive: _faker.Random.Bool(),
             typeCandle: TypeCandle.Create(
                     _faker.Random.String(1, TypeCandle.MaxTitleLength),
-                    _faker.Random.Number(1, 10000))
+                    GenerateData.GenerateId())
                 .Value,
             createdAt: _faker.Date.Past());
 
@@ -202,7 +202,7 @@ public class CandleTests
 
         // Act
         var result = Candle.Create(
-            id: _faker.Random.Number(1, 10000),
+            id: GenerateData.GenerateId(),
             title: _faker.Random.String(1, Candle.MaxTitleLength),
             description: _faker.Random.String(1, Candle.MaxDescriptionLength),
             price: _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
@@ -237,7 +237,7 @@ public class CandleTests
 
         // Act
         var result = Candle.Create(
-            id: _faker.Random.Number(1, 10000),
+            id: GenerateData.GenerateId(),
             title: null,
             description: _faker.Random.String(Candle.MaxDescriptionLength + 1),
             price: -10m,
@@ -272,7 +272,7 @@ public class CandleTests
         var faker = new Faker();
 
         return Candle.Create(
-            id: id ?? faker.Random.Number(1, 10000),
+            id: id ?? GenerateData.GenerateId(),
             title: title ?? faker.Random.String(1, Candle.MaxTitleLength),
             description: description ?? faker.Random.String(1, Candle.MaxDescriptionLength),
             price: price ?? faker.Random.Number(1, 10000) * faker.Random.Decimal(),
@@ -289,7 +289,7 @@ public class CandleTests
             typeCandle: typeCandle
                         ?? TypeCandle.Create(
                                 faker.Random.String(1, TypeCandle.MaxTitleLength),
-                                faker.Random.Number(1, 10000))
+                                GenerateData.GenerateId())
                             .Value,
             createdAt: createdAt ?? faker.Date.Past());
     }

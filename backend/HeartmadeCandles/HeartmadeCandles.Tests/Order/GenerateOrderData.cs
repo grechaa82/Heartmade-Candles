@@ -12,7 +12,7 @@ internal class GenerateOrderData
         return new Candle
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Candle.MaxTitleLength),
             Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal(),
@@ -33,7 +33,7 @@ internal class GenerateOrderData
         return new Decor
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Decor.MaxTitleLength),
             Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal()
@@ -45,7 +45,7 @@ internal class GenerateOrderData
         return new LayerColor
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.LayerColor.MaxTitleLength),
             PricePerGram = _faker.Random.Number(1, 10000) * _faker.Random.Decimal()
@@ -56,7 +56,9 @@ internal class GenerateOrderData
     {
         return new NumberOfLayer
         {
-            Id = id == 0 ? _faker.Random.Number(1, 10000) : id,
+            Id = id == 0 
+                ? GenerateData.GenerateId() 
+                : id,
             Number = number
         };
     }
@@ -66,7 +68,7 @@ internal class GenerateOrderData
         return new Smell
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Smell.MaxTitleLength),
             Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal()
@@ -78,7 +80,7 @@ internal class GenerateOrderData
         return new Wick
         {
             Id = id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id,
             Title = _faker.Random.String(1, HeartmadeCandles.Admin.Core.Models.Wick.MaxTitleLength),
             Price = _faker.Random.Number(1, 10000) * _faker.Random.Decimal()
@@ -219,7 +221,7 @@ internal class GenerateOrderData
     {
         return new Basket 
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = GenerateData.GenerateStringId(),
             Items = Enumerable
                 .Range(0, _faker.Random.Number(1, 100))
                 .Select(_ => GenerateBasketItem())
@@ -232,7 +234,7 @@ internal class GenerateOrderData
     {
         return new Basket 
         {
-            Id = Guid.NewGuid().ToString(),
+            Id = GenerateData.GenerateStringId(),
             Items = configuredCandleBasket.ConfiguredCandleFilters
                 .Select(x => GenerateBasketItem(x))
                 .ToArray(),
@@ -280,8 +282,8 @@ internal class GenerateOrderData
 
         return new HeartmadeCandles.Order.Core.Models.Order
         {
-            Id = Guid.NewGuid().ToString(),
-            BasketId = basket.Id ?? Guid.NewGuid().ToString(),
+            Id = GenerateData.GenerateStringId(),
+            BasketId = basket.Id ?? GenerateData.GenerateStringId(),
             Basket = basket,
             User = GenerateUser(),
             Feedback = GenerateFeedback(),

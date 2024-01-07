@@ -35,7 +35,7 @@ public class CandleServiceTest
     public async Task UpdateDecor_WhenValid_ReturnSuccess()
     {
         // Arrange
-        var id = _faker.Random.Number(1, 100);
+        var id = GenerateData.GenerateId();
 
         var ids = new[]
         {
@@ -80,34 +80,17 @@ public class CandleServiceTest
             },
             _faker.Random.Bool(),
             id == 0
-                ? _faker.Random.Number(1, 10000)
+                ? GenerateData.GenerateId()
                 : id);
 
         return decor.Value;
     }
 
-    private static int[] GenerateIntArray(int count = 0)
-    {
-        if(count == 0)
-        {
-            count = _faker.Random.Number(1, 100);
-        }
-
-        var array = new int[count];
-        foreach (var i in Enumerable.Range(0, count))
-        {
-            array[i] = _faker.Random.Number(1, 100);
-        }
-
-        return array;
-    }
-
-
     [Fact]
     public async Task UpdateDecor_WhenAllDecorsNotExist_ReturnFailure()
     {
         // Arrange
-        var id = _faker.Random.Number(1, 100);
+        var id = GenerateData.GenerateId();
 
         var ids = new[]
         {
@@ -132,7 +115,7 @@ public class CandleServiceTest
     public async Task UpdateDecor_WhenOneDecorNotExist_ReturnFailure()
     {
         // Arrange
-        var id = _faker.Random.Number(1, 100);
+        var id = GenerateData.GenerateId();
 
         var ids = new[]
         {
@@ -165,7 +148,7 @@ public class CandleServiceTest
     public async Task UpdateDecor_WhenEmptyArrayIds_ReturnSuccess()
     {
         // Arrange
-        var id = _faker.Random.Number(1, 100);
+        var id = GenerateData.GenerateId();
 
         _decorRepositoryMock.Setup(dr => dr.UpdateCandleDecor(id, Array.Empty<Decor>()))
             .ReturnsAsync(Result.Success)

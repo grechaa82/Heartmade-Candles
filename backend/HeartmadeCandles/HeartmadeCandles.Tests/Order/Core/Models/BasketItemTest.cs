@@ -8,7 +8,7 @@ public class BasketItemTest
     private static readonly Faker _faker = new();
 
     [Theory]
-    [MemberData(nameof(GenerateData))]
+    [MemberData(nameof(GenerateTestDataForCreateValidParameters))]
     public void Create_ValidParameters_ReturnsSuccess(
         ConfiguredCandle candleDetail,
         decimal price,
@@ -64,7 +64,7 @@ public class BasketItemTest
         Assert.True(result.IsSuccess);
     }
 
-    public static IEnumerable<object[]> GenerateData()
+    public static IEnumerable<object[]> GenerateTestDataForCreateValidParameters()
     {
         for (var i = 0; i < 100; i++)
         {
@@ -110,7 +110,7 @@ public class BasketItemTest
 
         var newConfiguredCandleFilter = new ConfiguredCandleFilter
         {
-            CandleId = _faker.Random.Number(0, 10000),
+            CandleId = GenerateData.GenerateInvalidId(),
             DecorId = configuredCandleFilter.DecorId,
             NumberOfLayerId = configuredCandleFilter.NumberOfLayerId,
             LayerColorIds = configuredCandleFilter.LayerColorIds,
@@ -285,7 +285,7 @@ public class BasketItemTest
         {
             CandleId = configuredCandleFilter.CandleId,
             DecorId = configuredCandleFilter.DecorId,
-            NumberOfLayerId = _faker.Random.Number(0, 10000),
+            NumberOfLayerId = GenerateData.GenerateInvalidId(),
             LayerColorIds = configuredCandleFilter.LayerColorIds,
             SmellId = configuredCandleFilter.SmellId,
             WickId = configuredCandleFilter.WickId,
@@ -441,7 +441,7 @@ public class BasketItemTest
             NumberOfLayerId = configuredCandleFilter.NumberOfLayerId,
             LayerColorIds = configuredCandleFilter.LayerColorIds,
             SmellId = configuredCandleFilter.SmellId,
-            WickId = _faker.Random.Number(0, 10000),
+            WickId = GenerateData.GenerateInvalidId(),
             Quantity = configuredCandleFilter.Quantity,
             FilterString = configuredCandleFilter.FilterString
         };
@@ -640,7 +640,7 @@ public class BasketItemTest
     }
 
     [Theory]
-    [MemberData(nameof(GenerateData))]
+    [MemberData(nameof(GenerateTestDataForCreateValidParameters))]
     public void Compare_ValidParameters_ReturnsSuccess(
     ConfiguredCandle candleDetail,
     decimal price,

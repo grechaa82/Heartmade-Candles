@@ -29,7 +29,7 @@ public class BasketServiceTest
     public async Task GetBasketById_ValidId_ReturnValidBasket()
     {
         // Arrange
-        var basketId = Guid.NewGuid().ToString();
+        var basketId = GenerateData.GenerateStringId();
         var basket = GenerateOrderData.GenerateBasket();
 
         _basketRepository.Setup(br => br.GetBasketById(basketId))
@@ -49,7 +49,7 @@ public class BasketServiceTest
     public async Task GetBasketById_InvalidId_ReturnFailure()
     {
         // Arrange
-        var basketId = "invalidId";
+        var basketId = GenerateData.GenerateStringId();
 
         _basketRepository.Setup(br => br.GetBasketById(basketId))
             .ReturnsAsync(Maybe<Basket>.None)
@@ -95,7 +95,7 @@ public class BasketServiceTest
             .Verifiable();
 
         _basketRepository.Setup(br => br.CreateBasket(It.IsAny<Basket>()))
-            .ReturnsAsync(Guid.NewGuid().ToString())
+            .ReturnsAsync(GenerateData.GenerateStringId())
             .Verifiable();
 
         // Act
