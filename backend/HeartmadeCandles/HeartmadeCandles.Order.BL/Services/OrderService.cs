@@ -33,7 +33,7 @@ public class OrderService : IOrderService
             : Result.Failure<Core.Models.Order>($"Order by id: {orderId} does not exist");
     } 
 
-    public async Task<Result<string>> CreateOrder(User user, Feedback feedback, string basketId)
+    public async Task<Result<string>> CreateOrder(User? user, Feedback? feedback, string basketId)
     {
         var basket = await _basketRepository.GetBasketById(basketId);
 

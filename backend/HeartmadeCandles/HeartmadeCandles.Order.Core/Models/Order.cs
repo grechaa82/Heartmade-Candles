@@ -8,9 +8,9 @@ public class Order
 
     public Basket? Basket { get; init; }
     
-    public required User User { get; init; }
+    public User? User { get; init; }
 
-    public required Feedback Feedback { get; init; }
+    public Feedback? Feedback { get; init; }
 
     public OrderStatus Status { get; init; }
 }

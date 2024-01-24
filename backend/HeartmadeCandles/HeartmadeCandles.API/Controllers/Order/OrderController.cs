@@ -42,8 +42,8 @@ public class OrderController : Controller
     public async Task<IActionResult> CreateOrder(CreateOrderRequest orderRequest)
     {
         var result = await _orderService.CreateOrder(
-            MapToUser(orderRequest.User), 
-            MapToFeedback(orderRequest.Feedback), 
+            orderRequest.User == null ? null : MapToUser(orderRequest.User),
+            orderRequest.Feedback == null ? null : MapToFeedback(orderRequest.Feedback),
             orderRequest.BasketId);
 
         if (result.IsFailure)
