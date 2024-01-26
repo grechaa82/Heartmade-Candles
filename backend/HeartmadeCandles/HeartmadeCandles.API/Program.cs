@@ -60,7 +60,8 @@ try
     builder.Services
         .AddOrderServices()
         .AddOrderRepositories()
-        .AddOrderNotificationServices();
+        .AddOrderNotificationServices()
+        .AddHostedService<TelegramBotService>();
 
     builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
     builder.Services.AddSingleton(options =>

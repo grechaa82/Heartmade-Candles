@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Auth.BL", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Order.Bot", "HeartmadeCandles.Order.Bot\HeartmadeCandles.Order.Bot.csproj", "{339B79E1-12AA-4447-B3DE-85C36B79AB74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Order.DAL", "HeartmadeCandles.Order.DAL\HeartmadeCandles.Order.DAL.csproj", "{83D9FBE2-DB98-4017-8C9D-49E2FB999719}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Order.DAL", "HeartmadeCandles.Order.DAL\HeartmadeCandles.Order.DAL.csproj", "{83D9FBE2-DB98-4017-8C9D-49E2FB999719}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
