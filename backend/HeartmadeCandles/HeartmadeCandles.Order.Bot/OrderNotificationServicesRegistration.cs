@@ -9,8 +9,8 @@ public static class OrderNotificationServicesRegistration
     {
         services
             .AddScoped<IOrderNotificationHandler, OrderNotificationHandler>()
-            .AddSingleton<IUserRolesCache, UserRolesCache>();
-        
+            .AddSingleton<ITelegramUserCache, TelegramUserCache>();
+
         return services;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using HeartmadeCandles.Order.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -16,8 +17,6 @@ public class TelegramBotService : IHostedService
     private static readonly string _adminChatId = Environment.GetEnvironmentVariable("VAR_TELEGRAM_CHAT_ID");
     private static readonly string _token = Environment.GetEnvironmentVariable("VAR_TELEGRAM_API_TOKEN");
     private readonly TelegramBotClient _client = new TelegramBotClient(_token);
-    private List<string> orderIds = new List<string>();
-    private bool isAfterOrderCommand = false;
 
     public TelegramBotService(
         IServiceScopeFactory serviceScopeFactory,
@@ -84,6 +83,10 @@ public class TelegramBotService : IHostedService
 
     private async Task HandleStartMessageAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
     {
+        var scope = _serviceScopeFactory.CreateScope();
+        var userCache = scope.ServiceProvider.GetRequiredService<ITelegramUserCache>();
+
+
         if (update.Message is not { } message)
             return;
 
@@ -98,45 +101,84 @@ public class TelegramBotService : IHostedService
 
         if (text.ToLower().Contains("/start"))
         {
+            var newUser = new TelegramUser(
+                userId: message.From.Id,
+                chatId: message.Chat.Id,
+                userName: message.From.Username,
+                firstName: message.From.FirstName,
+                lastName: message.From.LastName,
+                state: TelegramUserState.None,
+                role: TelegramUserRole.Buyer);
+
+            userCache.AddOrUpdateUser(newUser);
+
             await botClient.SendTextMessageAsync(
                 chatId: chatId,
                 replyToMessageId: message.MessageId,
-                text: $"Добро пожаловать Ваш chatId {chatId}",
+                text: $@"Добро пожаловать\. Ваш chatId {chatId}",
                 cancellationToken: cancellationToken,
-                parseMode: ParseMode.Markdown);
+                parseMode: ParseMode.MarkdownV2);
 
             return;
         }
 
+        var user = userCache.GetByChatId(chatId).Value;
+
         if (text.ToLower().Contains("/order"))
         {
-            isAfterOrderCommand = true;
+            var newUser = new TelegramUser(
+                userId: user.UserId,
+                chatId: user.ChatId,
+                userName: user.UserName,
+                firstName: user.FirstName,
+                lastName: user.LastName,
+                state: TelegramUserState.AskingOrderId,
+                role: user.Role);
+
+            userCache.AddOrUpdateUser(newUser);
+
             await SendOrderIdAsync(chatId, cancellationToken);
 
             return;
         }
-
-        if (text.ToLower().Contains("/list"))
+        
+        if (text.ToLower().Contains("/getorderinfo"))
         {
-            var mes = string.Join(" and ", orderIds);
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: string.IsNullOrEmpty(mes) ? "empty" : mes,
-                cancellationToken: cancellationToken,
-                parseMode: ParseMode.MarkdownV2);
+            await SendOrderInfoAsync(user.CurrentOrderId, chatId, cancellationToken);
 
             return;
         }
-
-        if (isAfterOrderCommand)
+        
+        if (user.State == TelegramUserState.AskingOrderId)
         {
-            orderIds.Add(text);
-            isAfterOrderCommand = false;
+            var orderId = text;
+
+            var newUser = new TelegramUser(
+                userId: user.UserId,
+                chatId: user.ChatId,
+                userName: user.UserName,
+                firstName: user.FirstName,
+                lastName: user.LastName,
+                currentOrderId: orderId,
+                state: TelegramUserState.None,
+                role: user.Role);
+
+            userCache.AddOrUpdateUser(newUser);
+
             await botClient.SendTextMessageAsync(
                 chatId: chatId,
-                text: "ID заказа успешно сохранен",
-                cancellationToken: cancellationToken,
-                parseMode: ParseMode.MarkdownV2);
+                text: $@"Вам доступна команда /getorderinfo",
+                parseMode: ParseMode.MarkdownV2,
+                cancellationToken: cancellationToken);
+        }
+        else
+        {
+            await botClient.SendTextMessageAsync(
+                chatId: chatId,
+                replyToMessageId: message.MessageId,
+                text: $"Вы отправили: {messageText}",
+                parseMode: ParseMode.MarkdownV2,
+                cancellationToken: cancellationToken);
         }
     }
 
@@ -145,6 +187,31 @@ public class TelegramBotService : IHostedService
         return await _client.SendTextMessageAsync(
             chatId: chatId,
             text: "Введите номер заказа: ",
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+    }
+
+    public async Task<Message> SendOrderInfoAsync(string orderId, long chatId, CancellationToken cancellationToken = default)
+    {
+        await using var scope = _serviceScopeFactory.CreateAsyncScope();
+        var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+
+        var orderResult = await orderService.GetOrderById(orderId);
+
+        if (orderResult.IsFailure)
+        {
+            return await _client.SendTextMessageAsync(
+                chatId: chatId,
+                text: "Возникла проблема с вашим заказом",
+                parseMode: ParseMode.MarkdownV2,
+                cancellationToken: cancellationToken);
+        }
+
+        var message = OrderInfoFormatter.GetOrderInfoInMarkdownV2(orderResult.Value);
+
+        return await _client.SendTextMessageAsync(
+            chatId: chatId,
+            text: message,
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
     }
