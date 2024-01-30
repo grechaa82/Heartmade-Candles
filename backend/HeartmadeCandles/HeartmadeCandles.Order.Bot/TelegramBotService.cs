@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Order.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Order.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -78,6 +79,7 @@ public class TelegramBotService : IHostedService
 
     private Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
+        _logger.LogError("Telegram Bot Error {ErrorMessage}", exception.Message);
         return Task.CompletedTask;
     }
 
@@ -112,12 +114,7 @@ public class TelegramBotService : IHostedService
 
             userCache.AddOrUpdateUser(newUser);
 
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                replyToMessageId: message.MessageId,
-                text: OrderInfoFormatter.EscapeSpecialCharacters("Добро пожаловать. Ваш chatId {chatId}"),
-                cancellationToken: cancellationToken,
-                parseMode: ParseMode.MarkdownV2);
+            await SendStartMessage(botClient, message, chatId, cancellationToken);
 
             return;
         }
@@ -137,21 +134,21 @@ public class TelegramBotService : IHostedService
 
             userCache.AddOrUpdateUser(newUser);
 
-            await SendOrderIdAsync(chatId, cancellationToken);
+            await SendOrderIdAsync(botClient, chatId, cancellationToken);
 
             return;
         }
         
         if (text.ToLower().Contains("/getorderinfo"))
         {
-            await SendOrderInfoAsync(user.CurrentOrderId, chatId, cancellationToken);
+            await SendOrderInfoAsync(botClient, user.CurrentOrderId, chatId, cancellationToken);
 
             return;
         }
 
         if (text.ToLower().Contains("/getorderstatus"))
         {
-            await SendOrderStatusAsync(user.CurrentOrderId, chatId, cancellationToken);
+            await SendOrderStatusAsync(botClient, user.CurrentOrderId, chatId, cancellationToken);
 
             return;
         }
@@ -169,17 +166,7 @@ public class TelegramBotService : IHostedService
                 role: user.Role);
 
             userCache.AddOrUpdateUser(newUser);
-
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: OrderInfoFormatter.EscapeSpecialCharacters(
-                    """
-                    Отправьте одним сообщение вашу Фамилию Имя и Отчество.
-
-                    Пример: Константинопольский Константин Владимирович
-                    """),
-                parseMode: ParseMode.MarkdownV2,
-                cancellationToken: cancellationToken);
+            await SendPromptFeedbackAsync(botClient, chatId, cancellationToken);
 
             return;
         }
@@ -198,23 +185,22 @@ public class TelegramBotService : IHostedService
 
             userCache.AddOrUpdateUser(newUser);
 
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: OrderInfoFormatter.EscapeSpecialCharacters(
-                    """
-                    В данный момент доставка возможно только Почтой России, приносим свои извинения.
-                    Введите свой адрес, куда доставить посылку.
-                    Пример: Казанская площадь, 2, Санкт-Петербург
-                    """),
-                parseMode: ParseMode.MarkdownV2,
-                cancellationToken: cancellationToken);
+            await SendPromptAddressAsync(botClient, chatId, cancellationToken);
 
             return;
         }
 
         if (user.State == TelegramUserState.AskingOrderId)
         {
-            var newUser = new TelegramUser(
+            var orderResult = await CheckOrderAsync(text);
+
+            if (orderResult.IsFailure)
+            {
+                await SendOrderProcessingErrorMessage(botClient, chatId, cancellationToken);
+            }
+            else
+            {
+                var newUser = new TelegramUser(
                 userId: user.UserId,
                 chatId: user.ChatId,
                 userName: user.UserName,
@@ -224,21 +210,10 @@ public class TelegramBotService : IHostedService
                 state: TelegramUserState.None,
                 role: user.Role);
 
-            userCache.AddOrUpdateUser(newUser);
+                userCache.AddOrUpdateUser(newUser);
 
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: OrderInfoFormatter.EscapeSpecialCharacters(
-                    """
-                    Вам доступны команды: 
-                    
-                    /getorderinfo - узнать информацию о заказе
-                    /getorderstatus - узнать текущий статус заказа
-                    /fillfeedback - ввести ФИО
-                    /fiiladdress - ввести адрес доставки
-                    """),
-                parseMode: ParseMode.MarkdownV2,
-                cancellationToken: cancellationToken);
+                await SendInfoAboutCommandsAsync(botClient, chatId, cancellationToken);
+            }
         }
         else if (user.State == TelegramUserState.AskingFeedback)
         {
@@ -254,31 +229,11 @@ public class TelegramBotService : IHostedService
 
             userCache.AddOrUpdateUser(newUser);
 
-            await botClient.SendTextMessageAsync(
-                chatId: _adminChatId,
-                text: OrderInfoFormatter.EscapeSpecialCharacters($"Пользователь {user.UserName} и заказом {user.CurrentOrderId} заполнил свое ФИО:"),
-                parseMode: ParseMode.MarkdownV2,
-                cancellationToken: cancellationToken);
+            await ForwardFeedbackToAdminAsync(botClient, message, user, cancellationToken);
 
-            await botClient.ForwardMessageAsync(
-                chatId: _adminChatId,
-                fromChatId: user.ChatId,
-                messageId: message.MessageId,
-                cancellationToken: cancellationToken);
+            await SendConfirmedAsync(botClient, chatId, cancellationToken);
 
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: OrderInfoFormatter.EscapeSpecialCharacters(
-                    """
-                    Вам доступны команды:
-                    
-                    /getorderinfo - узнать информацию о заказе
-                    /getorderstatus - узнать текущий статус заказа
-                    /fillfeedback - ввести ФИО
-                    /fiiladdress - ввести адрес доставки
-                    """),
-                parseMode: ParseMode.MarkdownV2,
-                cancellationToken: cancellationToken);
+            await SendInfoAboutCommandsAsync(botClient, chatId, cancellationToken);
         }
         else if (user.State == TelegramUserState.AskingAddress)
         {
@@ -294,31 +249,11 @@ public class TelegramBotService : IHostedService
 
             userCache.AddOrUpdateUser(newUser);
 
-            await botClient.SendTextMessageAsync(
-                chatId: _adminChatId,
-                text: OrderInfoFormatter.EscapeSpecialCharacters($"Пользователь {user.UserName} и заказом {user.CurrentOrderId} заполнил свое адрес доставки:"),
-                parseMode: ParseMode.MarkdownV2,
-                cancellationToken: cancellationToken);
+            await ForwardAddressToAdminAsync(botClient, message, user, cancellationToken);
 
-            await botClient.ForwardMessageAsync(
-                chatId: _adminChatId,
-                fromChatId: user.ChatId,
-                messageId: message.MessageId,
-                cancellationToken: cancellationToken);
+            await SendConfirmedAsync(botClient, chatId, cancellationToken);
 
-            await botClient.SendTextMessageAsync(
-                chatId: chatId,
-                text: OrderInfoFormatter.EscapeSpecialCharacters(
-                    """
-                    Вам доступны команды: 
-                    
-                    /getorderinfo - узнать информацию о заказе
-                    /getorderstatus - узнать текущий статус заказа
-                    /fillfeedback - ввести ФИО
-                    /fiiladdress - ввести адрес доставки
-                    """),
-                parseMode: ParseMode.MarkdownV2,
-                cancellationToken: cancellationToken);
+            await SendInfoAboutCommandsAsync(botClient, chatId, cancellationToken);
         }
         else
         {
@@ -331,16 +266,47 @@ public class TelegramBotService : IHostedService
         }
     }
 
-    public async Task<Message> SendOrderIdAsync(long chatId, CancellationToken cancellationToken = default)
+    private async Task<Result> CheckOrderAsync(string orderId)
     {
-        return await _client.SendTextMessageAsync(
+        await using var scope = _serviceScopeFactory.CreateAsyncScope();
+        var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+
+        var orderResult = await orderService.GetOrderById(orderId);
+
+        if (orderResult.IsFailure)
+        {
+            return Result.Failure(orderResult.Error);
+        }
+        return Result.Success();
+    }
+
+    private async Task SendInfoAboutCommandsAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: chatId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters(
+                """
+                Вам доступны команды: 
+                    
+                /getorderinfo - узнать информацию о заказе
+                /getorderstatus - узнать текущий статус заказа
+                /fillfeedback - ввести ФИО
+                /fiiladdress - ввести адрес доставки
+                """),
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+    }
+
+    private async Task SendOrderIdAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: "Введите номер заказа: ",
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
     }
 
-    public async Task<Message> SendOrderInfoAsync(string orderId, long chatId, CancellationToken cancellationToken = default)
+    private async Task SendOrderInfoAsync(ITelegramBotClient botClient, string orderId, long chatId, CancellationToken cancellationToken = default)
     {
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
@@ -349,23 +315,19 @@ public class TelegramBotService : IHostedService
 
         if (orderResult.IsFailure)
         {
-            return await _client.SendTextMessageAsync(
-                chatId: chatId,
-                text: "Возникла проблема с вашим заказом",
-                parseMode: ParseMode.MarkdownV2,
-                cancellationToken: cancellationToken);
+            await SendOrderProcessingErrorMessage(botClient, chatId, cancellationToken);
         }
 
         var message = OrderInfoFormatter.GetOrderInfoInMarkdownV2(orderResult.Value);
 
-        return await _client.SendTextMessageAsync(
+        await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: message,
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
     }
 
-    public async Task<Message> SendOrderStatusAsync(string orderId, long chatId, CancellationToken cancellationToken = default)
+    private async Task SendOrderStatusAsync(ITelegramBotClient botClient, string orderId, long chatId, CancellationToken cancellationToken = default)
     {
         await using var scope = _serviceScopeFactory.CreateAsyncScope();
         var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
@@ -374,17 +336,100 @@ public class TelegramBotService : IHostedService
 
         if (orderResult.IsFailure)
         {
-            return await _client.SendTextMessageAsync(
-                chatId: chatId,
-                text: "Возникла проблема с вашим заказом",
-                parseMode: ParseMode.MarkdownV2,
-                cancellationToken: cancellationToken);
+            await SendOrderProcessingErrorMessage(botClient, chatId, cancellationToken);
         }
 
-        return await _client.SendTextMessageAsync(
+        await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: orderResult.Value.Status.ToString(),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
+    }
+
+    private async Task SendOrderProcessingErrorMessage(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: chatId,
+            text: "Возникла проблема с вашим заказом",
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+    }
+
+    private async Task ForwardFeedbackToAdminAsync(ITelegramBotClient botClient, Message message, TelegramUser user, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: _adminChatId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters($"Пользователь {user.UserName} и заказом {user.CurrentOrderId} заполнил свое ФИО:"),
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+
+        await botClient.ForwardMessageAsync(
+            chatId: _adminChatId,
+            fromChatId: user.ChatId,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+    }
+
+    private async Task ForwardAddressToAdminAsync(ITelegramBotClient botClient, Message message, TelegramUser user, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: _adminChatId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters($"Пользователь {user.UserName} и заказом {user.CurrentOrderId} заполнил свой адрес доставки:"),
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+
+        await botClient.ForwardMessageAsync(
+            chatId: _adminChatId,
+            fromChatId: user.ChatId,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+    }
+
+    private async Task SendPromptFeedbackAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: chatId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters(
+                """
+                Отправьте одним сообщение вашу Фамилию Имя и Отчество.
+
+                Пример: Константинопольский Константин Владимирович
+                """),
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+    }
+
+    private async Task SendPromptAddressAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: chatId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters(
+                """
+                В данный момент доставка возможно только Почтой России, приносим свои извинения.
+                Введите свой адрес, куда доставить посылку.
+
+                Пример: Казанская площадь, 2, Санкт-Петербург
+                """),
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+    }
+
+    private async Task SendConfirmedAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: chatId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters("Ваши данные успешно напралвлены администратору. Если возникнут сложности он с вами свяжется."),
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+    }
+
+    private async Task SendStartMessage(ITelegramBotClient botClient, Message message, long chatId, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: chatId,
+            replyToMessageId: message.MessageId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters($"Добро пожаловать. Ваш chatId {chatId}"),
+            cancellationToken: cancellationToken,
+            parseMode: ParseMode.MarkdownV2);
     }
 }
