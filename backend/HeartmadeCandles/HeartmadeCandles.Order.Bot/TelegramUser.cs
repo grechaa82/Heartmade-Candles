@@ -5,7 +5,7 @@ internal class TelegramUser
     public TelegramUser(
         long userId, 
         long chatId,
-        string userName = "", 
+        string? userName, 
         string firstName = "", 
         string lastName = "",
         string currentOrderId = "",
@@ -14,7 +14,7 @@ internal class TelegramUser
     {
         UserId = userId;
         ChatId = chatId;
-        UserName = userName;
+        UserName = userName ?? $"{firstName}{(string.IsNullOrEmpty(lastName) ? string.Empty : " " + lastName)}";
         FirstName = firstName;
         LastName = lastName;
         CurrentOrderId = currentOrderId;

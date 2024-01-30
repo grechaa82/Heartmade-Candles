@@ -4,4 +4,6 @@ public enum TelegramUserState
 {
     None,
     AskingOrderId,
+    AskingFeedback,
+    AskingAddress,
 }
