@@ -37,4 +37,17 @@ internal class TelegramUser
     public TelegramUserState State { get; init; }
 
     public TelegramUserRole Role { get; init; }
+
+    public TelegramUser UpdateState(TelegramUserState newState)
+    {
+        return new TelegramUser(
+            UserId, 
+            ChatId, 
+            UserName, 
+            FirstName, 
+            LastName, 
+            CurrentOrderId, 
+            newState, 
+            Role);
+    }
 }

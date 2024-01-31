@@ -3,7 +3,9 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Data;
 using System.Diagnostics;
+using System.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -101,7 +103,7 @@ public class TelegramBotService : IHostedService
         if (string.IsNullOrEmpty(text) || string.IsNullOrWhiteSpace(text))
             return;
 
-        if (text.ToLower().Contains("/start"))
+        if (text.ToLower().Contains(TelegramCommands.StartCommand))
         {
             var newUser = new TelegramUser(
                 userId: message.From.Id,
@@ -109,7 +111,7 @@ public class TelegramBotService : IHostedService
                 userName: message.From.Username,
                 firstName: message.From.FirstName,
                 lastName: message.From.LastName,
-                state: TelegramUserState.None,
+                state: TelegramUserState.Created,
                 role: TelegramUserRole.Buyer);
 
             userCache.AddOrUpdateUser(newUser);
@@ -121,16 +123,9 @@ public class TelegramBotService : IHostedService
 
         var user = userCache.GetByChatId(chatId).Value;
 
-        if (text.ToLower().Contains("/order"))
+        if (text.ToLower().Contains(TelegramCommands.InputOrderIdCommand))
         {
-            var newUser = new TelegramUser(
-                userId: user.UserId,
-                chatId: user.ChatId,
-                userName: user.UserName,
-                firstName: user.FirstName,
-                lastName: user.LastName,
-                state: TelegramUserState.AskingOrderId,
-                role: user.Role);
+            var newUser = user.UpdateState(TelegramUserState.AskingOrderId);
 
             userCache.AddOrUpdateUser(newUser);
 
@@ -139,53 +134,27 @@ public class TelegramBotService : IHostedService
             return;
         }
         
-        if (text.ToLower().Contains("/getorderinfo"))
+        if (text.ToLower().Contains(TelegramCommands.GetOrderInfoCommand))
         {
             await SendOrderInfoAsync(botClient, user.CurrentOrderId, chatId, cancellationToken);
 
             return;
         }
 
-        if (text.ToLower().Contains("/getorderstatus"))
+        if (text.ToLower().Contains(TelegramCommands.GetOrderStatusCommand))
         {
             await SendOrderStatusAsync(botClient, user.CurrentOrderId, chatId, cancellationToken);
 
             return;
         }
 
-        if (text.ToLower().Contains("/fillfeedback"))
+        if (text.ToLower().Contains(TelegramCommands.GoToCheckoutCommand))
         {
-            var newUser = new TelegramUser(
-                userId: user.UserId,
-                chatId: user.ChatId,
-                userName: user.UserName,
-                firstName: user.FirstName,
-                lastName: user.LastName,
-                currentOrderId: user.CurrentOrderId,
-                state: TelegramUserState.AskingFeedback,
-                role: user.Role);
-
-            userCache.AddOrUpdateUser(newUser);
-            await SendPromptFeedbackAsync(botClient, chatId, cancellationToken);
-
-            return;
-        }
-
-        if (text.ToLower().Contains("/fiiladdress"))
-        {
-            var newUser = new TelegramUser(
-                userId: user.UserId,
-                chatId: user.ChatId,
-                userName: user.UserName,
-                firstName: user.FirstName,
-                lastName: user.LastName,
-                currentOrderId: user.CurrentOrderId,
-                state: TelegramUserState.AskingAddress,
-                role: user.Role);
+            var newUser = user.UpdateState(TelegramUserState.AskingFullName);
 
             userCache.AddOrUpdateUser(newUser);
 
-            await SendPromptAddressAsync(botClient, chatId, cancellationToken);
+            await SendPromptFullNameAsync(botClient, chatId, cancellationToken);
 
             return;
         }
@@ -196,57 +165,53 @@ public class TelegramBotService : IHostedService
 
             if (orderResult.IsFailure)
             {
+                var newUser = user.UpdateState(TelegramUserState.OrderNotExist);
+
+                userCache.AddOrUpdateUser(newUser);
+
                 await SendOrderProcessingErrorMessage(botClient, chatId, cancellationToken);
             }
             else
             {
                 var newUser = new TelegramUser(
-                userId: user.UserId,
-                chatId: user.ChatId,
-                userName: user.UserName,
-                firstName: user.FirstName,
-                lastName: user.LastName,
-                currentOrderId: text,
-                state: TelegramUserState.None,
-                role: user.Role);
+                    userId: user.UserId,
+                    chatId: user.ChatId,
+                    userName: user.UserName,
+                    firstName: user.FirstName,
+                    lastName: user.LastName,
+                    currentOrderId: text,
+                    state: TelegramUserState.OrderExist,
+                    role: user.Role);
 
                 userCache.AddOrUpdateUser(newUser);
 
                 await SendInfoAboutCommandsAsync(botClient, chatId, cancellationToken);
             }
         }
-        else if (user.State == TelegramUserState.AskingFeedback)
+        else if (user.State == TelegramUserState.AskingFullName )
         {
-            var newUser = new TelegramUser(
-                userId: user.UserId,
-                chatId: user.ChatId,
-                userName: user.UserName,
-                firstName: user.FirstName,
-                lastName: user.LastName,
-                currentOrderId: user.CurrentOrderId,
-                state: TelegramUserState.None,
-                role: user.Role);
+            var newUser = user.UpdateState(TelegramUserState.AskingPhone);
 
             userCache.AddOrUpdateUser(newUser);
 
-            await ForwardFeedbackToAdminAsync(botClient, message, user, cancellationToken);
+            await ForwardFullNameToAdminAsync(botClient, message, user, cancellationToken);
 
-            await SendConfirmedAsync(botClient, chatId, cancellationToken);
+            await SendPromptPhoneAsync(botClient, chatId, cancellationToken);
+        }
+        else if (user.State == TelegramUserState.AskingPhone)
+        {
+            var newUser = user.UpdateState(TelegramUserState.AskingAddress);
 
-            await SendInfoAboutCommandsAsync(botClient, chatId, cancellationToken);
+            userCache.AddOrUpdateUser(newUser);
+
+            await ForwardPhoneToAdminAsync(botClient, message, user, cancellationToken);
+
+            await SendPromptAddressAsync(botClient, chatId, cancellationToken);
         }
         else if (user.State == TelegramUserState.AskingAddress)
         {
-            var newUser = new TelegramUser(
-                userId: user.UserId,
-                chatId: user.ChatId,
-                userName: user.UserName,
-                firstName: user.FirstName,
-                lastName: user.LastName,
-                currentOrderId: user.CurrentOrderId,
-                state: TelegramUserState.None,
-                role: user.Role);
-
+            var newUser = user.UpdateState(TelegramUserState.OrderExist);
+            
             userCache.AddOrUpdateUser(newUser);
 
             await ForwardAddressToAdminAsync(botClient, message, user, cancellationToken);
@@ -266,18 +231,21 @@ public class TelegramBotService : IHostedService
         }
     }
 
-    private async Task<Result> CheckOrderAsync(string orderId)
+    private async Task SendStartMessage(ITelegramBotClient botClient, Message message, long chatId, CancellationToken cancellationToken = default)
     {
-        await using var scope = _serviceScopeFactory.CreateAsyncScope();
-        var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+        await botClient.SendTextMessageAsync(
+            chatId: chatId,
+            replyToMessageId: message.MessageId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters(
+                $"""
+                Добро пожаловать.
 
-        var orderResult = await orderService.GetOrderById(orderId);
+                Вам доступны команды: 
 
-        if (orderResult.IsFailure)
-        {
-            return Result.Failure(orderResult.Error);
-        }
-        return Result.Success();
+                /order - для начала работы с заказом
+                """),
+            cancellationToken: cancellationToken,
+            parseMode: ParseMode.MarkdownV2);
     }
 
     private async Task SendInfoAboutCommandsAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
@@ -285,13 +253,12 @@ public class TelegramBotService : IHostedService
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
-                """
+                $"""
                 Вам доступны команды: 
                     
-                /getorderinfo - узнать информацию о заказе
-                /getorderstatus - узнать текущий статус заказа
-                /fillfeedback - ввести ФИО
-                /fiiladdress - ввести адрес доставки
+                {TelegramCommands.GetOrderInfoCommand} - узнать информацию о заказе
+                {TelegramCommands.GetOrderStatusCommand} - узнать текущий статус заказа
+                {TelegramCommands.GoToCheckoutCommand} - оформить заказ
                 """),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
@@ -315,6 +282,7 @@ public class TelegramBotService : IHostedService
 
         if (orderResult.IsFailure)
         {
+            _logger.LogError("");
             await SendOrderProcessingErrorMessage(botClient, chatId, cancellationToken);
         }
 
@@ -350,16 +318,38 @@ public class TelegramBotService : IHostedService
     {
         await botClient.SendTextMessageAsync(
             chatId: chatId,
-            text: "Возникла проблема с вашим заказом",
+            text: OrderInfoFormatter.EscapeSpecialCharacters(
+                $"""
+                Возникла проблема с вашим заказом. Мы не смогли его найти. 
+                
+                Вы можете:
+                - Попробовать ввести номер заказа еще раз {TelegramCommands.InputOrderIdCommand}
+                - Создать новый заказ на нашем сайте 4fass.ru
+                """),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
     }
 
-    private async Task ForwardFeedbackToAdminAsync(ITelegramBotClient botClient, Message message, TelegramUser user, CancellationToken cancellationToken = default)
+    private async Task ForwardFullNameToAdminAsync(ITelegramBotClient botClient, Message message, TelegramUser user, CancellationToken cancellationToken = default)
     {
         await botClient.SendTextMessageAsync(
             chatId: _adminChatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters($"Пользователь {user.UserName} и заказом {user.CurrentOrderId} заполнил свое ФИО:"),
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+
+        await botClient.ForwardMessageAsync(
+            chatId: _adminChatId,
+            fromChatId: user.ChatId,
+            messageId: message.MessageId,
+            cancellationToken: cancellationToken);
+    }
+
+    private async Task ForwardPhoneToAdminAsync(ITelegramBotClient botClient, Message message, TelegramUser user, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: _adminChatId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters($"Пользователь {user.UserName} и заказом {user.CurrentOrderId} заполнил свой номер телефона:"),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
 
@@ -385,12 +375,16 @@ public class TelegramBotService : IHostedService
             cancellationToken: cancellationToken);
     }
 
-    private async Task SendPromptFeedbackAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
+    private async Task SendPromptFullNameAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
     {
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
                 """
+                Шаг 1 из 3
+                
+                !!! В данный момент доставка возможно только Почтой России, приносим свои извинения.
+
                 Отправьте одним сообщение вашу Фамилию Имя и Отчество.
 
                 Пример: Константинопольский Константин Владимирович
@@ -399,16 +393,33 @@ public class TelegramBotService : IHostedService
             cancellationToken: cancellationToken);
     }
 
+    private async Task SendPromptPhoneAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
+    {
+        await botClient.SendTextMessageAsync(
+            chatId: chatId,
+            text: OrderInfoFormatter.EscapeSpecialCharacters(
+                """
+                Шаг 2 из 3
+                
+                Введите ваш номер телефона.
+                
+                Пример: +7 987 654 32 10
+                """),
+            parseMode: ParseMode.MarkdownV2,
+            cancellationToken: cancellationToken);
+    }
+    
     private async Task SendPromptAddressAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
     {
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
                 """
-                В данный момент доставка возможно только Почтой России, приносим свои извинения.
+                Шаг 3 из 3
+                
                 Введите свой адрес, куда доставить посылку.
-
-                Пример: Казанская площадь, 2, Санкт-Петербург
+                
+                Пример: Санкт-Петербург, Казанская площадь, дом 4, кв. 12
                 """),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
@@ -416,6 +427,7 @@ public class TelegramBotService : IHostedService
 
     private async Task SendConfirmedAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
     {
+        // TODO: Изменить статус заказа на оформленный
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters("Ваши данные успешно напралвлены администратору. Если возникнут сложности он с вами свяжется."),
@@ -423,13 +435,17 @@ public class TelegramBotService : IHostedService
             cancellationToken: cancellationToken);
     }
 
-    private async Task SendStartMessage(ITelegramBotClient botClient, Message message, long chatId, CancellationToken cancellationToken = default)
+    private async Task<Result> CheckOrderAsync(string orderId)
     {
-        await botClient.SendTextMessageAsync(
-            chatId: chatId,
-            replyToMessageId: message.MessageId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters($"Добро пожаловать. Ваш chatId {chatId}"),
-            cancellationToken: cancellationToken,
-            parseMode: ParseMode.MarkdownV2);
+        await using var scope = _serviceScopeFactory.CreateAsyncScope();
+        var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+
+        var orderResult = await orderService.GetOrderById(orderId);
+
+        if (orderResult.IsFailure)
+        {
+            return Result.Failure(orderResult.Error);
+        }
+        return Result.Success();
     }
 }

@@ -3,7 +3,11 @@
 public enum TelegramUserState
 {
     None,
+    Created,
     AskingOrderId,
-    AskingFeedback,
+    OrderExist,
+    OrderNotExist,
+    AskingPhone,
+    AskingFullName,
     AskingAddress,
 }
