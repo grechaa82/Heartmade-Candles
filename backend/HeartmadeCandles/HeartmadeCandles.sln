@@ -41,6 +41,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Order.Bot"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeartmadeCandles.Order.DAL", "HeartmadeCandles.Order.DAL\HeartmadeCandles.Order.DAL.csproj", "{83D9FBE2-DB98-4017-8C9D-49E2FB999719}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bot", "Bot", "{15BABDCA-C07F-4641-AD9A-A2CB3B74A94A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HeartmadeCandles.Bot", "HeartmadeCandles.Bot\HeartmadeCandles.Bot.csproj", "{654AE215-B726-4753-9EA7-8EAFA744B88E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +111,10 @@ Global
 		{83D9FBE2-DB98-4017-8C9D-49E2FB999719}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83D9FBE2-DB98-4017-8C9D-49E2FB999719}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83D9FBE2-DB98-4017-8C9D-49E2FB999719}.Release|Any CPU.Build.0 = Release|Any CPU
+		{654AE215-B726-4753-9EA7-8EAFA744B88E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{654AE215-B726-4753-9EA7-8EAFA744B88E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{654AE215-B726-4753-9EA7-8EAFA744B88E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{654AE215-B726-4753-9EA7-8EAFA744B88E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,6 +132,7 @@ Global
 		{8A5CA9BD-C0BB-46A2-B18C-6DB2E686C600} = {4B25FE1B-A2E3-4E58-A6F0-5BD967DBDA06}
 		{339B79E1-12AA-4447-B3DE-85C36B79AB74} = {65ABB28C-423F-4E5D-80E0-84127B943BAD}
 		{83D9FBE2-DB98-4017-8C9D-49E2FB999719} = {65ABB28C-423F-4E5D-80E0-84127B943BAD}
+		{654AE215-B726-4753-9EA7-8EAFA744B88E} = {15BABDCA-C07F-4641-AD9A-A2CB3B74A94A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D6110671-4E49-4702-832A-BE22583842C7}

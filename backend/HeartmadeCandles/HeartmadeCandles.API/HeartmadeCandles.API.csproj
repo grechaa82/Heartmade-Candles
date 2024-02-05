@@ -49,6 +49,7 @@
     <ProjectReference Include="..\HeartmadeCandles.Admin.DAL\HeartmadeCandles.Admin.DAL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Auth.BL\HeartmadeCandles.Auth.BL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Auth.Core\HeartmadeCandles.Auth.Core.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Bot\HeartmadeCandles.Bot.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Constructor.BL\HeartmadeCandles.Constructor.BL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Constructor.Core\HeartmadeCandles.Constructor.Core.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Constructor.DAL\HeartmadeCandles.Constructor.DAL.csproj" />

@@ -3,6 +3,7 @@ using HeartmadeCandles.Admin.DAL;
 using HeartmadeCandles.API;
 using HeartmadeCandles.API.Extensions;
 using HeartmadeCandles.Auth.BL;
+using HeartmadeCandles.Bot;
 using HeartmadeCandles.Constructor.BL;
 using HeartmadeCandles.Constructor.DAL;
 using HeartmadeCandles.Order.BL;
@@ -60,8 +61,11 @@ try
     builder.Services
         .AddOrderServices()
         .AddOrderRepositories()
-        .AddOrderNotificationServices()
-        .AddHostedService<TelegramBotService>();
+        .AddOrderNotificationServices();
+
+    builder.Services
+        .AddSingleton<ITelegramBotService, HeartmadeCandles.Bot.TelegramBotService>()
+        .AddSingleton<ITelegramUserCache, TelegramUserCache>();
 
     builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
     builder.Services.AddSingleton(options =>
