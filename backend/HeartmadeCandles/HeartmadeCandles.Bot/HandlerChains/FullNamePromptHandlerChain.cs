@@ -15,8 +15,18 @@ public class FullNamePromptHandlerChain : HandlerChainBase
     {
     }
 
-    public override bool ShouldHandleUpdate(Message message, TelegramUser user) =>
-        message.Text?.ToLower().Contains(TelegramCommands.GoToCheckoutCommand) ?? false;
+    public override bool ShouldHandleUpdate(Message message, TelegramUser user)
+    {
+        if (user.State == TelegramUserState.OrderExist && message.Text != null)
+        {
+            return message.Text.ToLower().Contains(TelegramCommands.GoToCheckoutCommand);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 
     public async override Task Process(Message message, TelegramUser user)
     {

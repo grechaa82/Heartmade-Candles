@@ -9,34 +9,24 @@ namespace HeartmadeCandles.Bot;
 
 public class TelegramBotService : ITelegramBotService
 {
-    private readonly ILogger<TelegramBotService> _logger;
+    private readonly ITelegramBotClient _client;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ITelegramUserCache _userCache;
-    private static readonly string _adminChatId = Environment.GetEnvironmentVariable("VAR_TELEGRAM_CHAT_ID");
-    private static readonly string _token = Environment.GetEnvironmentVariable("VAR_TELEGRAM_API_TOKEN");
-    private readonly TelegramBotClient _client;
-    private readonly List<HandlerChainBase> _handlers;
+    private readonly HandlerChainBase[] _handlers;
+    private readonly ILogger<TelegramBotService> _logger;
 
     public TelegramBotService(
-        ILogger<TelegramBotService> logger,
+        ITelegramBotClient client,
         IServiceScopeFactory serviceScopeFactory,
-        ITelegramUserCache userCache)
+        ITelegramUserCache userCache,
+        IEnumerable<HandlerChainBase> handlers,
+        ILogger<TelegramBotService> logger)
     {
-        _client = new TelegramBotClient(_token);
-        _logger = logger;
+        _client = client;
         _serviceScopeFactory = serviceScopeFactory;
         _userCache = userCache;
-        _handlers = new List<HandlerChainBase>
-        {
-            new OrderAnswerHandlerChain(_client, _userCache, _serviceScopeFactory),
-            new OrderPromptHandlerChain(_client, _userCache, _serviceScopeFactory),
-            new GetOrderInfoHandlerChain(_client, _userCache, _serviceScopeFactory),
-            new GetOrderStatusHandlerChain(_client, _userCache, _serviceScopeFactory),
-            new FullNamePromptHandlerChain(_client, _userCache, _serviceScopeFactory),
-            new FullNameAnswerHandlerChain(_client, _userCache, _serviceScopeFactory),
-            new PhoneAnswerHandlerChain(_client, _userCache, _serviceScopeFactory),
-            new AddressAnswerHandlerChain(_client, _userCache, _serviceScopeFactory),
-        };
+        _handlers = handlers.ToArray();
+        _logger = logger;
     }
 
     public async Task Update(Update update)

@@ -63,9 +63,7 @@ try
         .AddOrderRepositories()
         .AddOrderNotificationServices();
 
-    builder.Services
-        .AddSingleton<ITelegramBotService, HeartmadeCandles.Bot.TelegramBotService>()
-        .AddSingleton<ITelegramUserCache, TelegramUserCache>();
+    builder.Services.AddBot();
 
     builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
     builder.Services.AddSingleton(options =>
