@@ -1,16 +1,22 @@
-﻿namespace HeartmadeCandles.Bot;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace HeartmadeCandles.Bot.Documents;
 
 public class TelegramUser
 {
+    public const string DocumentName = "telegramUser";
+
     public TelegramUser(
-        long userId, 
+        long userId,
         long chatId,
-        string? userName, 
-        string firstName = "", 
+        string? userName,
+        string firstName = "",
         string lastName = "",
         string currentOrderId = "",
         TelegramUserState state = TelegramUserState.None,
-        TelegramUserRole role = TelegramUserRole.Buyer)
+        TelegramUserRole role = TelegramUserRole.Buyer,
+        string? id = null)
     {
         UserId = userId;
         ChatId = chatId;
@@ -20,14 +26,19 @@ public class TelegramUser
         CurrentOrderId = currentOrderId;
         State = state;
         Role = role;
+        Id = id ?? ObjectId.GenerateNewId().ToString();
     }
+
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; init; }
 
     public long UserId { get; init; }
 
     public long ChatId { get; init; }
 
-    public string? UserName {  get; init; }
-    
+    public string? UserName { get; init; }
+
     public string? FirstName { get; init; }
 
     public string? LastName { get; init; }
@@ -37,17 +48,4 @@ public class TelegramUser
     public TelegramUserState State { get; init; }
 
     public TelegramUserRole Role { get; init; }
-
-    public TelegramUser UpdateState(TelegramUserState newState)
-    {
-        return new TelegramUser(
-            UserId, 
-            ChatId, 
-            UserName, 
-            FirstName, 
-            LastName, 
-            CurrentOrderId, 
-            newState, 
-            Role);
-    }
 }

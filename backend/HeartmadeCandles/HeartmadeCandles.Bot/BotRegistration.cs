@@ -1,6 +1,7 @@
 ﻿using HeartmadeCandles.Bot.HandlerChains;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using Telegram.Bot;
 
 namespace HeartmadeCandles.Bot;
@@ -12,7 +13,6 @@ public static class BotRegistration
         services
             .AddSingleton<ITelegramBotClient>(new TelegramBotClient(Environment.GetEnvironmentVariable("VAR_TELEGRAM_API_TOKEN") ?? string.Empty))
             .AddSingleton<ITelegramBotService, TelegramBotService>()
-            .AddSingleton<ITelegramUserCache, TelegramUserCache>()
             .AddTransient<HandlerChainBase, OrderAnswerHandlerChain>()
             .AddTransient<HandlerChainBase, OrderPromptHandlerChain>()
             .AddTransient<HandlerChainBase, GetOrderInfoHandlerChain>()
@@ -26,7 +26,7 @@ public static class BotRegistration
                 return new TelegramBotService(
                     provider.GetRequiredService<ITelegramBotClient>(),
                     provider.GetRequiredService<IServiceScopeFactory>(),
-                    provider.GetRequiredService<ITelegramUserCache>(),
+                    provider.GetRequiredService<IMongoDatabase>(),
                     provider.GetServices<HandlerChainBase>(),
                     provider.GetRequiredService<ILogger<TelegramBotService>>()
                 );

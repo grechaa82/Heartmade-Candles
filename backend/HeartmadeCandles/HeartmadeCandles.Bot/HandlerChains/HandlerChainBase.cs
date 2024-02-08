@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using HeartmadeCandles.Bot.Documents;
+using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -7,17 +9,17 @@ namespace HeartmadeCandles.Bot.HandlerChains;
 public abstract class HandlerChainBase
 {
     protected readonly ITelegramBotClient _botClient;
-    protected readonly ITelegramUserCache _userCache;
+    protected readonly IMongoCollection<TelegramUser> _telegramUserCollection;
     protected readonly IServiceScopeFactory _serviceScopeFactory;
     protected readonly string _adminChatId = Environment.GetEnvironmentVariable("VAR_TELEGRAM_CHAT_ID");
 
     protected HandlerChainBase(
-        ITelegramBotClient botClient, 
-        ITelegramUserCache userCache, 
+        ITelegramBotClient botClient,
+        IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
     {
         _botClient = botClient;
-        _userCache = userCache;
+        _telegramUserCollection = mongoDatabase.GetCollection<TelegramUser>(TelegramUser.DocumentName);
         _serviceScopeFactory = serviceScopeFactory;
     }
 

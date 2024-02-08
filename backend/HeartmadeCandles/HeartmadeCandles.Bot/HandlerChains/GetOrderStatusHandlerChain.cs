@@ -3,6 +3,8 @@ using Telegram.Bot.Types;
 using Telegram.Bot;
 using HeartmadeCandles.Order.Core.Interfaces;
 using Telegram.Bot.Types.Enums;
+using HeartmadeCandles.Bot.Documents;
+using MongoDB.Driver;
 
 namespace HeartmadeCandles.Bot.HandlerChains;
 
@@ -10,9 +12,9 @@ public class GetOrderStatusHandlerChain : HandlerChainBase
 {
     public GetOrderStatusHandlerChain(
         ITelegramBotClient botClient,
-        ITelegramUserCache userCache,
+        IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
-        : base(botClient, userCache, serviceScopeFactory)
+        : base(botClient, mongoDatabase, serviceScopeFactory)
     {
     }
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using HeartmadeCandles.Bot.Documents;
+using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -9,9 +11,9 @@ public class FullNameAnswerHandlerChain : HandlerChainBase
 {
     public FullNameAnswerHandlerChain(
         ITelegramBotClient botClient,
-        ITelegramUserCache userCache,
+        IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
-        : base(botClient, userCache, serviceScopeFactory)
+        : base(botClient, mongoDatabase, serviceScopeFactory)
     {
     }
 
@@ -20,9 +22,10 @@ public class FullNameAnswerHandlerChain : HandlerChainBase
 
     public async override Task Process(Message message, TelegramUser user)
     {
-        var newUser = user.UpdateState(TelegramUserState.AskingPhone);
+        var update = Builders<TelegramUser>.Update
+            .Set(x => x.State, TelegramUserState.AskingPhone);
 
-        _userCache.AddOrUpdateUser(newUser);
+        await _telegramUserCollection.UpdateOneAsync(x => x.ChatId == user.ChatId, update: update);
 
         await ForwardFullNameToAdminAsync(_botClient, message, user);
 

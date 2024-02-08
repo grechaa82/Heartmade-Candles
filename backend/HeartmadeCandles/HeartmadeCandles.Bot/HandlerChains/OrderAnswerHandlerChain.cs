@@ -2,9 +2,10 @@
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
-using static System.Net.Mime.MediaTypeNames;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Order.Core.Interfaces;
+using HeartmadeCandles.Bot.Documents;
+using MongoDB.Driver;
 
 namespace HeartmadeCandles.Bot.HandlerChains;
 
@@ -12,9 +13,9 @@ public class OrderAnswerHandlerChain : HandlerChainBase
 {
     public OrderAnswerHandlerChain(
         ITelegramBotClient botClient,
-        ITelegramUserCache userCache,
+        IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
-        : base(botClient, userCache, serviceScopeFactory)
+        : base(botClient, mongoDatabase, serviceScopeFactory)
     {
     }
 
@@ -27,8 +28,10 @@ public class OrderAnswerHandlerChain : HandlerChainBase
 
         if (orderResult.IsFailure)
         {
-            var newUser = user.UpdateState(TelegramUserState.OrderNotExist);
-            _userCache.AddOrUpdateUser(newUser);
+            var update = Builders<TelegramUser>.Update
+                .Set(x => x.State, TelegramUserState.OrderNotExist);
+            
+            await _telegramUserCollection.UpdateOneAsync(x => x.ChatId == user.ChatId, update: update);
 
             await SendOrderProcessingErrorMessage(_botClient, message.Chat.Id);
 
@@ -36,16 +39,11 @@ public class OrderAnswerHandlerChain : HandlerChainBase
         }
         else
         {
-            var newUser = new TelegramUser(
-                userId: user.UserId,
-                chatId: user.ChatId,
-                userName: user.UserName,
-                firstName: user.FirstName,
-                lastName: user.LastName,
-                currentOrderId: message.Text,
-                state: TelegramUserState.OrderExist,
-                role: user.Role);
-            _userCache.AddOrUpdateUser(newUser);
+            var update = Builders<TelegramUser>.Update
+                .Set(x => x.State, TelegramUserState.OrderNotExist)
+                .Set(x => x.CurrentOrderId, message.Text);
+            
+            await _telegramUserCollection.UpdateOneAsync(x => x.ChatId == user.ChatId, update: update);
 
             await SendInfoAboutCommandsAsync(_botClient, message.Chat.Id);
 

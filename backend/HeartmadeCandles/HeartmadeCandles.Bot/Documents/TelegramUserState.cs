@@ -1,4 +1,4 @@
-﻿namespace HeartmadeCandles.Bot;
+﻿namespace HeartmadeCandles.Bot.Documents;
 
 public enum TelegramUserState
 {

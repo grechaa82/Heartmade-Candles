@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
+    <PackageReference Include="MongoDB.Driver" />
     <PackageReference Include="Telegram.Bot" />
   </ItemGroup>
 
