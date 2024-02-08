@@ -40,7 +40,7 @@ public class OrderAnswerHandlerChain : HandlerChainBase
         else
         {
             var update = Builders<TelegramUser>.Update
-                .Set(x => x.State, TelegramUserState.OrderNotExist)
+                .Set(x => x.State, TelegramUserState.OrderExist)
                 .Set(x => x.CurrentOrderId, message.Text);
             
             await _telegramUserCollection.UpdateOneAsync(x => x.ChatId == user.ChatId, update: update);
@@ -62,6 +62,9 @@ public class OrderAnswerHandlerChain : HandlerChainBase
                 {TelegramCommands.GetOrderInfoCommand} - узнать информацию о заказе
                 {TelegramCommands.GetOrderStatusCommand} - узнать текущий статус заказа
                 {TelegramCommands.GoToCheckoutCommand} - оформить заказ
+                {TelegramCommands.GetOrderInfoCommand} - показать заказанные свечи
+                {TelegramCommands.GetOrderStatusCommand} - текущий статус заказа
+                {TelegramCommands.GoToCheckoutCommand} - оформить заказ и заполинть личную информацию
                 """),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);

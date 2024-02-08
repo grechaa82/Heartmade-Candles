@@ -73,9 +73,11 @@ public class TelegramBotService : ITelegramBotService
             if (handler.ShouldHandleUpdate(message, user))
             {
                 await handler.Process(message, user);
-                break;
+                return;
             }
         }
+
+        return;
     }
 
     private async Task SendStartMessage(ITelegramBotClient botClient, Message message, long chatId, CancellationToken cancellationToken = default)
