@@ -6,6 +6,7 @@ using CSharpFunctionalExtensions;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Bot.Documents;
 using MongoDB.Driver;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.HandlerChains;
 
@@ -53,25 +54,50 @@ public class OrderAnswerHandlerChain : HandlerChainBase
 
     private async Task SendInfoAboutCommandsAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
     {
+        var replyKeyboardMarkup = new ReplyKeyboardMarkup(new[]
+       {
+            new KeyboardButton[]
+            {
+                $"Показать заказы {TelegramCommands.GetOrderInfoCommand}",
+                $"Статус заказ {TelegramCommands.GetOrderStatusCommand}"
+            },
+            new KeyboardButton[]
+            {
+                $"Оформить заказ {TelegramCommands.GoToCheckoutCommand}"
+            },
+        })
+        {
+            ResizeKeyboard = true
+        };
+
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
                 $"""
                 Вам доступны команды: 
                     
-                {TelegramCommands.GetOrderInfoCommand} - узнать информацию о заказе
-                {TelegramCommands.GetOrderStatusCommand} - узнать текущий статус заказа
-                {TelegramCommands.GoToCheckoutCommand} - оформить заказ
                 {TelegramCommands.GetOrderInfoCommand} - показать заказанные свечи
                 {TelegramCommands.GetOrderStatusCommand} - текущий статус заказа
                 {TelegramCommands.GoToCheckoutCommand} - оформить заказ и заполинть личную информацию
                 """),
             parseMode: ParseMode.MarkdownV2,
+            replyMarkup: replyKeyboardMarkup,
             cancellationToken: cancellationToken);
     }
 
     private async Task SendOrderProcessingErrorMessage(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
     {
+        var replyKeyboardMarkup = new ReplyKeyboardMarkup(new[]
+        {
+            new KeyboardButton[]
+            {
+                $"Ввести номер заказа {TelegramCommands.InputOrderIdCommand}",
+            }
+        })
+        {
+            ResizeKeyboard = true
+        };
+
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
@@ -83,6 +109,7 @@ public class OrderAnswerHandlerChain : HandlerChainBase
                 - Создать новый заказ на нашем сайте 4fass.ru
                 """),
             parseMode: ParseMode.MarkdownV2,
+            replyMarkup: replyKeyboardMarkup,
             cancellationToken: cancellationToken);
     }
 

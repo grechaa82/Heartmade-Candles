@@ -3,9 +3,11 @@ using HeartmadeCandles.Bot.HandlerChains;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using System.Threading;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot;
 
@@ -82,6 +84,17 @@ public class TelegramBotService : ITelegramBotService
 
     private async Task SendStartMessage(ITelegramBotClient botClient, Message message, long chatId, CancellationToken cancellationToken = default)
     {
+        var replyKeyboardMarkup = new ReplyKeyboardMarkup(new[]
+       {
+            new KeyboardButton[]
+            {
+                $"Ввести номер заказа {TelegramCommands.InputOrderIdCommand}",
+            }
+        })
+        {
+            ResizeKeyboard = true
+        };
+
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             replyToMessageId: message.MessageId,
@@ -91,10 +104,11 @@ public class TelegramBotService : ITelegramBotService
 
                 Вам доступны команды: 
 
-                /order - для начала работы с заказом
+                {TelegramCommands.InputOrderIdCommand} - для начала работы с заказом
                 """),
-            cancellationToken: cancellationToken,
-            parseMode: ParseMode.MarkdownV2);
+            parseMode: ParseMode.MarkdownV2,
+            replyMarkup: replyKeyboardMarkup,
+            cancellationToken: cancellationToken);
     }
 
     private async Task EnsureUserExists(Message message)

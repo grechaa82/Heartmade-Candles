@@ -5,6 +5,7 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using Telegram.Bot.Types.Enums;
 using HeartmadeCandles.Bot.Documents;
 using MongoDB.Driver;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.HandlerChains;
 
@@ -43,6 +44,17 @@ public class GetOrderStatusHandlerChain : HandlerChainBase
 
     private async Task SendOrderProcessingErrorMessage(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
     {
+        var replyKeyboardMarkup = new ReplyKeyboardMarkup(new[]
+        {
+            new KeyboardButton[]
+            {
+                $"Ввести номер заказа {TelegramCommands.InputOrderIdCommand}",
+            }
+        })
+        {
+            ResizeKeyboard = true
+        };
+
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
