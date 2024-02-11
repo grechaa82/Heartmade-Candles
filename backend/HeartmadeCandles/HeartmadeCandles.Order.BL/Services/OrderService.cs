@@ -31,7 +31,12 @@ public class OrderService : IOrderService
         return orderMaybe.HasValue
             ? Result.Success(orderMaybe.Value)
             : Result.Failure<Core.Models.Order>($"Order by id: {orderId} does not exist");
-    } 
+    }
+
+    public async Task<Maybe<Core.Models.Order[]>> GetOrderByStatus(OrderStatus status)
+    {
+        return await _orderRepository.GetOrderByStatus(status);
+    }
 
     public async Task<Result<string>> CreateOrder(User? user, Feedback? feedback, string basketId)
     {
@@ -58,7 +63,7 @@ public class OrderService : IOrderService
             BasketId = basketId,
             User = user,
             Feedback = feedback,
-            Status = OrderStatus.Assembled
+            Status = OrderStatus.Created
         };
 
         var createOrderResult = await _orderRepository.CreateOrder(order);
@@ -74,5 +79,17 @@ public class OrderService : IOrderService
         }
 
         return Result.Success(createOrderResult.Value);
+    }
+
+    public async Task<Result> UpdateOrderStatus(string orderId, OrderStatus status)
+    {
+        var orderResult = await _orderRepository.UpdateOrderStatus(orderId, status);
+
+        if (orderResult.IsFailure)
+        {
+            return Result.Failure(orderResult.Error);
+        }
+
+        return Result.Success();
     }
 }

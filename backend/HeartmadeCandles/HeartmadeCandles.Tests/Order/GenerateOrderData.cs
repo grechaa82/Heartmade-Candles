@@ -287,7 +287,7 @@ internal class GenerateOrderData
             Basket = basket,
             User = GenerateUser(),
             Feedback = GenerateFeedback(),
-            Status = OrderStatus.Sent
+            Status = OrderStatus.Created
         };
     }
 }

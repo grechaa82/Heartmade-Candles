@@ -2,5 +2,13 @@
 
 public enum OrderStatus
 {
-    Created, Issued, Processed, Paid, Confirmed, Assembled, Sent
+    Created,
+    Confirmed,
+    Placed,
+    Paid,
+    InProgress,
+    Packed,
+    InDelivery,
+    Completed,
+    Cancelled,
 }
