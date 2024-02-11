@@ -7,12 +7,13 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Bot.Documents;
 using MongoDB.Driver;
 using Telegram.Bot.Types.ReplyMarkups;
+using HeartmadeCandles.Bot.Handlers;
 
-namespace HeartmadeCandles.Bot.HandlerChains;
+namespace HeartmadeCandles.Bot.Handlers.MessageHandlers;
 
-public class OrderAnswerHandlerChain : HandlerChainBase
+public class OrderAnswerHandler : MessageHandlerBase
 {
-    public OrderAnswerHandlerChain(
+    public OrderAnswerHandler(
         ITelegramBotClient botClient,
         IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
@@ -31,7 +32,7 @@ public class OrderAnswerHandlerChain : HandlerChainBase
         {
             var update = Builders<TelegramUser>.Update
                 .Set(x => x.State, TelegramUserState.OrderNotExist);
-            
+
             await _telegramUserCollection.UpdateOneAsync(x => x.ChatId == user.ChatId, update: update);
 
             await SendOrderProcessingErrorMessage(_botClient, message.Chat.Id);
@@ -43,7 +44,7 @@ public class OrderAnswerHandlerChain : HandlerChainBase
             var update = Builders<TelegramUser>.Update
                 .Set(x => x.State, TelegramUserState.OrderExist)
                 .Set(x => x.CurrentOrderId, message.Text);
-            
+
             await _telegramUserCollection.UpdateOneAsync(x => x.ChatId == user.ChatId, update: update);
 
             await SendInfoAboutCommandsAsync(_botClient, message.Chat.Id);
@@ -58,12 +59,12 @@ public class OrderAnswerHandlerChain : HandlerChainBase
        {
             new KeyboardButton[]
             {
-                $"Показать заказы {TelegramCommands.GetOrderInfoCommand}",
-                $"Статус заказ {TelegramCommands.GetOrderStatusCommand}"
+                $"Показать заказы {TelegramMessageCommands.GetOrderInfoCommand}",
+                $"Статус заказ {TelegramMessageCommands.GetOrderStatusCommand}"
             },
             new KeyboardButton[]
             {
-                $"Оформить заказ {TelegramCommands.GoToCheckoutCommand}"
+                $"Оформить заказ {TelegramMessageCommands.GoToCheckoutCommand}"
             },
         })
         {
@@ -76,9 +77,9 @@ public class OrderAnswerHandlerChain : HandlerChainBase
                 $"""
                 Вам доступны команды: 
                     
-                {TelegramCommands.GetOrderInfoCommand} - показать заказанные свечи
-                {TelegramCommands.GetOrderStatusCommand} - текущий статус заказа
-                {TelegramCommands.GoToCheckoutCommand} - оформить заказ и заполинть личную информацию
+                {TelegramMessageCommands.GetOrderInfoCommand} - показать заказанные свечи
+                {TelegramMessageCommands.GetOrderStatusCommand} - текущий статус заказа
+                {TelegramMessageCommands.GoToCheckoutCommand} - оформить заказ и заполинть личную информацию
                 """),
             parseMode: ParseMode.MarkdownV2,
             replyMarkup: replyKeyboardMarkup,
@@ -91,7 +92,7 @@ public class OrderAnswerHandlerChain : HandlerChainBase
         {
             new KeyboardButton[]
             {
-                $"Ввести номер заказа {TelegramCommands.InputOrderIdCommand}",
+                $"Ввести номер заказа {TelegramMessageCommands.InputOrderIdCommand}",
             }
         })
         {
@@ -105,7 +106,7 @@ public class OrderAnswerHandlerChain : HandlerChainBase
                 Возникла проблема с вашим заказом. Мы не смогли его найти. 
                 
                 Вы можете:
-                - Попробовать ввести номер заказа еще раз {TelegramCommands.InputOrderIdCommand}
+                - Попробовать ввести номер заказа еще раз {TelegramMessageCommands.InputOrderIdCommand}
                 - Создать новый заказ на нашем сайте 4fass.ru
                 """),
             parseMode: ParseMode.MarkdownV2,

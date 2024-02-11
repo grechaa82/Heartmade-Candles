@@ -4,12 +4,13 @@ using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using HeartmadeCandles.Bot.Documents;
 using MongoDB.Driver;
+using HeartmadeCandles.Bot.Handlers;
 
-namespace HeartmadeCandles.Bot.HandlerChains;
+namespace HeartmadeCandles.Bot.Handlers.MessageHandlers;
 
-public class PhoneAnswerHandlerChain : HandlerChainBase
+public class PhoneAnswerHandler : MessageHandlerBase
 {
-    public PhoneAnswerHandlerChain(
+    public PhoneAnswerHandler(
         ITelegramBotClient botClient,
         IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)

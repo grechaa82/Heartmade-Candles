@@ -1,7 +1,5 @@
 ﻿using HeartmadeCandles.Bot;
-using HeartmadeCandles.Order.Bot;
 using Microsoft.AspNetCore.Mvc;
-using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace HeartmadeCandles.API.Controllers;
@@ -11,10 +9,10 @@ namespace HeartmadeCandles.API.Controllers;
 public class TelegramBotController : Controller
 {
     private readonly ILogger<TelegramBotController> _logger;
-    private readonly ITelegramBotService _telegramBotService;
+    private readonly ITelegramBotUpdateHandler _telegramBotService;
 
     public TelegramBotController(
-        ITelegramBotService telegramBotService, 
+        ITelegramBotUpdateHandler telegramBotService, 
         ILogger<TelegramBotController> logger)
     {
         _telegramBotService = telegramBotService;

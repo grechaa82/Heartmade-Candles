@@ -5,11 +5,11 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace HeartmadeCandles.Bot.HandlerChains;
+namespace HeartmadeCandles.Bot.Handlers.MessageHandlers;
 
-public class OrderPromptHandlerChain : HandlerChainBase
+public class OrderPromptHandler : MessageHandlerBase
 {
-    public OrderPromptHandlerChain(
+    public OrderPromptHandler(
         ITelegramBotClient botClient,
         IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
@@ -18,13 +18,13 @@ public class OrderPromptHandlerChain : HandlerChainBase
     }
 
     public override bool ShouldHandleUpdate(Message message, TelegramUser user) =>
-        message.Text?.ToLower().Contains(TelegramCommands.InputOrderIdCommand) ?? false;
+        message.Text?.ToLower().Contains(TelegramMessageCommands.InputOrderIdCommand) ?? false;
 
     public async override Task Process(Message message, TelegramUser user)
     {
         var update = Builders<TelegramUser>.Update
             .Set(x => x.State, TelegramUserState.AskingOrderId);
-        
+
         await _telegramUserCollection.UpdateOneAsync(x => x.ChatId == user.ChatId, update: update);
 
         await _botClient.SendTextMessageAsync(

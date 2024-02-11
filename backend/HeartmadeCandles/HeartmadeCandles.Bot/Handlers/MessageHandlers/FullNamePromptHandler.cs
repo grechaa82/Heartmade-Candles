@@ -1,15 +1,16 @@
 ﻿using HeartmadeCandles.Bot.Documents;
+using HeartmadeCandles.Bot.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace HeartmadeCandles.Bot.HandlerChains;
+namespace HeartmadeCandles.Bot.Handlers.MessageHandlers;
 
-public class FullNamePromptHandlerChain : HandlerChainBase
+public class FullNamePromptHandler : MessageHandlerBase
 {
-    public FullNamePromptHandlerChain(
+    public FullNamePromptHandler(
         ITelegramBotClient botClient,
         IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
@@ -21,7 +22,7 @@ public class FullNamePromptHandlerChain : HandlerChainBase
     {
         if (user.State == TelegramUserState.OrderExist && message.Text != null)
         {
-            return message.Text.ToLower().Contains(TelegramCommands.GoToCheckoutCommand);
+            return message.Text.ToLower().Contains(TelegramMessageCommands.GoToCheckoutCommand);
         }
         else
         {

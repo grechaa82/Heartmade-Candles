@@ -1,4 +1,6 @@
-﻿using HeartmadeCandles.Bot.HandlerChains;
+﻿using HeartmadeCandles.Bot.Handlers;
+using HeartmadeCandles.Bot.Handlers.CallBackQueryHandlers;
+using HeartmadeCandles.Bot.Handlers.MessageHandlers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
@@ -12,23 +14,26 @@ public static class BotRegistration
     {
         services
             .AddSingleton<ITelegramBotClient>(new TelegramBotClient(Environment.GetEnvironmentVariable("VAR_TELEGRAM_API_TOKEN") ?? string.Empty))
-            .AddSingleton<ITelegramBotService, TelegramBotService>()
-            .AddTransient<HandlerChainBase, OrderAnswerHandlerChain>()
-            .AddTransient<HandlerChainBase, OrderPromptHandlerChain>()
-            .AddTransient<HandlerChainBase, GetOrderInfoHandlerChain>()
-            .AddTransient<HandlerChainBase, GetOrderStatusHandlerChain>()
-            .AddTransient<HandlerChainBase, FullNamePromptHandlerChain>()
-            .AddTransient<HandlerChainBase, FullNameAnswerHandlerChain>()
-            .AddTransient<HandlerChainBase, PhoneAnswerHandlerChain>()
-            .AddTransient<HandlerChainBase, AddressAnswerHandlerChain>()
+            .AddSingleton<ITelegramBotUpdateHandler, TelegramBotUpdateHandler>()
+            .AddTransient<HandlerMessageBase, OrderAnswerHandler>()
+            .AddTransient<HandlerMessageBase, OrderPromptHandler>()
+            .AddTransient<HandlerMessageBase, GetOrderInfoHandler>()
+            .AddTransient<HandlerMessageBase, GetOrderStatusHandler>()
+            .AddTransient<HandlerMessageBase, FullNamePromptHandler>()
+            .AddTransient<HandlerMessageBase, FullNameAnswerHandler>()
+            .AddTransient<HandlerMessageBase, PhoneAnswerHandler>()
+            .AddTransient<HandlerMessageBase, AddressAnswerHandler>()
+            .AddTransient<HandlerMessageBase, GetOrdersByStatusPromptHandler>()
+            .AddTransient<HandlerCallBackQueryBase, GetCreatedOrderHandler>()
             .AddSingleton(provider =>
             {
-                return new TelegramBotService(
+                return new TelegramBotUpdateHandler(
                     provider.GetRequiredService<ITelegramBotClient>(),
                     provider.GetRequiredService<IServiceScopeFactory>(),
                     provider.GetRequiredService<IMongoDatabase>(),
-                    provider.GetServices<HandlerChainBase>(),
-                    provider.GetRequiredService<ILogger<TelegramBotService>>()
+                    provider.GetServices<HandlerMessageBase>(),
+                    provider.GetServices<HandlerCallBackQueryBase>(),
+                    provider.GetRequiredService<ILogger<TelegramBotUpdateHandler>>()
                 );
             });
 

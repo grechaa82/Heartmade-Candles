@@ -2,7 +2,7 @@
 
 namespace HeartmadeCandles.Bot;
 
-public interface ITelegramBotService
+public interface ITelegramBotUpdateHandler
 {
     Task Update(Update update);
 }

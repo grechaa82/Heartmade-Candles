@@ -4,12 +4,13 @@ using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using HeartmadeCandles.Bot.Documents;
 using MongoDB.Driver;
+using HeartmadeCandles.Bot.Handlers;
 
-namespace HeartmadeCandles.Bot.HandlerChains;
+namespace HeartmadeCandles.Bot.Handlers.MessageHandlers;
 
-public class AddressAnswerHandlerChain : HandlerChainBase
+public class AddressAnswerHandler : MessageHandlerBase
 {
-    public AddressAnswerHandlerChain(
+    public AddressAnswerHandler(
         ITelegramBotClient botClient,
         IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
@@ -28,16 +29,16 @@ public class AddressAnswerHandlerChain : HandlerChainBase
         await _telegramUserCollection.UpdateOneAsync(x => x.ChatId == user.ChatId, update: update);
 
         await ForwardAddressToAdminAsync(_botClient, message, user);
-        
+
         await SendConfirmedAsync(_botClient, message.Chat.Id);
 
         return;
     }
 
     private async Task ForwardAddressToAdminAsync(
-        ITelegramBotClient botClient, 
-        Message message, 
-        TelegramUser user, 
+        ITelegramBotClient botClient,
+        Message message,
+        TelegramUser user,
         CancellationToken cancellationToken = default)
     {
         await botClient.SendTextMessageAsync(
@@ -62,7 +63,7 @@ public class AddressAnswerHandlerChain : HandlerChainBase
             text: OrderInfoFormatter.EscapeSpecialCharacters(
                 $"""
                 Ваши данные успешно напралвлены администратору.
-                Вы Можете отслеживать статус заказа используя команду {TelegramCommands.GetOrderStatusCommand}
+                Вы Можете отслеживать статус заказа используя команду {TelegramMessageCommands.GetOrderStatusCommand}
                 
                 Если возникнут сложности он с вами свяжется.
                 """),

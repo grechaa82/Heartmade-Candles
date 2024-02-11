@@ -1,15 +1,16 @@
 ﻿using HeartmadeCandles.Bot.Documents;
+using HeartmadeCandles.Bot.Handlers;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
-namespace HeartmadeCandles.Bot.HandlerChains;
+namespace HeartmadeCandles.Bot.Handlers.MessageHandlers;
 
-public class FullNameAnswerHandlerChain : HandlerChainBase
+public class FullNameAnswerHandler : MessageHandlerBase
 {
-    public FullNameAnswerHandlerChain(
+    public FullNameAnswerHandler(
         ITelegramBotClient botClient,
         IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
@@ -45,9 +46,9 @@ public class FullNameAnswerHandlerChain : HandlerChainBase
     }
 
     private async Task ForwardFullNameToAdminAsync(
-        ITelegramBotClient botClient, 
-        Message message, 
-        TelegramUser user, 
+        ITelegramBotClient botClient,
+        Message message,
+        TelegramUser user,
         CancellationToken cancellationToken = default)
     {
         await botClient.SendTextMessageAsync(

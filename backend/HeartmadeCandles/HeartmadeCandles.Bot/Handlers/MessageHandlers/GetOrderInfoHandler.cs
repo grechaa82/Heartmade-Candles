@@ -6,12 +6,13 @@ using Telegram.Bot.Types.Enums;
 using HeartmadeCandles.Bot.Documents;
 using MongoDB.Driver;
 using Telegram.Bot.Types.ReplyMarkups;
+using HeartmadeCandles.Bot.Handlers;
 
-namespace HeartmadeCandles.Bot.HandlerChains;
+namespace HeartmadeCandles.Bot.Handlers.MessageHandlers;
 
-public class GetOrderStatusHandlerChain : HandlerChainBase
+public class GetOrderInfoHandler : MessageHandlerBase
 {
-    public GetOrderStatusHandlerChain(
+    public GetOrderInfoHandler(
         ITelegramBotClient botClient,
         IMongoDatabase mongoDatabase,
         IServiceScopeFactory serviceScopeFactory)
@@ -20,7 +21,7 @@ public class GetOrderStatusHandlerChain : HandlerChainBase
     }
 
     public override bool ShouldHandleUpdate(Message message, TelegramUser user) =>
-        message.Text?.ToLower().Contains(TelegramCommands.GetOrderStatusCommand) ?? false;
+        message.Text?.ToLower().Contains(TelegramMessageCommands.GetOrderInfoCommand) ?? false;
 
     public async override Task Process(Message message, TelegramUser user)
     {
@@ -36,9 +37,11 @@ public class GetOrderStatusHandlerChain : HandlerChainBase
             return;
         }
 
+        var text = OrderInfoFormatter.GetOrderInfoInMarkdownV2(orderResult.Value);
+
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: orderResult.Value.Status.ToString(),
+            text: text,
             parseMode: ParseMode.MarkdownV2);
     }
 
@@ -48,7 +51,7 @@ public class GetOrderStatusHandlerChain : HandlerChainBase
         {
             new KeyboardButton[]
             {
-                $"Ввести номер заказа {TelegramCommands.InputOrderIdCommand}",
+                $"Ввести номер заказа {TelegramMessageCommands.InputOrderIdCommand}",
             }
         })
         {
@@ -62,7 +65,7 @@ public class GetOrderStatusHandlerChain : HandlerChainBase
                 Возникла проблема с вашим заказом. Мы не смогли его найти. 
                 
                 Вы можете:
-                - Попробовать ввести номер заказа еще раз {TelegramCommands.InputOrderIdCommand}
+                - Попробовать ввести номер заказа еще раз {TelegramMessageCommands.InputOrderIdCommand}
                 - Создать новый заказ на нашем сайте 4fass.ru
                 """),
             parseMode: ParseMode.MarkdownV2,
