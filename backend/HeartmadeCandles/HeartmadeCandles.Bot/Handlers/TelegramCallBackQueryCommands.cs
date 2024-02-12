@@ -1,7 +1,6 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using MongoDB.Driver;
 
-namespace HeartmadeCandles.Bot;
+namespace HeartmadeCandles.Bot.Handlers;
 
 public class TelegramCallBackQueryCommands
 {
@@ -15,21 +14,11 @@ public class TelegramCallBackQueryCommands
     public static readonly string CallBackQueryCompletedCommand = "/callback" + OrderStatus.Completed.ToString().ToLower();
     public static readonly string CallBackQueryCancelledCommand = "/callback" + OrderStatus.Cancelled.ToString().ToLower();
 
-    public static OrderStatus GetOrderStatusFromCommand(string command)
-    {
-        string suffix = command.Replace("/callback", "").ToLower();
+    public static readonly string CreatedOrderPreviousCommand = CallBackQueryType.CreatedOrderPrevious.ToString().ToLower();
+    public static readonly string CreatedOrderNextCommand = CallBackQueryType.CreatedOrderNext.ToString().ToLower();
+    public static readonly string CreatedOrderSelectCommand = CallBackQueryType.CreatedOrderSelect.ToString().ToLower();
 
-        return suffix switch
-        {
-            "created" => OrderStatus.Created,
-            "confirmed" => OrderStatus.Confirmed,
-            "placed" => OrderStatus.Placed,
-            "paid" => OrderStatus.Paid,
-            "inprogress" => OrderStatus.InProgress,
-            "packed" => OrderStatus.Packed,
-            "indelivery" => OrderStatus.InDelivery,
-            "completed" => OrderStatus.Completed,
-            "cancelled" => OrderStatus.Cancelled,
-        };
-    }
+    public static readonly string ConfirmedOrderPreviousCommand = CallBackQueryType.ConfirmedOrderPrevious.ToString().ToLower();
+    public static readonly string ConfirmedOrderNextCommand = CallBackQueryType.ConfirmedOrderNext.ToString().ToLower();
+    public static readonly string ConfirmedOrderSelectCommand = CallBackQueryType.ConfirmedOrderSelect.ToString().ToLower();
 }

@@ -1,4 +1,4 @@
-﻿namespace HeartmadeCandles.Bot;
+﻿namespace HeartmadeCandles.Bot.Handlers;
 
 public class TelegramMessageCommands
 {

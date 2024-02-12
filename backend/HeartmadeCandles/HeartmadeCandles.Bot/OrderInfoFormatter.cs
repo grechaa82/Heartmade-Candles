@@ -48,6 +48,33 @@ public class OrderInfoFormatter
         return message.ToString();
     }
 
+    public static string GetPreviewOrderInfoInMarkdownV2(Order.Core.Models.Order order)
+    {
+        var message = new StringBuilder();
+
+        message.AppendLine($"Строка конфигурации: {order.Basket.FilterString}");
+        message.AppendLine(" ");
+        message.AppendLine(GetPreviewInformationAboutCandles(order.Basket.Items));
+        message.AppendLine($"Свечей: {order.Basket.TotalQuantity}");
+        message.AppendLine($"Итого: {order.Basket.TotalPrice}");
+
+        return EscapeSpecialCharacters(message.ToString());
+    }
+
+    private static string GetPreviewInformationAboutCandles(BasketItem[] basketItems)
+    {
+        var message = new StringBuilder();
+
+        foreach (var item in basketItems)
+        {
+            message.AppendLine(
+                $"Свеча: {item.ConfiguredCandle.Candle.Title}, {item.Quantity} шт, {item.Price} р");
+            message.AppendLine(" ");
+        }
+
+        return message.ToString();
+    }
+
     public static string EscapeSpecialCharacters(string input)
     {
         var specialCharacters = new[]

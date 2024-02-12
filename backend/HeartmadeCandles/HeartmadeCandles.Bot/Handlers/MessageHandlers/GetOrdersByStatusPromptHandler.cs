@@ -1,10 +1,10 @@
 ﻿using HeartmadeCandles.Bot.Documents;
+using HeartmadeCandles.Bot.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.Handlers.MessageHandlers;
 
@@ -32,56 +32,10 @@ public class GetOrdersByStatusPromptHandler : MessageHandlerBase
 
     public async override Task Process(Message message, TelegramUser user)
     {
-        var inlineKeyboard = new InlineKeyboardMarkup(new[]
-        {
-            new []
-            {
-                InlineKeyboardButton.WithCallbackData(
-                    text: "Создан", 
-                    callbackData: TelegramCallBackQueryCommands.CallBackQueryCreatedCommand),
-                InlineKeyboardButton.WithCallbackData(
-                    text: "Подтвержден", 
-                    callbackData:TelegramCallBackQueryCommands.CallBackQueryConfirmedCommand),
-            },
-            new []
-            {
-               InlineKeyboardButton.WithCallbackData(
-                   text: "Оформлен", 
-                   callbackData: TelegramCallBackQueryCommands.CallBackQueryPlacedCommand),
-               InlineKeyboardButton.WithCallbackData(
-                   text: "Оплачен", 
-                   callbackData: TelegramCallBackQueryCommands.CallBackQueryPaidCommand),
-            },
-            new []
-            {
-               InlineKeyboardButton.WithCallbackData(
-                   text: "В работе", 
-                   callbackData: TelegramCallBackQueryCommands.CallBackQueryInProgressCommand),
-               InlineKeyboardButton.WithCallbackData(
-                   text: "Упаковывается", 
-                   callbackData: TelegramCallBackQueryCommands.CallBackQueryPackedCommand),
-            },
-            new []
-            {
-               InlineKeyboardButton.WithCallbackData(
-                   text: "Передан в доставку", 
-                   callbackData: TelegramCallBackQueryCommands.CallBackQueryInDeliveryCommand),
-               InlineKeyboardButton.WithCallbackData(
-                   text: "Завершен", 
-                   callbackData: TelegramCallBackQueryCommands.CallBackQueryCompletedCommand),
-            },
-            new []
-            {
-               InlineKeyboardButton.WithCallbackData(
-                   text: "Отменен", 
-                   callbackData: TelegramCallBackQueryCommands.CallBackQueryCancelledCommand)
-            },
-        });
-
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
             text: "Выберите нужный статус заказа:",
-            replyMarkup: inlineKeyboard,
+            replyMarkup: OrderReplyMarkup.GetOrderSelectionMarkupByStatus(),
             parseMode: ParseMode.MarkdownV2);
 
         return;
