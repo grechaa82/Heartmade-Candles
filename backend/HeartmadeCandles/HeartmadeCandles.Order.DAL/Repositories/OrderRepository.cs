@@ -57,6 +57,26 @@ public class OrderRepository : IOrderRepository
         return order;
     }
 
+    public async Task<Maybe<Core.Models.Order[]>> GetOrderByStatus(OrderStatus status, int pageSige, int pageIndex)
+    {
+        var orderDocument = await _orderCollection
+            .Find(x => x.Status == status)
+            .Skip(pageIndex * pageSige)
+            .Limit(pageSige)
+            .ToListAsync();
+
+        if (orderDocument.Count == 0)
+        {
+            return Maybe<Core.Models.Order[]>.None;
+        }
+
+        var order = orderDocument
+            .Select(OrderMapping.MapToOrder)
+            .ToArray();
+
+        return order;
+    }
+
     public async Task<Result<string>> CreateOrder(Core.Models.Order order)
     {
         var orderDocument = OrderMapping.MapToOrderDocument(order);

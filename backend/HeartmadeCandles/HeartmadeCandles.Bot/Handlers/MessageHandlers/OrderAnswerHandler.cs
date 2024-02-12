@@ -7,7 +7,7 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Bot.Documents;
 using MongoDB.Driver;
 using Telegram.Bot.Types.ReplyMarkups;
-using HeartmadeCandles.Bot.Handlers;
+using HeartmadeCandles.Order.Core.Models;
 
 namespace HeartmadeCandles.Bot.Handlers.MessageHandlers;
 
@@ -41,6 +41,15 @@ public class OrderAnswerHandler : MessageHandlerBase
         }
         else
         {
+            var updateOrderStatusResult = await UpdateOrderStatus(message.Text, OrderStatus.Confirmed);
+
+            if (updateOrderStatusResult.IsFailure)
+            {
+                await SendOrderProcessingErrorMessage(_botClient, message.Chat.Id);
+
+                return;
+            }
+
             var update = Builders<TelegramUser>.Update
                 .Set(x => x.State, TelegramUserState.OrderExist)
                 .Set(x => x.CurrentOrderId, message.Text);
@@ -117,6 +126,7 @@ public class OrderAnswerHandler : MessageHandlerBase
     private async Task<Result> CheckOrderAsync(string orderId)
     {
         using var scope = _serviceScopeFactory.CreateScope();
+
         var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
 
         var orderResult = await orderService.GetOrderById(orderId);
@@ -125,6 +135,22 @@ public class OrderAnswerHandler : MessageHandlerBase
         {
             return Result.Failure(orderResult.Error);
         }
+        return Result.Success();
+    }
+
+    private async Task<Result> UpdateOrderStatus(string orderId, OrderStatus status)
+    {
+        using var scope = _serviceScopeFactory.CreateScope();
+
+        var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+
+        var orderResult = await orderService.UpdateOrderStatus(orderId, status);
+
+        if (orderResult.IsFailure)
+        {
+            return Result.Failure(orderResult.Error);
+        }
+
         return Result.Success();
     }
 }

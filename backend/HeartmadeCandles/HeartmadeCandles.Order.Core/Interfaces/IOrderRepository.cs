@@ -9,6 +9,8 @@ public interface IOrderRepository
 
     Task<Maybe<Models.Order[]>> GetOrderByStatus(OrderStatus status);
 
+    Task<Maybe<Models.Order[]>> GetOrderByStatus(OrderStatus status, int pageSige, int pageIndex);
+
     Task<Result<string>> CreateOrder(Models.Order order);
 
     Task<Result> UpdateOrderStatus(string orderId, OrderStatus status);

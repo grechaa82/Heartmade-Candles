@@ -38,6 +38,11 @@ public class OrderService : IOrderService
         return await _orderRepository.GetOrderByStatus(status);
     }
 
+    public async Task<Maybe<Core.Models.Order[]>> GetOrderByStatus(OrderStatus status, int pageSige, int pageIndex)
+    {
+        return await _orderRepository.GetOrderByStatus(status, pageSige, pageIndex);
+    }
+
     public async Task<Result<string>> CreateOrder(User? user, Feedback? feedback, string basketId)
     {
         var basket = await _basketRepository.GetBasketById(basketId);
