@@ -22,34 +22,34 @@ internal class OrderReplyMarkup
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Оформлен",
-                    callbackData: $"{TelegramCallBackQueryCommands.CallBackQueryPlacedCommand}:1"),
+                    callbackData: $"{TelegramCallBackQueryCommands.PlacedOrderNextCommand}:1"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Оплачен",
-                    callbackData: $"{TelegramCallBackQueryCommands.CallBackQueryPaidCommand}:1"),
+                    callbackData: $"{TelegramCallBackQueryCommands.PaidOrderNextCommand}:1"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "В работе",
-                    callbackData: $"{TelegramCallBackQueryCommands.CallBackQueryInProgressCommand}:1"),
+                    callbackData: $"{TelegramCallBackQueryCommands.InProgressOrderNextCommand}:1"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Упаковывается",
-                    callbackData: $"{TelegramCallBackQueryCommands.CallBackQueryPackedCommand}:1"),
+                    callbackData: $"{TelegramCallBackQueryCommands.PackedOrderNextCommand}:1"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Передан в доставку",
-                    callbackData: $"{TelegramCallBackQueryCommands.CallBackQueryInDeliveryCommand}:1"),
+                    callbackData: $"{TelegramCallBackQueryCommands.InDeliveryOrderNextCommand}:1"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Завершен",
-                    callbackData: $"{TelegramCallBackQueryCommands.CallBackQueryCompletedCommand}:1"),
+                    callbackData: $"{TelegramCallBackQueryCommands.CompletedOrderNextCommand}:1"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Отменен",
-                    callbackData: $"{TelegramCallBackQueryCommands.CallBackQueryCancelledCommand}:1"),
+                    callbackData: $"{TelegramCallBackQueryCommands.CancelledOrderNextCommand}:1"),
             },
         });
     }

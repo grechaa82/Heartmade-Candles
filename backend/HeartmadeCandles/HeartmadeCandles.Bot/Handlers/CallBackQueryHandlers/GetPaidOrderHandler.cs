@@ -3,15 +3,16 @@ using HeartmadeCandles.Bot.ReplyMarkups;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using System;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace HeartmadeCandles.Bot.Handlers.CallBackQueryHandlers;
 
-public class GetCreatedOrderHandler : CallBackQueryHandlerBase
+public class GetPlacedOrderHandler : CallBackQueryHandlerBase
 {
-    public GetCreatedOrderHandler(
+    public GetPlacedOrderHandler(
        ITelegramBotClient botClient,
        IMongoDatabase mongoDatabase,
        IServiceScopeFactory serviceScopeFactory)
@@ -28,9 +29,9 @@ public class GetCreatedOrderHandler : CallBackQueryHandlerBase
 
         var text = callbackQuery.Data.ToLower();
 
-        return text.Contains(TelegramCallBackQueryCommands.CreatedOrderNextCommand) 
-            || text.Contains(TelegramCallBackQueryCommands.CreatedOrderPreviousCommand) 
-            || text.Contains(TelegramCallBackQueryCommands.CreatedOrderSelectCommand);
+        return text.Contains(TelegramCallBackQueryCommands.PlacedOrderNextCommand) 
+            || text.Contains(TelegramCallBackQueryCommands.PlacedOrderPreviousCommand) 
+            || text.Contains(TelegramCallBackQueryCommands.PlacedOrderSelectCommand);
     }
 
     public async override Task Process(CallbackQuery callbackQuery, TelegramUser user)
@@ -39,7 +40,7 @@ public class GetCreatedOrderHandler : CallBackQueryHandlerBase
 
         var backInlineKeyboard = OrderReplyMarkup.GetBackSelectionMarkup();
         
-        if(callbackQuery.Data.ToLower().Contains(TelegramCallBackQueryCommands.CreatedOrderSelectCommand))
+        if(callbackQuery.Data.ToLower().Contains(TelegramCallBackQueryCommands.PlacedOrderSelectCommand))
         {
             var orderResult = await GetOrderById(callbackData.Last());
 
@@ -65,7 +66,7 @@ public class GetCreatedOrderHandler : CallBackQueryHandlerBase
 
         var pageIndex = int.Parse(callbackData.Last());
 
-        var orderMaybe = await GetOrdersByStatus(OrderStatus.Created, 1, pageIndex - 1);
+        var orderMaybe = await GetOrdersByStatus(OrderStatus.Placed, 1, pageIndex - 1);
 
         if (orderMaybe.HasNoValue)
         {
@@ -78,9 +79,9 @@ public class GetCreatedOrderHandler : CallBackQueryHandlerBase
         }
 
         var inlineKeyboard = OrderReplyMarkup.GetOrderSelectionMarkup(
-            previousCommands: TelegramCallBackQueryCommands.CreatedOrderPreviousCommand,
-            nextCommands: TelegramCallBackQueryCommands.CreatedOrderNextCommand,
-            selectCommands: TelegramCallBackQueryCommands.CreatedOrderSelectCommand,
+            previousCommands: TelegramCallBackQueryCommands.PlacedOrderPreviousCommand,
+            nextCommands: TelegramCallBackQueryCommands.PlacedOrderNextCommand,
+            selectCommands: TelegramCallBackQueryCommands.PlacedOrderSelectCommand,
             orderId: orderMaybe.Value.Id,
             currentPageIndex: pageIndex);
 
