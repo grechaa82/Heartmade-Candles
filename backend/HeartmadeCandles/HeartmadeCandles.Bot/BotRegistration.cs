@@ -35,6 +35,7 @@ public static class BotRegistration
             .AddTransient<CallBackQueryHandlerBase, GetCompletedOrderHandler>()
             .AddTransient<CallBackQueryHandlerBase, GetCancelledOrderHandler>()
             .AddTransient<CallBackQueryHandlerBase, GetOrderIdHandler>()
+            .AddTransient<CallBackQueryHandlerBase, UpdateOrderStatus>()
             .AddSingleton(provider =>
             {
                 return new TelegramBotUpdateHandler(

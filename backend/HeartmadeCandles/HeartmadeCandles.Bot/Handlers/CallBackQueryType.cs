@@ -4,6 +4,17 @@ internal enum CallBackQueryType
 {
     GetOrders,
     GetOrderId,
+    
+    UpdateOrderStatus,
+    UpdateToCreated,
+    UpdateToConfirmed,
+    UpdateToPlaced,
+    UpdateToPaid,
+    UpdateToInProgress,
+    UpdateToPacked,
+    UpdateToInDelivery,
+    UpdateToCompleted,
+    UpdateToCancelled,
 
     CreatedOrderPrevious,
     CreatedOrderNext,

@@ -16,6 +16,17 @@ public class TelegramCallBackQueryCommands
 
     public static readonly string GetOrderIdCommand = CallBackQueryType.GetOrderId.ToString().ToLower();
 
+    public static readonly string UpdateOrderStatusCommand = CallBackQueryType.UpdateOrderStatus.ToString().ToLower();
+    public static readonly string UpdateToCreatedCommand = CallBackQueryType.UpdateToCreated.ToString().ToLower();
+    public static readonly string UpdateToConfirmedCommand = CallBackQueryType.UpdateToConfirmed.ToString().ToLower();
+    public static readonly string UpdateToPlacedCommand = CallBackQueryType.UpdateToPlaced.ToString().ToLower();
+    public static readonly string UpdateToPaidCommand = CallBackQueryType.UpdateToPaid.ToString().ToLower();
+    public static readonly string UpdateToInProgressCommand = CallBackQueryType.UpdateToInProgress.ToString().ToLower();
+    public static readonly string UpdateToPackedCommand = CallBackQueryType.UpdateToPacked.ToString().ToLower();
+    public static readonly string UpdateToInDeliveryCommand = CallBackQueryType.UpdateToInDelivery.ToString().ToLower();
+    public static readonly string UpdateToCompletedCommand = CallBackQueryType.UpdateToCompleted.ToString().ToLower();
+    public static readonly string UpdateToCancelledCommand = CallBackQueryType.UpdateToCancelled.ToString().ToLower();
+
     public static readonly string CreatedOrderPreviousCommand = CallBackQueryType.CreatedOrderPrevious.ToString().ToLower();
     public static readonly string CreatedOrderNextCommand = CallBackQueryType.CreatedOrderNext.ToString().ToLower();
     public static readonly string CreatedOrderSelectCommand = CallBackQueryType.CreatedOrderSelect.ToString().ToLower();

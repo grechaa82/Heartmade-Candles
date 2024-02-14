@@ -35,6 +35,7 @@ public class GetOrdersByStatusPromptHandler : MessageHandlerBase
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
             text: "Выберите нужный статус заказа:",
+            messageThreadId: message.MessageThreadId,
             replyMarkup: OrderReplyMarkup.GetOrderSelectionMarkupByStatus(),
             parseMode: ParseMode.MarkdownV2);
 
