@@ -9,6 +9,7 @@ public class OrderInfoFormatter
     {
         var message = new StringBuilder();
 
+        message.AppendLine($"Номер заказа: {order.Id}");
         message.AppendLine($"Строка конфигурации: {order.Basket.FilterString}");
         message.AppendLine(" ");
         message.AppendLine(
@@ -52,6 +53,7 @@ public class OrderInfoFormatter
     {
         var message = new StringBuilder();
 
+        message.AppendLine($"Номер заказа: {order.Id}");
         message.AppendLine($"Строка конфигурации: {order.Basket.FilterString}");
         message.AppendLine(" ");
         message.AppendLine(GetPreviewInformationAboutCandles(order.Basket.Items));

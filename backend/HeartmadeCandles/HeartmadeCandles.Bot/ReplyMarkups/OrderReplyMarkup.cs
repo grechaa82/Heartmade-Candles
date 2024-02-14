@@ -1,4 +1,5 @@
 ﻿using HeartmadeCandles.Bot.Handlers;
+using HeartmadeCandles.Order.Core.Models;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.ReplyMarkups;
@@ -91,6 +92,25 @@ internal class OrderReplyMarkup
             InlineKeyboardButton.WithCallbackData(
                 text: "Вернуться к выбору",
                 callbackData: CallBackQueryType.GetOrders.ToString().ToLower()),
+        });
+    }
+
+    public static InlineKeyboardMarkup GetMarkupOfSelectedOrder(string orderId)
+    {
+        return new InlineKeyboardMarkup(new[]
+        {
+            new []
+            {
+                InlineKeyboardButton.WithCallbackData(
+                    text: "Номер заказ",
+                    callbackData: $"{CallBackQueryType.GetOrderId}:{orderId}"),
+            },
+            new []
+            {
+                InlineKeyboardButton.WithCallbackData(
+                    text: "Вернуться к выбору",
+                    callbackData: CallBackQueryType.GetOrders.ToString().ToLower()),
+            },
         });
     }
 }

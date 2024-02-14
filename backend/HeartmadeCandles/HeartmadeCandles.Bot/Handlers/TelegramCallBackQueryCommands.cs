@@ -14,6 +14,8 @@ public class TelegramCallBackQueryCommands
     public static readonly string CallBackQueryCompletedCommand = "/callback" + OrderStatus.Completed.ToString().ToLower();
     public static readonly string CallBackQueryCancelledCommand = "/callback" + OrderStatus.Cancelled.ToString().ToLower();
 
+    public static readonly string GetOrderIdCommand = CallBackQueryType.GetOrderId.ToString().ToLower();
+
     public static readonly string CreatedOrderPreviousCommand = CallBackQueryType.CreatedOrderPrevious.ToString().ToLower();
     public static readonly string CreatedOrderNextCommand = CallBackQueryType.CreatedOrderNext.ToString().ToLower();
     public static readonly string CreatedOrderSelectCommand = CallBackQueryType.CreatedOrderSelect.ToString().ToLower();

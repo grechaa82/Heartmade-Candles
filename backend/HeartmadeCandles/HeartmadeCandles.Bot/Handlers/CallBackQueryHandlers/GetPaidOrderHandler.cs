@@ -54,11 +54,13 @@ public class GetPlacedOrderHandler : CallBackQueryHandlerBase
                     parseMode: ParseMode.MarkdownV2);
             }
 
+            var selectedOrderInlineKeyboard = OrderReplyMarkup.GetMarkupOfSelectedOrder(orderResult.Value.Id);
+
             await _botClient.EditMessageTextAsync(
                 chatId: callbackQuery.Message.Chat.Id,
                 messageId: callbackQuery.Message.MessageId,
                 text: OrderInfoFormatter.GetOrderInfoInMarkdownV2(orderResult.Value),
-                replyMarkup: backInlineKeyboard,
+                replyMarkup: selectedOrderInlineKeyboard,
                 parseMode: ParseMode.MarkdownV2);
 
             return;
