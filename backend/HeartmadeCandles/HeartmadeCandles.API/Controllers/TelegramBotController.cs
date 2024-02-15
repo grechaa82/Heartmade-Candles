@@ -1,4 +1,4 @@
-﻿using HeartmadeCandles.Bot;
+﻿using HeartmadeCandles.Bot.Core;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 

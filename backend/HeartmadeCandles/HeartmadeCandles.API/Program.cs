@@ -3,7 +3,8 @@ using HeartmadeCandles.Admin.DAL;
 using HeartmadeCandles.API;
 using HeartmadeCandles.API.Extensions;
 using HeartmadeCandles.Auth.BL;
-using HeartmadeCandles.Bot;
+using HeartmadeCandles.Bot.BL;
+using HeartmadeCandles.Bot.DAL;
 using HeartmadeCandles.Constructor.BL;
 using HeartmadeCandles.Constructor.DAL;
 using HeartmadeCandles.Order.BL;
@@ -63,7 +64,9 @@ try
         .AddOrderRepositories()
         .AddOrderNotificationServices();
 
-    builder.Services.AddBot();
+    builder.Services
+        .AddBotServices()
+        .AddBotRepositories();
 
     builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
     builder.Services.AddSingleton(options =>
