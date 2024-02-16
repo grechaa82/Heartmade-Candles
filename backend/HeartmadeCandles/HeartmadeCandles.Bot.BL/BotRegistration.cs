@@ -1,6 +1,7 @@
 ﻿using HeartmadeCandles.Bot.BL.Handlers;
 using HeartmadeCandles.Bot.BL.Handlers.CallBackQueryHandlers;
 using HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
+using HeartmadeCandles.Bot.BL.Services;
 using HeartmadeCandles.Bot.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -12,6 +13,7 @@ public static class BotRegistration
     public static IServiceCollection AddBotServices(this IServiceCollection services)
     {
         services
+            .AddScoped<ITelegramBotService, TelegramBotService>()
             .AddSingleton<ITelegramBotClient>(new TelegramBotClient(Environment.GetEnvironmentVariable("VAR_TELEGRAM_API_TOKEN") ?? string.Empty))
             .AddScoped<ITelegramBotUpdateHandler, TelegramBotUpdateHandler>()
             .AddScoped<MessageHandlerBase, OrderAnswerHandler>()

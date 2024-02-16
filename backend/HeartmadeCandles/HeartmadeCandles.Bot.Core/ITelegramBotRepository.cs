@@ -12,4 +12,8 @@ public interface ITelegramBotRepository
     Task<Result> UpdateOrderId(long chatId, string orderId);
 
     Task<Result> UpdateTelegramUserState(long chatId, TelegramUserState state);
+
+    Task<Result<long[]>> GetChatIdsByRole(TelegramUserRole role);
+
+    Task<Result> UpgradeChatRoleToAdmin(long[] newAdminChatIds);
 }

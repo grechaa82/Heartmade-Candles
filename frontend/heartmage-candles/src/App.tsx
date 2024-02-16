@@ -22,6 +22,7 @@ import ReviewPage from './pages/home/ReviewPage';
 import HelpPage from './pages/home/HelpPage';
 import HomePage from './pages/home/HomePage';
 import NotFoundPage from './pages/home/NotFoundPage';
+import BotPage from './pages/admin/BotPage';
 
 import Style from './App.module.css';
 
@@ -51,6 +52,7 @@ function App() {
                   <Route element={<SmellPage />} path="smells/:id" />
                   <Route index element={<AllWickPage />} path="wicks" />
                   <Route element={<WickPage />} path="wicks/:id" />
+                  <Route element={<BotPage />} path="bot" />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </main>

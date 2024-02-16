@@ -33,6 +33,9 @@ const Navbar: FC = () => {
         <NavLink className={navLinkClassName} to="/admin/wicks">
           Фитили
         </NavLink>
+        <NavLink className={navLinkClassName} to="/admin/bot">
+          Бот
+        </NavLink>
       </div>
       <NavLink
         className={`${Style.navbarItem} ${Style.navLinkAuth}`}

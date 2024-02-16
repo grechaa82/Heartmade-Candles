@@ -80,4 +80,26 @@ public class TelegramBotRepository : ITelegramBotRepository
 
         return Result.Success();
     }
+
+    public async Task<Result<long[]>> GetChatIdsByRole(TelegramUserRole role)
+    {
+        var telegramUserDocument = await _telegramUserCollection
+             .Find(x => x.Role == role)
+             .ToListAsync();
+
+        return Result.Success(telegramUserDocument.Select(x => x.ChatId).ToArray());
+    }
+
+    public async Task<Result> UpgradeChatRoleToAdmin(long[] newAdminChatIds)
+    {
+        var adminFilter = Builders<TelegramUserDocument>.Filter.Eq(t => t.Role, TelegramUserRole.Admin);
+        var adminUpdate = Builders<TelegramUserDocument>.Update.Set(t => t.Role, TelegramUserRole.Buyer);
+        await _telegramUserCollection.UpdateManyAsync(adminFilter, adminUpdate);
+            
+        var filter = Builders<TelegramUserDocument>.Filter.In(u => u.ChatId, newAdminChatIds);
+        var update = Builders<TelegramUserDocument>.Update.Set(u => u.Role, TelegramUserRole.Admin);
+        await _telegramUserCollection.UpdateManyAsync(filter, update);
+
+        return Result.Success();
+    }
 }
