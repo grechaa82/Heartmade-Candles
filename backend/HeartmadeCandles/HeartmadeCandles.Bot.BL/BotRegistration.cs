@@ -25,6 +25,8 @@ public static class BotRegistration
             .AddScoped<MessageHandlerBase, PhoneAnswerHandler>()
             .AddScoped<MessageHandlerBase, AddressAnswerHandler>()
             .AddScoped<MessageHandlerBase, GetOrdersByStatusPromptHandler>()
+            .AddScoped<MessageHandlerBase, GetAdminCommandHandler>()
+            .AddScoped<MessageHandlerBase, GetChatIdHandler>()
             .AddScoped<CallBackQueryHandlerBase, GetOrdersHandler>()
             .AddScoped<CallBackQueryHandlerBase, GetCreatedOrderHandler>()
             .AddScoped<CallBackQueryHandlerBase, GetConfirmedOrderHandler>()

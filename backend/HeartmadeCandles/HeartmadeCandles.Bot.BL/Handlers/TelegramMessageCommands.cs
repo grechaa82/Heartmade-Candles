@@ -11,4 +11,6 @@ public class TelegramMessageCommands
     public static readonly string InputFullNameCommand = "/inputfullname";
     public static readonly string InputAddressCommand = "/inputaddress";
     public static readonly string GetOrdersByStatusCommand = "/getorders";
+    public static readonly string StartAdminCommand = "/admincommands";
+    public static readonly string GetChatIdCommand = "/getchatid";
 }
