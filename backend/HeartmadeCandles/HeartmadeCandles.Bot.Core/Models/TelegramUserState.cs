@@ -10,4 +10,5 @@ public enum TelegramUserState
     AskingPhone,
     AskingFullName,
     AskingAddress,
+    AskingOrderById,
 }

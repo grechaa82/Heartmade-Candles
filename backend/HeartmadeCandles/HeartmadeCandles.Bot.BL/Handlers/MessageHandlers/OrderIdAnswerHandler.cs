@@ -8,12 +8,13 @@ using HeartmadeCandles.Bot.Core.Models;
 using Telegram.Bot.Types.ReplyMarkups;
 using HeartmadeCandles.Order.Core.Models;
 using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.BL.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
-public class OrderAnswerHandler : MessageHandlerBase
+public class OrderIdAnswerHandler : MessageHandlerBase
 {
-    public OrderAnswerHandler(
+    public OrderIdAnswerHandler(
         ITelegramBotClient botClient,
         ITelegramBotRepository telegramBotRepository,
         IServiceScopeFactory serviceScopeFactory)
@@ -63,22 +64,6 @@ public class OrderAnswerHandler : MessageHandlerBase
 
     private async Task SendInfoAboutCommandsAsync(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
     {
-        var replyKeyboardMarkup = new ReplyKeyboardMarkup(new[]
-       {
-            new KeyboardButton[]
-            {
-                $"Показать заказы {TelegramMessageCommands.GetOrderInfoCommand}",
-                $"Статус заказ {TelegramMessageCommands.GetOrderStatusCommand}"
-            },
-            new KeyboardButton[]
-            {
-                $"Оформить заказ {TelegramMessageCommands.GoToCheckoutCommand}"
-            },
-        })
-        {
-            ResizeKeyboard = true
-        };
-
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
@@ -90,7 +75,7 @@ public class OrderAnswerHandler : MessageHandlerBase
                 {TelegramMessageCommands.GoToCheckoutCommand} - оформить заказ и заполинть личную информацию
                 """),
             parseMode: ParseMode.MarkdownV2,
-            replyMarkup: replyKeyboardMarkup,
+            replyMarkup: OrderReplyKeyboardMarkup.GetOrderCommands(),
             cancellationToken: cancellationToken);
     }
 

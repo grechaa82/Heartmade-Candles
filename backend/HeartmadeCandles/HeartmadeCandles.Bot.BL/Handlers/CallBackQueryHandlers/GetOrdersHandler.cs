@@ -34,7 +34,7 @@ public class GetOrdersHandler : CallBackQueryHandlerBase
             chatId: callbackQuery.Message.Chat.Id,
             messageId: callbackQuery.Message.MessageId,
             text: "Выберите нужный статус заказа:",
-            replyMarkup: OrderReplyMarkup.GetOrderSelectionMarkupByStatus(),
+            replyMarkup: OrderInlineKeyboardMarkup.GetOrderSelectionMarkupByStatus(),
             parseMode: ParseMode.MarkdownV2);
 
         return;

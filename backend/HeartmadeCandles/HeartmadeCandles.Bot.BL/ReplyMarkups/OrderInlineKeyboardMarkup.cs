@@ -3,7 +3,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.ReplyMarkups;
 
-internal class OrderReplyMarkup
+internal class OrderInlineKeyboardMarkup
 {
     public static InlineKeyboardMarkup GetOrderSelectionMarkupByStatus()
     {

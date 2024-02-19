@@ -30,7 +30,7 @@ public class GetAdminCommandHandler : MessageHandlerBase
 
     public async override Task Process(Message message, TelegramUser user)
     {
-        var replyKeyboardMarkup = AdminKeyboardMarkup.GetAdminCommandsReplyKeyboard();
+        var replyKeyboardMarkup = AdminReplyKeyboardMarkup.GetAdminCommands();
 
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -39,6 +39,7 @@ public class GetAdminCommandHandler : MessageHandlerBase
                 Вам доступны команды: 
                     
                 {TelegramMessageCommands.GetOrdersByStatusCommand} - работа с заказами
+                {TelegramMessageCommands.GetOrderByIdCommand} - получить информацию о заказе по номеру (id)
                 """),
             messageThreadId: message.MessageThreadId,
             replyMarkup: replyKeyboardMarkup,

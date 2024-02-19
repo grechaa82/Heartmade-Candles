@@ -13,4 +13,5 @@ public class TelegramMessageCommands
     public static readonly string GetOrdersByStatusCommand = "/getorders";
     public static readonly string StartAdminCommand = "/admincommands";
     public static readonly string GetChatIdCommand = "/getchatid";
+    public static readonly string GetOrderByIdCommand = "/getorderbyid";
 }

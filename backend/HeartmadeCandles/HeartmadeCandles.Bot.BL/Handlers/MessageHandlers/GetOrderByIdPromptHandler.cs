@@ -1,16 +1,16 @@
-﻿using HeartmadeCandles.Bot.Core;
-using HeartmadeCandles.Bot.Core.Models;
+﻿using HeartmadeCandles.Bot.Core.Models;
+using HeartmadeCandles.Bot.Core;
 using HeartmadeCandles.Bot.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types;
+using Telegram.Bot;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
-public class GetOrdersByStatusPromptHandler : MessageHandlerBase
+public class GetOrderByIdPromptHandler : MessageHandlerBase
 {
-    public GetOrdersByStatusPromptHandler(
+    public GetOrderByIdPromptHandler(
         ITelegramBotClient botClient,
         ITelegramBotRepository telegramBotRepository,
         IServiceScopeFactory serviceScopeFactory)
@@ -20,23 +20,24 @@ public class GetOrdersByStatusPromptHandler : MessageHandlerBase
 
     public override bool ShouldHandleUpdate(Message message, TelegramUser user)
     {
-        if (user.Role == TelegramUserRole.Admin && message.Text != null)
-        {
-            return message.Text.ToLower().Contains(TelegramMessageCommands.GetOrdersByStatusCommand);
-        }
-        else
+        if (user.Role != TelegramUserRole.Admin || message.Text == null)
         {
             return false;
         }
+
+        return message.Text.ToLower().Contains(TelegramMessageCommands.GetOrderByIdCommand);
     }
 
     public async override Task Process(Message message, TelegramUser user)
     {
+        await _telegramBotRepository.UpdateTelegramUserState(
+            user.ChatId,
+            TelegramUserState.AskingOrderById);
+
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: "Выберите нужный статус заказа:",
+            text: OrderInfoFormatter.EscapeSpecialCharacters("Введите номер (id) заказа:"),
             messageThreadId: message.MessageThreadId,
-            replyMarkup: OrderInlineKeyboardMarkup.GetOrderSelectionMarkupByStatus(),
             parseMode: ParseMode.MarkdownV2);
 
         return;

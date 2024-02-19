@@ -37,7 +37,7 @@ public class GetInProgressOrderHandler : CallBackQueryHandlerBase
     {
         var callbackData = callbackQuery.Data!.Split(":");
 
-        var backInlineKeyboard = OrderReplyMarkup.GetBackSelectionMarkup();
+        var backInlineKeyboard = OrderInlineKeyboardMarkup.GetBackSelectionMarkup();
         
         if(callbackQuery.Data.ToLower().Contains(TelegramCallBackQueryCommands.InProgressOrderSelectCommand))
         {
@@ -53,7 +53,7 @@ public class GetInProgressOrderHandler : CallBackQueryHandlerBase
                     parseMode: ParseMode.MarkdownV2);
             }
 
-            var selectedOrderInlineKeyboard = OrderReplyMarkup.GetMarkupOfSelectedOrder(orderResult.Value.Id);
+            var selectedOrderInlineKeyboard = OrderInlineKeyboardMarkup.GetMarkupOfSelectedOrder(orderResult.Value.Id);
 
             await _botClient.EditMessageTextAsync(
                 chatId: callbackQuery.Message.Chat.Id,
@@ -79,7 +79,7 @@ public class GetInProgressOrderHandler : CallBackQueryHandlerBase
                 parseMode: ParseMode.MarkdownV2);
         }
 
-        var inlineKeyboard = OrderReplyMarkup.GetOrderSelectionMarkup(
+        var inlineKeyboard = OrderInlineKeyboardMarkup.GetOrderSelectionMarkup(
             previousCommands: TelegramCallBackQueryCommands.InProgressOrderPreviousCommand,
             nextCommands: TelegramCallBackQueryCommands.InProgressOrderNextCommand,
             selectCommands: TelegramCallBackQueryCommands.InProgressOrderSelectCommand,

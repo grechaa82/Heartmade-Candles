@@ -46,11 +46,11 @@ public class UpdateOrderStatus : CallBackQueryHandlerBase
     {
         var callbackData = callbackQuery.Data!.Split(":");
 
-        var backInlineKeyboard = OrderReplyMarkup.GetBackSelectionMarkup();
+        var backInlineKeyboard = OrderInlineKeyboardMarkup.GetBackSelectionMarkup();
 
         if (callbackQuery.Data.ToLower().Contains(TelegramCallBackQueryCommands.UpdateOrderStatusCommand))
         {
-            var selectingInlineKeyboard = OrderReplyMarkup.GetMarkupForSelectingNewOrderStatus(callbackData.Last());
+            var selectingInlineKeyboard = OrderInlineKeyboardMarkup.GetMarkupForSelectingNewOrderStatus(callbackData.Last());
 
             await _botClient.EditMessageTextAsync(
                 chatId: callbackQuery.Message.Chat.Id,

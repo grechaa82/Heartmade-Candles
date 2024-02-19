@@ -8,6 +8,7 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Telegram.Bot.Types.ReplyMarkups;
 using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.BL.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
@@ -99,17 +100,6 @@ public class AddressAnswerHandler : MessageHandlerBase
 
     private async Task SendOrderProcessingErrorMessage(ITelegramBotClient botClient, long chatId, CancellationToken cancellationToken = default)
     {
-        var replyKeyboardMarkup = new ReplyKeyboardMarkup(new[]
-        {
-            new KeyboardButton[]
-            {
-                $"Оформить заказ {TelegramMessageCommands.GoToCheckoutCommand}",
-            }
-        })
-        {
-            ResizeKeyboard = true
-        };
-
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
@@ -119,7 +109,7 @@ public class AddressAnswerHandler : MessageHandlerBase
                 Попробуйте обратиться к администратору или попробовать заполнить данные еще раз {TelegramMessageCommands.GoToCheckoutCommand}
                 """),
             parseMode: ParseMode.MarkdownV2,
-            replyMarkup: replyKeyboardMarkup,
+            replyMarkup: OrderReplyKeyboardMarkup.GetOrderGoToCheckoutCommand(),
             cancellationToken: cancellationToken);
     }
 }

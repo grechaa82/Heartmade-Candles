@@ -7,9 +7,9 @@ using Telegram.Bot.Types.Enums;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
-public class OrderPromptHandler : MessageHandlerBase
+public class OrderIdPromptHandler : MessageHandlerBase
 {
-    public OrderPromptHandler(
+    public OrderIdPromptHandler(
         ITelegramBotClient botClient,
         ITelegramBotRepository telegramBotRepository,
         IServiceScopeFactory serviceScopeFactory)
