@@ -7,8 +7,6 @@ public class Order
     public required string BasketId { get; init; }
 
     public Basket? Basket { get; init; }
-    
-    public User? User { get; init; }
 
     public Feedback? Feedback { get; init; }
 

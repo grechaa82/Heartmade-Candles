@@ -12,9 +12,6 @@ public class OrderInfoFormatter
         message.AppendLine($"Номер заказа: {order.Id}");
         message.AppendLine($"Строка конфигурации: {order.Basket.FilterString}");
         message.AppendLine(" ");
-        message.AppendLine(
-            $"Информация о покупателя: {order.User.FirstName} {order.User.LastName}, {order.User.Phone}, " +
-            $"{(string.IsNullOrEmpty(order.User.Email) ? "N/A" : order.User.Email)}");
         message.AppendLine($"Обратная связь: {order.Feedback.TypeFeedback} {order.Feedback.UserName}");
         message.AppendLine(" ");
         message.AppendLine(GetInformationAboutCandles(order.Basket.Items));

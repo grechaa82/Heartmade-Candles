@@ -11,7 +11,5 @@ public class CreateOrderRequest
     [Required]
     public required string BasketId { get; set; }
 
-    public UserRequest? User { get; set; }
-
     public FeedbackRequest? Feedback { get; set; }
 }

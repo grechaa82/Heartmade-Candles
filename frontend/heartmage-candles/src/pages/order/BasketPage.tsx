@@ -33,10 +33,6 @@ const OrderPage: FC = () => {
   const { id } = useParams<BasketParams>();
   const [basket, setBasket] = useState<Basket>();
 
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [phone, setPhone] = useState('');
   const [selectedTypeFeedback, setTypeFeedback] = useState<feedbackType>();
   const [username, setUsername] = useState<string>('');
 
@@ -44,18 +40,9 @@ const OrderPage: FC = () => {
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
-  const validateFirstNameAndLastName = (value: string) => {
-    const regex = /^[a-zA-Zа-яА-Я]+$/;
-    return regex.test(value);
-  };
-
-  const validateEmail = (value: string) => {
-    return /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(value);
-  };
-
   const validatePhone = (value: string) => {
     return /^((8|\+7|7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?\d{3}[\- ]?\d{2}[\- ]?\d{2}?$/.test(
-      value
+      value,
     );
   };
 
@@ -64,38 +51,18 @@ const OrderPage: FC = () => {
     return regex.test(value);
   };
 
-  const itemsFormPersonalData: ItemFormPersonalData[] = [
-    {
-      label: 'Имя',
-      value: firstName,
-      onChange: setFirstName,
-      isRequired: true,
-      validation: validateFirstNameAndLastName,
-    },
-    {
-      label: 'Фамилия',
-      value: lastName,
-      onChange: setLastName,
-      isRequired: true,
-      validation: validateFirstNameAndLastName,
-    },
-    {
-      label: 'Элекронная почта',
-      value: email,
-      onChange: setEmail,
-      isRequired: false,
-      validation: validateEmail,
-    },
-    {
-      label: 'Номер телефона',
-      value: phone,
-      onChange: setPhone,
-      isRequired: true,
-      validation: validatePhone,
-    },
-  ];
-
   const itemsFormFeedback: ItemFormFeedback[] = [
+    {
+      title: feedbackType.Bot,
+      label: 'Введите имя пользователя',
+      value: username,
+      onChangeSelectedForm: setTypeFeedback,
+      onChangeUsername: setUsername,
+      isRequired: true,
+      isSelected: selectedTypeFeedback === feedbackType.Bot ? true : false,
+      icon: IconTelegram,
+      withInput: false,
+    },
     {
       title: feedbackType.Telegram,
       label: 'Введите имя пользователя',
@@ -157,12 +124,6 @@ const OrderPage: FC = () => {
       const createOrderRequest: CreateOrderRequest = {
         configuredCandlesString: getConfiguredCandlesFilter(),
         basketId: basket.id,
-        user: {
-          firstName: firstName,
-          lastName: lastName,
-          phone: phone,
-          email: email,
-        },
         feedback: {
           feedback: selectedTypeFeedback!,
           userName: username,
@@ -170,8 +131,9 @@ const OrderPage: FC = () => {
       };
 
       const orderItemsResponse = await OrdersApi.createOrder(
-        createOrderRequest
+        createOrderRequest,
       );
+
       if (orderItemsResponse.data && !orderItemsResponse.error) {
         navigate(`/orders/${orderItemsResponse.data}/thank`);
       } else {
@@ -188,34 +150,6 @@ const OrderPage: FC = () => {
   } {
     let canCreateOrder = true;
     const errorMessages: string[] = [];
-
-    if (!firstName) {
-      errorMessages.push(`Заполните поле 'Имя'`);
-    }
-    if (firstName && !validateFirstNameAndLastName(firstName)) {
-      errorMessages.push(`Поле 'Имя' введено неверно`);
-      canCreateOrder = false;
-    }
-
-    if (!lastName) {
-      errorMessages.push(`Заполните поле 'Фамилия'`);
-    }
-    if (lastName && !validateFirstNameAndLastName(lastName)) {
-      errorMessages.push(`Поле 'Фамилия' введено неверно`);
-      canCreateOrder = false;
-    }
-    if (!(email.length < 5) && !validateEmail(email)) {
-      errorMessages.push(`Поле 'Электронная почта' введено неверно`);
-      canCreateOrder = false;
-    }
-
-    if (!phone) {
-      errorMessages.push(`Заполните поле 'Номер телефона'`);
-    }
-    if (phone && !validatePhone(phone)) {
-      errorMessages.push(`Поле 'Номер телефона' введено неверно`);
-      canCreateOrder = false;
-    }
 
     if (!selectedTypeFeedback) {
       errorMessages.push(`Выберите тип обратной связи`);
@@ -260,7 +194,6 @@ const OrderPage: FC = () => {
               />
             </div>
             <ListProductsCart products={basket.items} />
-            <FormPersonalData itemsFormPersonalData={itemsFormPersonalData} />
             <FormFeedback itemsFormFeedbacks={itemsFormFeedback} />
           </div>
           <div className={Style.rightPanel}>

@@ -7,4 +7,5 @@ export enum feedbackType {
   Telegram = 'Telegram',
   Instagram = 'Instagram',
   Whatsapp = 'Whatsapp',
+  Bot = 'Bot',
 }

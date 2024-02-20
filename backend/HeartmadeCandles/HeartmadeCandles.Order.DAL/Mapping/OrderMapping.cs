@@ -11,7 +11,6 @@ internal class OrderMapping
             Id = orderDocument.Id,
             BasketId = orderDocument.BasketId,
             Basket = orderDocument.Basket == null ? null : BasketMapping.MapToBasket(orderDocument.Basket),
-            User = UserMapping.MapToUser(orderDocument.User),
             Feedback = FeedbackMapping.MapToFeedback(orderDocument.Feedback),
             Status = orderDocument.Status
         };
@@ -24,7 +23,6 @@ internal class OrderMapping
             Id = orderDocument.Id,
             BasketId = orderDocument.BasketId,
             Basket = BasketMapping.MapToBasket(basketDocument),
-            User = UserMapping.MapToUser(orderDocument.User),
             Feedback = FeedbackMapping.MapToFeedback(orderDocument.Feedback),
             Status = orderDocument.Status
         };
@@ -37,7 +35,6 @@ internal class OrderMapping
             Id = order.Id,
             BasketId = order.BasketId,
             Basket = order.Basket == null ? null : BasketMapping.MapToBasketDocument(order.Basket),
-            User = UserMapping.MapToUserDocument(order.User),
             Feedback = FeedbackMapping.MapToFeedbackDocument(order.Feedback),
             Status = order.Status
         };

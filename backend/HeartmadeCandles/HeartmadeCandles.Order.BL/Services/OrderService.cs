@@ -43,7 +43,7 @@ public class OrderService : IOrderService
         return await _orderRepository.GetOrderByStatus(status, pageSige, pageIndex);
     }
 
-    public async Task<Result<string>> CreateOrder(User? user, Feedback? feedback, string basketId)
+    public async Task<Result<string>> CreateOrder(Feedback? feedback, string basketId)
     {
         var basket = await _basketRepository.GetBasketById(basketId);
 
@@ -66,7 +66,6 @@ public class OrderService : IOrderService
         {
             Basket = basket.Value,
             BasketId = basketId,
-            User = user,
             Feedback = feedback,
             Status = OrderStatus.Created
         };
