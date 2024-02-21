@@ -8,7 +8,8 @@ import { IconProps } from '../../UI/IconProps';
 import Style from './FormFeedback.module.css';
 
 export interface ItemFormFeedback {
-  title: feedbackType;
+  feedbackType: feedbackType;
+  title: string;
   label: string;
   value: string;
   onChangeSelectedForm: (value: feedbackType) => void;
@@ -59,13 +60,15 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
             <div className={Style.column}>
               {evenItems.map((item, index) => (
                 <SelectorWithInput
-                  title={item.title.toString()}
+                  title={item.title}
                   icon={item.icon}
                   isSelected={item.isSelected}
-                  onSelected={() => item.onChangeSelectedForm(item.title)}
+                  onSelected={() =>
+                    item.onChangeSelectedForm(item.feedbackType)
+                  }
                   input={
                     <Input
-                      label="Введите ваше имя пользователя"
+                      label={item.label}
                       required
                       value={item.value}
                       onChange={item.onChangeUsername}
@@ -79,13 +82,15 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
             <div className={Style.column}>
               {oddItems.map((item, index) => (
                 <SelectorWithInput
-                  title={item.title.toString()}
+                  title={item.title}
                   icon={item.icon}
                   isSelected={item.isSelected}
-                  onSelected={() => item.onChangeSelectedForm(item.title)}
+                  onSelected={() =>
+                    item.onChangeSelectedForm(item.feedbackType)
+                  }
                   input={
                     <Input
-                      label="Введите ваше имя пользователя"
+                      label={item.label}
                       required
                       value={item.value}
                       onChange={item.onChangeUsername}
@@ -101,13 +106,13 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
           <div className={Style.column}>
             {itemsFormFeedbacks.map((item, index) => (
               <SelectorWithInput
-                title={item.title.toString()}
+                title={item.title}
                 icon={item.icon}
                 isSelected={item.isSelected}
-                onSelected={() => item.onChangeSelectedForm(item.title)}
+                onSelected={() => item.onChangeSelectedForm(item.feedbackType)}
                 input={
                   <Input
-                    label="Введите ваше имя пользователя"
+                    label={item.label}
                     required
                     value={item.value}
                     onChange={item.onChangeUsername}

@@ -4,16 +4,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Basket } from '../../typesV2/order/Basket';
 import { CreateOrderRequest } from '../../typesV2/order/CreateOrderRequest';
 import ListProductsCart from '../../modules/order/ListProductsCart';
-import FormPersonalData, {
-  ItemFormPersonalData,
-} from '../../modules/order/FormPersonalData';
 import FormFeedback, {
   ItemFormFeedback,
 } from '../../modules/order/FormFeedback';
 import TotalPricePanel from '../../modules/order/TotalPricePanel';
 import { feedbackType } from '../../typesV2/order/Feedback';
 import IconTelegram from '../../UI/IconTelegram';
-import IconInstagram from '../../UI/IconInstagram';
 import IconWhatsapp from '../../UI/IconWhatsapp';
 import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
@@ -46,49 +42,40 @@ const OrderPage: FC = () => {
     );
   };
 
-  const validateTelegramAndInstagram = (value: string) => {
-    const regex = /@[a-zA-Z0-9_]{1,32}$/;
+  const validateTelegram = (value: string) => {
+    const regex = /(?:@|(?:(?:(?:https?:\/\/)?t(?:elegram)?)\.me\/))(\w{4,})$/;
     return regex.test(value);
   };
 
   const itemsFormFeedback: ItemFormFeedback[] = [
     {
-      title: feedbackType.Bot,
-      label: 'Введите имя пользователя',
+      feedbackType: feedbackType.Bot,
+      title: 'Telegram Bot',
+      label: 'Введите имя пользователя или ссылку на аккаунт',
       value: username,
       onChangeSelectedForm: setTypeFeedback,
       onChangeUsername: setUsername,
       isRequired: true,
       isSelected: selectedTypeFeedback === feedbackType.Bot ? true : false,
+      validation: validateTelegram,
       icon: IconTelegram,
-      withInput: false,
     },
     {
-      title: feedbackType.Telegram,
-      label: 'Введите имя пользователя',
+      feedbackType: feedbackType.Telegram,
+      title: 'Чат в Telegram',
+      label: 'Введите имя пользователя или ссылку на аккаунт',
       value: username,
       onChangeSelectedForm: setTypeFeedback,
       onChangeUsername: setUsername,
       isRequired: true,
       isSelected: selectedTypeFeedback === feedbackType.Telegram ? true : false,
-      validation: validateTelegramAndInstagram,
+      validation: validateTelegram,
       icon: IconTelegram,
     },
     {
-      title: feedbackType.Instagram,
-      label: 'Введите имя пользователя',
-      value: username,
-      onChangeSelectedForm: setTypeFeedback,
-      onChangeUsername: setUsername,
-      isRequired: true,
-      isSelected:
-        selectedTypeFeedback === feedbackType.Instagram ? true : false,
-      validation: validateTelegramAndInstagram,
-      icon: IconInstagram,
-    },
-    {
-      title: feedbackType.Whatsapp,
-      label: 'Введите имя пользователя',
+      feedbackType: feedbackType.Whatsapp,
+      title: 'Whatsapp',
+      label: 'Введите номер телефона',
       value: username,
       onChangeSelectedForm: setTypeFeedback,
       onChangeUsername: setUsername,
@@ -157,7 +144,7 @@ const OrderPage: FC = () => {
     }
     if (
       selectedTypeFeedback &&
-      !(validatePhone(username) || validateTelegramAndInstagram(username))
+      !(validatePhone(username) || validateTelegram(username))
     ) {
       errorMessages.push(`Введите корректные данные для обратной связи`);
       canCreateOrder = false;

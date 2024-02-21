@@ -31,10 +31,11 @@
 }
 .createOrder {
   all: unset;
+  box-sizing: border-box;
   border-radius: var(--border-radius-primary);
-  border: 2px solid var(--color-green);
-  background-color: var(--color-green);
-  color: var(--color-fff);
+  border: 2px solid var(--color-light-green);
+  background-color: var(--color-light-green);
+  color: var(--color-green);
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-standard);
