@@ -40,9 +40,7 @@ public class FullNamePromptHandler : MessageHandlerBase
             chatId: message.Chat.Id,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
                 """
-                Шаг 1 из 3
-                
-                !!! В данный момент доставка возможно только Почтой России, приносим свои извинения.
+                Шаг 1 из 4
 
                 Отправьте одним сообщение вашу Фамилию Имя и Отчество.
 

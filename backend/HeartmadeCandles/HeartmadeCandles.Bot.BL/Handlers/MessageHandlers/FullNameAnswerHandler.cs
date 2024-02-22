@@ -32,7 +32,7 @@ public class FullNameAnswerHandler : MessageHandlerBase
             chatId: message.Chat.Id,
             text: OrderInfoFormatter.EscapeSpecialCharacters(
                 """
-                Шаг 2 из 3
+                Шаг 2 из 4
                 
                 Введите ваш номер телефона.
                 

@@ -9,6 +9,7 @@ public enum TelegramUserState
     OrderNotExist,
     AskingPhone,
     AskingFullName,
+    AskingDeliveryType,
     AskingAddress,
     AskingOrderById,
 }

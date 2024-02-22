@@ -8,7 +8,7 @@ internal class OrderReplyKeyboardMarkup
     public static ReplyKeyboardMarkup GetOrderCommands()
     {
         return new ReplyKeyboardMarkup(new[]
-       {
+        {
             new KeyboardButton[]
             {
                 $"Показать заказы {TelegramMessageCommands.GetOrderInfoCommand}",

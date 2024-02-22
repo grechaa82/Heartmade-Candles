@@ -6,7 +6,6 @@ using HeartmadeCandles.Bot.Core.Models;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
-using Telegram.Bot.Types.ReplyMarkups;
 using HeartmadeCandles.Bot.Core;
 using HeartmadeCandles.Bot.BL.ReplyMarkups;
 
@@ -78,6 +77,7 @@ public class AddressAnswerHandler : MessageHandlerBase
                 
                 Если возникнут сложности он с вами свяжется.
                 """),
+            replyMarkup: OrderReplyKeyboardMarkup.GetOrderCommands(),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
     }

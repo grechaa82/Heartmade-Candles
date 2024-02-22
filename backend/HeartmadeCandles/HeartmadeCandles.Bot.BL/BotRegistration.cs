@@ -23,6 +23,7 @@ public static class BotRegistration
             .AddScoped<MessageHandlerBase, FullNamePromptHandler>()
             .AddScoped<MessageHandlerBase, FullNameAnswerHandler>()
             .AddScoped<MessageHandlerBase, PhoneAnswerHandler>()
+            .AddScoped<MessageHandlerBase, DeliveryTypeAnswerHandler>()
             .AddScoped<MessageHandlerBase, AddressAnswerHandler>()
             .AddScoped<MessageHandlerBase, GetOrdersByStatusPromptHandler>()
             .AddScoped<MessageHandlerBase, GetAdminCommandHandler>()
