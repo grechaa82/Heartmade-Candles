@@ -3,7 +3,6 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using MongoDB.Driver;
 using HeartmadeCandles.Order.DAL.Documents;
 using HeartmadeCandles.Order.DAL.Mapping;
-using MongoDB.Bson;
 using HeartmadeCandles.Order.Core.Models;
 
 namespace HeartmadeCandles.Order.DAL.Repositories;
@@ -39,26 +38,10 @@ public class OrderRepository : IOrderRepository
         return order;
     }
 
-    public async Task<Maybe<Core.Models.Order[]>> GetOrderByStatus(OrderStatus status)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex)
     {
-        var orderDocument = await _orderCollection
-            .Find(x => x.Status == status)
-            .ToListAsync();
+        var totalOrders = await _orderCollection.CountDocumentsAsync(x => x.Status == status);
 
-        if (orderDocument.Count == 0)
-        {
-            return Maybe<Core.Models.Order[]>.None;
-        }
-
-        var order = orderDocument
-            .Select(OrderMapping.MapToOrder)
-            .ToArray();
-
-        return order;
-    }
-
-    public async Task<Maybe<Core.Models.Order[]>> GetOrderByStatus(OrderStatus status, int pageSige, int pageIndex)
-    {
         var orderDocument = await _orderCollection
             .Find(x => x.Status == status)
             .Skip(pageIndex * pageSige)
@@ -67,14 +50,14 @@ public class OrderRepository : IOrderRepository
 
         if (orderDocument.Count == 0)
         {
-            return Maybe<Core.Models.Order[]>.None;
+            return (Maybe<Core.Models.Order[]>.None, totalOrders);
         }
 
         var order = orderDocument
             .Select(OrderMapping.MapToOrder)
             .ToArray();
 
-        return order;
+        return (order, totalOrders);
     }
 
     public async Task<Result<string>> CreateOrder(Core.Models.Order order)

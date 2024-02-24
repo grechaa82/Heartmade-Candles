@@ -67,9 +67,9 @@ public class GetCreatedOrderHandler : CallBackQueryHandlerBase
 
         var pageIndex = int.Parse(callbackData.Last());
 
-        var orderMaybe = await GetOrdersByStatus(OrderStatus.Created, 1, pageIndex - 1);
+        var (orderMaybe, totalOrders) = await GetOrderByStatusWithTotalOrders(OrderStatus.Created, 1, pageIndex - 1);
 
-        if (orderMaybe.HasNoValue)
+        if (orderMaybe.HasNoValue || orderMaybe.Value.First() == null)
         {
             await _botClient.EditMessageTextAsync(
                 chatId: callbackQuery.Message.Chat.Id,
@@ -83,13 +83,14 @@ public class GetCreatedOrderHandler : CallBackQueryHandlerBase
             previousCommands: TelegramCallBackQueryCommands.CreatedOrderPreviousCommand,
             nextCommands: TelegramCallBackQueryCommands.CreatedOrderNextCommand,
             selectCommands: TelegramCallBackQueryCommands.CreatedOrderSelectCommand,
-            orderId: orderMaybe.Value.Id,
-            currentPageIndex: pageIndex);
+            orderId: orderMaybe.Value.First().Id,
+            currentPageIndex: pageIndex,
+            totalOrders: totalOrders);
 
         await _botClient.EditMessageTextAsync(
             chatId: callbackQuery.Message.Chat.Id,
             messageId: callbackQuery.Message.MessageId,
-            text: OrderInfoFormatter.GetPreviewOrderInfoInMarkdownV2(orderMaybe.Value),
+            text: OrderInfoFormatter.GetPreviewOrderInfoInMarkdownV2(orderMaybe.Value.First()),
             replyMarkup: inlineKeyboard,
             parseMode: ParseMode.MarkdownV2);
 

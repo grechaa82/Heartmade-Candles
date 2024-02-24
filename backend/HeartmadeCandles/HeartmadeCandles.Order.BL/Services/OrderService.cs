@@ -33,14 +33,9 @@ public class OrderService : IOrderService
             : Result.Failure<Core.Models.Order>($"Order by id: {orderId} does not exist");
     }
 
-    public async Task<Maybe<Core.Models.Order[]>> GetOrderByStatus(OrderStatus status)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex)
     {
-        return await _orderRepository.GetOrderByStatus(status);
-    }
-
-    public async Task<Maybe<Core.Models.Order[]>> GetOrderByStatus(OrderStatus status, int pageSige, int pageIndex)
-    {
-        return await _orderRepository.GetOrderByStatus(status, pageSige, pageIndex);
+        return await _orderRepository.GetOrderByStatusWithTotalOrders(status, pageSige, pageIndex);
     }
 
     public async Task<Result<string>> CreateOrder(Feedback? feedback, string basketId)

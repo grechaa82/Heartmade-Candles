@@ -30,15 +30,13 @@ public abstract class CallBackQueryHandlerBase
 
     public abstract Task Process(CallbackQuery callbackQuery, TelegramUser user);
 
-    public async Task<Maybe<Order.Core.Models.Order>> GetOrdersByStatus(OrderStatus status, int pageSize, int pageIndex = 0)
+    public async Task<(Maybe<Order.Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSize, int pageIndex = 0)
     {
         using var scope = _serviceScopeFactory.CreateScope();
 
         var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
 
-        var orderMaybe = await orderService.GetOrderByStatus(status, pageSize, pageIndex);
-
-        return orderMaybe.HasValue ? orderMaybe.Value.First() : Maybe.None;
+        return await orderService.GetOrderByStatusWithTotalOrders(status, pageSize, pageIndex);
     }
 
     public async Task<Result<Order.Core.Models.Order>> GetOrderById(string orderId)

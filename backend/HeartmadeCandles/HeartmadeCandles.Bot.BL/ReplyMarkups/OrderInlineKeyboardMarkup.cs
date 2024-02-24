@@ -59,21 +59,39 @@ internal class OrderInlineKeyboardMarkup
         string nextCommands,
         string selectCommands,
         string orderId, 
-        int currentPageIndex)
+        int currentPageIndex,
+        long totalOrders)
     {
         return new InlineKeyboardMarkup(new[]
         {
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
-                    text: "<",
+                    text: "⏮",
+                    callbackData: $"{previousCommands}:{1}"),
+                InlineKeyboardButton.WithCallbackData(
+                    text: "⬅️",
                     callbackData: $"{previousCommands}:{currentPageIndex - 1}"),
                 InlineKeyboardButton.WithCallbackData(
-                    text: "Выбрать",
+                    text: $"{currentPageIndex}/{totalOrders}",
                     callbackData: $"{selectCommands}:{orderId}"),
                 InlineKeyboardButton.WithCallbackData(
-                    text: ">",
-                    callbackData: $"{nextCommands}:{currentPageIndex + 1}"),
+                    text: "➡️",
+                    callbackData: $"{nextCommands}:{(currentPageIndex + 1 > totalOrders 
+                        ? currentPageIndex 
+                        : currentPageIndex + 1)}"),
+                InlineKeyboardButton.WithCallbackData(
+                    text: "⏭",
+                    callbackData: $"{nextCommands}:{totalOrders}"),
+            },
+            new []
+            {
+                InlineKeyboardButton.WithCallbackData(
+                    text: "Узнать больше",
+                    callbackData: $"{selectCommands}:{orderId}"),
+                InlineKeyboardButton.WithCallbackData(
+                    text: "Номер заказ",
+                    callbackData: $"{CallBackQueryType.GetOrderId}:{orderId}"),
             },
             new []
             {
