@@ -1,7 +1,7 @@
 ﻿using HeartmadeCandles.Bot.BL.Handlers;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace HeartmadeCandles.Bot.BL.ReplyMarkups;
+namespace HeartmadeCandles.Bot.BL.Utilities.ReplyMarkups;
 
 internal class AdminReplyKeyboardMarkup
 {
@@ -11,11 +11,11 @@ internal class AdminReplyKeyboardMarkup
         {
             new KeyboardButton[]
             {
-                $"Работа с заказами {TelegramMessageCommands.GetOrdersByStatusCommand}",
+                $"Работа с заказами {MessageCommands.GetOrdersByStatusCommand}",
             },
             new KeyboardButton[]
             {
-                $"Получить заказа по номеру {TelegramMessageCommands.GetChatIdCommand}",
+                $"Получить заказа по номеру {MessageCommands.GetChatIdCommand}",
             }
         })
         {

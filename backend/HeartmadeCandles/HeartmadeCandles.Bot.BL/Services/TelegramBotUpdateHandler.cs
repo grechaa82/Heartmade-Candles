@@ -1,5 +1,8 @@
 ﻿using HeartmadeCandles.Bot.BL.Handlers;
-using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.BL.Handlers.CallBackQueryHandlers;
+using HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
+using HeartmadeCandles.Bot.BL.Utilities;
+using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -8,7 +11,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace HeartmadeCandles.Bot.BL;
+namespace HeartmadeCandles.Bot.BL.Services;
 
 public class TelegramBotUpdateHandler : ITelegramBotUpdateHandler
 {
@@ -69,7 +72,7 @@ public class TelegramBotUpdateHandler : ITelegramBotUpdateHandler
         var chatId = message.Chat.Id;
         var text = message.Text;
 
-        if (text.ToLower().Contains(TelegramMessageCommands.StartCommand))
+        if (text.ToLower().Contains(MessageCommands.StartCommand))
         {
             await EnsureUserExists(message);
 
@@ -104,9 +107,9 @@ public class TelegramBotUpdateHandler : ITelegramBotUpdateHandler
     private async Task HandleCallBackQuery(ITelegramBotClient botClient, CallbackQuery? callbackQuery, CancellationToken cancellationToken = default)
     {
         if (callbackQuery == null
-            || callbackQuery.Message == null 
+            || callbackQuery.Message == null
             || callbackQuery.Message.Text == null
-            || string.IsNullOrEmpty(callbackQuery.Message.Text) 
+            || string.IsNullOrEmpty(callbackQuery.Message.Text)
             || string.IsNullOrWhiteSpace(callbackQuery.Message.Text))
         {
             return;
@@ -148,7 +151,7 @@ public class TelegramBotUpdateHandler : ITelegramBotUpdateHandler
         {
             new KeyboardButton[]
             {
-                $"Ввести номер заказа {TelegramMessageCommands.InputOrderIdCommand}",
+                $"Ввести номер заказа {MessageCommands.InputOrderIdCommand}",
             }
         })
         {
@@ -158,13 +161,13 @@ public class TelegramBotUpdateHandler : ITelegramBotUpdateHandler
         await botClient.SendTextMessageAsync(
             chatId: chatId,
             replyToMessageId: message.MessageId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 $"""
                 Добро пожаловать.
 
                 Вам доступны команды: 
 
-                {TelegramMessageCommands.InputOrderIdCommand} - для начала работы с заказом
+                {MessageCommands.InputOrderIdCommand} - для начала работы с заказом
                 """),
             parseMode: ParseMode.MarkdownV2,
             replyMarkup: replyKeyboardMarkup,

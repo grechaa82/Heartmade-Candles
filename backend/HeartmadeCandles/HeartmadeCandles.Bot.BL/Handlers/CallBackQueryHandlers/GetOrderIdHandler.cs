@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
-using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.Core.Interfaces;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.CallBackQueryHandlers;
 
@@ -26,7 +26,7 @@ public class GetOrderIdHandler : CallBackQueryHandlerBase
 
         var text = callbackQuery.Data.ToLower();
 
-        return text.Contains(TelegramCallBackQueryCommands.GetOrderIdCommand);
+        return text.Contains(CallBackQueryCommands.GetOrderIdCommand);
     }
 
     public async override Task Process(CallbackQuery callbackQuery, TelegramUser user)

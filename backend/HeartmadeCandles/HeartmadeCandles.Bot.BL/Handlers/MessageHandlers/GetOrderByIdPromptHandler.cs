@@ -1,10 +1,10 @@
 ﻿using HeartmadeCandles.Bot.Core.Models;
-using HeartmadeCandles.Bot.Core;
-using HeartmadeCandles.Bot.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
+using HeartmadeCandles.Bot.Core.Interfaces;
+using HeartmadeCandles.Bot.BL.Utilities;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
@@ -25,7 +25,7 @@ public class GetOrderByIdPromptHandler : MessageHandlerBase
             return false;
         }
 
-        return message.Text.ToLower().Contains(TelegramMessageCommands.GetOrderByIdCommand);
+        return message.Text.ToLower().Contains(MessageCommands.GetOrderByIdCommand);
     }
 
     public async override Task Process(Message message, TelegramUser user)
@@ -36,7 +36,7 @@ public class GetOrderByIdPromptHandler : MessageHandlerBase
 
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: OrderInfoFormatter.EscapeSpecialCharacters("Введите номер (id) заказа:"),
+            text: TelegramMessageFormatter.Format("Введите номер (id) заказа:"),
             messageThreadId: message.MessageThreadId,
             parseMode: ParseMode.MarkdownV2);
 

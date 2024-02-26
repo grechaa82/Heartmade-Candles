@@ -5,7 +5,8 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using Telegram.Bot.Types.Enums;
 using HeartmadeCandles.Bot.Core.Models;
 using Telegram.Bot.Types.ReplyMarkups;
-using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.Core.Interfaces;
+using HeartmadeCandles.Bot.BL.Utilities;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
@@ -20,7 +21,7 @@ public class GetOrderInfoHandler : MessageHandlerBase
     }
 
     public override bool ShouldHandleUpdate(Message message, TelegramUser user) =>
-        message.Text?.ToLower().Contains(TelegramMessageCommands.GetOrderInfoCommand) ?? false;
+        message.Text?.ToLower().Contains(MessageCommands.GetOrderInfoCommand) ?? false;
 
     public async override Task Process(Message message, TelegramUser user)
     {
@@ -36,7 +37,7 @@ public class GetOrderInfoHandler : MessageHandlerBase
             return;
         }
 
-        var text = OrderInfoFormatter.GetOrderInfoInMarkdownV2(orderResult.Value);
+        var text = OrderReportGenerator.GenerateReport(orderResult.Value);
 
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -50,7 +51,7 @@ public class GetOrderInfoHandler : MessageHandlerBase
         {
             new KeyboardButton[]
             {
-                $"Ввести номер заказа {TelegramMessageCommands.InputOrderIdCommand}",
+                $"Ввести номер заказа {MessageCommands.InputOrderIdCommand}",
             }
         })
         {
@@ -59,12 +60,12 @@ public class GetOrderInfoHandler : MessageHandlerBase
 
         await botClient.SendTextMessageAsync(
             chatId: chatId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 $"""
                 Возникла проблема с вашим заказом. Мы не смогли его найти. 
                 
                 Вы можете:
-                - Попробовать ввести номер заказа еще раз {TelegramMessageCommands.InputOrderIdCommand}
+                - Попробовать ввести номер заказа еще раз {MessageCommands.InputOrderIdCommand}
                 - Создать новый заказ на нашем сайте 4fass.ru
                 """),
             parseMode: ParseMode.MarkdownV2,

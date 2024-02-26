@@ -1,6 +1,7 @@
-﻿using HeartmadeCandles.Bot.Core;
+﻿using HeartmadeCandles.Bot.BL.Utilities;
+using HeartmadeCandles.Bot.BL.Utilities.ReplyMarkups;
+using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
-using HeartmadeCandles.Bot.ReplyMarkups;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -28,9 +29,9 @@ public class GetCompletedOrderHandler : CallBackQueryHandlerBase
 
         var text = callbackQuery.Data.ToLower();
 
-        return text.Contains(TelegramCallBackQueryCommands.CompletedOrderNextCommand) 
-            || text.Contains(TelegramCallBackQueryCommands.CompletedOrderPreviousCommand) 
-            || text.Contains(TelegramCallBackQueryCommands.CompletedOrderSelectCommand);
+        return text.Contains(CallBackQueryCommands.CompletedOrderNextCommand) 
+            || text.Contains(CallBackQueryCommands.CompletedOrderPreviousCommand) 
+            || text.Contains(CallBackQueryCommands.CompletedOrderSelectCommand);
     }
 
     public async override Task Process(CallbackQuery callbackQuery, TelegramUser user)
@@ -39,7 +40,7 @@ public class GetCompletedOrderHandler : CallBackQueryHandlerBase
 
         var backInlineKeyboard = OrderInlineKeyboardMarkup.GetBackSelectionMarkup();
         
-        if(callbackQuery.Data.ToLower().Contains(TelegramCallBackQueryCommands.CompletedOrderSelectCommand))
+        if(callbackQuery.Data.ToLower().Contains(CallBackQueryCommands.CompletedOrderSelectCommand))
         {
             var orderResult = await GetOrderById(callbackData.Last());
 
@@ -58,7 +59,7 @@ public class GetCompletedOrderHandler : CallBackQueryHandlerBase
             await _botClient.EditMessageTextAsync(
                 chatId: callbackQuery.Message.Chat.Id,
                 messageId: callbackQuery.Message.MessageId,
-                text: OrderInfoFormatter.GetOrderInfoInMarkdownV2(orderResult.Value),
+                text: OrderReportGenerator.GenerateReport(orderResult.Value),
                 replyMarkup: selectedOrderInlineKeyboard,
                 parseMode: ParseMode.MarkdownV2);
 
@@ -80,9 +81,9 @@ public class GetCompletedOrderHandler : CallBackQueryHandlerBase
         }
 
         var inlineKeyboard = OrderInlineKeyboardMarkup.GetOrderSelectionMarkup(
-            previousCommands: TelegramCallBackQueryCommands.CompletedOrderPreviousCommand,
-            nextCommands: TelegramCallBackQueryCommands.CompletedOrderNextCommand,
-            selectCommands: TelegramCallBackQueryCommands.CompletedOrderSelectCommand,
+            previousCommands: CallBackQueryCommands.CompletedOrderPreviousCommand,
+            nextCommands: CallBackQueryCommands.CompletedOrderNextCommand,
+            selectCommands: CallBackQueryCommands.CompletedOrderSelectCommand,
             orderId: orderMaybe.Value.First().Id,
             currentPageIndex: pageIndex,
             totalOrders: totalOrders);
@@ -90,7 +91,7 @@ public class GetCompletedOrderHandler : CallBackQueryHandlerBase
         await _botClient.EditMessageTextAsync(
             chatId: callbackQuery.Message.Chat.Id,
             messageId: callbackQuery.Message.MessageId,
-            text: OrderInfoFormatter.GetPreviewOrderInfoInMarkdownV2(orderMaybe.Value.First()),
+            text: OrderReportGenerator.GeneratePreviewReport(orderMaybe.Value.First()),
             replyMarkup: inlineKeyboard,
             parseMode: ParseMode.MarkdownV2);
 

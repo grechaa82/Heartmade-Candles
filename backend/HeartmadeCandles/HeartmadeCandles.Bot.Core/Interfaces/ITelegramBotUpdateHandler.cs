@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Types;
 
-namespace HeartmadeCandles.Bot.Core;
+namespace HeartmadeCandles.Bot.Core.Interfaces;
 
 public interface ITelegramBotUpdateHandler
 {

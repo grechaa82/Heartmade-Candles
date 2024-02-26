@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Bot.Core;
+﻿using HeartmadeCandles.Bot.BL.Utilities;
+using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -30,7 +31,7 @@ public class FullNameAnswerHandler : MessageHandlerBase
 
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 """
                 Шаг 2 из 4
                 
@@ -51,7 +52,8 @@ public class FullNameAnswerHandler : MessageHandlerBase
     {
         await botClient.SendTextMessageAsync(
             chatId: _adminChatId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters($"Пользователь {user.UserName} и заказом {user.CurrentOrderId} заполнил свое ФИО:"),
+            text: TelegramMessageFormatter.Format(
+                $"Пользователь {user.UserName} и заказом {user.CurrentOrderId} заполнил свое ФИО:"),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
 

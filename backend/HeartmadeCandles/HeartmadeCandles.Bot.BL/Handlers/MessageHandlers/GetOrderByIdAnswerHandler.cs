@@ -1,10 +1,11 @@
 ﻿using HeartmadeCandles.Bot.Core.Models;
-using HeartmadeCandles.Bot.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
 using HeartmadeCandles.Order.Core.Interfaces;
+using HeartmadeCandles.Bot.Core.Interfaces;
+using HeartmadeCandles.Bot.BL.Utilities;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
@@ -52,7 +53,7 @@ public class GetOrderByIdAnswerHandler : MessageHandlerBase
 
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: OrderInfoFormatter.GetOrderInfoInMarkdownV2(orderResult.Value),
+            text: OrderReportGenerator.GenerateReport(orderResult.Value),
             messageThreadId: message.MessageThreadId,
             parseMode: ParseMode.MarkdownV2);
 

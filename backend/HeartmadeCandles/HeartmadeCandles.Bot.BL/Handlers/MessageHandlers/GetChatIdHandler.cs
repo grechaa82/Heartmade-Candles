@@ -1,9 +1,10 @@
 ﻿using HeartmadeCandles.Bot.Core.Models;
-using HeartmadeCandles.Bot.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
+using HeartmadeCandles.Bot.Core.Interfaces;
+using HeartmadeCandles.Bot.BL.Utilities;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
@@ -18,13 +19,13 @@ public class GetChatIdHandler : MessageHandlerBase
     }
 
     public override bool ShouldHandleUpdate(Message message, TelegramUser user) =>
-        message.Text?.ToLower().Contains(TelegramMessageCommands.GetChatIdCommand) ?? false;
+        message.Text?.ToLower().Contains(MessageCommands.GetChatIdCommand) ?? false;
 
     public async override Task Process(Message message, TelegramUser user)
     {
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(message.Chat.Id.ToString()),
+            text: TelegramMessageFormatter.Format(message.Chat.Id.ToString()),
             messageThreadId: message.MessageThreadId,
             parseMode: ParseMode.MarkdownV2);
     }

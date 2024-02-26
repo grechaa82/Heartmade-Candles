@@ -5,7 +5,8 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using Telegram.Bot.Types.Enums;
 using HeartmadeCandles.Bot.Core.Models;
 using Telegram.Bot.Types.ReplyMarkups;
-using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.Core.Interfaces;
+using HeartmadeCandles.Bot.BL.Utilities;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
@@ -20,7 +21,7 @@ public class GetOrderStatusHandler : MessageHandlerBase
     }
 
     public override bool ShouldHandleUpdate(Message message, TelegramUser user) =>
-        message.Text?.ToLower().Contains(TelegramMessageCommands.GetOrderStatusCommand) ?? false;
+        message.Text?.ToLower().Contains(MessageCommands.GetOrderStatusCommand) ?? false;
 
     public async override Task Process(Message message, TelegramUser user)
     {
@@ -48,7 +49,7 @@ public class GetOrderStatusHandler : MessageHandlerBase
         {
             new KeyboardButton[]
             {
-                $"Ввести номер заказа {TelegramMessageCommands.InputOrderIdCommand}",
+                $"Ввести номер заказа {MessageCommands.InputOrderIdCommand}",
             }
         })
         {
@@ -57,12 +58,12 @@ public class GetOrderStatusHandler : MessageHandlerBase
 
         await botClient.SendTextMessageAsync(
             chatId: chatId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 $"""
                 Возникла проблема с вашим заказом. Мы не смогли его найти. 
                 
                 Вы можете:
-                - Попробовать ввести номер заказа еще раз {TelegramMessageCommands.InputOrderIdCommand}
+                - Попробовать ввести номер заказа еще раз {MessageCommands.InputOrderIdCommand}
                 - Создать новый заказ на нашем сайте 4fass.ru
                 """),
             parseMode: ParseMode.MarkdownV2,

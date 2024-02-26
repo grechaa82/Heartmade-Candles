@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace HeartmadeCandles.Bot.BL.Handlers;
+namespace HeartmadeCandles.Bot.BL.Handlers.CallBackQueryHandlers;
 
 public abstract class CallBackQueryHandlerBase
 {

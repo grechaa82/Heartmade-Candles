@@ -2,7 +2,7 @@
 
 namespace HeartmadeCandles.Bot.BL.Handlers;
 
-public class TelegramCallBackQueryCommands
+public class CallBackQueryCommands
 {
     public static readonly string CallBackQueryCreatedCommand = "/callback" + OrderStatus.Created.ToString().ToLower();
     public static readonly string CallBackQueryConfirmedCommand = "/callback" + OrderStatus.Confirmed.ToString().ToLower();

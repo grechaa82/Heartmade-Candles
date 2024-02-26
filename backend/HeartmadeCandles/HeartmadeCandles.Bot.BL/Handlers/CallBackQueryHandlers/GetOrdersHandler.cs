@@ -3,8 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
-using HeartmadeCandles.Bot.ReplyMarkups;
-using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.Core.Interfaces;
+using HeartmadeCandles.Bot.BL.Utilities.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.CallBackQueryHandlers;
 

@@ -1,4 +1,4 @@
-﻿using HeartmadeCandles.Bot.Core;
+﻿using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -18,7 +18,7 @@ public class OrderIdPromptHandler : MessageHandlerBase
     }
 
     public override bool ShouldHandleUpdate(Message message, TelegramUser user) =>
-        message.Text?.ToLower().Contains(TelegramMessageCommands.InputOrderIdCommand) ?? false;
+        message.Text?.ToLower().Contains(MessageCommands.InputOrderIdCommand) ?? false;
 
     public async override Task Process(Message message, TelegramUser user)
     {

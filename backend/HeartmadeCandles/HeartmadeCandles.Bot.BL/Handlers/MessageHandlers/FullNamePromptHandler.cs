@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Bot.Core;
+﻿using HeartmadeCandles.Bot.BL.Utilities;
+using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
@@ -21,7 +22,7 @@ public class FullNamePromptHandler : MessageHandlerBase
     {
         if (user.State == TelegramUserState.OrderExist && message.Text != null)
         {
-            return message.Text.ToLower().Contains(TelegramMessageCommands.GoToCheckoutCommand);
+            return message.Text.ToLower().Contains(MessageCommands.GoToCheckoutCommand);
         }
         else
         {
@@ -38,7 +39,7 @@ public class FullNamePromptHandler : MessageHandlerBase
 
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 """
                 Шаг 1 из 4
 

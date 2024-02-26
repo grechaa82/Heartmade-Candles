@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.Bot.Core.Models;
 
-namespace HeartmadeCandles.Bot.Core;
+namespace HeartmadeCandles.Bot.Core.Interfaces;
 
 public interface ITelegramBotService
 {

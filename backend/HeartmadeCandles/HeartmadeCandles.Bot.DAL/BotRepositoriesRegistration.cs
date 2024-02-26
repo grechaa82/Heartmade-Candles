@@ -1,4 +1,4 @@
-﻿using HeartmadeCandles.Bot.Core;
+﻿using HeartmadeCandles.Bot.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HeartmadeCandles.Bot.DAL;

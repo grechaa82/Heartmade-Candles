@@ -6,9 +6,10 @@ using HeartmadeCandles.Bot.Core.Models;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Bot.Core;
-using HeartmadeCandles.Bot.BL.ReplyMarkups;
 using static HeartmadeCandles.Bot.BL.Handlers.MessageHandlers.PhoneAnswerHandler;
+using HeartmadeCandles.Bot.Core.Interfaces;
+using HeartmadeCandles.Bot.BL.Utilities;
+using HeartmadeCandles.Bot.BL.Utilities.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
@@ -87,10 +88,10 @@ public class DeliveryTypeAnswerHandler : MessageHandlerBase
 
             await _botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
-                text: OrderInfoFormatter.EscapeSpecialCharacters(
+                text: TelegramMessageFormatter.Format(
                     $"""
                     Ваши данные успешно напралвлены администратору.
-                    Вы Можете отслеживать статус заказа используя команду {TelegramMessageCommands.GetOrderStatusCommand}
+                    Вы Можете отслеживать статус заказа используя команду {MessageCommands.GetOrderStatusCommand}
                     
                     Если возникнут сложности он с вами свяжется.
                     """),
@@ -118,7 +119,7 @@ public class DeliveryTypeAnswerHandler : MessageHandlerBase
     {
         await botClient.SendTextMessageAsync(
             chatId: _adminChatId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters($"Пользователь {user.UserName} и заказом " +
+            text: TelegramMessageFormatter.Format($"Пользователь {user.UserName} и заказом " +
             $"{user.CurrentOrderId} выбрал тип доставки: {deliveryType}"),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);
@@ -134,7 +135,7 @@ public class DeliveryTypeAnswerHandler : MessageHandlerBase
     {
         await botClient.SendTextMessageAsync(
             chatId: chatId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 $"""
                 Шаг 4 из 4
                 
@@ -166,11 +167,11 @@ public class DeliveryTypeAnswerHandler : MessageHandlerBase
     {
         await botClient.SendTextMessageAsync(
             chatId: chatId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 $"""
                 Возникла проблема в заполнение заказа. 
                 
-                Попробуйте обратиться к администратору или попробовать заполнить данные еще раз {TelegramMessageCommands.GoToCheckoutCommand}
+                Попробуйте обратиться к администратору или попробовать заполнить данные еще раз {MessageCommands.GoToCheckoutCommand}
                 """),
             parseMode: ParseMode.MarkdownV2,
             replyMarkup: OrderReplyKeyboardMarkup.GetOrderGoToCheckoutCommand(),

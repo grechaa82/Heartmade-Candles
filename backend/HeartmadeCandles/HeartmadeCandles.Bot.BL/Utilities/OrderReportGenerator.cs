@@ -1,11 +1,11 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
 using System.Text;
 
-namespace HeartmadeCandles.Bot.BL;
+namespace HeartmadeCandles.Bot.BL.Utilities;
 
-public class OrderInfoFormatter
+public class OrderReportGenerator
 {
-    public static string GetOrderInfoInMarkdownV2(Order.Core.Models.Order order)
+    public static string GenerateReport(Order.Core.Models.Order order)
     {
         var message = new StringBuilder();
 
@@ -14,14 +14,14 @@ public class OrderInfoFormatter
         message.AppendLine(" ");
         message.AppendLine($"Обратная связь: {order.Feedback.TypeFeedback} {order.Feedback.UserName}");
         message.AppendLine(" ");
-        message.AppendLine(GetInformationAboutCandles(order.Basket.Items));
+        message.AppendLine(GenerateCandlesReported(order.Basket.Items));
         message.AppendLine($"Общая количество: {order.Basket.TotalQuantity}");
         message.AppendLine($"Общая стоимость: {order.Basket.TotalPrice}");
 
-        return EscapeSpecialCharacters(message.ToString());
+        return TelegramMessageFormatter.Format(message.ToString());
     }
 
-    private static string GetInformationAboutCandles(BasketItem[] basketItems)
+    private static string GenerateCandlesReported(BasketItem[] basketItems)
     {
         var message = new StringBuilder();
 
@@ -46,21 +46,21 @@ public class OrderInfoFormatter
         return message.ToString();
     }
 
-    public static string GetPreviewOrderInfoInMarkdownV2(Order.Core.Models.Order order)
+    public static string GeneratePreviewReport(Order.Core.Models.Order order)
     {
         var message = new StringBuilder();
 
         message.AppendLine($"Номер заказа: {order.Id}");
         message.AppendLine($"Строка конфигурации: {order.Basket.FilterString}");
         message.AppendLine(" ");
-        message.AppendLine(GetPreviewInformationAboutCandles(order.Basket.Items));
+        message.AppendLine(GenerateCandlesPreviewReported(order.Basket.Items));
         message.AppendLine($"Свечей: {order.Basket.TotalQuantity}");
         message.AppendLine($"Итого: {order.Basket.TotalPrice}");
 
-        return EscapeSpecialCharacters(message.ToString());
+        return TelegramMessageFormatter.Format(message.ToString());
     }
 
-    private static string GetPreviewInformationAboutCandles(BasketItem[] basketItems)
+    private static string GenerateCandlesPreviewReported(BasketItem[] basketItems)
     {
         var message = new StringBuilder();
 
@@ -73,21 +73,4 @@ public class OrderInfoFormatter
 
         return message.ToString();
     }
-
-    public static string EscapeSpecialCharacters(string input)
-    {
-        var specialCharacters = new[]
-        {
-            "_", "*", "[", "]", "(", ")", "~", "`", ">",
-            "#", "+", "-", "=", "|", "{", "}", ".", "!"
-        };
-
-        foreach (var specialCharacter in specialCharacters)
-        {
-            input = input.Replace(specialCharacter, "\\" + specialCharacter);
-        }
-
-        return input;
-    }
-
 }

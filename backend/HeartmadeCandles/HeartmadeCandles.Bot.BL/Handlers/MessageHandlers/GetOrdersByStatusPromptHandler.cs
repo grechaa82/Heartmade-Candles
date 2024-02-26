@@ -1,6 +1,6 @@
-﻿using HeartmadeCandles.Bot.Core;
+﻿using HeartmadeCandles.Bot.BL.Utilities.ReplyMarkups;
+using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
-using HeartmadeCandles.Bot.ReplyMarkups;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -22,7 +22,7 @@ public class GetOrdersByStatusPromptHandler : MessageHandlerBase
     {
         if (user.Role == TelegramUserRole.Admin && message.Text != null)
         {
-            return message.Text.ToLower().Contains(TelegramMessageCommands.GetOrdersByStatusCommand);
+            return message.Text.ToLower().Contains(MessageCommands.GetOrdersByStatusCommand);
         }
         else
         {

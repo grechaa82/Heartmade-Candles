@@ -1,6 +1,6 @@
 ﻿namespace HeartmadeCandles.Bot.BL.Handlers;
 
-public class TelegramMessageCommands
+public class MessageCommands
 {
     public static readonly string StartCommand = "/start";
     public static readonly string InputOrderIdCommand = "/order";

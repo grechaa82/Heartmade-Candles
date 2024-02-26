@@ -7,8 +7,9 @@ using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
 using Telegram.Bot.Types.ReplyMarkups;
 using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Bot.Core;
-using HeartmadeCandles.Bot.BL.ReplyMarkups;
+using HeartmadeCandles.Bot.Core.Interfaces;
+using HeartmadeCandles.Bot.BL.Utilities;
+using HeartmadeCandles.Bot.BL.Utilities.ReplyMarkups;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
@@ -66,13 +67,13 @@ public class OrderIdAnswerHandler : MessageHandlerBase
     {
         await botClient.SendTextMessageAsync(
             chatId: chatId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 $"""
                 Вам доступны команды: 
                     
-                {TelegramMessageCommands.GetOrderInfoCommand} - показать заказанные свечи
-                {TelegramMessageCommands.GetOrderStatusCommand} - текущий статус заказа
-                {TelegramMessageCommands.GoToCheckoutCommand} - оформить заказ и заполинть личную информацию
+                {MessageCommands.GetOrderInfoCommand} - показать заказанные свечи
+                {MessageCommands.GetOrderStatusCommand} - текущий статус заказа
+                {MessageCommands.GoToCheckoutCommand} - оформить заказ и заполинть личную информацию
                 """),
             parseMode: ParseMode.MarkdownV2,
             replyMarkup: OrderReplyKeyboardMarkup.GetOrderCommands(),
@@ -85,7 +86,7 @@ public class OrderIdAnswerHandler : MessageHandlerBase
         {
             new KeyboardButton[]
             {
-                $"Ввести номер заказа {TelegramMessageCommands.InputOrderIdCommand}",
+                $"Ввести номер заказа {MessageCommands.InputOrderIdCommand}",
             }
         })
         {
@@ -94,12 +95,12 @@ public class OrderIdAnswerHandler : MessageHandlerBase
 
         await botClient.SendTextMessageAsync(
             chatId: chatId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 $"""
                 Возникла проблема с вашим заказом. Мы не смогли его найти. 
                 
                 Вы можете:
-                - Попробовать ввести номер заказа еще раз {TelegramMessageCommands.InputOrderIdCommand}
+                - Попробовать ввести номер заказа еще раз {MessageCommands.InputOrderIdCommand}
                 - Создать новый заказ на нашем сайте 4fass.ru
                 """),
             parseMode: ParseMode.MarkdownV2,

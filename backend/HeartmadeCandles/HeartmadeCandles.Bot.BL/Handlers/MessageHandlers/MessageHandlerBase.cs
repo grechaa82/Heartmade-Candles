@@ -1,10 +1,10 @@
-﻿using HeartmadeCandles.Bot.Core;
+﻿using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace HeartmadeCandles.Bot.BL.Handlers;
+namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
 public abstract class MessageHandlerBase
 {

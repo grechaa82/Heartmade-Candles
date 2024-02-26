@@ -1,7 +1,7 @@
 ﻿using HeartmadeCandles.Bot.BL.Handlers;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace HeartmadeCandles.Bot.ReplyMarkups;
+namespace HeartmadeCandles.Bot.BL.Utilities.ReplyMarkups;
 
 internal class OrderInlineKeyboardMarkup
 {
@@ -13,43 +13,43 @@ internal class OrderInlineKeyboardMarkup
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Создан",
-                    callbackData: $"{TelegramCallBackQueryCommands.CreatedOrderNextCommand}:1"),
+                    callbackData: $"{CallBackQueryCommands.CreatedOrderNextCommand}:1"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Подтвержден",
-                    callbackData: $"{TelegramCallBackQueryCommands.ConfirmedOrderNextCommand}:1"),
+                    callbackData: $"{CallBackQueryCommands.ConfirmedOrderNextCommand}:1"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Оформлен",
-                    callbackData: $"{TelegramCallBackQueryCommands.PlacedOrderNextCommand}:1"),
+                    callbackData: $"{CallBackQueryCommands.PlacedOrderNextCommand}:1"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Оплачен",
-                    callbackData: $"{TelegramCallBackQueryCommands.PaidOrderNextCommand}:1"),
+                    callbackData: $"{CallBackQueryCommands.PaidOrderNextCommand}:1"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "В работе",
-                    callbackData: $"{TelegramCallBackQueryCommands.InProgressOrderNextCommand}:1"),
+                    callbackData: $"{CallBackQueryCommands.InProgressOrderNextCommand}:1"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Упаковывается",
-                    callbackData: $"{TelegramCallBackQueryCommands.PackedOrderNextCommand}:1"),
+                    callbackData: $"{CallBackQueryCommands.PackedOrderNextCommand}:1"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Передан в доставку",
-                    callbackData: $"{TelegramCallBackQueryCommands.InDeliveryOrderNextCommand}:1"),
+                    callbackData: $"{CallBackQueryCommands.InDeliveryOrderNextCommand}:1"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Завершен",
-                    callbackData: $"{TelegramCallBackQueryCommands.CompletedOrderNextCommand}:1"),
+                    callbackData: $"{CallBackQueryCommands.CompletedOrderNextCommand}:1"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Отменен",
-                    callbackData: $"{TelegramCallBackQueryCommands.CancelledOrderNextCommand}:1"),
+                    callbackData: $"{CallBackQueryCommands.CancelledOrderNextCommand}:1"),
             },
         });
     }
@@ -58,7 +58,7 @@ internal class OrderInlineKeyboardMarkup
         string previousCommands,
         string nextCommands,
         string selectCommands,
-        string orderId, 
+        string orderId,
         int currentPageIndex,
         long totalOrders)
     {
@@ -77,8 +77,8 @@ internal class OrderInlineKeyboardMarkup
                     callbackData: $"{selectCommands}:{orderId}"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "➡️",
-                    callbackData: $"{nextCommands}:{(currentPageIndex + 1 > totalOrders 
-                        ? currentPageIndex 
+                    callbackData: $"{nextCommands}:{(currentPageIndex + 1 > totalOrders
+                        ? currentPageIndex
                         : currentPageIndex + 1)}"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "⏭",
@@ -123,7 +123,7 @@ internal class OrderInlineKeyboardMarkup
                     callbackData: $"{CallBackQueryType.GetOrderId}:{orderId}"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Обновить статус",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateOrderStatusCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateOrderStatusCommand}:{orderId}"),
             },
             new []
             {
@@ -142,43 +142,43 @@ internal class OrderInlineKeyboardMarkup
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Создан",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateToCreatedCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateToCreatedCommand}:{orderId}"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Подтвержден",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateToConfirmedCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateToConfirmedCommand}:{orderId}"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Оформлен",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateToPlacedCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateToPlacedCommand}:{orderId}"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Оплачен",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateToPaidCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateToPaidCommand}:{orderId}"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "В работе",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateToInProgressCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateToInProgressCommand}:{orderId}"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Упаковывается",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateToPackedCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateToPackedCommand}:{orderId}"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Передан в доставку",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateToInDeliveryCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateToInDeliveryCommand}:{orderId}"),
                 InlineKeyboardButton.WithCallbackData(
                     text: "Завершен",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateToCompletedCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateToCompletedCommand}:{orderId}"),
             },
             new []
             {
                 InlineKeyboardButton.WithCallbackData(
                     text: "Отменен",
-                    callbackData: $"{TelegramCallBackQueryCommands.UpdateToCancelledCommand}:{orderId}"),
+                    callbackData: $"{CallBackQueryCommands.UpdateToCancelledCommand}:{orderId}"),
             },
         });
     }

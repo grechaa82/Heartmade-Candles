@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
 
 namespace HeartmadeCandles.Bot.BL.Services;

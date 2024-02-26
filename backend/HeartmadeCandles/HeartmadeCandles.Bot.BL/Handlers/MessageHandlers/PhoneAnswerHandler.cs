@@ -3,8 +3,9 @@ using Telegram.Bot.Types;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using HeartmadeCandles.Bot.Core.Models;
-using HeartmadeCandles.Bot.Core;
 using Telegram.Bot.Types.ReplyMarkups;
+using HeartmadeCandles.Bot.Core.Interfaces;
+using HeartmadeCandles.Bot.BL.Utilities;
 
 namespace HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 
@@ -47,7 +48,7 @@ public class PhoneAnswerHandler : MessageHandlerBase
 
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: OrderInfoFormatter.EscapeSpecialCharacters(
+            text: TelegramMessageFormatter.Format(
                 """
                 Шаг 3 из 4
                 
@@ -69,7 +70,7 @@ public class PhoneAnswerHandler : MessageHandlerBase
     {
         await botClient.SendTextMessageAsync(
             chatId: _adminChatId,
-            text: OrderInfoFormatter.EscapeSpecialCharacters($"Пользователь {user.UserName} и заказом " +
+            text: TelegramMessageFormatter.Format($"Пользователь {user.UserName} и заказом " +
             $"{user.CurrentOrderId} заполнил свой номер телефона:"),
             parseMode: ParseMode.MarkdownV2,
             cancellationToken: cancellationToken);

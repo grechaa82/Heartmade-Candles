@@ -1,8 +1,7 @@
-﻿using HeartmadeCandles.Bot.BL.Handlers;
-using HeartmadeCandles.Bot.BL.Handlers.CallBackQueryHandlers;
+﻿using HeartmadeCandles.Bot.BL.Handlers.CallBackQueryHandlers;
 using HeartmadeCandles.Bot.BL.Handlers.MessageHandlers;
 using HeartmadeCandles.Bot.BL.Services;
-using HeartmadeCandles.Bot.Core;
+using HeartmadeCandles.Bot.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 
