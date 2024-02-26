@@ -57,7 +57,6 @@
     <ProjectReference Include="..\HeartmadeCandles.Constructor.DAL\HeartmadeCandles.Constructor.DAL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Migrations\HeartmadeCandles.Migrations.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.BL\HeartmadeCandles.Order.BL.csproj" />
-    <ProjectReference Include="..\HeartmadeCandles.Order.Bot\HeartmadeCandles.Order.Bot.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.Core\HeartmadeCandles.Order.Core.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.DAL\HeartmadeCandles.Order.DAL.csproj" />
   </ItemGroup>

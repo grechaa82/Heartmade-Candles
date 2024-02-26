@@ -7,7 +7,6 @@ namespace HeartmadeCandles.Order.BL.Services;
 
 public class OrderService : IOrderService
 {
-    private readonly IOrderNotificationHandler _orderNotificationHandler;
     private readonly IOrderRepository _orderRepository;
     private readonly IBasketRepository _basketRepository;
     private readonly IConstructorService _constructorService;
@@ -15,12 +14,10 @@ public class OrderService : IOrderService
     public OrderService(
         IOrderRepository orderRepository, 
         IBasketRepository basketRepository,
-        IOrderNotificationHandler orderNotificationHandler, 
         IConstructorService constructorService)
     {
         _orderRepository = orderRepository;
         _basketRepository = basketRepository;
-        _orderNotificationHandler = orderNotificationHandler;
         _constructorService = constructorService;
     }
 
@@ -69,12 +66,6 @@ public class OrderService : IOrderService
         if (createOrderResult.IsFailure)
         {
             return Result.Failure<string>(createOrderResult.Error);
-        }
-
-        var onCreateOrderResult = await _orderNotificationHandler.OnCreateOrder(order);
-        if (onCreateOrderResult.IsFailure)
-        {
-            return Result.Failure<string>(onCreateOrderResult.Error);
         }
 
         return Result.Success(createOrderResult.Value);

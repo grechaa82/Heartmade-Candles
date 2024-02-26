@@ -8,7 +8,6 @@ using HeartmadeCandles.Bot.DAL;
 using HeartmadeCandles.Constructor.BL;
 using HeartmadeCandles.Constructor.DAL;
 using HeartmadeCandles.Order.BL;
-using HeartmadeCandles.Order.Bot;
 using HeartmadeCandles.Order.DAL;
 using HeartmadeCandles.Order.DAL.Mongo;
 using Microsoft.AspNetCore.HttpLogging;
@@ -61,8 +60,7 @@ try
 
     builder.Services
         .AddOrderServices()
-        .AddOrderRepositories()
-        .AddOrderNotificationServices();
+        .AddOrderRepositories();
 
     builder.Services
         .AddBotServices()
