@@ -1,11 +1,11 @@
-﻿using HeartmadeCandles.Order.Core.Models;
+﻿using HeartmadeCandles.Bot.Core.Models;
 using System.Text;
 
 namespace HeartmadeCandles.Bot.BL.Utilities;
 
 public class OrderReportGenerator
 {
-    public static string GenerateReport(Order.Core.Models.Order order)
+    public static string GenerateReport(Core.Models.Order order)
     {
         var message = new StringBuilder();
 
@@ -46,7 +46,7 @@ public class OrderReportGenerator
         return message.ToString();
     }
 
-    public static string GeneratePreviewReport(Order.Core.Models.Order order)
+    public static string GeneratePreviewReport(Core.Models.Order order)
     {
         var message = new StringBuilder();
 

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" />
-    <PackageReference Include="MongoDB.Driver" />
     <PackageReference Include="Telegram.Bot" />
   </ItemGroup>
 

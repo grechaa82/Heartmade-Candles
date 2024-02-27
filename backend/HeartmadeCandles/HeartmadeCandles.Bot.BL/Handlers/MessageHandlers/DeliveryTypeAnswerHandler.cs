@@ -5,7 +5,6 @@ using Telegram.Bot.Types.Enums;
 using HeartmadeCandles.Bot.Core.Models;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Order.Core.Interfaces;
-using HeartmadeCandles.Order.Core.Models;
 using static HeartmadeCandles.Bot.BL.Handlers.MessageHandlers.PhoneAnswerHandler;
 using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.BL.Utilities;
@@ -153,7 +152,9 @@ public class DeliveryTypeAnswerHandler : MessageHandlerBase
 
         var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
 
-        var orderResult = await orderService.UpdateOrderStatus(orderId, status);
+        var orderStatus = BotMapping.MapBotOrderStatusToOrderOrderStatus(status);
+
+        var orderResult = await orderService.UpdateOrderStatus(orderId, orderStatus);
 
         if (orderResult.IsFailure)
         {

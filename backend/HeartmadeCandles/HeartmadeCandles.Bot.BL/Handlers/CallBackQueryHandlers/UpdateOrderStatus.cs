@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot.Types;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
-using HeartmadeCandles.Order.Core.Models;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Interfaces;
@@ -137,11 +136,13 @@ public class UpdateOrderStatus : CallBackQueryHandlerBase
         return;
     }
 
-    private async Task<Result> UpdateOrderStatusInternal(string orderId, OrderStatus orderStatus)
+    private async Task<Result> UpdateOrderStatusInternal(string orderId, OrderStatus status)
     {
         using var scope = _serviceScopeFactory.CreateScope();
 
         var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
+
+        var orderStatus = BotMapping.MapBotOrderStatusToOrderOrderStatus(status);
 
         var orderResult = await orderService.UpdateOrderStatus(orderId, orderStatus);
 

@@ -37,7 +37,9 @@ public class GetOrderInfoHandler : MessageHandlerBase
             return;
         }
 
-        var text = OrderReportGenerator.GenerateReport(orderResult.Value);
+        var order = BotMapping.MapOrderToBotOrder(orderResult.Value);
+
+        var text = OrderReportGenerator.GenerateReport(order);
 
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
@@ -69,6 +71,7 @@ public class GetOrderInfoHandler : MessageHandlerBase
                 - Создать новый заказ на нашем сайте 4fass.ru
                 """),
             parseMode: ParseMode.MarkdownV2,
+            replyMarkup: replyKeyboardMarkup,
             cancellationToken: cancellationToken);
     }
 }

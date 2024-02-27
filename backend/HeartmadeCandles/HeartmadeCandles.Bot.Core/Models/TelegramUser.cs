@@ -1,12 +1,7 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-
-namespace HeartmadeCandles.Bot.Core.Models;
+﻿namespace HeartmadeCandles.Bot.Core.Models;
 
 public class TelegramUser
 {
-    public const string DocumentName = "telegramUser";
-
     public TelegramUser(
         long userId,
         long chatId,
@@ -26,12 +21,10 @@ public class TelegramUser
         CurrentOrderId = currentOrderId;
         State = state;
         Role = role;
-        Id = id ?? ObjectId.GenerateNewId().ToString();
+        Id = id;
     }
 
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; init; }
+    public string? Id { get; init; }
 
     public long UserId { get; init; }
 

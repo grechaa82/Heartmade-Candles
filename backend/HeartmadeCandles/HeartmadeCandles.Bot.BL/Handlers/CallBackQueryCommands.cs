@@ -1,4 +1,4 @@
-﻿using HeartmadeCandles.Order.Core.Models;
+﻿using HeartmadeCandles.Bot.Core.Models;
 
 namespace HeartmadeCandles.Bot.BL.Handlers;
 

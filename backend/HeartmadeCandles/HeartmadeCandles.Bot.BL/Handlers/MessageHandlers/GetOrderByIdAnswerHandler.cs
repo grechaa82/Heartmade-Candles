@@ -51,9 +51,11 @@ public class GetOrderByIdAnswerHandler : MessageHandlerBase
                 parseMode: ParseMode.MarkdownV2);
         }
 
+        var order = BotMapping.MapOrderToBotOrder(orderResult.Value);
+
         await _botClient.SendTextMessageAsync(
             chatId: message.Chat.Id,
-            text: OrderReportGenerator.GenerateReport(orderResult.Value),
+            text: OrderReportGenerator.GenerateReport(order),
             messageThreadId: message.MessageThreadId,
             parseMode: ParseMode.MarkdownV2);
 

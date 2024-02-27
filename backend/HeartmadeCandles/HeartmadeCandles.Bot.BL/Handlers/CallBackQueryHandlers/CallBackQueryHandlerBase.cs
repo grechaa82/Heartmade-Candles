@@ -2,7 +2,6 @@
 using HeartmadeCandles.Bot.Core.Interfaces;
 using HeartmadeCandles.Bot.Core.Models;
 using HeartmadeCandles.Order.Core.Interfaces;
-using HeartmadeCandles.Order.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -30,16 +29,25 @@ public abstract class CallBackQueryHandlerBase
 
     public abstract Task Process(CallbackQuery callbackQuery, TelegramUser user);
 
-    public async Task<(Maybe<Order.Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSize, int pageIndex = 0)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSize, int pageIndex = 0)
     {
         using var scope = _serviceScopeFactory.CreateScope();
 
         var orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
 
-        return await orderService.GetOrderByStatusWithTotalOrders(status, pageSize, pageIndex);
+        var orderStatus = BotMapping.MapBotOrderStatusToOrderOrderStatus(status);
+
+        var (orderMaybe, totalOrders) = await orderService.GetOrderByStatusWithTotalOrders(orderStatus, pageSize, pageIndex);
+
+        if (!orderMaybe.HasValue)
+        {
+            return (Maybe.None, totalOrders);
+        }
+
+        return (BotMapping.MapOrderToBotOrder(orderMaybe.Value), totalOrders);
     }
 
-    public async Task<Result<Order.Core.Models.Order>> GetOrderById(string orderId)
+    public async Task<Result<Core.Models.Order>> GetOrderById(string orderId)
     {
         using var scope = _serviceScopeFactory.CreateScope();
 
@@ -47,6 +55,11 @@ public abstract class CallBackQueryHandlerBase
 
         var orderResult = await orderService.GetOrderById(orderId);
 
-        return orderResult;
+        if (orderResult.IsFailure)
+        {
+            return Result.Failure<Core.Models.Order>(orderResult.Error);
+        }
+
+        return BotMapping.MapOrderToBotOrder(orderResult.Value);
     }
 }
