@@ -254,19 +254,6 @@ internal class GenerateOrderData
         };
     }
 
-    private static User GenerateUser()
-    {
-        var user = _faker.Person;
-
-        return new User
-        {
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Phone = user.Phone,
-            Email = user.Email
-        };
-    }
-
     private static Feedback GenerateFeedback()
     {
         return new Feedback
@@ -285,9 +272,8 @@ internal class GenerateOrderData
             Id = GenerateData.GenerateStringId(),
             BasketId = basket.Id ?? GenerateData.GenerateStringId(),
             Basket = basket,
-            User = GenerateUser(),
             Feedback = GenerateFeedback(),
-            Status = OrderStatus.Sent
+            Status = OrderStatus.Created
         };
     }
 }

@@ -13,5 +13,6 @@ public enum FeedbackType
 {
     Telegram,
     Instagram,
-    Whatsapp
+    Whatsapp,
+    Bot,
 }

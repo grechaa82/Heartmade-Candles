@@ -1,5 +1,4 @@
-﻿using Bogus;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.Constructor.Core.Interfaces;
 using HeartmadeCandles.Order.BL.Services;
 using HeartmadeCandles.Order.Core.Interfaces;
@@ -9,8 +8,6 @@ namespace HeartmadeCandles.UnitTests.Order.BL.Services;
 
 public class OrderServiceTest
 {
-    private static readonly Faker _faker = new();
-    private readonly Mock<IOrderNotificationHandler> _orderNotificationHandler = new(MockBehavior.Strict);
     private readonly Mock<IOrderRepository> _orderRepository = new(MockBehavior.Strict);
     private readonly Mock<IBasketRepository> _basketRepository = new(MockBehavior.Strict);
     private readonly Mock<IConstructorService> _constructorService = new(MockBehavior.Strict);
@@ -19,9 +16,8 @@ public class OrderServiceTest
     public OrderServiceTest()
     {
         _service = new OrderService(
-            _orderRepository.Object, 
-            _basketRepository.Object, 
-            _orderNotificationHandler.Object, 
+            _orderRepository.Object,
+            _basketRepository.Object,
             _constructorService.Object);
     }
 

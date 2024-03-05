@@ -83,7 +83,7 @@ const TagsGrid: FC<TagsGridProps> = ({
       <div className={Style.content}>
         <InputTag
           tags={selectedTags}
-          allTags={allTags || []}
+          allTags={allTags}
           onChange={handleChangesTags}
           onDelete={onDelete}
         />

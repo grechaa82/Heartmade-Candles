@@ -7,5 +7,9 @@ public interface IOrderService
 {
     Task<Result<Models.Order>> GetOrderById(string orderId);
 
-    Task<Result<string>> CreateOrder(User user, Feedback feedback, string basketId);
+    Task<(Maybe<Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex);
+
+    Task<Result<string>> CreateOrder(Feedback? feedback, string basketId);
+
+    Task<Result> UpdateOrderStatus(string orderId, OrderStatus status);
 }

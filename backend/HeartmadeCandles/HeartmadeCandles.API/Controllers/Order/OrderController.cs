@@ -42,8 +42,7 @@ public class OrderController : Controller
     public async Task<IActionResult> CreateOrder(CreateOrderRequest orderRequest)
     {
         var result = await _orderService.CreateOrder(
-            MapToUser(orderRequest.User), 
-            MapToFeedback(orderRequest.Feedback), 
+            orderRequest.Feedback == null ? null : MapToFeedback(orderRequest.Feedback),
             orderRequest.BasketId);
 
         if (result.IsFailure)
@@ -59,17 +58,6 @@ public class OrderController : Controller
         {
             Id = result.Value
         });
-    }
-    
-    private User MapToUser(UserRequest item)
-    {
-        return new User
-        {
-            FirstName = item.FirstName,
-            LastName = item.LastName,
-            Phone = item.Phone,
-            Email = item.Email
-        };
     }
 
     private Feedback MapToFeedback(FeedbackRequest item)

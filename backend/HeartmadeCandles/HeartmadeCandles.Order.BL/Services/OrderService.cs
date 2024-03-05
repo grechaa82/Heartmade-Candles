@@ -7,7 +7,6 @@ namespace HeartmadeCandles.Order.BL.Services;
 
 public class OrderService : IOrderService
 {
-    private readonly IOrderNotificationHandler _orderNotificationHandler;
     private readonly IOrderRepository _orderRepository;
     private readonly IBasketRepository _basketRepository;
     private readonly IConstructorService _constructorService;
@@ -15,12 +14,10 @@ public class OrderService : IOrderService
     public OrderService(
         IOrderRepository orderRepository, 
         IBasketRepository basketRepository,
-        IOrderNotificationHandler orderNotificationHandler, 
         IConstructorService constructorService)
     {
         _orderRepository = orderRepository;
         _basketRepository = basketRepository;
-        _orderNotificationHandler = orderNotificationHandler;
         _constructorService = constructorService;
     }
 
@@ -31,9 +28,14 @@ public class OrderService : IOrderService
         return orderMaybe.HasValue
             ? Result.Success(orderMaybe.Value)
             : Result.Failure<Core.Models.Order>($"Order by id: {orderId} does not exist");
-    } 
+    }
 
-    public async Task<Result<string>> CreateOrder(User user, Feedback feedback, string basketId)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex)
+    {
+        return await _orderRepository.GetOrderByStatusWithTotalOrders(status, pageSige, pageIndex);
+    }
+
+    public async Task<Result<string>> CreateOrder(Feedback? feedback, string basketId)
     {
         var basket = await _basketRepository.GetBasketById(basketId);
 
@@ -56,9 +58,8 @@ public class OrderService : IOrderService
         {
             Basket = basket.Value,
             BasketId = basketId,
-            User = user,
             Feedback = feedback,
-            Status = OrderStatus.Assembled
+            Status = OrderStatus.Created
         };
 
         var createOrderResult = await _orderRepository.CreateOrder(order);
@@ -67,12 +68,18 @@ public class OrderService : IOrderService
             return Result.Failure<string>(createOrderResult.Error);
         }
 
-        var onCreateOrderResult = await _orderNotificationHandler.OnCreateOrder(order);
-        if (onCreateOrderResult.IsFailure)
+        return Result.Success(createOrderResult.Value);
+    }
+
+    public async Task<Result> UpdateOrderStatus(string orderId, OrderStatus status)
+    {
+        var orderResult = await _orderRepository.UpdateOrderStatus(orderId, status);
+
+        if (orderResult.IsFailure)
         {
-            return Result.Failure<string>(onCreateOrderResult.Error);
+            return Result.Failure(orderResult.Error);
         }
 
-        return Result.Success(createOrderResult.Value);
+        return Result.Success();
     }
 }

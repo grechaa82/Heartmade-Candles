@@ -49,12 +49,14 @@
     <ProjectReference Include="..\HeartmadeCandles.Admin.DAL\HeartmadeCandles.Admin.DAL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Auth.BL\HeartmadeCandles.Auth.BL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Auth.Core\HeartmadeCandles.Auth.Core.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Bot.BL\HeartmadeCandles.Bot.BL.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Bot.Core\HeartmadeCandles.Bot.Core.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.Bot.DAL\HeartmadeCandles.Bot.DAL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Constructor.BL\HeartmadeCandles.Constructor.BL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Constructor.Core\HeartmadeCandles.Constructor.Core.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Constructor.DAL\HeartmadeCandles.Constructor.DAL.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Migrations\HeartmadeCandles.Migrations.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.BL\HeartmadeCandles.Order.BL.csproj" />
-    <ProjectReference Include="..\HeartmadeCandles.Order.Bot\HeartmadeCandles.Order.Bot.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.Core\HeartmadeCandles.Order.Core.csproj" />
     <ProjectReference Include="..\HeartmadeCandles.Order.DAL\HeartmadeCandles.Order.DAL.csproj" />
   </ItemGroup>

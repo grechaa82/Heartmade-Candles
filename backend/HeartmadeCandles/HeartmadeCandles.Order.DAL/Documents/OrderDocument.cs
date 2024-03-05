@@ -1,5 +1,4 @@
 ﻿using HeartmadeCandles.Order.Core.Models;
-using HeartmadeCandles.Order.DAL.Documents;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -17,9 +16,6 @@ public class OrderDocument
 
     [BsonElement("basket")]
     public BasketDocument? Basket { get; set; }
-
-    [BsonElement("user")]
-    public required UserDocument User { get; set; }
 
     [BsonElement("feedback")]
     public required FeedbackDocument Feedback { get; set; }

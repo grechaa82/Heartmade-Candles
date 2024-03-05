@@ -5,7 +5,7 @@ import Style from './InputTag.module.css';
 
 interface InputTagProps {
   tags: TagData[];
-  allTags: TagData[];
+  allTags?: TagData[];
   onChange: (tags: TagData[]) => void;
   onDelete?: (id: string) => void;
 }
@@ -25,6 +25,12 @@ const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange, onDelete }) => {
         if (tag && !tags.includes(tag)) {
           onChange([...tags, tag]);
         }
+      } else {
+        const newTag: TagData = {
+          id: 0,
+          text: inputValue,
+        };
+        onChange([...tags, newTag]);
       }
       setInputValue('');
     }
