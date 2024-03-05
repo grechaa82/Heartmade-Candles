@@ -53,9 +53,9 @@ public class TelegramBotUpdateHandler : ITelegramBotUpdateHandler
         {
             await handler;
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            _logger.LogError(e.Message, e);
+            _logger.LogError("Error occurred during update serving, error message: {message}", exception.Message);
         }
     }
 
@@ -142,10 +142,11 @@ public class TelegramBotUpdateHandler : ITelegramBotUpdateHandler
 
     private async Task HandleUnknowMessageAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken = default)
     {
+        _logger.LogInformation("Unknown command was called, command: {message}", update.Message?.Text);
         throw new NotImplementedException();
     }
 
-    async Task SendStartMessage(ITelegramBotClient botClient, Message message, long chatId, CancellationToken cancellationToken = default)
+    private async Task SendStartMessage(ITelegramBotClient botClient, Message message, long chatId, CancellationToken cancellationToken = default)
     {
         var replyKeyboardMarkup = new ReplyKeyboardMarkup(new[]
         {
@@ -174,7 +175,7 @@ public class TelegramBotUpdateHandler : ITelegramBotUpdateHandler
             cancellationToken: cancellationToken);
     }
 
-    async Task EnsureUserExists(Message message)
+    private async Task EnsureUserExists(Message message)
     {
         using var scope = _serviceScopeFactory.CreateScope();
 

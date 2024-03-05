@@ -13,9 +13,13 @@ public class TelegramBotService : ITelegramBotService
         _telegramBotRepository = telegramBotRepository;
     }
 
-    public async Task<Result<long[]>> GetChatIdsByRole(TelegramUserRole role) 
-        => await _telegramBotRepository.GetChatIdsByRole(role);
+    public async Task<Result<long[]>> GetChatIdsByRole(TelegramUserRole role)
+    {
+        return await _telegramBotRepository.GetChatIdsByRole(role);
+    }
 
-    public async Task<Result> UpgradeChatRoleToAdmin(long[] newAdminChatIds) 
-        => await _telegramBotRepository.UpgradeChatRoleToAdmin(newAdminChatIds);
+    public async Task<Result> UpgradeChatRoleToAdmin(long[] newAdminChatIds)
+    { 
+        return await _telegramBotRepository.UpgradeChatRoleToAdmin(newAdminChatIds);
+    } 
 }
