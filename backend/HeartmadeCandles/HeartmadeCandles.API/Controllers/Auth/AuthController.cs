@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using HeartmadeCandles.API.Contracts.Requests;
-using HeartmadeCandles.Auth.Core;
+using HeartmadeCandles.Auth.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;

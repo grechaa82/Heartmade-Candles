@@ -1,4 +1,4 @@
-﻿namespace HeartmadeCandles.Auth.Core;
+﻿namespace HeartmadeCandles.Auth.Core.Interfaces;
 
 public interface IAuthService
 {

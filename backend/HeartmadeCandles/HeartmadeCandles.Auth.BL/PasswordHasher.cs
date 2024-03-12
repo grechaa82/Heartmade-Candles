@@ -1,4 +1,4 @@
-﻿using HeartmadeCandles.Auth.Core;
+﻿using HeartmadeCandles.Auth.Core.Interfaces;
 
 namespace HeartmadeCandles.Auth.BL;
 
