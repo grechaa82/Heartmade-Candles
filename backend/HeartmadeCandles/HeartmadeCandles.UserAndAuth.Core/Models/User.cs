@@ -1,4 +1,4 @@
-﻿namespace HeartmadeCandles.Auth.Core.Models;
+﻿namespace HeartmadeCandles.UserAndAuth.Core.Models;
 
 public class User
 {

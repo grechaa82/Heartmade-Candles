@@ -9,8 +9,6 @@ COPY ["HeartmadeCandles.API/HeartmadeCandles.API.csproj", "HeartmadeCandles.API/
 COPY ["HeartmadeCandles.Admin.BL/HeartmadeCandles.Admin.BL.csproj", "HeartmadeCandles.Admin.BL/"]
 COPY ["HeartmadeCandles.Admin.Core/HeartmadeCandles.Admin.Core.csproj", "HeartmadeCandles.Admin.Core/"]
 COPY ["HeartmadeCandles.Admin.DAL/HeartmadeCandles.Admin.DAL.csproj", "HeartmadeCandles.Admin.DAL/"]
-COPY ["HeartmadeCandles.Auth.BL/HeartmadeCandles.Auth.BL.csproj", "HeartmadeCandles.Auth.BL/"]
-COPY ["HeartmadeCandles.Auth.Core/HeartmadeCandles.Auth.Core.csproj", "HeartmadeCandles.Auth.Core/"]
 COPY ["HeartmadeCandles.Bot.BL/HeartmadeCandles.Bot.BL.csproj", "HeartmadeCandles.Bot.BL/"]
 COPY ["HeartmadeCandles.Bot.Core/HeartmadeCandles.Bot.Core.csproj", "HeartmadeCandles.Bot.Core/"]
 COPY ["HeartmadeCandles.Bot.DAL/HeartmadeCandles.Bot.DAL.csproj", "HeartmadeCandles.Bot.DAL/"]
@@ -21,6 +19,9 @@ COPY ["HeartmadeCandles.Migrations/HeartmadeCandles.Migrations.csproj", "Heartma
 COPY ["HeartmadeCandles.Order.BL/HeartmadeCandles.Order.BL.csproj", "HeartmadeCandles.Order.BL/"]
 COPY ["HeartmadeCandles.Order.Core/HeartmadeCandles.Order.Core.csproj", "HeartmadeCandles.Order.Core/"]
 COPY ["HeartmadeCandles.Order.DAL/HeartmadeCandles.Order.DAL.csproj", "HeartmadeCandles.Order.DAL/"]
+COPY ["HeartmadeCandles.UserAndAuth.BL/HeartmadeCandles.UserAndAuth.BL.csproj", "HeartmadeCandles.UserAndAuth.BL/"]
+COPY ["HeartmadeCandles.UserAndAuth.Core/HeartmadeCandles.UserAndAuth.Core.csproj", "HeartmadeCandles.UserAndAuth.Core/"]
+COPY ["HeartmadeCandles.UserAndAuth.DAL/HeartmadeCandles.UserAndAuth.DAL.csproj", "HeartmadeCandles.UserAndAuth.DAL/"]
 COPY ["Directory.Build.props", "Directory.Build.props"]
 COPY ["Directory.Packages.props", "Directory.Packages.props"]
 RUN dotnet restore "HeartmadeCandles.API/HeartmadeCandles.API.csproj"

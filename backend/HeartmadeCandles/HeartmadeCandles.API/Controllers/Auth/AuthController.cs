@@ -1,8 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using HeartmadeCandles.API.Contracts.Requests;
-using HeartmadeCandles.Auth.Core.Interfaces;
+using HeartmadeCandles.API.Contracts.UserAndAuth.Requests;
+using HeartmadeCandles.UserAndAuth.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
@@ -16,32 +16,59 @@ namespace HeartmadeCandles.API.Controllers.Auth;
 public class AuthController : Controller
 {
     private readonly JwtOptions _jwtOptions;
+    private readonly IAuthService _authService;
+    private readonly IUserService _userService;
+    private readonly IPasswordHasher _passwordHasher;
     private readonly ILogger<AuthController> _logger;
-    private readonly IAuthService _userService;
 
-    public AuthController(IOptions<JwtOptions> jwtOptions, IAuthService userService, ILogger<AuthController> logger)
+    public AuthController(
+        IOptions<JwtOptions> jwtOptions, 
+        IAuthService authService, 
+        IUserService userService,
+        IPasswordHasher passwordHasher,
+        ILogger<AuthController> logger)
     {
-        _userService = userService;
         _jwtOptions = jwtOptions.Value;
+        _authService = authService;
+        _userService = userService;
+        _passwordHasher = passwordHasher;
         _logger = logger;
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
-        var isValidUser = _userService.IsValidUser(request.Login, request.Password);
+        var userMaybe = await _userService.GetByEmail(loginRequest.Email);
 
-        if (isValidUser)
+        if (!userMaybe.HasValue)
         {
-            var token = GenerateJwtToken();
+            _logger.LogError("");
 
-            SetTokenInCookie(token);
-
-            return Ok(new { token });
+            return BadRequest();
         }
 
-        _logger.LogError("User could not login");
-        return Unauthorized();
+        var isValidPassword = _passwordHasher.Verify(loginRequest.Password, userMaybe.Value.PasswordHash);
+
+        if (!isValidPassword)
+        {
+            _logger.LogError("Password does not match");
+
+            return Unauthorized();
+        }
+
+        var token = await _authService.CreateToken(userMaybe.Value);
+
+        var tokenString = GenerateJwtToken();
+
+        SetTokenInCookie(tokenString);
+
+        return Ok(new { token });
+    }
+
+    [HttpPost("refreshToken")]
+    public async Task<IActionResult> RefreshToken([FromBody] TokenRefreshRequest tokenRefreshRequest)
+    {
+        return Ok();
     }
 
     private void SetTokenInCookie(string token)

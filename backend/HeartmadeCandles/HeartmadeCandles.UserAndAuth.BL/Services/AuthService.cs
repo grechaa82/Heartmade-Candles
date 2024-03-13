@@ -1,6 +1,8 @@
-﻿using HeartmadeCandles.Auth.Core.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.UserAndAuth.Core.Interfaces;
+using HeartmadeCandles.UserAndAuth.Core.Models;
 
-namespace HeartmadeCandles.Auth.BL;
+namespace HeartmadeCandles.UserAndAuth.BL.Services;
 
 public class AuthService : IAuthService
 {
@@ -15,8 +17,13 @@ public class AuthService : IAuthService
         _validHashPassword = _passwordHasher.Generate(Environment.GetEnvironmentVariable("VAR_ADMIN_PASSWORD"));
     }
 
-    public bool IsValidUser(string login, string password)
+    public bool IsValidUser(string email, string password)
     {
-        return login == _validLogin && _passwordHasher.Verify(password, _validHashPassword);
+        return email == _validLogin && _passwordHasher.Verify(password, _validHashPassword);
+    }
+
+    public Task<Result<Token>> CreateToken(User user)
+    {
+        throw new NotImplementedException();
     }
 }

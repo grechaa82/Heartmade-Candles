@@ -1,6 +1,6 @@
-﻿using HeartmadeCandles.Auth.Core.Interfaces;
+﻿using HeartmadeCandles.UserAndAuth.Core.Interfaces;
 
-namespace HeartmadeCandles.Auth.BL;
+namespace HeartmadeCandles.UserAndAuth.BL.Services;
 
 public class PasswordHasher : IPasswordHasher
 {

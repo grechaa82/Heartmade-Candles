@@ -1,7 +1,8 @@
-﻿using HeartmadeCandles.Auth.Core.Interfaces;
+﻿using HeartmadeCandles.UserAndAuth.BL.Services;
+using HeartmadeCandles.UserAndAuth.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HeartmadeCandles.Auth.BL;
+namespace HeartmadeCandles.UserAndAuth.BL;
 
 public static class AuthServicesRegistration
 {
