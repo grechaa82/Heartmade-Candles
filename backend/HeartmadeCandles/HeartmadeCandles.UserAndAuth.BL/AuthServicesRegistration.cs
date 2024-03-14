@@ -10,7 +10,8 @@ public static class AuthServicesRegistration
     {
         services
             .AddScoped<IAuthService, AuthService>()
-            .AddScoped<IPasswordHasher, PasswordHasher>();
+            .AddScoped<IPasswordHasher, PasswordHasher>()
+            .AddScoped<IUserService, UserService>();
 
         return services;
     }

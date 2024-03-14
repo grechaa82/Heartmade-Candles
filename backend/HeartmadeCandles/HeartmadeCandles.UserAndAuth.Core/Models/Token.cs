@@ -1,14 +1,75 @@
-﻿namespace HeartmadeCandles.UserAndAuth.Core.Models;
+﻿using CSharpFunctionalExtensions;
+
+namespace HeartmadeCandles.UserAndAuth.Core.Models;
 
 public class Token
 {
-    public int Id { get; set; }
+    private Token(
+        int id, 
+        int userId, 
+        string accessToken,
+        string refreshToken, 
+        DateTime expireTime)
+    {
+        Id = id;
+        UserId = userId;
+        AccessToken = accessToken;
+        RefreshToken = refreshToken;
+        ExpireTime = expireTime;
+    }
 
-    public required string UserId { get; set; }
+    public int Id { get; }
 
-    public required string AccessToken { get; set; }
+    public int UserId { get; }
 
-    public required string RefreshToken { get; set; }
+    public string AccessToken { get; }
 
-    public DateTime ExpireTime { get; set; }
+    public string RefreshToken { get; }
+
+    public DateTime ExpireTime { get; }
+
+    public static Result<Token> Create(
+        int userId,
+        string accessToken,
+        string refreshToken,
+        int id = 0,
+        DateTime? expireTime = null)
+    {
+        var result = Result.Success();
+
+        if (userId == 0)
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<Token>($"'{nameof(userId)}' cannot be zero"));
+        }
+
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<Token>($"'{nameof(accessToken)}' cannot be null or whitespace"));
+        }
+
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            result = Result.Combine(
+                result,
+                Result.Failure<Token>($"'{nameof(refreshToken)}' cannot be null or whitespace"));
+        }
+
+        if (result.IsFailure)
+        {
+            return Result.Failure<Token>(result.Error);
+        }
+
+        var token = new Token(
+            id,
+            userId,
+            accessToken,
+            refreshToken,
+            expireTime ?? DateTime.UtcNow);
+
+        return Result.Success(token);
+    }
 }
