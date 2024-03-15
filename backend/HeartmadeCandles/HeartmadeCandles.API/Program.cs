@@ -10,6 +10,7 @@ using HeartmadeCandles.Order.BL;
 using HeartmadeCandles.Order.DAL;
 using HeartmadeCandles.Order.DAL.Mongo;
 using HeartmadeCandles.UserAndAuth.BL;
+using HeartmadeCandles.UserAndAuth.DAL;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.FileProviders;
 using MongoDB.Driver;
@@ -66,6 +67,11 @@ try
         .AddBotServices()
         .AddBotRepositories();
 
+    builder.Services
+        .AddUserAndAuthServices()
+        .AddUserAndAuthRepositories()
+        .AddUserAndAuthDbContext(builder.Configuration);
+
     builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
     builder.Services.AddSingleton(options =>
     {
@@ -75,10 +81,8 @@ try
         return mongoDbClient.GetDatabase(databaseSettings.DatabaseName);
     });
 
-    builder.Services.AddAuthServices();
-
     builder.Services.AddControllers().AddNewtonsoftJson();
-     
+
     builder.Services.AddEndpointsApiExplorer();
 
     builder.Services.AddHttpContextAccessor();
@@ -100,9 +104,9 @@ try
     }
 
     app.UseRateLimiter();
-    
+
     app.UseHttpsRedirection();
-    
+
     app.UseCors("AllowCors");
 
     app.UseStaticFiles(
@@ -116,15 +120,15 @@ try
     app.UseAuthentication();
 
     app.UseAuthorization();
-    
+
     app.MapControllers();
-    
+
     app.Run();
 }
-catch (Exception ex)
+catch (Exception ex) when (ex.GetType().Name is not "StopTheHostException"
+    && ex.GetType().Name is not "HostAbortedException")
 {
     logger.Fatal(ex, "Unhandled exception");
-    throw;
 }
 finally
 {

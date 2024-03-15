@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace HeartmadeCandles.UserAndAuth.BL;
 
-public static class AuthServicesRegistration
+public static class UserAndAuthServicesRegistration
 {
-    public static IServiceCollection AddAuthServices(this IServiceCollection services)
+    public static IServiceCollection AddUserAndAuthServices(this IServiceCollection services)
     {
         services
             .AddScoped<IAuthService, AuthService>()
