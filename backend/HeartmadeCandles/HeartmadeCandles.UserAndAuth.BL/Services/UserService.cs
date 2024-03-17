@@ -13,19 +13,35 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public Task<Maybe<User>> GetById(int userId)
+    public async Task<Maybe<User>> GetById(int userId)
     {
-        return _userRepository.GetById(userId);
+        return await _userRepository.GetById(userId);
     }
 
-    public Task<Maybe<User>> GetByEmail(string email)
+    public async Task<Maybe<User>> GetByEmail(string email)
     {
-        _userRepository.GetByEmail(email);
-        throw new NotImplementedException();
+        return await _userRepository.GetByEmail(email);
     }
 
-    public Task<Result> Create(User user)
+    public async Task<Result> Create(User user)
     {
-        return _userRepository.Create(user);
+        var userResult = await _userRepository.GetByEmail(user.Email);
+
+        if (userResult.HasValue)
+        {
+            return Result.Failure($"{nameof(User)} already exists");
+        }
+
+        return await _userRepository.Create(user);
+    }
+
+    public async Task<Result> Update(User user)
+    {
+        return await _userRepository.Update(user);
+    }
+
+    public async Task<Result> Delete(int userId)
+    {
+        return await _userRepository.Delete(userId);
     }
 }

@@ -10,4 +10,8 @@ public interface IUserService
     Task<Maybe<User>> GetByEmail(string email);
 
     Task<Result> Create(User user);
+
+    Task<Result> Update(User user);
+
+    Task<Result> Delete(int userId);
 }

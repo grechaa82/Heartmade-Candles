@@ -76,7 +76,7 @@ public class UserTest
         // Assert
         Assert.True(result.IsSuccess);
         Assert.Contains(userName, result.Value.Email);
-        Assert.Equal(userName, result.Value.UserName);
+        Assert.True(result.Value.UserName.Length <= User.MaxUserNameLength);
     }
 
     private static Result<User> Make(

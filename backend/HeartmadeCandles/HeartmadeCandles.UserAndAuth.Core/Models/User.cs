@@ -48,8 +48,13 @@ public class User
 
         if (string.IsNullOrWhiteSpace(userName))
         {
-            int atIndex = email.IndexOf('@');
+            var atIndex = email.IndexOf('@');
             userName = atIndex != -1 ? email.Substring(0, atIndex) : email;
+
+            if (userName.Length > MaxUserNameLength)
+            {
+                userName = userName.Substring(0, MaxUserNameLength);
+            }
         }
         else
         {
