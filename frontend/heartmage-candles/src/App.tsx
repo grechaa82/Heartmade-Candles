@@ -13,7 +13,7 @@ import WickPage from './pages/admin/WickPage';
 import Navbar from './components/admin/Navbar';
 import ConstructorPage from './pages/constructor/ConstructorPage';
 import BasketPage from './pages/order/BasketPage';
-import AuthPage from './pages/auth/AuthPage';
+import AuthPage from './pages/userAndAuth/AuthPage';
 import ThankPage from './pages/order/ThankPage';
 import Header from './components/shared/Header';
 import AboutUs from './pages/home/AboutUsPage';
@@ -23,6 +23,7 @@ import HelpPage from './pages/home/HelpPage';
 import HomePage from './pages/home/HomePage';
 import NotFoundPage from './pages/home/NotFoundPage';
 import BotPage from './pages/admin/BotPage';
+import UserCreatePage from './pages/userAndAuth/UserCreatePage';
 
 import Style from './App.module.css';
 
@@ -75,6 +76,7 @@ function App() {
               <Route element={<BasketPage />} path="baskets/:id" />
               <Route element={<ThankPage />} path="orders/:id/thank" />
               <Route element={<AuthPage />} path="auth" />
+              <Route element={<UserCreatePage />} path="user/create" />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </>

@@ -47,6 +47,7 @@ const Input: FC<InputProps> = ({
         onChange={handleInputChange}
         pattern={pattern}
         placeholder={placeholder}
+        required
       />
       <div className={Style.validationBlock}>
         {!isValid && value && (

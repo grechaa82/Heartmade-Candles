@@ -3,7 +3,10 @@ import { ApiResponse } from './ApiResponse';
 import { apiUrl } from '../config';
 
 export const AuthApi = {
-  login: async (login: string, password: string): Promise<ApiResponse<string>> => {
+  login: async (
+    email: string,
+    password: string,
+  ): Promise<ApiResponse<string>> => {
     try {
       const response = await fetch(`${apiUrl}/auth/login`, {
         method: 'POST',
@@ -11,7 +14,7 @@ export const AuthApi = {
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          login,
+          email: email,
           password,
         }),
       });
