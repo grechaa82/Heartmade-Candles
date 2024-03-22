@@ -11,4 +11,7 @@ public class CreateUserRequest
 
     [Required]
     public required string Password { get; set; }
+
+    [Required]
+    public required string ConfirmPassword { get; set; }
 }

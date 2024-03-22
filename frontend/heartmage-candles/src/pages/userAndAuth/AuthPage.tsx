@@ -1,24 +1,50 @@
 import { FC, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
-import Input from '../../components/shared/Input';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { AuthApi } from '../../services/AuthApi';
 
 import Style from './AuthPage.module.css';
 
+type LoginType = {
+  email: string;
+  password: string;
+};
+
+const loginSchema = yup
+  .object({
+    email: yup.string().email().required('Email is required'),
+    password: yup
+      .string()
+      //.min(4)
+      //.matches(/(?=.*\d)(?=.*[@$!%*?&])/,'Must include numbers and special characters',)
+      .required('Password is required'),
+  })
+  .required();
+
+type ButtonState = 'default' | 'invalid' | 'valid';
+
 const AuthPage: FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [buttonState, setButtonState] = useState<ButtonState>('default');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid, errors },
+  } = useForm<LoginType>({
+    mode: 'onChange',
+    resolver: yupResolver(loginSchema),
+  });
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const onSubmit: SubmitHandler<LoginType> = (data) => {
     async function fetchData() {
-      const tokenResponse = await AuthApi.login(email, password);
+      const tokenResponse = await AuthApi.login(data.email, data.password);
       if (tokenResponse.data && !tokenResponse.error) {
         localStorage.setItem('token', tokenResponse.data);
       } else {
@@ -29,24 +55,41 @@ const AuthPage: FC = () => {
     fetchData();
   };
 
+  useEffect(() => {
+    if (errors.email !== undefined || errors.password !== undefined) {
+      setButtonState('invalid');
+    } else if (isValid) {
+      setButtonState('valid');
+    }
+  }, [isValid, errors]);
+
   return (
     <>
       <div className={Style.container}>
         <h3>Войдите в аккаунт</h3>
-        <form onSubmit={handleSubmit} className={Style.form}>
-          <Input
-            label="Электронная почта"
-            required
-            value={email}
-            onChange={setEmail}
-          />
-          <Input
-            label="Пароль"
-            required
-            value={password}
-            onChange={setPassword}
-          />
-          <button className={Style.loginBtn} type="submit">
+        <form onSubmit={handleSubmit(onSubmit)} className={Style.form}>
+          <div className={Style.inputWrapper}>
+            <label className={Style.label}>Электронная почта *</label>
+            <input className={Style.input} {...register('email')} />
+            {errors?.email && (
+              <p className={Style.validationError}>{errors.email.message}</p>
+            )}
+          </div>
+          <div className={Style.inputWrapper}>
+            <label className={Style.label}>Пароль *</label>
+            <input
+              type="password"
+              className={Style.input}
+              {...register('password')}
+            />
+            {errors?.password && (
+              <p className={Style.validationError}>{errors.password.message}</p>
+            )}
+          </div>
+          <button
+            className={`${Style.loginBtn} ${Style[buttonState]}`}
+            type="submit"
+          >
             Войти
           </button>
         </form>

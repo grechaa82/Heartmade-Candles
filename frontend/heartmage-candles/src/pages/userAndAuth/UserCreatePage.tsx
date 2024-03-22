@@ -1,63 +1,111 @@
 import { FC, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
-import Input from '../../components/shared/Input';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { AuthApi } from '../../services/AuthApi';
 
 import Style from './UserCreatePage.module.css';
 
+type CreateUserType = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
+const userCreateSchema = yup
+  .object({
+    email: yup.string().email().required('Email is required'),
+    password: yup
+      .string()
+      //.min(4)
+      //.matches(/(?=.*\d)(?=.*[@$!%*?&])/,'Must include numbers and special characters',)
+      .required('Password is required'),
+    confirmPassword: yup
+      .string()
+      .required('Password is required')
+      .oneOf([yup.ref('password')], 'Your passwords do not match.'),
+  })
+  .required();
+
+type ButtonState = 'default' | 'invalid' | 'valid';
+
 const UserCreatePage: FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [buttonState, setButtonState] = useState<ButtonState>('default');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid, errors },
+  } = useForm<CreateUserType>({
+    mode: 'onChange',
+    resolver: yupResolver(userCreateSchema),
+  });
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    async function fetchData() {
-      const tokenResponse = await AuthApi.login(email, password);
-      if (tokenResponse.data && !tokenResponse.error) {
-        localStorage.setItem('token', tokenResponse.data);
-      } else {
-        setErrorMessage([...errorMessage, tokenResponse.error as string]);
-      }
-    }
+  const onSubmit: SubmitHandler<CreateUserType> = (data) => {
+    console.log(data);
+    async function fetchData() {}
 
     fetchData();
   };
 
   useEffect(() => {
-    console.log('fass');
-  }, [setEmail, setPassword, setConfirmPassword]);
+    if (
+      errors.email !== undefined ||
+      errors.password !== undefined ||
+      errors.confirmPassword !== undefined
+    ) {
+      setButtonState('invalid');
+    } else if (isValid) {
+      setButtonState('valid');
+    }
+  }, [isValid, errors]);
 
   return (
     <>
       <div className={Style.container}>
         <h3>Создайте аккаунт</h3>
-        <form onSubmit={handleSubmit} className={Style.form}>
-          <Input
-            label="Электронная почта"
-            required
-            value={email}
-            onChange={setEmail}
-          />
-          <Input
-            label="Пароль"
-            required
-            value={password}
-            onChange={setPassword}
-          />
-          <Input
-            label="Подтвердите пароль"
-            required
-            value={confirmPassword}
-            onChange={setConfirmPassword}
-          />
-          <button className={Style.loginBtn} type="submit">
+        <form onSubmit={handleSubmit(onSubmit)} className={Style.form}>
+          <div className={Style.inputWrapper}>
+            <label className={Style.label}>Электронная почта *</label>
+            <input className={Style.input} {...register('email')} />
+            {errors?.email && (
+              <p className={Style.validationError}>{errors.email.message}</p>
+            )}
+          </div>
+          <div className={Style.inputWrapper}>
+            <label className={Style.label}>Пароль *</label>
+            <input
+              type="password"
+              className={Style.input}
+              {...register('password')}
+            />
+            {errors?.password && (
+              <p className={Style.validationError}>{errors.password.message}</p>
+            )}
+          </div>
+          <div className={Style.inputWrapper}>
+            <label className={Style.label}>Подтвердите пароль *</label>
+            <input
+              type="password"
+              className={Style.input}
+              {...register('confirmPassword')}
+            />
+            {errors?.confirmPassword && (
+              <p className={Style.validationError}>
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
+          <button
+            className={`${Style.loginBtn} ${Style[buttonState]}`}
+            type="submit"
+          >
             Войти
           </button>
         </form>
