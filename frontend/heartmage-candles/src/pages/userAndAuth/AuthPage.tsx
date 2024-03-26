@@ -66,36 +66,40 @@ const AuthPage: FC = () => {
   return (
     <>
       <div className={Style.container}>
-        <h3>Войдите в аккаунт</h3>
-        <form onSubmit={handleSubmit(onSubmit)} className={Style.form}>
-          <div className={Style.inputWrapper}>
-            <label className={Style.label}>Электронная почта *</label>
-            <input className={Style.input} {...register('email')} />
-            {errors?.email && (
-              <p className={Style.validationError}>{errors.email.message}</p>
-            )}
-          </div>
-          <div className={Style.inputWrapper}>
-            <label className={Style.label}>Пароль *</label>
-            <input
-              type="password"
-              className={Style.input}
-              {...register('password')}
-            />
-            {errors?.password && (
-              <p className={Style.validationError}>{errors.password.message}</p>
-            )}
-          </div>
-          <button
-            className={`${Style.loginBtn} ${Style[buttonState]}`}
-            type="submit"
-          >
-            Войти
-          </button>
-        </form>
-        <Link className={Style.createBtn} to="/user/create">
-          Создать аккаунт
-        </Link>
+        <div className={Style.block}>
+          <h3>Войдите в аккаунт</h3>
+          <form onSubmit={handleSubmit(onSubmit)} className={Style.form}>
+            <div className={Style.inputWrapper}>
+              <label className={Style.label}>Электронная почта *</label>
+              <input className={Style.input} {...register('email')} />
+              {errors?.email && (
+                <p className={Style.validationError}>{errors.email.message}</p>
+              )}
+            </div>
+            <div className={Style.inputWrapper}>
+              <label className={Style.label}>Пароль *</label>
+              <input
+                type="password"
+                className={Style.input}
+                {...register('password')}
+              />
+              {errors?.password && (
+                <p className={Style.validationError}>
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+            <button
+              className={`${Style.loginBtn} ${Style[buttonState]}`}
+              type="submit"
+            >
+              Войти
+            </button>
+          </form>
+          <Link className={Style.createBtn} to="/user/create">
+            Создать аккаунт
+          </Link>
+        </div>
       </div>
       <ListErrorPopUp messages={errorMessage} />
     </>
