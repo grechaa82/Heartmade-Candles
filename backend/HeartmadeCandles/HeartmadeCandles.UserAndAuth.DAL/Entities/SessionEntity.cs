@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HeartmadeCandles.UserAndAuth.DAL.Entities;
 
-public class TokenEntity
+[Table("Session")]
+public class SessionEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -14,15 +15,13 @@ public class TokenEntity
     [Required]
     public int UserId { get; set; }
 
-    [Column("accessToken")]
-    [Required]
-    public required string AccessToken { get; set; }
-
     [Column("refreshToken")]
     [Required]
     public required string RefreshToken { get; set; }
 
-    [Column("expireTime")]
+    [Column("expireAt")]
     [Required]
-    public DateTime ExpireTime { get; set; }
+    public DateTime ExpireAt { get; set; }
+
+    public virtual UserEntity? User { get; set; }
 }

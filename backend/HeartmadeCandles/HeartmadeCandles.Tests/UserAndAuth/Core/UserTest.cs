@@ -1,9 +1,6 @@
 ﻿using Bogus;
-using Bogus.DataSets;
 using CSharpFunctionalExtensions;
 using HeartmadeCandles.UserAndAuth.Core.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System;
 
 namespace HeartmadeCandles.UnitTests.UserAndAuth.Core;
 
@@ -18,6 +15,7 @@ public class UserTest
         string email,
         string userName,
         string passwordHash,
+        Role role,
         DateTime registrationDate)
     {
         // Arrange
@@ -28,6 +26,7 @@ public class UserTest
             email : email,
             userName : userName,
             passwordHash : passwordHash,
+            role : role,
             registrationDate: registrationDate);
 
         // Assert
@@ -46,6 +45,7 @@ public class UserTest
                 person.Email,
                 person.UserName,
                 person.Avatar,
+                Role.Buyer,
                 faker.Date.Past()
             };
     }
@@ -57,6 +57,7 @@ public class UserTest
         string email,
         string userName,
         string passwordHash,
+        Role role,
         DateTime registrationDate)
     {
         // Arrange
@@ -84,6 +85,7 @@ public class UserTest
         string? email = null,
         string? userName = null,
         string? passwordHash = null,
+        Role? role = null,
         DateTime? registrationDate = null)
     {
         var faker = new Faker();
@@ -94,6 +96,7 @@ public class UserTest
             email : email  ?? person.Email,
             userName: userName ?? person.UserName,
             passwordHash : passwordHash  ?? person.Avatar,
+            role: role ?? Role.None,
             registrationDate: registrationDate ?? faker.Date.Past());
     }
 }

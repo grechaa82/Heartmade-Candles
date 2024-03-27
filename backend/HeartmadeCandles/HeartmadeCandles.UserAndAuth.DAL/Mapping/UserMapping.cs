@@ -12,6 +12,7 @@ internal class UserMapping
             email: userEntity.Email,
             userName: userEntity.UserName,
             passwordHash: userEntity.PasswordHash,
+            role: userEntity.Role,
             registrationDate: userEntity.RegistrationDate);
 
         return user.Value;
