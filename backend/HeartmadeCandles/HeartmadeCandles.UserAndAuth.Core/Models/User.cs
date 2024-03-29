@@ -11,12 +11,14 @@ public class User
         string email,
         string userName,
         string passwordHash,
+        Role role,
         DateTime registrationDate)
     {
         Id = id;
         Email = email;
         UserName = userName;
         PasswordHash = passwordHash;
+        Role = role;
         RegistrationDate = registrationDate;
     }
 
@@ -28,6 +30,8 @@ public class User
 
     public string PasswordHash { get; }
 
+    public Role Role { get; }
+
     public DateTime RegistrationDate { get; }
 
     public static Result<User> Create(
@@ -35,6 +39,7 @@ public class User
         string passwordHash,
         int id = 0,
         string? userName = null,
+        Role role = Role.Buyer,
         DateTime? registrationDate = null)
     {
         var result = Result.Success();
@@ -81,6 +86,7 @@ public class User
             email,
             userName,
             passwordHash,
+            role,
             registrationDate ?? DateTime.UtcNow);
 
         return Result.Success(user);

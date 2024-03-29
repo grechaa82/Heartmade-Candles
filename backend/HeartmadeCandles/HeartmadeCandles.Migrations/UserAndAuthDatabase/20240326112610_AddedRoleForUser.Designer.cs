@@ -3,6 +3,7 @@ using System;
 using HeartmadeCandles.UserAndAuth.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HeartmadeCandles.Migrations.UserAndAuthDatabase
 {
     [DbContext(typeof(UserAndAuthDbContext))]
-    partial class UserAndAuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240326112610_AddedRoleForUser")]
+    partial class AddedRoleForUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,16 +25,23 @@ namespace HeartmadeCandles.Migrations.UserAndAuthDatabase
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("HeartmadeCandles.UserAndAuth.DAL.Entities.SessionEntity", b =>
+            modelBuilder.Entity("HeartmadeCandles.UserAndAuth.DAL.Entities.TokenEntity", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
+                        .HasColumnType("integer")
                         .HasColumnName("id");
 
-                    b.Property<DateTime>("ExpireAt")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("accessToken");
+
+                    b.Property<DateTime>("ExpireTime")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("expireAt");
+                        .HasColumnName("expireTime");
 
                     b.Property<string>("RefreshToken")
                         .IsRequired()
@@ -44,9 +54,7 @@ namespace HeartmadeCandles.Migrations.UserAndAuthDatabase
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Session");
+                    b.ToTable("Token");
                 });
 
             modelBuilder.Entity("HeartmadeCandles.UserAndAuth.DAL.Entities.UserEntity", b =>
@@ -84,17 +92,6 @@ namespace HeartmadeCandles.Migrations.UserAndAuthDatabase
                     b.HasKey("Id");
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("HeartmadeCandles.UserAndAuth.DAL.Entities.SessionEntity", b =>
-                {
-                    b.HasOne("HeartmadeCandles.UserAndAuth.DAL.Entities.UserEntity", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

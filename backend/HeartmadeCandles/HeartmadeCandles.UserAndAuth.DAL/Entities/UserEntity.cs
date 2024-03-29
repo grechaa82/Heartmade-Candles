@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using HeartmadeCandles.UserAndAuth.Core.Models;
 
 namespace HeartmadeCandles.UserAndAuth.DAL.Entities;
 
+[Table("User")]
 public class UserEntity
 {
     [Key]
@@ -21,6 +23,10 @@ public class UserEntity
     [Column("passwordHash")]
     [Required]
     public required string PasswordHash { get; set; }
+
+    [Column("role")]
+    [Required]
+    public Role Role { get; set; }
 
     [Column("registrationDate")]
     [Required]

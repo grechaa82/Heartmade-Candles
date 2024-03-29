@@ -3,6 +3,7 @@ using System;
 using HeartmadeCandles.UserAndAuth.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HeartmadeCandles.Migrations.UserAndAuthDatabase
 {
     [DbContext(typeof(UserAndAuthDbContext))]
-    partial class UserAndAuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240329152929_ReplacedTokenWithSession")]
+    partial class ReplacedTokenWithSession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

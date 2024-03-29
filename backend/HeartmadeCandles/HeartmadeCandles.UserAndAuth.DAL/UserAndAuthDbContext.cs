@@ -10,5 +10,5 @@ public class UserAndAuthDbContext : DbContext
     }
 
     public DbSet<UserEntity> User { get; set; }
-    public DbSet<TokenEntity> Token { get; set; }
+    public DbSet<SessionEntity> Session { get; set; }
 }
