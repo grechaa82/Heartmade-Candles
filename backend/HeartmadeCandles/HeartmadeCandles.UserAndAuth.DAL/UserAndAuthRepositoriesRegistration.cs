@@ -9,7 +9,7 @@ public static class UserAndAuthRepositoriesRegistration
     public static IServiceCollection AddUserAndAuthRepositories(this IServiceCollection services)
     {
         services
-            .AddScoped<IAuthRepository, AuthRepository>()
+            .AddScoped<ISessionRepository, SessionRepository>()
             .AddScoped<IUserRepository, UserRepository>();
 
         return services;

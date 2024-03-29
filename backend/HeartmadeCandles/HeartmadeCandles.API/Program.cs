@@ -47,7 +47,7 @@ try
 
     builder.Services.AddApiAuthentication(builder.Configuration);
 
-    builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
+    builder.Services.Configure<HeartmadeCandles.API.JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 
     builder.Services
         .AddAdminServices()
@@ -68,7 +68,7 @@ try
         .AddBotRepositories();
 
     builder.Services
-        .AddUserAndAuthServices()
+        .AddUserAndAuthServices(builder.Configuration)
         .AddUserAndAuthRepositories()
         .AddUserAndAuthDbContext(builder.Configuration);
 

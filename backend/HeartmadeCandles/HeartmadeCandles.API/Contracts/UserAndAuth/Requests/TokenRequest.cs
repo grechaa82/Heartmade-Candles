@@ -2,7 +2,7 @@
 
 namespace HeartmadeCandles.API.Contracts.UserAndAuth.Requests;
 
-public class TokenRefreshRequest
+public class TokenRequest
 {
     [Required]
     public required string AccessToken { get; set; }

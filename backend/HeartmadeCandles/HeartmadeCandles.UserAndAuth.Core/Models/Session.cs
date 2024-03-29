@@ -1,8 +1,12 @@
 ﻿namespace HeartmadeCandles.UserAndAuth.Core.Models;
 
-public class Token
+public class Session
 {
-    public required string AccessToken { get; init; }
+    public Guid Id { get; init; } = Guid.NewGuid();
+
+    public int UserId { get; init; }
+
+    public User? User { get; init; }
 
     public required string RefreshToken { get; init; }
 
