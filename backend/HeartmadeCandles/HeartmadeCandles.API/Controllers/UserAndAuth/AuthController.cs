@@ -1,15 +1,10 @@
-﻿using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.API.Contracts.UserAndAuth.Requests;
 using HeartmadeCandles.UserAndAuth.Core.Interfaces;
 using HeartmadeCandles.UserAndAuth.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace HeartmadeCandles.API.Controllers.Auth;
 
@@ -18,7 +13,6 @@ namespace HeartmadeCandles.API.Controllers.Auth;
 [EnableRateLimiting("ConcurrencyPolicy")]
 public class AuthController : Controller
 {
-    private readonly JwtOptions _jwtOptions;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ISessionService _sessionService;
     private readonly ITokenService _tokenService;
@@ -26,14 +20,12 @@ public class AuthController : Controller
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(
-        IOptions<JwtOptions> jwtOptions,
         IPasswordHasher passwordHasher,
         ISessionService sessionService,
         ITokenService tokenService,
         IUserService userService,
         ILogger<AuthController> logger)
     {
-        _jwtOptions = jwtOptions.Value;
         _passwordHasher = passwordHasher;
         _sessionService = sessionService;
         _tokenService = tokenService;
@@ -44,57 +36,63 @@ public class AuthController : Controller
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
-        /*
-         * var userResult = await _userService.GetByEmail(loginRequest.Email);
-         * 
-         * var isValidPassword = await _passwordHasher.Verify(loginRequest.Password, userMaybe.Value.PasswordHash);
-         * 
-         * var tokenPayload = new TokenPayload { UserId = userResult.Value.Id, UserName = userResult.Value.UserName, Role = userResult.Value.Role }
-         * 
-         * var tokenResult = await _tokenService.CreateToken(tokenPayload);
-         * 
-         * var session = new Session
-         * {
-         *     UserId = sessionResult.Value.UserId,
-         *     RefreshToken = tokenResult.Value.RefreshToken,
-         *     ExpireAt = tokenResult.Value.ExpireAt,
-         * }
-         * 
-         * var sessionResult = await _sessionService.Create(session);
-         * 
-         * return Ok(new { tokenResult.Value });
-         */
+        var userMaybe = await _userService.GetByEmail(loginRequest.Email);
+        
+        if (!userMaybe.HasValue)
+        {
+            return NotFound($"User with email: {loginRequest.Email} not found");
+        }
 
-        // var userMaybe = await _userService.GetByEmail(loginRequest.Email);
-        // 
-        // if (!userMaybe.HasValue)
-        // {
-        //     _logger.LogError("");
-        // 
-        //     return BadRequest();
-        // }
-        // 
-        // var isValidPassword = _passwordHasher.Verify(loginRequest.Password, userMaybe.Value.PasswordHash);
-        // 
-        // if (!isValidPassword)
-        // {
-        //     _logger.LogError("Password does not match");
-        // 
-        //     return Unauthorized();
-        // }
-        // 
-        // var token = await _authService.CreateToken(userMaybe.Value.Id, userMaybe.Value.UserName, userMaybe.Value.Role);
-        // 
-        // var tokenString = GenerateJwtToken();
-        // 
-        // SetTokenInCookie(tokenString);
-        // 
-        // return Ok(new { token });
+        var isValidPassword = _passwordHasher.Verify(loginRequest.Password, userMaybe.Value.PasswordHash);
+        
+        if (!isValidPassword)
+        {
+            return Unauthorized($"Invalid password");
+        }
 
-        return BadRequest();
+        var tokenPayload = new TokenPayload 
+        { 
+            UserId = userMaybe.Value.Id, 
+            UserName = userMaybe.Value.UserName, 
+            Role = userMaybe.Value.Role 
+        };
+        
+        var tokenResult = await _tokenService.CreateToken(tokenPayload);
+
+        if (tokenResult.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}", 
+                nameof(_tokenService.CreateToken),
+                tokenResult.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_tokenService.CreateToken)}, error message: {tokenResult.Error}");
+        }
+
+        var session = new Session
+        {
+            UserId = userMaybe.Value.Id,
+            RefreshToken = tokenResult.Value.RefreshToken,
+            ExpireAt = tokenResult.Value.ExpireAt,
+        };
+        
+        var sessionResult = await _sessionService.Create(session);
+        
+        if (sessionResult.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_sessionService.Create),
+                sessionResult.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_sessionService.Create)}, error message: {sessionResult.Error}");
+        }
+
+        return Ok(new { tokenResult.Value });
     }
 
     [HttpPost("logout")]
+    [Authorize]
     public async Task<IActionResult> Logout([FromBody] TokenRequest tokenRequest)
     {
         return BadRequest();

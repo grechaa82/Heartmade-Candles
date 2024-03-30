@@ -1,5 +1,6 @@
 ﻿namespace HeartmadeCandles.UserAndAuth.Core.Models;
 
+[Serializable]
 public class TokenPayload
 {
     public int UserId { get; init; }

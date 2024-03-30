@@ -5,9 +5,9 @@ namespace HeartmadeCandles.UserAndAuth.Core.Interfaces;
 
 public interface ISessionService
 {
-    Task<Result<Session>> GetById(Guid sessionId);
+    Task<Maybe<Session>> GetById(Guid sessionId);
 
-    Task<Result<Session>> GetByUserId(int userId);
+    Task<Maybe<Session>> GetByUserId(int userId);
 
     Task<Result<Session>> Create(Session session);
 

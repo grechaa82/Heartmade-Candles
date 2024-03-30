@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" />
+    <PackageReference Include="JWT" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
   </ItemGroup>

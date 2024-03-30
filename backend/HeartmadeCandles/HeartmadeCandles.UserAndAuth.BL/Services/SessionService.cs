@@ -13,23 +13,23 @@ public class SessionService : ISessionService
         _sessionRepository = sessionRepository;
     }
 
-    public async Task<Result<Session>> GetById(Guid sessionId)
+    public async Task<Maybe<Session>> GetById(Guid sessionId)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Result<Session>> GetByUserId(int userId)
+    public async Task<Maybe<Session>> GetByUserId(int userId)
     {
-        throw new NotImplementedException();
+        return await _sessionRepository.GetByUserId(userId);
     }
 
     public async Task<Result<Session>> Create(Session session)
     {
-        throw new NotImplementedException();
+        return await _sessionRepository.Create(session);
     }
 
     public async Task<Result<Session>> Update(Session newSession)
     {
-        throw new NotImplementedException();
+        return await _sessionRepository.Update(newSession);
     }
 }
