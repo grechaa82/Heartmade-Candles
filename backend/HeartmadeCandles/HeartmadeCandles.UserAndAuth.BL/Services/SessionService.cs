@@ -15,7 +15,7 @@ public class SessionService : ISessionService
 
     public async Task<Maybe<Session>> GetById(Guid sessionId)
     {
-        throw new NotImplementedException();
+        return await _sessionRepository.GetById(sessionId);
     }
 
     public async Task<Maybe<Session>> GetByUserId(int userId)

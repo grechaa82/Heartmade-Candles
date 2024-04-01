@@ -2,18 +2,14 @@
 
 namespace HeartmadeCandles.API.Contracts.Auth.Responses;
 
-public class AuthenticatedResponse
+public class TokenResponse
 {
-    public int UserId { get; set; }
-
-    [Required]
-    public required string UserName { get; set; }
-
     [Required]
     public required string AccessToken { get; set; }
 
     [Required]
     public required string RefreshToken { get; set; }
 
+    [Required]
     public DateTime ExpireAt { get; set; }
 }

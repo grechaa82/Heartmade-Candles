@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+﻿using HeartmadeCandles.API.Contracts.Auth.Responses;
 using HeartmadeCandles.API.Contracts.UserAndAuth.Requests;
 using HeartmadeCandles.UserAndAuth.Core.Interfaces;
 using HeartmadeCandles.UserAndAuth.Core.Models;
@@ -47,14 +47,17 @@ public class AuthController : Controller
         
         if (!isValidPassword)
         {
-            return Unauthorized($"Invalid password");
+            return Unauthorized("Invalid password");
         }
+
+        var sessionId = Guid.NewGuid();
 
         var tokenPayload = new TokenPayload 
         { 
             UserId = userMaybe.Value.Id, 
             UserName = userMaybe.Value.UserName, 
-            Role = userMaybe.Value.Role 
+            Role = userMaybe.Value.Role,
+            SessionId = sessionId,
         };
         
         var tokenResult = await _tokenService.CreateToken(tokenPayload);
@@ -71,9 +74,10 @@ public class AuthController : Controller
 
         var session = new Session
         {
+            Id = sessionId,
             UserId = userMaybe.Value.Id,
             RefreshToken = tokenResult.Value.RefreshToken,
-            ExpireAt = tokenResult.Value.ExpireAt,
+            ExpireAt = tokenResult.Value.ExpireAt, // TODO: Сделать время жизни RefreshToken токена 30 дней
         };
         
         var sessionResult = await _sessionService.Create(session);
@@ -88,7 +92,12 @@ public class AuthController : Controller
                 $"Error: Failed in process {nameof(_sessionService.Create)}, error message: {sessionResult.Error}");
         }
 
-        return Ok(new { tokenResult.Value });
+        return Ok(new TokenResponse
+        {
+            AccessToken = tokenResult.Value.AccessToken,
+            RefreshToken = tokenResult.Value.RefreshToken,
+            ExpireAt = tokenResult.Value.ExpireAt
+        });
     }
 
     [HttpPost("logout")]
@@ -101,53 +110,86 @@ public class AuthController : Controller
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshToken([FromBody] TokenRequest tokenRequest)
     {
-        /*
-         * var tokenPayloadResult = await _tokenService.DecodeToken(tokenRequest.AccessToken)
-         * 
-         * var userResult = await _userService.GetById(tokenPayloadResult.Value.UserId); // Можно не запрашивать так пользователя, потому что он есть в класс Session
-         * 
-         * var sessionResult = await _sessionService.GetByUserId(userResult.Value.Id)
-         * 
-         * // Нужно проверить существует ли такой пользователь
-         * 
-         * if (sessionResult.Value.RefreshToken != tokenRequest.RefreshToken || sessionResult.ExpireAt < DateTime.UtcNow) => return Unauthorized();
-         * 
-         * var newTokenResult = await _tokenService.CreateToken(tokenPayloadResult.Value);
-         * 
-         * var newSession = new Session
-         * {
-         *     Id = sessionResult.Value.Id,
-         *     UserId = sessionResult.Value.UserId,
-         *     RefreshToken = newTokenResult.Value.RefreshToken,
-         *     ExpireAt = newTokenResult.Value.ExpireAt,
-         * }
-         * 
-         * var newSessionResult = await _sessionService.Update(sessionResult.Value);
-         * 
-         * return Ok(new { newTokenResult.Value });
-         */
 
-        // var tokenInfoResult = await _authService.DecodeToken(tokenRequest.RefreshToken);
-        // 
-        // if (tokenInfoResult.IsFailure)
-        // {
-        // 
-        // }
-        // 
-        // var tokenMaybe = await _authService.GetTokenByUserId(tokenInfoResult.Value.UserId);
-        // 
-        // if (!tokenMaybe.HasValue)
-        // {
-        // 
-        // }
-        // 
-        // var newTokenResult = await _authService.CreateToken(
-        //     userId: tokenMaybe.Value.UserId,
-        //     userName: tokenInfoResult.Value.UserName,
-        //     role: tokenInfoResult.Value.Role);
-        // 
-        // return Ok();
+        var tokenPayloadResult = await _tokenService.DecodeToken(tokenRequest.AccessToken);
 
-        return BadRequest();
+        if (tokenPayloadResult.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_tokenService.DecodeToken),
+                tokenPayloadResult.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_tokenService.DecodeToken)}, error message: {tokenPayloadResult.Error}");
+        }
+        
+        var userMaybe = await _userService.GetById(tokenPayloadResult.Value.UserId);
+
+        if (!userMaybe.HasValue)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_userService.GetById),
+                "User not found");
+            return NotFound(
+                $"Error: Failed in process {nameof(_userService.GetById)}, error message: User not found");
+        }
+
+        var sessionResult = await _sessionService.GetById(tokenPayloadResult.Value.SessionId);
+
+        if (!sessionResult.HasValue)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_sessionService.GetById),
+                "Session not found");
+            return NotFound(
+                $"Error: Failed in process {nameof(_sessionService.GetById)}, error message: Session not found");
+        }
+        
+        if (sessionResult.Value.RefreshToken != tokenRequest.RefreshToken 
+            || sessionResult.Value.ExpireAt < DateTime.UtcNow)
+        { 
+            return Unauthorized("Session is incorrect");
+        }
+
+        var newTokenResult = await _tokenService.CreateToken(tokenPayloadResult.Value);
+
+        if (newTokenResult.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_tokenService.CreateToken),
+                newTokenResult.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_tokenService.CreateToken)}, error message: {newTokenResult.Error}");
+        }
+
+        var newSession = new Session
+        {
+            Id = sessionResult.Value.Id,
+            UserId = sessionResult.Value.UserId,
+            RefreshToken = newTokenResult.Value.RefreshToken,
+            ExpireAt = newTokenResult.Value.ExpireAt // TODO: Сделать время жизни RefreshToken токена 30 дней
+        };
+        
+        var newSessionResult = await _sessionService.Update(newSession);
+
+        if (newSessionResult.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_sessionService.Update),
+                newSessionResult.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_sessionService.Update)}, error message: {newSessionResult.Error}");
+        }
+
+        return Ok(new TokenResponse
+        {
+            AccessToken = newTokenResult.Value.AccessToken,
+            RefreshToken = newTokenResult.Value.RefreshToken,
+            ExpireAt = newTokenResult.Value.ExpireAt
+        });
     }
 }

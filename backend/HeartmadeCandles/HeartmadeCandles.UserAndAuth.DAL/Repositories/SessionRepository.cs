@@ -15,9 +15,21 @@ public class SessionRepository : ISessionRepository
         _context = context;
     }
 
-    public Task<Maybe<Session>> GetById(Guid sessionId)
+    public async Task<Maybe<Session>> GetById(Guid sessionId)
     {
-        throw new NotImplementedException();
+        var item = await _context.Session
+            .AsNoTracking()
+            .Include(s => s.User)
+            .FirstOrDefaultAsync(s => s.Id == sessionId);
+
+        if (item == null)
+        {
+            return Maybe<Session>.None;
+        }
+
+        var result = SessionMapping.MapToSession(item);
+
+        return result;
     }
 
     public async Task<Maybe<Session>> GetByUserId(int userId)

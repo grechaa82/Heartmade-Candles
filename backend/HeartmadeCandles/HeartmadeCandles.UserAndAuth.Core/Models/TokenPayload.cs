@@ -8,4 +8,6 @@ public class TokenPayload
     public required string UserName { get; init; }
 
     public Role Role { get; init; }
+
+    public Guid SessionId { get; init; }
 }

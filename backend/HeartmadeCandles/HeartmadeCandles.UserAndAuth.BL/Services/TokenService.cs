@@ -4,8 +4,6 @@ using HeartmadeCandles.UserAndAuth.Core.Models;
 using JWT.Algorithms;
 using JWT.Builder;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -29,6 +27,7 @@ public class TokenService : ITokenService
             { nameof(tokenPayload.UserId), tokenPayload.UserId },
             { nameof(tokenPayload.UserName), tokenPayload.UserName },
             { nameof(tokenPayload.Role), tokenPayload.Role },
+            { nameof(tokenPayload.SessionId), tokenPayload.SessionId }
         };
 
         var expiresAt = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpiryInMinutes);
@@ -49,7 +48,28 @@ public class TokenService : ITokenService
 
     public async Task<Result<TokenPayload>> DecodeToken(string accessToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            if (!handler.CanReadToken(accessToken))
+            {
+                return Result.Failure<TokenPayload>("Token is incorrect");
+            }
+
+            var jsonToken = handler.ReadJwtToken(accessToken);
+            var tokenPayloadJson = jsonToken.Payload.SerializeToJson();
+
+            var tokenPayload = JsonSerializer.Deserialize<TokenPayload>(tokenPayloadJson);
+
+            if (tokenPayload == null)
+                return Result.Failure<TokenPayload>("Token deserialization error");
+
+            return Result.Success(tokenPayload);
+        }
+        catch (Exception e)
+        {
+            return Result.Failure<TokenPayload>($"Token decoding error: {e.Message}");
+        }
     }
 
 
