@@ -30,7 +30,7 @@ public class TokenService : ITokenService
             { nameof(tokenPayload.SessionId), tokenPayload.SessionId }
         };
 
-        var expiresAt = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpiryInMinutes);
+        var expiresAt = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationOfAccessTokenInMinutes);
 
         var accessToken = GenerateAccessToken(claims, expiresAt);
 

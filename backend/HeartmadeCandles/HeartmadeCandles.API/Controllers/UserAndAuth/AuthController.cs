@@ -1,10 +1,12 @@
 ﻿using HeartmadeCandles.API.Contracts.Auth.Responses;
 using HeartmadeCandles.API.Contracts.UserAndAuth.Requests;
+using HeartmadeCandles.UserAndAuth.BL;
 using HeartmadeCandles.UserAndAuth.Core.Interfaces;
 using HeartmadeCandles.UserAndAuth.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
 
 namespace HeartmadeCandles.API.Controllers.Auth;
 
@@ -17,6 +19,7 @@ public class AuthController : Controller
     private readonly ISessionService _sessionService;
     private readonly ITokenService _tokenService;
     private readonly IUserService _userService;
+    private readonly JwtOptions _jwtOptions;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(
@@ -24,12 +27,14 @@ public class AuthController : Controller
         ISessionService sessionService,
         ITokenService tokenService,
         IUserService userService,
+        IOptions<JwtOptions> jwtOptions,
         ILogger<AuthController> logger)
     {
         _passwordHasher = passwordHasher;
         _sessionService = sessionService;
         _tokenService = tokenService;
         _userService = userService;
+        _jwtOptions = jwtOptions.Value;
         _logger = logger;
     }
 
@@ -77,7 +82,7 @@ public class AuthController : Controller
             Id = sessionId,
             UserId = userMaybe.Value.Id,
             RefreshToken = tokenResult.Value.RefreshToken,
-            ExpireAt = tokenResult.Value.ExpireAt, // TODO: Сделать время жизни RefreshToken токена 30 дней
+            ExpireAt = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationOfRefreshTokenInMinutes)
         };
         
         var sessionResult = await _sessionService.Create(session);
@@ -170,7 +175,7 @@ public class AuthController : Controller
             Id = sessionResult.Value.Id,
             UserId = sessionResult.Value.UserId,
             RefreshToken = newTokenResult.Value.RefreshToken,
-            ExpireAt = newTokenResult.Value.ExpireAt // TODO: Сделать время жизни RefreshToken токена 30 дней
+            ExpireAt = DateTime.UtcNow.AddMinutes(_jwtOptions.ExpirationOfRefreshTokenInMinutes)
         };
         
         var newSessionResult = await _sessionService.Update(newSession);

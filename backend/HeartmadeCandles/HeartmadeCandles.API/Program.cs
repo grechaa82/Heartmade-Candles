@@ -47,8 +47,6 @@ try
 
     builder.Services.AddApiAuthentication(builder.Configuration);
 
-    builder.Services.Configure<HeartmadeCandles.API.JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
-
     builder.Services
         .AddAdminServices()
         .AddAdminRepositories()
