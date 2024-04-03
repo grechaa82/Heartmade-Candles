@@ -12,4 +12,6 @@ public interface ISessionRepository
     Task<Result<Session>> Create(Session session);
 
     Task<Result<Session>> Update(Session newSession);
+    
+    Task<Result> Delete(Guid sessionId);
 }

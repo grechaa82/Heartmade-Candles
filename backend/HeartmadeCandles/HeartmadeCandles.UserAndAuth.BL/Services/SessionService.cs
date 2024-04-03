@@ -32,4 +32,9 @@ public class SessionService : ISessionService
     {
         return await _sessionRepository.Update(newSession);
     }
+
+    public async Task<Result> Delete(Guid sessionId)
+    {
+        return await _sessionRepository.Delete(sessionId);
+    }
 }

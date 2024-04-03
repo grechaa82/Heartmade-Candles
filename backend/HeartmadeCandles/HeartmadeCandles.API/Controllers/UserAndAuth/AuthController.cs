@@ -107,9 +107,43 @@ public class AuthController : Controller
 
     [HttpPost("logout")]
     [Authorize]
-    public async Task<IActionResult> Logout([FromBody] TokenRequest tokenRequest)
+    public async Task<IActionResult> Logout()
     {
-        return BadRequest();
+        var accressToken = HttpContext.Request.Headers["Authorization"]
+            .FirstOrDefault()?
+            .Split(" ")
+            .Last();
+
+        if (accressToken == null)
+        {
+            _logger.LogError("Error: Token has not been received");
+            return BadRequest($"Invalid token: {accressToken}");
+        }
+
+        var tokenPayloadResult = await _tokenService.DecodeToken(accressToken);
+
+        if (tokenPayloadResult.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_tokenService.DecodeToken),
+                tokenPayloadResult.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_tokenService.DecodeToken)}, error message: {tokenPayloadResult.Error}");
+        }
+
+        var result = await _sessionService.Delete(tokenPayloadResult.Value.SessionId);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}", 
+                nameof(_sessionService.Delete),
+                result.Error);
+            return BadRequest(result.Error);
+        }
+
+        return Ok();
     }
 
     [HttpPost("refresh")]

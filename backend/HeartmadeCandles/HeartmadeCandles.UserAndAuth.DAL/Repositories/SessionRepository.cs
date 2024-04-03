@@ -72,4 +72,21 @@ public class SessionRepository : ISessionRepository
             ? Result.Success(newSession)
             : Result.Failure<Session>("Session was not updated");
     }
+
+    public async Task<Result> Delete(Guid sessionId)
+    {
+        var item = await _context.Session.FirstOrDefaultAsync(s => s.Id == sessionId);
+
+        if (item == null)
+        {
+            return Result.Failure($"Session by id: {sessionId} does not exist");
+        }
+
+        _context.Session.Remove(item);
+        var deleted = await _context.SaveChangesAsync();
+
+        return deleted > 0
+            ? Result.Success()
+            : Result.Failure($"Session by id: {sessionId} was not deleted");
+    }
 }
