@@ -1,17 +1,19 @@
 import { Smell } from '../types/Smell';
 import { SmellRequest } from '../types/Requests/SmellRequest';
 import { ApiResponse } from './ApiResponse';
+import { AuthHelper } from '../helpers/AuthHelper';
 
 import { apiUrl } from '../config';
 
 export const SmellsApi = {
   getAll: async (): Promise<ApiResponse<Smell[]>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/smells`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 
@@ -26,11 +28,12 @@ export const SmellsApi = {
   },
   getById: async (id: string): Promise<ApiResponse<Smell>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/smells/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 
@@ -45,11 +48,12 @@ export const SmellsApi = {
   },
   create: async (smell: SmellRequest): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/smells`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(smell),
       });
@@ -63,13 +67,17 @@ export const SmellsApi = {
       throw new Error(error as string);
     }
   },
-  update: async (id: string, smell: SmellRequest): Promise<ApiResponse<void>> => {
+  update: async (
+    id: string,
+    smell: SmellRequest,
+  ): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/smells/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(smell),
       });
@@ -85,11 +93,12 @@ export const SmellsApi = {
   },
   delete: async (id: string): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/smells/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 

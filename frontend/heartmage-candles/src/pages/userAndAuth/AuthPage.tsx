@@ -46,7 +46,9 @@ const AuthPage: FC = () => {
     async function fetchData() {
       const tokenResponse = await AuthApi.login(data.email, data.password);
       if (tokenResponse.data && !tokenResponse.error) {
-        localStorage.setItem('token', tokenResponse.data);
+        const token = tokenResponse.data;
+        const tokenJsonData = JSON.stringify(token);
+        localStorage.setItem('session', tokenJsonData);
       } else {
         setErrorMessage([...errorMessage, tokenResponse.error as string]);
       }

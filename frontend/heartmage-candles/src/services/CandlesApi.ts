@@ -2,17 +2,19 @@ import { Candle } from '../types/Candle';
 import { CandleDetail } from '../types/CandleDetail';
 import { CandleRequest } from '../types/Requests/CandleRequest';
 import { ApiResponse } from './ApiResponse';
+import { AuthHelper } from '../helpers/AuthHelper';
 
 import { apiUrl } from '../config';
 
 export const CandlesApi = {
   getAll: async (): Promise<ApiResponse<Candle[]>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/candles`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 
@@ -28,11 +30,12 @@ export const CandlesApi = {
 
   getById: async (id: string): Promise<ApiResponse<CandleDetail>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 
@@ -48,11 +51,12 @@ export const CandlesApi = {
 
   create: async (candle: CandleRequest): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/candles`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(candle),
       });
@@ -67,13 +71,17 @@ export const CandlesApi = {
     }
   },
 
-  update: async (id: string, candle: CandleRequest): Promise<ApiResponse<void>> => {
+  update: async (
+    id: string,
+    candle: CandleRequest,
+  ): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(candle),
       });
@@ -90,11 +98,12 @@ export const CandlesApi = {
 
   delete: async (id: string): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 
@@ -108,13 +117,17 @@ export const CandlesApi = {
     }
   },
 
-  updateDecor: async (id: string, decorIds: number[]): Promise<ApiResponse<void>> => {
+  updateDecor: async (
+    id: string,
+    decorIds: number[],
+  ): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/candles/${id}/decors`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(decorIds),
       });
@@ -129,16 +142,23 @@ export const CandlesApi = {
     }
   },
 
-  updateLayerColor: async (id: string, layerColorIds: number[]): Promise<ApiResponse<void>> => {
+  updateLayerColor: async (
+    id: string,
+    layerColorIds: number[],
+  ): Promise<ApiResponse<void>> => {
     try {
-      const response = await fetch(`${apiUrl}/admin/candles/${id}/layerColors`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+      const authorizationString = AuthHelper.getAuthorizationString();
+      const response = await fetch(
+        `${apiUrl}/admin/candles/${id}/layerColors`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: authorizationString,
+          },
+          body: JSON.stringify(layerColorIds),
         },
-        body: JSON.stringify(layerColorIds),
-      });
+      );
 
       if (response.ok) {
         return { data: null, error: null };
@@ -155,14 +175,18 @@ export const CandlesApi = {
     numberOfLayerIds: number[],
   ): Promise<ApiResponse<void>> => {
     try {
-      const response = await fetch(`${apiUrl}/admin/candles/${id}/numberOfLayers`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+      const authorizationString = AuthHelper.getAuthorizationString();
+      const response = await fetch(
+        `${apiUrl}/admin/candles/${id}/numberOfLayers`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: authorizationString,
+          },
+          body: JSON.stringify(numberOfLayerIds),
         },
-        body: JSON.stringify(numberOfLayerIds),
-      });
+      );
 
       if (response.ok) {
         return { data: null, error: null };
@@ -174,13 +198,17 @@ export const CandlesApi = {
     }
   },
 
-  updateSmell: async (id: string, smellIds: number[]): Promise<ApiResponse<void>> => {
+  updateSmell: async (
+    id: string,
+    smellIds: number[],
+  ): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/candles/${id}/smells`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(smellIds),
       });
@@ -195,13 +223,17 @@ export const CandlesApi = {
     }
   },
 
-  updateWick: async (id: string, wickIds: number[]): Promise<ApiResponse<void>> => {
+  updateWick: async (
+    id: string,
+    wickIds: number[],
+  ): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/candles/${id}/wicks`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(wickIds),
       });

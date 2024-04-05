@@ -1,17 +1,19 @@
 import { Wick } from '../types/Wick';
 import { WickRequest } from '../types/Requests/WickRequest';
 import { ApiResponse } from './ApiResponse';
+import { AuthHelper } from '../helpers/AuthHelper';
 
 import { apiUrl } from '../config';
 
 export const WicksApi = {
   getAll: async (): Promise<ApiResponse<Wick[]>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/wicks`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 
@@ -26,11 +28,12 @@ export const WicksApi = {
   },
   getById: async (id: string): Promise<ApiResponse<Wick>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/wicks/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 
@@ -45,11 +48,12 @@ export const WicksApi = {
   },
   create: async (wick: WickRequest): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/wicks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(wick),
       });
@@ -65,11 +69,12 @@ export const WicksApi = {
   },
   update: async (id: string, wick: WickRequest): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/wicks/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(wick),
       });
@@ -85,11 +90,12 @@ export const WicksApi = {
   },
   delete: async (id: string): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/wicks/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 

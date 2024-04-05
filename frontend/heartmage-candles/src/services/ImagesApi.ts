@@ -1,4 +1,5 @@
 import { ApiResponse } from './ApiResponse';
+import { AuthHelper } from '../helpers/AuthHelper';
 
 import { apiUrl } from '../config';
 
@@ -10,10 +11,11 @@ export const ImagesApi = {
         formData.append('formImages', files[i]);
       }
 
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/images`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: formData,
       });
@@ -29,11 +31,12 @@ export const ImagesApi = {
   },
   deleteImages: async (fileNames: string[]): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/images`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(fileNames),
       });

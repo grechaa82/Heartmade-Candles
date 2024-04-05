@@ -1,17 +1,19 @@
 import { NumberOfLayer } from '../types/NumberOfLayer';
 import { NumberOfLayerRequest } from '../types/Requests/NumberOfLayerRequest';
 import { ApiResponse } from './ApiResponse';
+import { AuthHelper } from '../helpers/AuthHelper';
 
 import { apiUrl } from '../config';
 
 export const NumberOfLayersApi = {
   getAll: async (): Promise<ApiResponse<NumberOfLayer[]>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/numberOfLayers`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 
@@ -24,13 +26,16 @@ export const NumberOfLayersApi = {
       throw new Error(error as string);
     }
   },
-  create: async (numberOfLayer: NumberOfLayerRequest): Promise<ApiResponse<void>> => {
+  create: async (
+    numberOfLayer: NumberOfLayerRequest,
+  ): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/numberOfLayers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(numberOfLayer),
       });
@@ -46,11 +51,12 @@ export const NumberOfLayersApi = {
   },
   delete: async (id: string): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/numberOfLayers/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 

@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 import CandleDetailsPage from './pages/admin/CandleDetailsPage';
 import AllCandlePage from './pages/admin/AllCandlePage';
@@ -24,10 +25,37 @@ import HomePage from './pages/home/HomePage';
 import NotFoundPage from './pages/home/NotFoundPage';
 import BotPage from './pages/admin/BotPage';
 import UserCreatePage from './pages/userAndAuth/UserCreatePage';
+import { AuthHelper } from './helpers/AuthHelper';
+import { TokenRequest } from './typesV2/userAndAuth/TokenRequest';
+
+import { AuthApi } from './services/AuthApi';
 
 import Style from './App.module.css';
 
 function App() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const intervalInMinutes = 170;
+    const intervalInMilliseconds = intervalInMinutes * 60000;
+    let interval = setInterval(async () => {
+      const token = AuthHelper.getToken();
+      if (token) {
+        const tokenRequest: TokenRequest = {
+          accessToken: token.AccessToken,
+          refreshToken: token.RefreshToken,
+        };
+        const newToken = await AuthApi.refreshToken(tokenRequest);
+        if (newToken.data && !newToken.error) {
+          AuthHelper.setToken(newToken.data);
+        } else {
+          navigate('/auth');
+        }
+      }
+    }, intervalInMilliseconds);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Routes>
       <Route
