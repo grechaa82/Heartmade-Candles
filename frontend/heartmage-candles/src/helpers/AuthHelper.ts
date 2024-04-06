@@ -20,6 +20,7 @@ export const AuthHelper = {
     }
     return undefined;
   },
+
   getAccessToken: (): string | undefined => {
     const token = AuthHelper.getToken();
     if (token) {
@@ -27,6 +28,7 @@ export const AuthHelper = {
     }
     return undefined;
   },
+
   getExpireAt: (): Date | undefined => {
     const token = AuthHelper.getToken();
     if (token) {
@@ -34,6 +36,7 @@ export const AuthHelper = {
     }
     return undefined;
   },
+
   getAuthorizationString: (): string => {
     const accessToken = AuthHelper.getAccessToken();
     if (accessToken) {
@@ -41,9 +44,8 @@ export const AuthHelper = {
     }
     return '';
   },
+
   setToken: (newToken: Token): void => {
-    console.log('OLD', localStorage.getItem('session'));
     localStorage.setItem('session', JSON.stringify(newToken));
-    console.log('NEW', localStorage.getItem('session'));
   },
 };

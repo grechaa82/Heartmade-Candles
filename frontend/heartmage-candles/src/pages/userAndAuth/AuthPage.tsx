@@ -1,9 +1,10 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
+import { AuthContext } from '../../context/AuthContext';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { AuthApi } from '../../services/AuthApi';
@@ -29,6 +30,8 @@ const loginSchema = yup
 type ButtonState = 'default' | 'invalid' | 'valid';
 
 const AuthPage: FC = () => {
+  const { setIsAuth } = useContext(AuthContext);
+
   const [buttonState, setButtonState] = useState<ButtonState>('default');
 
   const {
@@ -49,6 +52,7 @@ const AuthPage: FC = () => {
         const token = tokenResponse.data;
         const tokenJsonData = JSON.stringify(token);
         localStorage.setItem('session', tokenJsonData);
+        setIsAuth(true);
       } else {
         setErrorMessage([...errorMessage, tokenResponse.error as string]);
       }

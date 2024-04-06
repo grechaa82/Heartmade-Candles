@@ -13,14 +13,17 @@
   margin: 32px auto 0;
   padding: 0 32px;
 }
-.AdminContainer > div {
+
+.AdminContainer>div {
   margin-bottom: 32px;
 }
+
 @media only screen and (max-width: 992px) {
   .AdminContent {
     flex-direction: column;
     margin: 0 16px;
   }
+
   .AdminContainer {
     padding: 0;
     margin: 24px 0;
