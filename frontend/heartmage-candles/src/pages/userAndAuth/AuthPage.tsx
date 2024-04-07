@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -33,7 +33,7 @@ const AuthPage: FC = () => {
   const { setIsAuth } = useContext(AuthContext);
 
   const [buttonState, setButtonState] = useState<ButtonState>('default');
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -42,18 +42,23 @@ const AuthPage: FC = () => {
     mode: 'onChange',
     resolver: yupResolver(loginSchema),
   });
+  const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const onSubmit: SubmitHandler<LoginType> = (data) => {
     async function fetchData() {
+      setIsLoading(true);
       const tokenResponse = await AuthApi.login(data.email, data.password);
       if (tokenResponse.data && !tokenResponse.error) {
         const token = tokenResponse.data;
         const tokenJsonData = JSON.stringify(token);
         localStorage.setItem('session', tokenJsonData);
         setIsAuth(true);
+        setIsLoading(false);
+        navigate('/auth/success');
       } else {
+        setIsLoading(false);
         setErrorMessage([...errorMessage, tokenResponse.error as string]);
       }
     }
@@ -95,12 +100,18 @@ const AuthPage: FC = () => {
                 </p>
               )}
             </div>
-            <button
-              className={`${Style.loginBtn} ${Style[buttonState]}`}
-              type="submit"
-            >
-              Войти
-            </button>
+            {isLoading ? (
+              <button className={`${Style.loginBtn} ${Style[buttonState]}`}>
+                <span className={Style.loader}></span>
+              </button>
+            ) : (
+              <button
+                className={`${Style.loginBtn} ${Style[buttonState]}`}
+                type="submit"
+              >
+                Войти
+              </button>
+            )}
           </form>
           <Link className={Style.createBtn} to="/user/create">
             Создать аккаунт

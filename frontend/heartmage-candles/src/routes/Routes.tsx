@@ -1,21 +1,26 @@
-import { FC } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { FC, useContext } from 'react';
+import { Routes as Router, Route } from 'react-router-dom';
 
-import UserCreatePage from '../pages/userAndAuth/UserCreatePage';
+import PrivateRoutes from './PrivateRoutes';
+import { AuthContext } from '../context/AuthContext';
 import AuthPage from '../pages/userAndAuth/AuthPage';
-import ThankPage from '../pages/order/ThankPage';
-import BasketPage from '../pages/order/BasketPage';
-import ConstructorPage from '../pages/constructor/ConstructorPage';
+import AdminRoutes from './AdminRoutes';
 import HelpPage from '../pages/home/HelpPage';
 import ReviewPage from '../pages/home/ReviewPage';
 import ContactPage from '../pages/home/ContactPage';
 import AboutUs from '../pages/home/AboutUsPage';
 import HomePage from '../pages/home/HomePage';
 import NotFoundPage from '../pages/home/NotFoundPage';
+import ConstructorPage from '../pages/constructor/ConstructorPage';
+import BasketPage from '../pages/order/BasketPage';
+import ThankPage from '../pages/order/ThankPage';
+import AuthSuccessPage from '../pages/userAndAuth/AuthSuccessPage';
 
-const PublicRoutes: FC = () => {
+const Routes: FC = () => {
+  const { isAuth } = useContext(AuthContext);
+
   return (
-    <Routes>
+    <Router>
       <Route index element={<HomePage />} />
       <Route element={<AboutUs />} path="aboutUs" />
       <Route element={<ContactPage />} path="contact" />
@@ -25,10 +30,13 @@ const PublicRoutes: FC = () => {
       <Route element={<BasketPage />} path="baskets/:id" />
       <Route element={<ThankPage />} path="orders/:id/thank" />
       <Route element={<AuthPage />} path="auth" />
-      <Route element={<UserCreatePage />} path="user/create" />
+      <Route element={<PrivateRoutes />}>
+        <Route element={<AdminRoutes />} path="admin/*" />
+        <Route element={<AuthSuccessPage />} path="auth/success" />
+      </Route>
       <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+    </Router>
   );
 };
 
-export default PublicRoutes;
+export default Routes;
