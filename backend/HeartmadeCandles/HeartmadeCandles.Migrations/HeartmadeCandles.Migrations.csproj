@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HeartmadeCandles.Admin.DAL\HeartmadeCandles.Admin.DAL.csproj" />
+    <ProjectReference Include="..\HeartmadeCandles.UserAndAuth.DAL\HeartmadeCandles.UserAndAuth.DAL.csproj" />
   </ItemGroup>
 
 </Project>

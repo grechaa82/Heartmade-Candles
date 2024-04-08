@@ -1,15 +1,17 @@
 import { ApiResponse } from './ApiResponse';
+import { AuthHelper } from '../helpers/AuthHelper';
 
 import { apiUrl } from '../config';
 
 export const BotApi = {
   getChatIdsByRole: async (role: number): Promise<ApiResponse<number[]>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/bot/chat?role=${role}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
       });
 
@@ -25,11 +27,12 @@ export const BotApi = {
 
   upgradeChatRole: async (chatIds: number[]): Promise<ApiResponse<void>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/bot/chat/upgrade`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: authorizationString,
         },
         body: JSON.stringify(chatIds),
       });

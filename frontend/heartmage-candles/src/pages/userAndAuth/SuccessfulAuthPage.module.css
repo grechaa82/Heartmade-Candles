@@ -1,0 +1,85 @@
+.container {
+    height: 89vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 89vh;
+}
+
+.block>h3 {
+    margin: 0;
+    color: var(--color-222);
+    font-size: var(--font-size-heading-2);
+    font-weight: var(--font-weight-400);
+    line-height: var(--line-height-110);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.block>p {
+    all: unset;
+    font-size: var(--font-size-l);
+    font-weight: var(--font-weight-400);
+    line-height: var(--line-height-standard);
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.blockBtn {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.forAdminBtn {
+    all: unset;
+    margin-right: auto;
+    cursor: pointer;
+    color: var(--color-aaa);
+    padding: 1.5rem;
+}
+
+.forLogoutBtn {
+    all: unset;
+    margin-left: auto;
+    cursor: pointer;
+    color: var(--color-aaa);
+    padding: 1.5rem;
+}
+
+
+@media (max-width: 992px) {
+    .block {
+        margin-right: 1rem;
+        margin-left: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .block>h3 {
+        font-size: var(--font-size-heading-3);
+        font-weight: var(--font-weight-600);
+    }
+
+    .block>p {
+        font-size: var(--font-size-l);
+    }
+}
+
+@media (max-width: 580px) {
+    .gridContainer {
+        display: flex;
+        flex-direction: column;
+    }
+}
