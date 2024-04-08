@@ -12,11 +12,17 @@
   background: var(--color-fff);
   height: auto;
 }
+
 .navBlock {
   display: flex;
   gap: 32px;
   flex-direction: column;
 }
+
+.navLogoutBtn {
+  all: unset;
+}
+
 .navbarItem {
   text-decoration: none;
   color: var(--color-505050);
@@ -24,6 +30,7 @@
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
 }
+
 .active {
   color: var(--color-000);
   font-size: var(--font-size-l);
@@ -41,9 +48,11 @@
     width: auto;
     gap: 32px;
   }
+
   .navBlock {
     flex-direction: row;
   }
+
   .navbar::-webkit-scrollbar {
     display: none;
   }

@@ -48,4 +48,8 @@ export const AuthHelper = {
   setToken: (newToken: Token): void => {
     localStorage.setItem('session', JSON.stringify(newToken));
   },
+
+  removeToken: (): void => {
+    localStorage.removeItem('session');
+  },
 };
