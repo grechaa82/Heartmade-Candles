@@ -1,12 +1,12 @@
 import { FC, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-
-import { AuthApi } from '../../services/AuthApi';
+import { UserApi } from '../../services/UserApi';
+import { CreateUserRequest } from '../../typesV2/userAndAuth/CreateUserRequest';
 
 import Style from './UserCreatePage.module.css';
 
@@ -35,6 +35,7 @@ type ButtonState = 'default' | 'invalid' | 'valid';
 
 const UserCreatePage: FC = () => {
   const [buttonState, setButtonState] = useState<ButtonState>('default');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const {
     register,
@@ -44,12 +45,28 @@ const UserCreatePage: FC = () => {
     mode: 'onChange',
     resolver: yupResolver(userCreateSchema),
   });
+  const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const onSubmit: SubmitHandler<CreateUserType> = (data) => {
-    console.log(data);
-    async function fetchData() {}
+    async function fetchData() {
+      setIsLoading(true);
+      const createUserRequest: CreateUserRequest = {
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+      };
+
+      const candlesResponse = await UserApi.create(createUserRequest);
+      if (candlesResponse.data === null && !candlesResponse.error) {
+        setIsLoading(false);
+        navigate('/auth');
+      } else {
+        setIsLoading(false);
+        setErrorMessage([...errorMessage, candlesResponse.error as string]);
+      }
+    }
 
     fetchData();
   };
@@ -105,12 +122,18 @@ const UserCreatePage: FC = () => {
                 </p>
               )}
             </div>
-            <button
-              className={`${Style.loginBtn} ${Style[buttonState]}`}
-              type="submit"
-            >
-              Войти
-            </button>
+            {isLoading ? (
+              <button className={`${Style.loginBtn} ${Style[buttonState]}`}>
+                <span className={Style.loader}></span>
+              </button>
+            ) : (
+              <button
+                className={`${Style.loginBtn} ${Style[buttonState]}`}
+                type="submit"
+              >
+                Зарегистрироваться
+              </button>
+            )}
           </form>
           <Link to="/auth">Войти в аккаунт</Link>
         </div>

@@ -15,6 +15,7 @@ import ConstructorPage from '../pages/constructor/ConstructorPage';
 import BasketPage from '../pages/order/BasketPage';
 import ThankPage from '../pages/order/ThankPage';
 import AuthSuccessPage from '../pages/userAndAuth/AuthSuccessPage';
+import UserCreatePage from '../pages/userAndAuth/UserCreatePage';
 
 const Routes: FC = () => {
   const { isAuth } = useContext(AuthContext);
@@ -30,6 +31,7 @@ const Routes: FC = () => {
       <Route element={<BasketPage />} path="baskets/:id" />
       <Route element={<ThankPage />} path="orders/:id/thank" />
       <Route element={<AuthPage />} path="auth" />
+      <Route element={<UserCreatePage />} path="user/create" />
       <Route element={<PrivateRoutes />}>
         <Route element={<AdminRoutes />} path="admin/*" />
         <Route element={<AuthSuccessPage />} path="auth/success" />
