@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { Smell } from '../../types/Smell';
 import { SmellRequest } from '../../types/Requests/SmellRequest';
-import CreateSmellPopUp from '../../components/admin/PopUp/CreateSmellPopUp';
+import CreateSmellPopUp from '../../components/admin/PopUp/Smell/CreateSmellPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { SmellsApi } from '../../services/SmellsApi';
