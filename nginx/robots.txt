@@ -1,0 +1,11 @@
+# robots.txt for http://www.localhost.ru
+
+User-agent: *
+Disallow: /api
+Disallow: /basket
+Disallow: /user
+Disallow: /auth
+Disallow: /admin
+Disallow: /constructor?
+Allow: /
+Host: https://www.localhost.ru
