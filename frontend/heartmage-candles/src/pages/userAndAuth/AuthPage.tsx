@@ -38,7 +38,7 @@ const AuthPage: FC = () => {
     register,
     handleSubmit,
     formState: { isValid, errors },
-  } = useForm<LoginType>({
+  } = useForm({
     mode: 'onChange',
     resolver: yupResolver(loginSchema),
   });

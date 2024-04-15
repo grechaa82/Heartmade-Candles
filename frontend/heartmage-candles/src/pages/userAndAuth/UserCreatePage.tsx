@@ -41,7 +41,7 @@ const UserCreatePage: FC = () => {
     register,
     handleSubmit,
     formState: { isValid, errors },
-  } = useForm<CreateUserType>({
+  } = useForm({
     mode: 'onChange',
     resolver: yupResolver(userCreateSchema),
   });

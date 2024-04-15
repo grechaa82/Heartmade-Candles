@@ -19,9 +19,13 @@ services:
     image: ${DOCKER_REGISTRY-}frontend
     build:
       context: frontend/heartmage-candles
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     ports:
       - ${VAR_FRONTEND_PORT}:${VAR_FRONTEND_PORT}
+    stdin_open: true
+    volumes:
+      - /app/node_modules
+      - ./frontend/heartmage-candles:/app
 
   db:
     container_name: pg_db
@@ -53,6 +57,9 @@ services:
   proxy:
     container_name: proxy
     image: nginx:latest
+    build:
+      context: nginx
+      dockerfile: Dockerfile
     volumes:
       - ./nginx/default.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/nginx/certs

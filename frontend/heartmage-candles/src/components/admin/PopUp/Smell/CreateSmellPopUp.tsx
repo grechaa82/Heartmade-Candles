@@ -24,7 +24,7 @@ const CreateSmellPopUp: FC<CreateSmellPopUpProps> = ({
     handleSubmit,
     formState: { isValid, errors },
     control,
-  } = useForm<SmellType>({
+  } = useForm({
     mode: 'onChange',
     resolver: yupResolver(smellSchema),
     defaultValues: {

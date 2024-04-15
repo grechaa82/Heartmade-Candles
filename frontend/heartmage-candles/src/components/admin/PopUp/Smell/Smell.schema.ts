@@ -4,7 +4,8 @@ const MaxTitleLength = 48;
 const MaxDescriptionLength = 256;
 
 export const smellSchema = yup
-  .object({
+  .object()
+  .shape({
     title: yup
       .string()
       .required('Title is required')

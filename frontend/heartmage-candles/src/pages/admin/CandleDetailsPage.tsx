@@ -135,13 +135,13 @@ const CandleDetailsPage: FC = () => {
   };
 
   const handleChangesNumberOfLayers = (
-    updatedNumberOfLayers: TagData[]
+    updatedNumberOfLayers: TagData[],
   ): void => {
     const numberOfLayers: NumberOfLayer[] = updatedNumberOfLayers.map(
       (tagData) => ({
         id: tagData.id,
         number: parseInt(tagData.text),
-      })
+      }),
     );
 
     const newCandleDetailData: CandleDetail = {
@@ -193,9 +193,7 @@ const CandleDetailsPage: FC = () => {
       const ids = updatedDecors.map((d) => d.id);
 
       const candleDecorsResponse = await CandlesApi.updateDecor(id, ids);
-      if (candleDecorsResponse.data && !candleDecorsResponse.error) {
-        setCandleDetailData(candleDecorsResponse.data);
-      } else {
+      if (!candleDecorsResponse.error) {
         setErrorMessage([
           ...errorMessage,
           candleDecorsResponse.error as string,
@@ -211,11 +209,9 @@ const CandleDetailsPage: FC = () => {
 
       const candleLayerColorsResponse = await CandlesApi.updateLayerColor(
         id,
-        ids
+        ids,
       );
-      if (candleLayerColorsResponse.data && !candleLayerColorsResponse.error) {
-        setCandleDetailData(candleLayerColorsResponse.data);
-      } else {
+      if (!candleLayerColorsResponse.error) {
         setErrorMessage([
           ...errorMessage,
           candleLayerColorsResponse.error as string,
@@ -230,14 +226,9 @@ const CandleDetailsPage: FC = () => {
 
       const candleNumberOfLayersResponse = await CandlesApi.updateNumberOfLayer(
         id,
-        ids
+        ids,
       );
-      if (
-        candleNumberOfLayersResponse.data &&
-        !candleNumberOfLayersResponse.error
-      ) {
-        setCandleDetailData(candleNumberOfLayersResponse.data);
-      } else {
+      if (!candleNumberOfLayersResponse.error) {
         setErrorMessage([
           ...errorMessage,
           candleNumberOfLayersResponse.error as string,
@@ -252,9 +243,7 @@ const CandleDetailsPage: FC = () => {
       const ids = updatedSmells.map((s) => s.id);
 
       const candleSmellsResponse = await CandlesApi.updateSmell(id, ids);
-      if (candleSmellsResponse.data && !candleSmellsResponse.error) {
-        setCandleDetailData(candleSmellsResponse.data);
-      } else {
+      if (!candleSmellsResponse.error) {
         setErrorMessage([
           ...errorMessage,
           candleSmellsResponse.error as string,
@@ -269,9 +258,7 @@ const CandleDetailsPage: FC = () => {
       const ids = updatedWicks.map((w) => w.id);
 
       const candleWicksResponse = await CandlesApi.updateWick(id, ids);
-      if (candleWicksResponse.data && !candleWicksResponse.error) {
-        setCandleDetailData(candleWicksResponse.data);
-      } else {
+      if (!candleWicksResponse.error) {
         setErrorMessage([...errorMessage, candleWicksResponse.error as string]);
       }
     }
