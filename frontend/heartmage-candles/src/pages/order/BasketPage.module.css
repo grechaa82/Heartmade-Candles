@@ -7,32 +7,37 @@
   justify-content: space-between;
   gap: 2rem;
 }
+
 .leftPanel {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 3rem;
 }
-.rightPanel {
-}
-.backBtn {
-  margin-bottom: -24px;
-}
-.backBtn > button {
-  border-radius: var(--border-radius-primary);
-  border: 2px solid var(--color-eee);
-  background: var(--color-fff);
+
+.rightPanel {}
+
+.backBtn {}
+
+.backBtn>button {
+  all: unset;
+  font-weight: 400;
+  font-size: var(--font-size-l);
+  color: var(--color-aaa);
+  cursor: pointer;
 }
 
 @media (max-width: 1100px) {
   .container {
     flex-direction: column;
   }
+
   .rightPanel {
     position: sticky;
     bottom: 0;
   }
 }
+
 @media (max-width: 992px) {
   .container {
     padding: 1.5rem 1rem;

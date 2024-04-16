@@ -173,12 +173,7 @@ const OrderPage: FC = () => {
         <>
           <div className={Style.leftPanel}>
             <div className={Style.backBtn}>
-              <ButtonWithIcon
-                text="Конструктор"
-                onClick={handleNavigateToConstructor}
-                icon={IconArrowLeftLarge}
-                color="#aaa"
-              />
+              <button onClick={handleNavigateToConstructor}>Вернуться</button>
             </div>
             <ListProductsCart products={basket.items} />
             <FormFeedback itemsFormFeedbacks={itemsFormFeedback} />
