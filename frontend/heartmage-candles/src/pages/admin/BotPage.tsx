@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 
 import TagsGrid from '../../modules/admin/TagsGrid';
 import { TagData } from '../../components/shared/Tag';
+import CreateTagPopUp from '../../components/admin/PopUp/CreateTagPopUp';
 
 import { BotApi } from '../../services/BotApi';
 
@@ -13,19 +14,39 @@ const BotPage: FC<BotPageProps> = () => {
   const [chatIds, setChatIds] = useState<number[]>([]);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
-  const updateChatIds = async (updatedItems: TagData[]) => {
-    const response = await BotApi.upgradeChatRole(chatIds);
+  const handleCreateChatId = async (tag: TagData): Promise<void> => {
+    const newId = parseInt(tag.text);
+    if (!chatIds.includes(newId)) {
+      const updatedChatIds = [...chatIds, newId];
+      const response = await BotApi.upgradeChatRole(updatedChatIds);
+      if (response.error) {
+        setErrorMessage([...errorMessage, response.error as string]);
+      }
+      const candlesResponse = await BotApi.getChatIdsByRole(1);
+      if (candlesResponse.data && !candlesResponse.error) {
+        setChatIds(candlesResponse.data);
+      } else {
+        setErrorMessage([...errorMessage, candlesResponse.error as string]);
+      }
+    } else {
+      setErrorMessage([...errorMessage, `Id: ${newId} уже существует`]);
+    }
+  };
 
+  const handleDeleteChatId = async (id: string) => {
+    const idToRemove = parseInt(id);
+    const updatedChatIds = chatIds.filter((chatId) => chatId !== idToRemove);
+
+    const response = await BotApi.upgradeChatRole(updatedChatIds);
     if (response.error) {
       setErrorMessage([...errorMessage, response.error as string]);
     }
-  };
-  const handleChangesChatIds = (updatedItems: TagData[]): void => {
-    const newIds = updatedItems.map((tagData) => parseInt(tagData.text));
-
-    const updatedChatIds = chatIds.filter((id) => newIds.includes(id));
-
-    setChatIds(updatedChatIds);
+    const candlesResponse = await BotApi.getChatIdsByRole(1);
+    if (candlesResponse.data && !candlesResponse.error) {
+      setChatIds(candlesResponse.data);
+    } else {
+      setErrorMessage([...errorMessage, candlesResponse.error as string]);
+    }
   };
 
   useEffect(() => {
@@ -44,10 +65,18 @@ const BotPage: FC<BotPageProps> = () => {
   return (
     <>
       <TagsGrid
-        title="Чаты с правами администратора"
+        title="Админ чаты"
         tags={convertChatIdsToTagData(chatIds)}
-        onSave={updateChatIds}
-        onChanges={handleChangesChatIds}
+        onDelete={handleDeleteChatId}
+        withInput={false}
+        popUpComponent={
+          <CreateTagPopUp
+            onClose={() => console.log('Popup closed')}
+            title="Добавить чат"
+            isNumber={true}
+            onSave={handleCreateChatId}
+          />
+        }
       />
       <div></div>
     </>

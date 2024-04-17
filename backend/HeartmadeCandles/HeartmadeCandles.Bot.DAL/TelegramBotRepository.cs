@@ -92,13 +92,33 @@ public class TelegramBotRepository : ITelegramBotRepository
 
     public async Task<Result> UpgradeChatRoleToAdmin(long[] newAdminChatIds)
     {
-        var adminFilter = Builders<TelegramUserDocument>.Filter.Eq(t => t.Role, TelegramUserRole.Admin);
-        var adminUpdate = Builders<TelegramUserDocument>.Update.Set(t => t.Role, TelegramUserRole.Buyer);
-        await _telegramUserCollection.UpdateManyAsync(adminFilter, adminUpdate);
-            
-        var filter = Builders<TelegramUserDocument>.Filter.In(u => u.ChatId, newAdminChatIds);
-        var update = Builders<TelegramUserDocument>.Update.Set(u => u.Role, TelegramUserRole.Admin);
-        await _telegramUserCollection.UpdateManyAsync(filter, update);
+        var adminUsers = await _telegramUserCollection
+            .Find(u => u.Role == TelegramUserRole.Admin)
+            .ToListAsync();
+
+        var adminChatIds = adminUsers.Select(u => u.ChatId).ToArray();
+        var nonAdminChatIds = adminChatIds.Except(newAdminChatIds).ToArray();
+
+        var deleteAdminRoleFilter = Builders<TelegramUserDocument>.Filter
+            .In(u => u.ChatId, nonAdminChatIds);
+        var deleteAdminRoleUpdate = Builders<TelegramUserDocument>.Update
+            .Set(u => u.Role, TelegramUserRole.Buyer);
+        var deleteAdminRoleResult = await _telegramUserCollection.UpdateManyAsync(
+            deleteAdminRoleFilter, 
+            deleteAdminRoleUpdate);
+
+        var addAdminRoleFilter = Builders<TelegramUserDocument>.Filter
+            .In(u => u.ChatId, newAdminChatIds);
+        var addAdminRoleUpdate = Builders<TelegramUserDocument>.Update
+            .Set(u => u.Role, TelegramUserRole.Admin);
+        var addAdminRoleResult = await _telegramUserCollection.UpdateManyAsync(
+            addAdminRoleFilter, 
+            addAdminRoleUpdate);
+
+        if(addAdminRoleResult.ModifiedCount == 0 && deleteAdminRoleResult.MatchedCount == 0)
+        {
+            return Result.Failure($"There are no users who need to update the role");
+        }
 
         return Result.Success();
     }

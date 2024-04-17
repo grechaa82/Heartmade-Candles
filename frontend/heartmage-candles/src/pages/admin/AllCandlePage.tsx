@@ -25,7 +25,7 @@ export interface AllCandlePageProps {}
 const AllCandlePage: FC<AllCandlePageProps> = () => {
   const [typeCandlesData, setTypeCandlesData] = useState<TypeCandle[]>([]);
   const [numberOfLayersData, setNumberOfLayersData] = useState<NumberOfLayer[]>(
-    []
+    [],
   );
   const [candlesData, setCandlesData] = useState<Candle[]>([]);
 
@@ -197,6 +197,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     <>
       <TagsGrid
         title="Типы свечей"
+        withInput={false}
         tags={convertCandlesToTagData(typeCandlesData)}
         popUpComponent={
           <CreateTagPopUp
@@ -210,6 +211,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       />
       <TagsGrid
         title="Количество слоев"
+        withInput={false}
         tags={convertToTagData(numberOfLayersData)}
         popUpComponent={
           <CreateTagPopUp

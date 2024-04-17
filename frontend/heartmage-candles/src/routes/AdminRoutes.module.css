@@ -12,6 +12,7 @@
   flex-direction: column;
   margin: 32px auto 0;
   padding: 0 32px;
+  width: 100%;
 }
 
 .AdminContainer>div {
