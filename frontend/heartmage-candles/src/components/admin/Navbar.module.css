@@ -11,6 +11,12 @@
   height: 100%;
   background: var(--color-fff);
   height: auto;
+  z-index: 98;
+  transition: top 0.3s ease;
+}
+
+.scrolledNavbar {
+  top: 62px;
 }
 
 .navBlock {

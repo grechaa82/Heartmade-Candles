@@ -12,25 +12,22 @@ const Header: FC = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
-  const [prevScrollpos, setPrevScrollpos] = useState(window.scrollY);
+  const [position, setPosition] = useState(window.pageYOffset);
   const [visible, setVisible] = useState(true);
 
-  const handleScroll = () => {
-    const currentScrollPos = window.scrollY;
-    if (currentScrollPos > 50) {
-      const visible = prevScrollpos > currentScrollPos;
-      setPrevScrollpos(currentScrollPos);
-      setVisible(visible);
-    }
-  };
-
   useEffect(() => {
+    const handleScroll = () => {
+      let moving = window.pageYOffset;
+
+      setVisible(position > moving);
+      setPosition(moving);
+      setIsMenuOpen(false);
+    };
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [prevScrollpos]);
+  });
 
   return (
     <header

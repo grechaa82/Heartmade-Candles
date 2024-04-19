@@ -66,7 +66,7 @@ const ImageSlider: FC<ImageSliderProps> = ({
     const imagesResponse = await ImagesApi.deleteImages(fileNames);
     if (!imagesResponse.error) {
       const newImagesState: Image[] = images.filter(
-        (i) => i.fileName !== image.fileName
+        (i) => i.fileName !== image.fileName,
       );
       updateImages(newImagesState);
     }

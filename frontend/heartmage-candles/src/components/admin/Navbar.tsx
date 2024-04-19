@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch, useNavigate } from 'react-router-dom';
 
 import { AuthApi } from '../../services/AuthApi';
@@ -17,6 +17,22 @@ const Navbar: FC = () => {
   const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
     `${Style.navbarItem} ${isActive ? Style.active : ''}`;
 
+  const [position, setPosition] = useState(window.pageYOffset);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      let moving = window.pageYOffset;
+
+      setVisible(position > moving);
+      setPosition(moving);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  });
+
   const onSubmit = () => {
     async function fetchData() {
       const tokenResponse = await AuthApi.logout();
@@ -30,7 +46,11 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className={Style.navbar}>
+    <nav
+      className={
+        visible ? `${Style.navbar} ${Style.scrolledNavbar}` : Style.navbar
+      }
+    >
       <div className={Style.navBlock}>
         <NavLink className={navLinkClassName} to="/">
           Статистика
