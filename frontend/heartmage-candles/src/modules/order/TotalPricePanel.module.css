@@ -4,11 +4,13 @@
   border-radius: var(--border-radius-primary);
   background: var(--color-fafafa);
 }
+
 .panel p {
   margin: 0;
 }
-.infoBlock {
-}
+
+.infoBlock {}
+
 .totalPriceBlock {
   display: flex;
   justify-content: space-between;
@@ -17,10 +19,12 @@
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
 }
+
 .totalPrice {
   color: var(--color-blue);
   font-weight: var(--font-weight-600);
 }
+
 .totalQuantityBlock {
   color: var(--Color-222);
   font-size: var(--font-size-l);
@@ -29,13 +33,11 @@
   margin-top: 16px;
   margin-bottom: 24px;
 }
+
 .createOrder {
   all: unset;
   box-sizing: border-box;
   border-radius: var(--border-radius-primary);
-  border: 2px solid var(--color-light-green);
-  background-color: var(--color-light-green);
-  color: var(--color-green);
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-500);
   line-height: var(--line-height-standard);
@@ -44,6 +46,21 @@
   justify-content: center;
   padding: 0.875rem 1rem 1rem 1rem;
   align-items: center;
+}
+
+.default {
+  border: 2px solid var(--color-light-blue);
+  color: var(--color-blue);
+}
+
+.invalid {
+  background-color: var(--color-light-red);
+  color: var(--color-red);
+}
+
+.valid {
+  background-color: var(--color-green);
+  color: var(--color-fff);
 }
 
 @media (max-width: 1100px) {
@@ -58,19 +75,23 @@
     border-radius: 0;
     align-items: center;
   }
+
   .createOrder {
     width: auto;
     padding: 0.875rem 1rem 1rem 1rem;
   }
+
   .infoBlock {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
+
   .totalPriceBlock {
     font-size: var(--font-size-l);
     gap: 1rem;
   }
+
   .totalQuantityBlock {
     margin: 0;
     font-size: var(--font-size-m);
@@ -78,7 +99,7 @@
 }
 
 @media (max-width: 480px) {
-  .totalPriceBlock > p:first-child {
+  .totalPriceBlock>p:first-child {
     display: none;
   }
 }

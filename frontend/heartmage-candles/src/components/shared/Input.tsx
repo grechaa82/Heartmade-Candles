@@ -13,6 +13,7 @@ export interface InputProps {
   type?: string;
   pattern?: string;
   placeholder?: string;
+  errorMessage?: string;
 }
 
 const Input: FC<InputProps> = ({
@@ -24,6 +25,7 @@ const Input: FC<InputProps> = ({
   type = 'text',
   pattern,
   placeholder,
+  errorMessage,
 }) => {
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
@@ -32,31 +34,23 @@ const Input: FC<InputProps> = ({
   const isValid = validation ? validation(value) : true;
 
   return (
-    <div
-      className={`${Style.input} ${
-        !isValid && value ? Style.invalidInput : ''
-      }`}
-    >
-      <label>
-        {label}
-        {required && !value && <span> *</span>}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={handleInputChange}
-        pattern={pattern}
-        placeholder={placeholder}
-        required
-      />
-      <div className={Style.validationBlock}>
-        {!isValid && value && (
-          <span>
-            <IconAlertCircleLarge color="#eb5757" />
-          </span>
-        )}
+    <>
+      <div className={Style.inputWrapper}>
+        <label className={Style.label}>
+          {label} {required && !value && <span> *</span>}
+        </label>
+        <input
+          type={type}
+          value={value}
+          onChange={handleInputChange}
+          className={Style.input}
+          pattern={pattern}
+          placeholder={placeholder}
+          required
+        />
+        {!isValid && <p className={Style.validationError}>{errorMessage}</p>}
       </div>
-    </div>
+    </>
   );
 };
 

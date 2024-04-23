@@ -7,14 +7,17 @@
   border-radius: var(--border-radius-primary);
   border: 2px solid var(--color-eee);
   gap: 16px;
+  width: auto;
 }
+
 .title {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.icon {
-}
+
+.icon {}
+
 .selectedBlock {
   position: absolute;
   width: 20px;
@@ -27,12 +30,14 @@
   justify-content: center;
   align-items: center;
 }
+
 .selected {
   width: 16px;
   height: 16px;
   border-radius: var(--border-radius-secondary-large);
   background: var(--color-green);
 }
+
 .inputBlock {
   width: 100%;
 }

@@ -5,6 +5,7 @@
   line-height: var(--line-height-standard);
   margin-bottom: 8px;
 }
+
 .description {
   color: var(--color-505050);
   font-size: var(--font-size-l);
@@ -12,10 +13,13 @@
   line-height: var(--line-height-standard);
   margin-bottom: 24px;
 }
+
 .form {
   display: flex;
   gap: 8px;
+  flex-direction: column;
 }
+
 .column {
   width: 100%;
   display: flex;

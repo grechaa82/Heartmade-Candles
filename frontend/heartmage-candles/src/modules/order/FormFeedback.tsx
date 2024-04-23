@@ -18,6 +18,7 @@ export interface ItemFormFeedback {
   isSelected: boolean;
   validation: (value: string) => boolean;
   icon?: FC<IconProps>;
+  errorMessage?: string;
 }
 
 export interface FormFeedbackProps {
@@ -73,6 +74,7 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
                       value={item.value}
                       onChange={item.onChangeUsername}
                       validation={item.validation}
+                      errorMessage={item.errorMessage}
                     />
                   }
                   key={index}
@@ -95,6 +97,7 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
                       value={item.value}
                       onChange={item.onChangeUsername}
                       validation={item.validation}
+                      errorMessage={item.errorMessage}
                     />
                   }
                   key={index}
@@ -117,6 +120,7 @@ const FormFeedback: FC<FormFeedbackProps> = ({ itemsFormFeedbacks }) => {
                     value={item.value}
                     onChange={item.onChangeUsername}
                     validation={item.validation}
+                    errorMessage={item.errorMessage}
                   />
                 }
                 key={index}
