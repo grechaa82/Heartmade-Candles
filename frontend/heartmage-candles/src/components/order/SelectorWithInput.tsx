@@ -1,24 +1,23 @@
-import { FC, ReactElement } from 'react';
+import { FC, ReactNode } from 'react';
 
 import { IconProps } from '../../UI/IconProps';
-import { InputProps } from '../shared/Input';
 
 import Style from './SelectorWithInput.module.css';
 
 export interface SelectorWithInputProps {
   title: string;
   icon?: FC<IconProps>;
-  input: ReactElement<InputProps>;
   isSelected?: boolean;
   onSelected: () => void;
+  children?: ReactNode;
 }
 
 const SelectorWithInput: FC<SelectorWithInputProps> = ({
   title,
   icon: Icon,
-  input,
   isSelected = false,
   onSelected,
+  children,
 }) => {
   return (
     <div className={Style.selectorWithInput} onClick={() => onSelected()}>
@@ -29,7 +28,7 @@ const SelectorWithInput: FC<SelectorWithInputProps> = ({
       <div className={Style.selectedBlock}>
         {isSelected && <div className={Style.selected}></div>}
       </div>
-      {isSelected && <div className={Style.inputBlock}>{input}</div>}
+      {isSelected && <div className={Style.inputBlock}>{children}</div>}
     </div>
   );
 };

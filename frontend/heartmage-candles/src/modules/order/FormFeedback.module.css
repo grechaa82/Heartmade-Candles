@@ -14,7 +14,8 @@
   margin-bottom: 24px;
 }
 
-.form {
+.form,
+.form>form {
   display: flex;
   gap: 8px;
   flex-direction: column;
