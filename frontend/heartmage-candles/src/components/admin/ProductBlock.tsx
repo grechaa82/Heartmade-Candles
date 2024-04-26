@@ -2,11 +2,10 @@ import { FC, useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 import { BaseProduct } from '../../types/BaseProduct';
-import Checkbox from './Checkbox';
 import IconMoreVertLarge from '../../UI/IconMoreVertLarge';
 import ContextMenu, { Action } from './ContextMenu';
-import { apiUrlToImage } from '../../config';
 import { Image } from '../../types/Image';
+import CustomImage from '../shared/Image';
 
 import Style from './ProductBlock.module.css';
 
@@ -76,12 +75,10 @@ const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({
         className={`${areThereImages ? Style.imageBlock : Style.nonImageBlock}`}
       >
         {firstImage && (
-          <div className={Style.image}>
-            <img
-              src={`${apiUrlToImage}/${firstImage.fileName}`}
-              alt={firstImage.alternativeName}
-            />
-          </div>
+          <CustomImage
+            name={firstImage.fileName}
+            alt={firstImage.alternativeName}
+          />
         )}
       </div>
       <div className={Style.info}>

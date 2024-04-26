@@ -4,7 +4,7 @@ import CornerTag from './CornerTag';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 import IconMinusLarge from '../../UI/IconMinusLarge';
-import { apiUrlToImage } from '../../config';
+import CustomImage from '../shared/Image';
 
 import Style from './ProductCart.module.css';
 
@@ -21,7 +21,8 @@ const ProductCart: FC<ProductCartProps> = ({
   quantity,
   index,
 }) => {
-  const firstImage = product.images && product.images.length > 0 ? product.images[0] : null;
+  const firstImage =
+    product.images && product.images.length > 0 ? product.images[0] : null;
 
   const onIncreasesQuantityProduct = () => {
     onChangingQuantityProduct(quantity + 1, index);
@@ -33,20 +34,27 @@ const ProductCart: FC<ProductCartProps> = ({
   return (
     <div className={Style.productCart}>
       <div className={Style.imageBlock}>
-        <div className={Style.image}>
-          {firstImage && (
-            <img src={`${apiUrlToImage}/${firstImage.fileName}`} alt={firstImage.alternativeName} />
-          )}
-        </div>
+        {firstImage && (
+          <CustomImage
+            name={firstImage.fileName}
+            alt={firstImage.alternativeName}
+          />
+        )}
         <div className={Style.quantity}>
           <CornerTag number={quantity} type="coutner" />
         </div>
       </div>
       <div className={Style.quantityManagement}>
-        <button className={Style.iconBtn} onClick={() => onIncreasesQuantityProduct()}>
+        <button
+          className={Style.iconBtn}
+          onClick={() => onIncreasesQuantityProduct()}
+        >
           <IconPlusLarge color="#aaa" />
         </button>
-        <button className={Style.iconBtn} onClick={() => onDecreasesQuantityProduct()}>
+        <button
+          className={Style.iconBtn}
+          onClick={() => onDecreasesQuantityProduct()}
+        >
           <IconMinusLarge color="#aaa" />
         </button>
       </div>

@@ -5,7 +5,7 @@ import Button from '../../shared/Button';
 import { Image } from '../../../types/Image';
 import IconRemoveLarge from '../../../UI/IconRemoveLarge';
 import IconTrashLarge from '../../../UI/IconTrashLarge';
-import { apiUrlToImage } from '../../../config';
+import CustomImage from '../../shared/Image';
 
 import Style from './ChangeImagesPopUp.module.css';
 
@@ -69,9 +69,11 @@ const ChangeImagesPopUp: FC<ChangeImagesPopUpProps> = ({
               draggable={true}
               key={index}
             >
-              <div className={Style.image}>
-                <img src={`${apiUrlToImage}/${image.fileName}`} alt={image.alternativeName} />
-              </div>
+              <CustomImage
+                name={image.fileName}
+                alt={image.alternativeName}
+                className={Style.squareImage}
+              />
               <div className={Style.info}>
                 <p className={Style.title}>{image.fileName}</p>
                 <p className={Style.description}>{image.alternativeName}</p>

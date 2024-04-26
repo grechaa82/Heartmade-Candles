@@ -7,6 +7,7 @@ import Tag from '../shared/Tag';
 import IconAlertCircleLarge from '../../UI/IconAlertCircleLarge';
 import { apiUrlToImage } from '../../config';
 import InfoBlockPopUp from './InfoBlockPopUp';
+import CustomImage from '../shared/Image';
 
 import Style from './Product.module.css';
 
@@ -78,7 +79,7 @@ const Product: FC<ProductProps> = ({
   }, [showInfoBlockPopup]);
 
   return (
-    <div className={Style.product}>
+    <div className={`${Style.product} ${Style.withBackground}`}>
       <div
         className={Style.descriptionWrapper}
         onMouseEnter={handleMouseOver}
@@ -103,25 +104,23 @@ const Product: FC<ProductProps> = ({
           type="button"
           onClick={() => handleSelectProduct()}
         >
-          <div className={Style.image}>
-            {firstImage && (
-              <img
-                src={`${apiUrlToImage}/${firstImage.fileName}`}
-                alt={firstImage.alternativeName}
-              />
-            )}
-          </div>
+          {firstImage && (
+            <CustomImage
+              name={firstImage.fileName}
+              alt={firstImage.alternativeName}
+              className={Style.overflowHidden}
+            />
+          )}
         </button>
       ) : (
         <Link to={getProductLink()} className={Style.link}>
-          <div className={Style.image}>
-            {firstImage && (
-              <img
-                src={`${apiUrlToImage}/${firstImage.fileName}`}
-                alt={firstImage.alternativeName}
-              />
-            )}
-          </div>
+          {firstImage && (
+            <CustomImage
+              name={firstImage.fileName}
+              alt={firstImage.alternativeName}
+              className={Style.overflowHidden}
+            />
+          )}
         </Link>
       )}
       <div className={Style.indexTag}>

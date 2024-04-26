@@ -1,21 +1,17 @@
-.orderItem {
-}
+.orderItem {}
+
 .mainInfo {
   display: flex;
   align-items: center;
 }
-.image {
-  width: 108px;
+
+.squareImage {
+  aspect-ratio: 1;
   height: 108px;
+  width: 108px;
   margin-right: 8px;
-  aspect-ratio: 1 / 1;
 }
-.image > img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: var(--border-radius-primary);
-}
+
 .info {
   display: flex;
   justify-content: space-between;
@@ -27,18 +23,21 @@
   margin-top: -8px;
   gap: 4rem;
 }
+
 .secondaryBlock {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 2rem;
 }
+
 .titleBlock {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
 }
+
 .title {
   margin: 0;
   overflow: hidden;
@@ -46,6 +45,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
 }
+
 .showMoreInfoBtn {
   all: unset;
   display: flex;
@@ -55,27 +55,34 @@
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
 }
-.showMoreInfoBtn > svg > path {
+
+.showMoreInfoBtn>svg>path {
   fill: var(--color-aaa);
 }
+
 .quantity {
   margin: 0;
   width: 4rem;
+  text-align: right;
 }
+
 .price {
   font-weight: var(--font-weight-600);
   margin: 0;
   width: 6.25rem;
   text-align: right;
 }
+
 .paramsBlock {
   margin-left: 116px;
 }
+
 .params {
   display: flex;
   width: 100%;
   gap: 8px;
 }
+
 .paramsTitle {
   margin: 0;
   width: 26%;
@@ -84,24 +91,29 @@
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
 }
+
 .paramsListInfo {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 .paramsListInfoItem {
   display: flex;
   gap: 8px;
 }
-.paramsListInfoItem > span {
+
+.paramsListInfoItem>span {
   color: var(--color-aaa);
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
 }
+
 .paramsInfo {
   margin: 0;
 }
+
 .separator {
   display: block;
   margin: 8px 0;
@@ -128,16 +140,20 @@
     gap: 0.5rem;
     margin: 0;
   }
+
   .titleBlock {
     gap: 0;
   }
+
   .secondaryBlock {
     flex-direction: row-reverse;
     justify-content: flex-end;
   }
+
   .price {
     text-align: left;
   }
+
   .quantity {
     margin-left: auto;
   }

@@ -7,7 +7,7 @@ import IconViewListLarge from '../../UI/IconViewListLarge';
 import { Image } from '../../types/Image';
 import AddImagesPopUp from './PopUp/AddImagesPopUp';
 import ChangeImagesPopUp from './PopUp/ChangeImagesPopUp';
-import { apiUrlToImage } from '../../config';
+import CustomImage from '../shared/Image';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -106,12 +106,11 @@ const ImageSlider: FC<ImageSliderProps> = ({
 
   return (
     <div className={Style.imageSlider}>
-      <div className={Style.image}>
-        <img
-          src={`${apiUrlToImage}/${images[currentImageIndex].fileName}`}
-          alt={images[currentImageIndex].alternativeName}
-        />
-      </div>
+      <CustomImage
+        name={images[currentImageIndex].fileName}
+        alt={images[currentImageIndex].alternativeName}
+        className={Style.squareImage}
+      />
       <div className={Style.slider}>
         <button
           className={Style.iconChevronBtn}
@@ -121,12 +120,14 @@ const ImageSlider: FC<ImageSliderProps> = ({
           <IconChevronLeftLarge color="#777" />
         </button>
         {images.map((image, index) => (
-          <img
-            key={index}
-            src={`${apiUrlToImage}/${image.fileName}`}
-            className={Style.sliderImage}
+          <button
+            className={Style.sliderBtn}
+            type="button"
             onClick={() => handleChangeImage(index)}
-          />
+            key={index}
+          >
+            <CustomImage name={image.fileName} alt={image.alternativeName} />
+          </button>
         ))}
         <button
           className={Style.iconChevronBtn}

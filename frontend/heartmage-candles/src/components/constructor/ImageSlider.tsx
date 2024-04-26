@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 
 import { Image } from '../../types/Image';
-import { apiUrlToImage } from '../../config';
 import IconChevronUpLarge from '../../UI/IconChevronUpLarge';
 import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
+import CustomImage from '../shared/Image';
+import CustomImageWithProgressBar from '../shared/CustomImageWithProgressBar';
 
 import Style from './ImageSlider.module.css';
 
@@ -13,7 +14,7 @@ interface ImageSliderProps {
 
 const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [scrollTime, setScrollTime] = useState(15);
+  const [scrollTime, setScrollTime] = useState(10);
   const [timeLeft, setTimeLeft] = useState(scrollTime);
 
   const handleChangeImage = (index: number, moveToIndex?: number) => {
@@ -47,13 +48,11 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
 
   return (
     <div className={Style.imageBlock}>
-      <div className={Style.image}>
-        <img
-          className={Style.mainImage}
-          src={`${apiUrlToImage}/${images[currentImageIndex].fileName}`}
-          alt={images[currentImageIndex].alternativeName}
-        />
-      </div>
+      <CustomImage
+        name={images[currentImageIndex].fileName}
+        alt={images[currentImageIndex].alternativeName}
+        className={Style.squareImage}
+      />
       <div className={Style.slider}>
         <button
           className={Style.iconChevronBtn}
@@ -71,16 +70,13 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
               type="button"
               onClick={() => setCurrentImageIndex(index)}
             >
-              <div className={Style.image}>
-                <img src={`${apiUrlToImage}/${image.fileName}`} />
-                {currentImageIndex === index && (
-                  <progress
-                    className={Style.progress}
-                    value={timeLeft}
-                    max={scrollTime}
-                  ></progress>
-                )}
-              </div>
+              <CustomImageWithProgressBar
+                name={image.fileName}
+                alt={image.alternativeName}
+                showProgressBar={currentImageIndex === index}
+                progressValue={timeLeft}
+                progressMax={scrollTime}
+              />
             </button>
           </div>
         ))}
