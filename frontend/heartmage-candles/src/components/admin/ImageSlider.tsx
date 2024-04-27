@@ -48,7 +48,11 @@ const ImageSlider: FC<ImageSliderProps> = ({
     setIsAddImagesPopUpOpen(true);
   };
 
-  const handleAddImagesPopUpClose = () => {
+  const handleAddImagesPopUpClose = async (uploadedImages?: string[]) => {
+    if (uploadedImages) {
+      const imagesToDelete = uploadedImages;
+      await ImagesApi.deleteImages(imagesToDelete);
+    }
     setIsAddImagesPopUpOpen(false);
   };
 

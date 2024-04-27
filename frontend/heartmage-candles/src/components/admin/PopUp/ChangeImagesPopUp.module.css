@@ -1,46 +1,11 @@
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(34, 34, 34, 0.1);
-  z-index: 100;
-}
-
-.popUp {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: var(--color-fff);
-  width: 678px;
-  z-index: 101;
-  border-radius: var(--border-radius-primary);
-}
-
-.closeButton {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin-top: 24px;
-  margin-right: 24px;
-  padding: 0;
-  border: none;
-  font: inherit;
-  color: inherit;
-  background-color: transparent;
-  cursor: pointer;
-}
-
 .container {
   padding: 32px;
   padding-top: 48px;
   height: -webkit-fill-available;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
 }
 
 .container>button {
@@ -50,13 +15,13 @@
 .imageBlock {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .info {
   display: flex;
   gap: 3px;
   flex-direction: column;
-  margin-left: 12px;
 }
 
 .title {
@@ -66,6 +31,10 @@
   font-size: var(--font-size-l);
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .description {
@@ -82,18 +51,11 @@
   margin-left: auto;
 }
 
-.separator {
-  width: 100%;
-  height: 2px;
-  background-color: #eee;
-}
-
-.separator:last-child {
-  display: none;
+.imagePrev {
+  max-width: 72px;
 }
 
 .squareImage {
   overflow: hidden;
   aspect-ratio: 1;
-  width: 72px;
 }
