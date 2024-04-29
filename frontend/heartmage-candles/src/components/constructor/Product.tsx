@@ -80,24 +80,6 @@ const Product: FC<ProductProps> = ({
 
   return (
     <div className={`${Style.product} ${Style.withBackground}`}>
-      <div
-        className={Style.descriptionWrapper}
-        onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
-        ref={elementRef}
-      >
-        <button className={Style.descriptionBtn}>
-          <IconAlertCircleLarge color="#aaa" />
-        </button>
-        {showInfoBlockPopup && (
-          <InfoBlockPopUp
-            title={product.title}
-            description={product.description}
-            x={position.x}
-            y={position.y}
-          />
-        )}
-      </div>
       {onSelectProduct ? (
         <button
           className={`${Style.selectBtn} ${isSelected ? Style.selected : ''}`}
@@ -136,6 +118,24 @@ const Product: FC<ProductProps> = ({
       </div>
       <div className={Style.price}>
         {<CornerTag number={product.price} type="price" />}
+      </div>
+      <div
+        className={Style.descriptionWrapper}
+        onMouseEnter={handleMouseOver}
+        onMouseLeave={handleMouseLeave}
+        ref={elementRef}
+      >
+        <button className={Style.descriptionBtn}>
+          <IconAlertCircleLarge color="#aaa" />
+        </button>
+        {showInfoBlockPopup && (
+          <InfoBlockPopUp
+            title={product.title}
+            description={product.description}
+            x={position.x}
+            y={position.y}
+          />
+        )}
       </div>
     </div>
   );
