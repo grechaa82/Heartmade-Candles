@@ -189,11 +189,12 @@ const CandleDetailsPage: FC = () => {
 
   const updateCandleDecors = async (updatedItems: BaseProduct[]) => {
     if (id) {
+      console.log(1);
       const updatedDecors = updatedItems as Decor[];
       const ids = updatedDecors.map((d) => d.id);
 
       const candleDecorsResponse = await CandlesApi.updateDecor(id, ids);
-      if (!candleDecorsResponse.error) {
+      if (candleDecorsResponse.error) {
         setErrorMessage([
           ...errorMessage,
           candleDecorsResponse.error as string,
@@ -211,7 +212,7 @@ const CandleDetailsPage: FC = () => {
         id,
         ids,
       );
-      if (!candleLayerColorsResponse.error) {
+      if (candleLayerColorsResponse.error) {
         setErrorMessage([
           ...errorMessage,
           candleLayerColorsResponse.error as string,
@@ -228,7 +229,7 @@ const CandleDetailsPage: FC = () => {
         id,
         ids,
       );
-      if (!candleNumberOfLayersResponse.error) {
+      if (candleNumberOfLayersResponse.error) {
         setErrorMessage([
           ...errorMessage,
           candleNumberOfLayersResponse.error as string,
@@ -243,7 +244,7 @@ const CandleDetailsPage: FC = () => {
       const ids = updatedSmells.map((s) => s.id);
 
       const candleSmellsResponse = await CandlesApi.updateSmell(id, ids);
-      if (!candleSmellsResponse.error) {
+      if (candleSmellsResponse.error) {
         setErrorMessage([
           ...errorMessage,
           candleSmellsResponse.error as string,
@@ -258,7 +259,7 @@ const CandleDetailsPage: FC = () => {
       const ids = updatedWicks.map((w) => w.id);
 
       const candleWicksResponse = await CandlesApi.updateWick(id, ids);
-      if (!candleWicksResponse.error) {
+      if (candleWicksResponse.error) {
         setErrorMessage([...errorMessage, candleWicksResponse.error as string]);
       }
     }
