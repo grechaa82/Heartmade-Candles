@@ -23,7 +23,7 @@ const FormPersonalData: FC<FormPersonalDataProps> = ({
     <div>
       <div className={Style.title}>Личные данные</div>
       <form action="" className={Style.form}>
-        {itemsFormPersonalData.map((item, index) => (
+        {/* {itemsFormPersonalData.map((item, index) => (
           <Input
             label={item.label}
             value={item.value}
@@ -32,7 +32,7 @@ const FormPersonalData: FC<FormPersonalDataProps> = ({
             validation={item.validation}
             key={index}
           />
-        ))}
+        ))} */}
       </form>
     </div>
   );

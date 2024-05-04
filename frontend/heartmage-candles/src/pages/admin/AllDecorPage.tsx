@@ -12,7 +12,7 @@ import Style from './AllDecorPage.module.css';
 
 export interface AllDecorPageProps {}
 
-const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
+const AllDecorPage: React.FC<AllDecorPageProps> = () => {
   const [decorsData, setDecorsData] = useState<Decor[]>([]);
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
@@ -90,4 +90,4 @@ const AllDecorsPage: React.FC<AllDecorPageProps> = () => {
   );
 };
 
-export default AllDecorsPage;
+export default AllDecorPage;

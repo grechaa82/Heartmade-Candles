@@ -7,6 +7,7 @@ import Tag from '../shared/Tag';
 import IconAlertCircleLarge from '../../UI/IconAlertCircleLarge';
 import { apiUrlToImage } from '../../config';
 import InfoBlockPopUp from './InfoBlockPopUp';
+import CustomImage from '../shared/Image';
 
 import Style from './Product.module.css';
 
@@ -78,7 +79,46 @@ const Product: FC<ProductProps> = ({
   }, [showInfoBlockPopup]);
 
   return (
-    <div className={Style.product}>
+    <div className={`${Style.product} ${Style.withBackground}`}>
+      {onSelectProduct ? (
+        <button
+          className={`${Style.selectBtn} ${isSelected ? Style.selected : ''}`}
+          type="button"
+          onClick={() => handleSelectProduct()}
+        >
+          {firstImage && (
+            <CustomImage
+              name={firstImage.fileName}
+              alt={firstImage.alternativeName}
+              className={Style.overflowHidden}
+            />
+          )}
+        </button>
+      ) : (
+        <Link to={getProductLink()} className={Style.link}>
+          {firstImage && (
+            <CustomImage
+              name={firstImage.fileName}
+              alt={firstImage.alternativeName}
+              className={Style.overflowHidden}
+            />
+          )}
+        </Link>
+      )}
+      <div className={Style.indexTag}>
+        {index !== undefined && isSelected && (
+          <Tag
+            tag={{
+              id: index,
+              text: index.toString(),
+            }}
+            appearanceTag="primary"
+          />
+        )}
+      </div>
+      <div className={Style.price}>
+        {<CornerTag number={product.price} type="price" />}
+      </div>
       <div
         className={Style.descriptionWrapper}
         onMouseEnter={handleMouseOver}
@@ -96,47 +136,6 @@ const Product: FC<ProductProps> = ({
             y={position.y}
           />
         )}
-      </div>
-      {onSelectProduct ? (
-        <button
-          className={`${Style.selectBtn} ${isSelected ? Style.selected : ''}`}
-          type="button"
-          onClick={() => handleSelectProduct()}
-        >
-          <div className={Style.image}>
-            {firstImage && (
-              <img
-                src={`${apiUrlToImage}/${firstImage.fileName}`}
-                alt={firstImage.alternativeName}
-              />
-            )}
-          </div>
-        </button>
-      ) : (
-        <Link to={getProductLink()} className={Style.link}>
-          <div className={Style.image}>
-            {firstImage && (
-              <img
-                src={`${apiUrlToImage}/${firstImage.fileName}`}
-                alt={firstImage.alternativeName}
-              />
-            )}
-          </div>
-        </Link>
-      )}
-      <div className={Style.indexTag}>
-        {index !== undefined && isSelected && (
-          <Tag
-            tag={{
-              id: index,
-              text: index.toString(),
-            }}
-            appearanceTag="primary"
-          />
-        )}
-      </div>
-      <div className={Style.price}>
-        {<CornerTag number={product.price} type="price" />}
       </div>
     </div>
   );

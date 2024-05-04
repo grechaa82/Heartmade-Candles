@@ -19,6 +19,7 @@ export interface TagsGridProps {
   tags: TagData[];
   allTags?: TagData[];
   popUpComponent?: ReactNode;
+  withInput?: boolean;
   onChanges?: (updatedTags: TagData[]) => void;
   onSave?: (saveProduct: TagData[]) => void;
   onDelete?: (id: string) => void;
@@ -29,6 +30,7 @@ const TagsGrid: FC<TagsGridProps> = ({
   tags,
   allTags,
   popUpComponent,
+  withInput = true,
   onChanges,
   onSave,
   onDelete,
@@ -86,6 +88,7 @@ const TagsGrid: FC<TagsGridProps> = ({
           allTags={allTags}
           onChange={handleChangesTags}
           onDelete={onDelete}
+          withInput={withInput}
         />
         {onSave && isModified && !popUpComponent && (
           <button

@@ -1,6 +1,8 @@
 .contextMenu {
   padding: 16px 18px 18px 18px;
   position: absolute;
+  right: -0.5rem;
+  bottom: -4rem;
   border-radius: var(--border-radius-primary);
   border: 2px solid var(--color-eee);
   background: var(--color-fff);
@@ -17,9 +19,11 @@ li {
   padding: 0;
   list-style: none;
 }
-.contextMenuItem > button {
+
+.contextMenuItem>button {
   all: initial;
 }
+
 .contextMenuItem {
   color: var(--color-222);
   font-size: var(--font-size-l);

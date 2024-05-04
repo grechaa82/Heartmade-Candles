@@ -1,11 +1,10 @@
 import { FC, useState, DragEvent } from 'react';
 
-import { PopUpProps } from './PopUp';
+import PopUp, { PopUpProps } from './PopUp';
 import Button from '../../shared/Button';
 import { Image } from '../../../types/Image';
-import IconRemoveLarge from '../../../UI/IconRemoveLarge';
 import IconTrashLarge from '../../../UI/IconTrashLarge';
-import { apiUrlToImage } from '../../../config';
+import CustomImage from '../../shared/Image';
 
 import Style from './ChangeImagesPopUp.module.css';
 
@@ -54,50 +53,49 @@ const ChangeImagesPopUp: FC<ChangeImagesPopUpProps> = ({
   }
 
   return (
-    <div className={Style.overlay}>
-      <div className={Style.popUp}>
-        <button className={Style.closeButton} onClick={onClose}>
-          <IconRemoveLarge color="#777" />
-        </button>
-        <div className={Style.container}>
-          {newImages.map((image, index) => (
-            <div
-              className={Style.imageBlock}
-              onDragStart={(e) => handleDragStart(e, image)}
-              onDragOver={(e) => handleDragOver(e)}
-              onDrop={(e) => handleDrop(e, image)}
-              draggable={true}
-              key={index}
-            >
-              <div className={Style.image}>
-                <img src={`${apiUrlToImage}/${image.fileName}`} alt={image.alternativeName} />
-              </div>
-              <div className={Style.info}>
-                <p className={Style.title}>{image.fileName}</p>
-                <p className={Style.description}>{image.alternativeName}</p>
-              </div>
-              <button
-                onClick={() => {
-                  onRemove(image);
-                  onClose();
-                }}
-                className={Style.removeBtn}
-              >
-                <IconTrashLarge color="#777" />
-              </button>
+    <PopUp onClose={onClose}>
+      <div className={Style.container}>
+        {newImages.map((image, index) => (
+          <div
+            className={Style.imageBlock}
+            onDragStart={(e) => handleDragStart(e, image)}
+            onDragOver={(e) => handleDragOver(e)}
+            onDrop={(e) => handleDrop(e, image)}
+            draggable={true}
+            key={index}
+          >
+            <div className={Style.imagePrev}>
+              <CustomImage
+                name={image.fileName}
+                alt={image.alternativeName}
+                className={Style.squareImage}
+              />
             </div>
-          ))}
-          <Button
-            text="Сохранить состояние"
-            onClick={() => {
-              updateImages(newImages);
-              onClose();
-            }}
-            color="#2e67ea"
-          />
-        </div>
+            <div className={Style.info}>
+              <p className={Style.title}>{image.fileName}</p>
+              <p className={Style.description}>{image.alternativeName}</p>
+            </div>
+            <button
+              onClick={() => {
+                onRemove(image);
+                onClose();
+              }}
+              className={Style.removeBtn}
+            >
+              <IconTrashLarge color="#777" />
+            </button>
+          </div>
+        ))}
+        <Button
+          text="Сохранить состояние"
+          onClick={() => {
+            updateImages(newImages);
+            onClose();
+          }}
+          color="#2e67ea"
+        />
       </div>
-    </div>
+    </PopUp>
   );
 };
 

@@ -6,11 +6,18 @@ import Style from './InputTag.module.css';
 interface InputTagProps {
   tags: TagData[];
   allTags?: TagData[];
+  withInput?: boolean;
   onChange: (tags: TagData[]) => void;
   onDelete?: (id: string) => void;
 }
 
-const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange, onDelete }) => {
+const InputTag: FC<InputTagProps> = ({
+  tags,
+  allTags,
+  withInput = true,
+  onChange,
+  onDelete,
+}) => {
   const [inputValue, setInputValue] = React.useState('');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,14 +61,16 @@ const InputTag: FC<InputTagProps> = ({ tags, allTags, onChange, onDelete }) => {
           appearanceTag="secondary"
         />
       ))}
-      <input
-        type="text"
-        value={inputValue}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Введите новое значение"
-        className={Style.input}
-      />
+      {withInput && (
+        <input
+          type="text"
+          value={inputValue}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          placeholder="Введите новое значение"
+          className={Style.input}
+        />
+      )}
     </div>
   );
 };

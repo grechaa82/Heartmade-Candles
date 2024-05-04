@@ -13,6 +13,7 @@ export interface ListProductsCartProps {
   ) => void;
   price: number;
   onCreateBasket: () => void;
+  buttonState?: 'default' | 'invalid' | 'valid';
 }
 
 const ListProductsCart: FC<ListProductsCartProps> = ({
@@ -20,6 +21,7 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
   onChangeCandleDetailWithQuantity,
   price,
   onCreateBasket,
+  buttonState = 'default',
 }) => {
   const handleChangingQuantityProduct = (
     newQuantity: number,
@@ -53,9 +55,11 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
             <span className={Style.priceTitle}>Итого</span>
             <span className={Style.price}>{price} р</span>
           </div>
-          <div className={Style.createBtn}>
-            <Button color="#6FCF97" text="Заказать" onClick={onCreateBasket} />
-          </div>
+          <Button
+            text="Заказать"
+            onClick={onCreateBasket}
+            className={Style[buttonState]}
+          />
         </div>
       </div>
     </>

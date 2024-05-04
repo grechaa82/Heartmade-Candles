@@ -9,13 +9,21 @@ export interface ButtonProps {
 }
 
 export interface ButtonDefaultProps extends ButtonProps {
+  className?: string;
   onClick: () => void;
 }
 
-const Button: FC<ButtonDefaultProps> = ({ text, color = '#000', height, width, onClick }) => {
+const Button: FC<ButtonDefaultProps> = ({
+  text,
+  color,
+  height,
+  width,
+  className,
+  onClick,
+}) => {
   return (
     <button
-      className={Style.button}
+      className={`${Style.button} ${className ? className : ''}`}
       style={{
         color,
         ...(height && { height: `${height - 4}px` }),

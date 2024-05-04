@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState, useEffect } from 'react';
 
 import Style from './TotalPricePanel.module.css';
 
@@ -6,13 +6,25 @@ export interface TotalPricePanelProps {
   totalPrice: number;
   totalQuantityProduct: number;
   onCreateOrder: () => void;
+  isValid?: boolean;
 }
+
+type ButtonState = 'default' | 'invalid' | 'valid';
 
 const TotalPricePanel: FC<TotalPricePanelProps> = ({
   totalPrice,
   totalQuantityProduct,
   onCreateOrder,
+  isValid,
 }) => {
+  const [buttonState, setButtonState] = useState<ButtonState>('default');
+
+  useEffect(() => {
+    const newState =
+      isValid === undefined ? 'default' : isValid ? 'valid' : 'invalid';
+    setButtonState(newState);
+  }, [isValid]);
+
   return (
     <div className={Style.panel}>
       <div className={Style.infoBlock}>
@@ -26,7 +38,10 @@ const TotalPricePanel: FC<TotalPricePanelProps> = ({
           Свечей {totalQuantityProduct}
         </div>
       </div>
-      <button className={Style.createOrder} onClick={onCreateOrder}>
+      <button
+        className={`${Style.createOrder} ${Style[buttonState]}`}
+        onClick={onCreateOrder}
+      >
         Оформить заказ
       </button>
     </div>

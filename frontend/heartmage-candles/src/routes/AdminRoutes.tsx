@@ -4,7 +4,8 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from '../components/admin/Navbar';
 import AllCandlePage from '../pages/admin/AllCandlePage';
 import CandleDetailsPage from '../pages/admin/CandleDetailsPage';
-import AllDecorsPage from '../pages/admin/AllDecorPage';
+import AllDecorPage from '../pages/admin/AllDecorPage';
+import DecorPage from '../pages/admin/DecorPage';
 import AllLayerColorPage from '../pages/admin/AllLayerColorPage';
 import LayerColorPage from '../pages/admin/LayerColorPage';
 import AllSmellPage from '../pages/admin/AllSmellPage';
@@ -24,8 +25,8 @@ const AdminRoutes: FC = () => {
         <Routes>
           <Route index element={<AllCandlePage />} path="candles" />
           <Route element={<CandleDetailsPage />} path="candles/:id" />
-          <Route index element={<AllDecorsPage />} path="decors" />
-          <Route element={<AllDecorsPage />} path="decors/:id" />
+          <Route index element={<AllDecorPage />} path="decors" />
+          <Route element={<DecorPage />} path="decors/:id" />
           <Route index element={<AllLayerColorPage />} path="layerColors" />
           <Route element={<LayerColorPage />} path="layerColors/:id" />
           <Route index element={<AllSmellPage />} path="smells" />

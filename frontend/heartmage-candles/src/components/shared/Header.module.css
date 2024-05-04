@@ -6,7 +6,10 @@
   transition: opacity 0.4s, visibility 0.4s, transform 0.4s;
   opacity: 0;
   visibility: hidden;
+  -webkit-transform: translateY(-62px);
+  transform: translateY(-62px);
 }
+
 .visible {
   position: sticky;
   top: 0;
@@ -14,18 +17,22 @@
   background: var(--color-fff);
   opacity: 1;
   visibility: visible;
+  -webkit-transform: translateY(0);
   transform: translateY(0);
 }
+
 .menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .navbar {
   display: flex;
   gap: 32px;
   align-items: center;
 }
+
 .navLinkClassName {
   all: unset;
   color: var(--color-505050);
@@ -34,14 +41,17 @@
   line-height: var(--line-height-standard);
   cursor: pointer;
 }
+
 .navLinkConstructor {
   color: var(--color-505050);
 }
+
 .navLinkCatalog {
   color: var(--color-green);
 }
-.rightPart {
-}
+
+.rightPart {}
+
 .helpLink {
   all: unset;
   color: var(--color-aaa);
@@ -50,14 +60,17 @@
   line-height: var(--line-height-standard);
   cursor: pointer;
 }
+
 .helpLink:hover {
   color: var(--color-blue);
 }
+
 .burgerMenu {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .altLogo {
   all: unset;
   display: none;
@@ -67,10 +80,12 @@
   line-height: var(--line-height-standard);
   cursor: pointer;
 }
+
 .burgerMenuIcon {
   all: unset;
   display: none;
 }
+
 .open {
   transform: translateY(0);
 }
@@ -79,6 +94,7 @@
   .header {
     margin: 0 16px;
   }
+
   .navbar a:last-child {
     display: none;
   }
@@ -88,12 +104,15 @@
   .navbar a:last-child {
     display: block;
   }
+
   .header {
     height: fit-content;
   }
+
   .menu {
     display: none;
   }
+
   .open {
     background-color: var(--color-fff);
     display: flex;
@@ -107,13 +126,16 @@
     align-items: flex-start;
     padding-top: 32px;
   }
-  .open > .navbar {
+
+  .open>.navbar {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .mainLogo {
     display: none;
   }
+
   .burgerMenuIcon,
   .altLogo {
     display: flex;

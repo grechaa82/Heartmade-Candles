@@ -18,8 +18,8 @@ import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import ImageSlider from '../../components/constructor/ImageSlider';
 import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
 import { CandleDetailFilterBasketRequest } from '../../typesV2/order/CandleDetailFilterBasketRequest';
-import ConstructorBanner1 from '../../assets/constructor-banner-1.png';
 import ListProductsCartSkeleton from '../../modules/constructor/ListProductsCartSkeleton';
+import TutorialBlock from '../../modules/constructor/TutorialBlock';
 
 import { ConstructorApi } from '../../services/ConstructorApi';
 import { BasketApi } from '../../services/BasketApi';
@@ -251,7 +251,17 @@ const ConstructorPage: FC = () => {
   };
 
   const handleOnCreateBasket = async () => {
-    if (configuredCandleDetails.length > 0) {
+    if (candleDetail !== undefined) {
+      setErrorMessage([
+        ...errorMessage,
+        'Пожалуйста закончите настройку свечи',
+      ]);
+    } else if (configuredCandleDetails.length <= 0) {
+      setErrorMessage([
+        ...errorMessage,
+        'В корзине пока пусто, добавьте свечи',
+      ]);
+    } else if (configuredCandleDetails.length > 0) {
       let candleDetailFilterBasketRequest: CandleDetailFilterBasketRequest = {
         candleDetailFilterRequests: [],
         configuredCandleFiltersString: convertToCandleString(
@@ -294,7 +304,7 @@ const ConstructorPage: FC = () => {
     } else {
       setErrorMessage([
         ...errorMessage,
-        'В корзине пока пусто, добавьте свечи',
+        'Что-то пошло не так, попробуйте повторить действие',
       ]);
     }
   };
@@ -328,6 +338,11 @@ const ConstructorPage: FC = () => {
             }
             price={totalPrice}
             onCreateBasket={handleOnCreateBasket}
+            buttonState={
+              candleDetail !== undefined || configuredCandleDetails.length <= 0
+                ? 'invalid'
+                : 'valid'
+            }
           />
         )}
       </div>
@@ -335,14 +350,7 @@ const ConstructorPage: FC = () => {
         {candleDetail ? (
           <ImageSlider images={candleDetail.candle.images} />
         ) : (
-          <div className={Style.imageBlock}>
-            <div className={Style.image}>
-              <img
-                alt="Explanation of how the constructor works"
-                src={ConstructorBanner1}
-              />
-            </div>
-          </div>
+          <TutorialBlock />
         )}
       </div>
       <div className={Style.rightPanel} ref={blockCandleFormRef}>

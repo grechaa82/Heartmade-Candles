@@ -1,11 +1,11 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch, useNavigate } from 'react-router-dom';
 
+import { AuthHelper } from '../../helpers/AuthHelper';
+import { AuthContext } from '../../context/AuthContext';
 import { AuthApi } from '../../services/AuthApi';
 
 import Style from './Navbar.module.css';
-import { AuthHelper } from '../../helpers/AuthHelper';
-import { AuthContext } from '../../context/AuthContext';
 
 const Navbar: FC = () => {
   const { isAuth } = useContext(AuthContext);
@@ -16,6 +16,22 @@ const Navbar: FC = () => {
   const navigate = useNavigate();
   const navLinkClassName = ({ isActive }: { isActive: boolean }) =>
     `${Style.navbarItem} ${isActive ? Style.active : ''}`;
+
+  const [position, setPosition] = useState(window.pageYOffset);
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      let moving = window.pageYOffset;
+
+      setVisible(position > moving);
+      setPosition(moving);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  });
 
   const onSubmit = () => {
     async function fetchData() {
@@ -30,7 +46,11 @@ const Navbar: FC = () => {
   };
 
   return (
-    <nav className={Style.navbar}>
+    <nav
+      className={
+        visible ? `${Style.navbar} ${Style.scrolledNavbar}` : Style.navbar
+      }
+    >
       <div className={Style.navBlock}>
         <NavLink className={navLinkClassName} to="/">
           Статистика
@@ -53,23 +73,24 @@ const Navbar: FC = () => {
         <NavLink className={navLinkClassName} to="/admin/bot">
           Бот
         </NavLink>
-      </div>
-      <div className={Style.authBlock}>
-        {isAuth ? (
-          <button
-            className={`${Style.navbarItem} ${Style.navLogoutBtn}`}
-            onClick={onSubmit}
-          >
-            Выйти
-          </button>
-        ) : (
-          <NavLink
-            className={`${Style.navbarItem} ${Style.navLinkAuth}`}
-            to="/auth"
-          >
-            Войти
-          </NavLink>
-        )}
+        <div className={Style.divider}></div>
+        <div className={Style.authBlock}>
+          {isAuth ? (
+            <button
+              className={`${Style.navbarItem} ${Style.navLogoutBtn}`}
+              onClick={onSubmit}
+            >
+              Выйти
+            </button>
+          ) : (
+            <NavLink
+              className={`${Style.navbarItem} ${Style.navLinkAuth}`}
+              to="/auth"
+            >
+              Войти
+            </NavLink>
+          )}
+        </div>
       </div>
     </nav>
   );

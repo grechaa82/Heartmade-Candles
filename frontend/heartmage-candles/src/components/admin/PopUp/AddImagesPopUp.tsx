@@ -1,15 +1,15 @@
 import { FC, useState } from 'react';
 
-import { PopUpProps } from './PopUp';
+import PopUp, { PopUpProps } from './PopUp';
 import ButtonWithIcon from '../../shared/ButtonWithIcon';
 import IconPlusLarge from '../../../UI/IconPlusLarge';
 import { Image } from '../../../types/Image';
-import IconRemoveLarge from '../../../UI/IconRemoveLarge';
+import CustomImage from '../../shared/Image';
 
 import Style from './AddImagesPopUp.module.css';
 
 export interface AddImagesPopUpProps extends PopUpProps {
-  onClose: () => void;
+  onClose: (uploadedImages?: string[]) => void;
   uploadImages: (files: File[]) => Promise<string[]>;
   updateImages: (images: Image[]) => void;
 }
@@ -19,15 +19,18 @@ interface ImageWithFile {
   file: File;
 }
 
-const AddImagesPopUp: FC<AddImagesPopUpProps> = ({ onClose, uploadImages, updateImages }) => {
+const AddImagesPopUp: FC<AddImagesPopUpProps> = ({
+  onClose,
+  uploadImages,
+  updateImages,
+}) => {
   const [images, setImages] = useState<Image[]>();
+  const [dragging, setDragging] = useState(false);
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
+  const handleFileChange = async (files: File[]) => {
     if (files && files.length > 0) {
-      const newFiles = Array.from(files);
-      const newFileNames = await uploadImages(newFiles);
-      createImage(newFiles, newFileNames);
+      const newFileNames = await uploadImages(files);
+      createImage(files, newFileNames);
     }
   };
 
@@ -39,40 +42,89 @@ const AddImagesPopUp: FC<AddImagesPopUpProps> = ({ onClose, uploadImages, update
       },
       file: file,
     }));
-    const imagesToAdd: Image[] = imageWithFiles.map((item) => item.image);
-    setImages(imagesToAdd);
+    const newImages: Image[] = imageWithFiles.map((item) => item.image);
+    setImages((prev) => (prev ? [...prev, ...newImages] : newImages));
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragging(false);
+
+    const filesArray = Array.from(e.dataTransfer.files);
+    const imageFiles = filesArray.filter((file) =>
+      file.type.startsWith('image/'),
+    );
+
+    if (imageFiles.length > 0) {
+      handleFileChange(imageFiles);
+    }
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length) {
+      const filesArray = Array.from(e.target.files);
+      handleFileChange(filesArray);
+    }
+  };
+
+  const handleOnClose = () => {
+    onClose(images && images.map((item) => item.fileName));
   };
 
   return (
-    <div className={Style.overlay}>
-      <div className={Style.popUp}>
-        <button className={Style.closeButton} onClick={onClose}>
-          <IconRemoveLarge color="#777" />
-        </button>
-        <div className={Style.container}>
-          <div className={Style.divImage}>
-            <input
-              className={Style.inputImage}
-              type="file"
-              accept="*/*"
-              onChange={handleFileChange}
-            />
-            <label htmlFor="uploadImage" className={Style.labelInput}>
-              <span>Выберите файл</span> или перетяните его сюда
-            </label>
-          </div>
-          <ButtonWithIcon
-            text="Добавить фотографию"
-            icon={IconPlusLarge}
-            onClick={() => {
-              updateImages(images ? images : []);
-              onClose();
-            }}
-            color="#2e67ea"
+    <PopUp onClose={handleOnClose}>
+      <div className={Style.container}>
+        <div
+          className={`${Style.divImage} ${dragging ? Style.dragging : ''}`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <label className={Style.labelInput} htmlFor="fileInput">
+            <span>Выберите файл</span> <br /> или перетащите его сюда
+          </label>
+          <input
+            className={Style.input}
+            id="fileInput"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileInput}
           />
         </div>
+        {images && (
+          <div className={Style.imagePrevBlock}>
+            {images.map((image, index) => (
+              <div className={Style.imagePrev} key={index}>
+                <CustomImage
+                  name={image.fileName}
+                  alt={image.alternativeName}
+                  className={Style.squareImage}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        <ButtonWithIcon
+          text="Добавить фотографию"
+          icon={IconPlusLarge}
+          onClick={() => {
+            updateImages(images ? images : []);
+            onClose();
+          }}
+          color="#2e67ea"
+        />
       </div>
-    </div>
+    </PopUp>
   );
 };
 

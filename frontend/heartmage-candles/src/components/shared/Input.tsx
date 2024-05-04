@@ -1,61 +1,22 @@
-import { FC, ChangeEvent } from 'react';
-
-import IconAlertCircleLarge from '../../UI/IconAlertCircleLarge';
+import { FC } from 'react';
+import { useFormContext } from 'react-hook-form';
 
 import Style from './Input.module.css';
 
-export interface InputProps {
+interface InputProps {
+  name: string;
+  error?: string;
   label: string;
-  required?: boolean;
-  value: string;
-  onChange: (value: string) => void;
-  validation?: (value: string) => boolean;
-  type?: string;
-  pattern?: string;
-  placeholder?: string;
 }
 
-const Input: FC<InputProps> = ({
-  label,
-  required = false,
-  value,
-  onChange,
-  validation,
-  type = 'text',
-  pattern,
-  placeholder,
-}) => {
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    onChange(event.target.value);
-  };
-
-  const isValid = validation ? validation(value) : true;
+const Input: FC<InputProps> = ({ name, error, label }) => {
+  const methods = useFormContext();
 
   return (
-    <div
-      className={`${Style.input} ${
-        !isValid && value ? Style.invalidInput : ''
-      }`}
-    >
-      <label>
-        {label}
-        {required && !value && <span> *</span>}
-      </label>
-      <input
-        type={type}
-        value={value}
-        onChange={handleInputChange}
-        pattern={pattern}
-        placeholder={placeholder}
-        required
-      />
-      <div className={Style.validationBlock}>
-        {!isValid && value && (
-          <span>
-            <IconAlertCircleLarge color="#eb5757" />
-          </span>
-        )}
-      </div>
+    <div className={Style.inputWrapper}>
+      <label className={Style.label}>{label}</label>
+      <input {...methods.register(name)} className={Style.input} />
+      {error && <p className={Style.validationError}>{error}</p>}
     </div>
   );
 };

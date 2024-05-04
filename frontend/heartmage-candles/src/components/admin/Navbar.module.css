@@ -3,7 +3,6 @@
   width: min-content;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   position: sticky;
   top: 0;
   border-right: 4px solid var(--color-eee);
@@ -11,6 +10,12 @@
   height: 100%;
   background: var(--color-fff);
   height: auto;
+  z-index: 98;
+  transition: top 0.3s ease;
+}
+
+.scrolledNavbar {
+  top: 84px;
 }
 
 .navBlock {
@@ -38,6 +43,11 @@
   line-height: var(--line-height-standard);
 }
 
+.divider {
+  position: relative;
+  border-top: 2px solid var(--color-eee);
+}
+
 @media only screen and (max-width: 992px) {
   .navbar {
     overflow-x: scroll;
@@ -55,5 +65,11 @@
 
   .navbar::-webkit-scrollbar {
     display: none;
+  }
+
+  .divider {
+    border-top: none;
+    border-left: 2px solid var(--color-eee);
+    margin: -5px 0;
   }
 }

@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 
 import { BasketItem } from '../../typesV2/order/BasketItem';
 import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
-import { apiUrlToImage } from '../../config';
+import CustomImage from '../shared/Image';
 
 import Style from './ProductCart.module.css';
 
@@ -21,14 +21,13 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
   return (
     <div className={Style.orderItem}>
       <div className={Style.mainInfo}>
-        <div className={Style.image}>
-          {firstImage && (
-            <img
-              src={`${apiUrlToImage}/${firstImage.fileName}`}
-              alt={firstImage.alternativeName}
-            />
-          )}
-        </div>
+        {firstImage && (
+          <CustomImage
+            name={firstImage.fileName}
+            alt={firstImage.alternativeName}
+            className={Style.squareImage}
+          />
+        )}
         <div className={Style.info}>
           <div className={Style.titleBlock}>
             <p className={Style.title}>
@@ -67,7 +66,7 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
                     <span>{index + 1}</span>
                     <p className={Style.paramsInfo}>{layerColor.title}</p>
                   </div>
-                )
+                ),
               )}
             </div>
           </div>

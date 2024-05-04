@@ -1,4 +1,4 @@
-.input {
+.inputWrapper {
   position: relative;
   display: flex;
   padding: 12px 16px 16px 16px;
@@ -8,14 +8,16 @@
   border: 2px solid var(--color-eee);
   gap: 6px;
 }
-.input > label {
+
+.label {
   color: var(--color-aaa);
   font-size: var(--font-size-m);
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
   width: 100%;
 }
-.input > input {
+
+.input {
   all: unset;
   color: var(--color-222);
   font-size: var(--font-size-l);
@@ -23,12 +25,11 @@
   line-height: var(--line-height-much-text);
   width: 100%;
 }
-.validationBlock {
-  position: absolute;
-  right: 16px;
-  bottom: 19px;
-}
 
-.invalidInput {
-  border: 2px solid var(--color-red);
+.validationError {
+  margin: 0;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-m);
+  line-height: var(--line-height-standard);
+  color: var(--color-red);
 }
