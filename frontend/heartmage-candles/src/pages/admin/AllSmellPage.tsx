@@ -57,6 +57,34 @@ const AllSmellPage: React.FC<AllSmellPageProps> = () => {
     }
   };
 
+  const handleUpdateIsActiveSmell = async (id: string) => {
+    const smell = smellsData.find((x) => x.id === parseInt(id));
+    const newSmellRequest: SmellRequest = {
+      title: smell.title,
+      description: smell.description,
+      price: smell.price,
+      isActive: !smell.isActive,
+    };
+
+    const response = await SmellsApi.update(
+      smell.id.toString(),
+      newSmellRequest,
+    );
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedSmellsResponse = await SmellsApi.getAll();
+      if (updatedSmellsResponse.data && !updatedSmellsResponse.error) {
+        setSmellsData(updatedSmellsResponse.data);
+      } else {
+        setErrorMessage([
+          ...errorMessage,
+          updatedSmellsResponse.error as string,
+        ]);
+      }
+    }
+  };
+
   useEffect(() => {
     async function fetchSmells() {
       const smellsResponse = await SmellsApi.getAll();
@@ -83,6 +111,7 @@ const AllSmellPage: React.FC<AllSmellPageProps> = () => {
           />
         }
         deleteProduct={handleDeleteSmell}
+        updateIsActiveProduct={handleUpdateIsActiveSmell}
       />
       <ListErrorPopUp messages={errorMessage} />
     </>

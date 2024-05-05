@@ -64,6 +64,38 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
     }
   };
 
+  const handleUpdateIsActiveLayerColor = async (id: string) => {
+    const layerColor = layerColorData.find((x) => x.id === parseInt(id));
+    const newLayerColorRequest: LayerColorRequest = {
+      title: layerColor.title,
+      description: layerColor.description,
+      pricePerGram: layerColor.pricePerGram,
+      images: layerColor.images,
+      isActive: !layerColor.isActive,
+    };
+
+    const response = await LayerColorsApi.update(
+      layerColor.id.toString(),
+      newLayerColorRequest,
+    );
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedLayerColorsResponse = await LayerColorsApi.getAll();
+      if (
+        updatedLayerColorsResponse.data &&
+        !updatedLayerColorsResponse.error
+      ) {
+        setLayerColorData(updatedLayerColorsResponse.data);
+      } else {
+        setErrorMessage([
+          ...errorMessage,
+          updatedLayerColorsResponse.error as string,
+        ]);
+      }
+    }
+  };
+
   useEffect(() => {
     async function fetchLayerColors() {
       const layerColorsResponse = await LayerColorsApi.getAll();
@@ -90,6 +122,7 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
           />
         }
         deleteProduct={handleDeleteLayerColor}
+        updateIsActiveProduct={handleUpdateIsActiveLayerColor}
       />
       <ListErrorPopUp messages={errorMessage} />
     </>

@@ -75,6 +75,37 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     }
   };
 
+  const handleUpdateIsActiveCandle = async (id: string) => {
+    const candle = candlesData.find((x) => x.id === parseInt(id));
+    const newCandleRequest: CandleRequest = {
+      title: candle.title,
+      description: candle.description,
+      price: candle.price,
+      weightGrams: candle.weightGrams,
+      images: candle.images,
+      typeCandle: candle.typeCandle,
+      isActive: !candle.isActive,
+    };
+
+    const response = await CandlesApi.update(
+      candle.id.toString(),
+      newCandleRequest,
+    );
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedCandlesResponse = await CandlesApi.getAll();
+      if (updatedCandlesResponse.data && !updatedCandlesResponse.error) {
+        setCandlesData(updatedCandlesResponse.data);
+      } else {
+        setErrorMessage([
+          ...errorMessage,
+          updatedCandlesResponse.error as string,
+        ]);
+      }
+    }
+  };
+
   const handleCreateNumberOfLayer = async (tag: TagData) => {
     const numberOfLayerRequest: NumberOfLayerRequest = {
       number: parseInt(tag.text),
@@ -236,6 +267,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
           />
         }
         deleteProduct={handleDeleteCandle}
+        updateIsActiveProduct={handleUpdateIsActiveCandle}
       />
       <ListErrorPopUp messages={errorMessage} />
     </>

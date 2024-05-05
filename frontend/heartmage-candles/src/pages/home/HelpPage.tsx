@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { Link } from 'react-router-dom';
 
 import Style from './HelpPage.module.css';
 
@@ -18,10 +19,19 @@ const HelpPage: FC = () => {
           </a>
         </div>
         <div className={Style.btn}>
-          <a href="https://t.me/grechaa82" target="_blank" rel="noopener noreferrer">
+          <a
+            href="https://t.me/grechaa82"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Telegram
           </a>
         </div>
+      </div>
+      <div className={Style.blockBtn}>
+        <Link className={Style.authBtn} to={'/auth'}>
+          Авторизоваться
+        </Link>
       </div>
     </div>
   );

@@ -58,6 +58,32 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
     }
   };
 
+  const handleUpdateIsActiveWick = async (id: string) => {
+    const wick = wicksData.find((x) => x.id === parseInt(id));
+    const newWickRequest: WickRequest = {
+      title: wick.title,
+      description: wick.description,
+      price: wick.price,
+      images: wick.images,
+      isActive: !wick.isActive,
+    };
+
+    const response = await WicksApi.update(wick.id.toString(), newWickRequest);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedWicksResponse = await WicksApi.getAll();
+      if (updatedWicksResponse.data && !updatedWicksResponse.error) {
+        setWicksData(updatedWicksResponse.data);
+      } else {
+        setErrorMessage([
+          ...errorMessage,
+          updatedWicksResponse.error as string,
+        ]);
+      }
+    }
+  };
+
   useEffect(() => {
     async function fetchWicks() {
       const wicksResponse = await WicksApi.getAll();
@@ -84,6 +110,7 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
           />
         }
         deleteProduct={handleDeleteWick}
+        updateIsActiveProduct={handleUpdateIsActiveWick}
       />
       <ListErrorPopUp messages={errorMessage} />
     </>

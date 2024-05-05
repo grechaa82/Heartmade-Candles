@@ -5,7 +5,8 @@
   justify-content: center;
   height: 89vh;
 }
-.block > h3 {
+
+.block>h3 {
   margin: 0;
   color: var(--color-222);
   font-size: var(--font-size-heading-2);
@@ -14,7 +15,8 @@
   text-align: center;
   margin-bottom: 1.5rem;
 }
-.block > p {
+
+.block>p {
   all: unset;
   font-size: var(--font-size-l);
   font-weight: var(--font-weight-400);
@@ -22,15 +24,18 @@
   margin-bottom: 32px;
   text-align: center;
 }
+
 .btnBlock {
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
 }
-.btn > a {
+
+.btn>a {
   all: unset;
   font-weight: var(--font-weight-500);
 }
+
 .btn {
   box-sizing: border-box;
   border: 2px solid var(--color-blue);
@@ -46,12 +51,31 @@
   color: var(--color-blue);
   font-weight: var(--font-weight-500);
 }
+
 btn:hover {
   cursor: pointer;
 }
+
 .github {
   border-color: var(--color-green);
   color: var(--color-green);
+}
+
+.blockBtn {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.authBtn {
+  all: unset;
+  margin-right: auto;
+  cursor: pointer;
+  color: var(--color-aaa);
+  padding: 1.5rem;
 }
 
 @media (max-width: 992px) {
@@ -60,12 +84,14 @@ btn:hover {
     margin-left: 1rem;
   }
 }
+
 @media (max-width: 768px) {
-  .block > h3 {
+  .block>h3 {
     font-size: var(--font-size-heading-3);
     font-weight: var(--font-weight-600);
   }
-  .block > p {
+
+  .block>p {
     font-size: var(--font-size-l);
   }
 }

@@ -1,9 +1,10 @@
 import { FC, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
-import Style from './SuccessfulAuthPage.module.css';
-import { AuthApi } from '../../services/AuthApi';
 import { AuthHelper } from '../../helpers/AuthHelper';
+import { AuthApi } from '../../services/AuthApi';
+
+import Style from './AuthSuccessPage.module.css';
 
 const AuthSuccessPage: FC = () => {
   const [timeLeft, setTimeLeft] = useState(5);

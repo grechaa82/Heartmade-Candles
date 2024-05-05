@@ -58,6 +58,35 @@ const AllDecorPage: React.FC<AllDecorPageProps> = () => {
     }
   };
 
+  const handleUpdateIsActiveDecor = async (id: string) => {
+    const decor = decorsData.find((x) => x.id === parseInt(id));
+    const newDecorRequest: DecorRequest = {
+      title: decor.title,
+      description: decor.description,
+      price: decor.price,
+      images: decor.images,
+      isActive: !decor.isActive,
+    };
+
+    const response = await DecorsApi.update(
+      decor.id.toString(),
+      newDecorRequest,
+    );
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    } else {
+      const updatedDecorsResponse = await DecorsApi.getAll();
+      if (updatedDecorsResponse.data && !updatedDecorsResponse.error) {
+        setDecorsData(updatedDecorsResponse.data);
+      } else {
+        setErrorMessage([
+          ...errorMessage,
+          updatedDecorsResponse.error as string,
+        ]);
+      }
+    }
+  };
+
   useEffect(() => {
     async function fetchDecors() {
       const decorsResponse = await DecorsApi.getAll();
@@ -84,6 +113,7 @@ const AllDecorPage: React.FC<AllDecorPageProps> = () => {
           />
         }
         deleteProduct={handleDeleteDecor}
+        updateIsActiveProduct={handleUpdateIsActiveDecor}
       />
       <ListErrorPopUp messages={errorMessage} />
     </>

@@ -20,6 +20,7 @@ export interface ProductsGridProps<T extends BaseProduct> {
   pageUrl?: string;
   popUpComponent?: ReactNode;
   deleteProduct?: (id: string) => void;
+  updateIsActiveProduct?: (id: string) => void;
 }
 
 export type FetchProducts<T extends BaseProduct> = () => Promise<T[]>;
@@ -30,6 +31,7 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
   pageUrl,
   popUpComponent,
   deleteProduct,
+  updateIsActiveProduct,
 }) => {
   const [products, setProducts] = useState<BaseProduct[]>(data);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
@@ -45,6 +47,26 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
   useEffect(() => {
     setProducts(data);
   }, [data]);
+
+  const getActions = (item: BaseProduct) => {
+    const actions = [];
+
+    if (deleteProduct) {
+      actions.push({
+        label: 'Удалить',
+        onClick: () => deleteProduct(item.id.toString()),
+      });
+    }
+
+    if (updateIsActiveProduct) {
+      actions.push({
+        label: `Сделать ${item.isActive ? 'неактивной' : 'активной'}`,
+        onClick: () => updateIsActiveProduct(item.id.toFixed()),
+      });
+    }
+
+    return actions.length > 0 ? actions : undefined;
+  };
 
   return (
     <div className={Style.candlesGrid}>
@@ -65,16 +87,7 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
             key={item.id}
             product={item}
             pageUrl={pageUrl}
-            actions={
-              deleteProduct
-                ? [
-                    {
-                      label: 'Удалить',
-                      onClick: () => deleteProduct(item.id.toString()),
-                    },
-                  ]
-                : []
-            }
+            actions={getActions(item)}
           />
         ))}
       </div>
