@@ -1,37 +1,51 @@
+.container {
+  display: grid;
+  grid-template-columns: 30% 1fr;
+  grid-template-rows: min-content 1fr;
+  grid-gap: 16px;
+}
+
 .candleInfo {
   align-items: start;
   display: flex;
   justify-content: center;
   gap: 32px;
 }
+
 .image {
   height: 530px;
   width: 530px;
   background-color: var(--color-eee);
 }
+
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 16px;
 }
+
 .formForCandle {
   flex: 1;
 }
-.formItem {
-}
+
+.formItem {}
+
 .itemTitle,
 .itemDescription {
   grid-column: span 4;
 }
+
 .itemPrice,
 .itemWeightGrams {
   grid-column: span 2;
 }
+
 .itemType {
   grid-column: 1/4;
 }
-.itemActive {
-}
+
+.itemActive {}
+
 .saveButton {
   padding: 0;
   border-radius: var(--border-radius-primary);
@@ -44,20 +58,52 @@
   line-height: var(--line-height-much-text);
   grid-column: span 4;
 }
+
 .activeSaveButton {
   color: var(--color-red);
   background: var(--color-light-red);
 }
+
 .container {
   padding: 32px;
 }
+
 .title {
+  grid-area: 1 / 1 / 2 / 3;
   color: var(--color-777);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-600);
   line-height: var(--line-height-110);
   margin: 0;
   margin-bottom: 16px;
+}
+
+.imageBlock {
+  height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: min-content repeat(2, auto);
+  }
+
+  .title {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  .imageBlock {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .gridContainer {
+    grid-area: 3 / 1 / 4 / 2;
+  }
 }
 
 @media (max-width: 580px) {

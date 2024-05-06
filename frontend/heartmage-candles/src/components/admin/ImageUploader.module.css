@@ -1,0 +1,32 @@
+.uploadImageBlock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 200px;
+    border-radius: var(--border-radius-primary);
+    border: 2px dashed var(--color-eee);
+}
+
+.dragging {
+    border-color: var(--color-blue);
+}
+
+.inputImage {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.input {
+    display: none;
+}
+
+.labelInput {
+    text-align: center;
+}
+
+.labelInput>span {
+    color: var(--color-blue);
+    cursor: pointer;
+}

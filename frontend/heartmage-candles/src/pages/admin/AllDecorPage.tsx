@@ -7,6 +7,7 @@ import CreateDecorPopUp from '../../components/admin/PopUp/CreateDecorPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { DecorsApi } from '../../services/DecorsApi';
+import { ImagesApi } from '../../services/ImagesApi';
 
 import Style from './AllDecorPage.module.css';
 
@@ -99,6 +100,15 @@ const AllDecorPage: React.FC<AllDecorPageProps> = () => {
     fetchDecors();
   }, []);
 
+  const handleUploadImages = async (files: File[]) => {
+    const imagesResponse = await ImagesApi.uploadImages(files);
+    if (imagesResponse.data && !imagesResponse.error) {
+      return imagesResponse.data;
+    } else {
+      return [];
+    }
+  };
+
   return (
     <>
       <ProductsGrid
@@ -110,6 +120,7 @@ const AllDecorPage: React.FC<AllDecorPageProps> = () => {
             onClose={() => console.log('Popup closed')}
             title="Создать декор"
             onSave={handleCreateDecor}
+            uploadImages={handleUploadImages}
           />
         }
         deleteProduct={handleDeleteDecor}

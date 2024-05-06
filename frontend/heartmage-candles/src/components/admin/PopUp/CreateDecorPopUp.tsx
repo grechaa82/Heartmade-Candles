@@ -4,15 +4,25 @@ import { Decor } from '../../../types/Decor';
 import Textarea from '../Textarea';
 import CheckboxBlock from '../CheckboxBlock';
 import PopUp, { PopUpProps } from './PopUp';
+import ImageUploader from '../ImageUploader';
+import ImagePreview from '../ImagePreview';
+
+import { ImagesApi } from '../../../services/ImagesApi';
 
 import Style from './CreateDecorPopUp.module.css';
 
 export interface CreateDecorPopUpProps extends PopUpProps {
   title: string;
   onSave: (decor: Decor) => void;
+  uploadImages?: (files: File[]) => Promise<string[]>;
 }
 
-const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({ onClose, title, onSave }) => {
+const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
+  onClose,
+  title,
+  onSave,
+  uploadImages,
+}) => {
   const [decor, setDecor] = useState<Decor>({
     id: 0,
     title: '',
@@ -46,10 +56,38 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({ onClose, title, onSave })
     setIsModified(true);
   };
 
+  const handleOnClose = async () => {
+    await deleteImages(decor.images.map((image) => image.fileName));
+    onClose();
+  };
+
+  const deleteImages = async (uploadedImages?: string[]) => {
+    if (uploadedImages) {
+      const imagesToDelete = uploadedImages;
+      await ImagesApi.deleteImages(imagesToDelete);
+    }
+  };
+
+  const processUpload = async (files: File[]) => {
+    const newFileNames = await uploadImages(files);
+    const newImages = files.map((file, index) => ({
+      fileName: newFileNames[index],
+      alternativeName: file.name,
+    }));
+    setDecor((prev) => ({
+      ...prev,
+      images: [...(prev.images || []), ...newImages],
+    }));
+  };
+
   return (
-    <PopUp onClose={onClose}>
+    <PopUp onClose={handleOnClose}>
       <div className={Style.container}>
         <p className={Style.title}>{title}</p>
+        <div className={Style.imageBlock}>
+          <ImageUploader uploadImages={processUpload} />
+          <ImagePreview images={decor.images} />
+        </div>
         <form className={`${Style.gridContainer} ${Style.formForDecor}`}>
           <div className={`${Style.formItem} ${Style.itemTitle}`}>
             <Textarea
@@ -85,7 +123,9 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({ onClose, title, onSave })
           {onSave && (
             <button
               type="button"
-              className={`${Style.saveButton} ${isModified && Style.activeSaveButton}`}
+              className={`${Style.saveButton} ${
+                isModified && Style.activeSaveButton
+              }`}
               onClick={() => {
                 onSave(decor);
                 onClose();

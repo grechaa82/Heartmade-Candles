@@ -7,16 +7,18 @@
   background-color: rgba(34, 34, 34, 0.1);
   z-index: 100;
 }
+
 .popUp {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: var(--color-fff);
-  min-width: 600px;
+  width: clamp(700px, 60%, 1400px);
   z-index: 101;
   border-radius: var(--border-radius-primary);
 }
+
 .closeButton {
   position: absolute;
   top: 0;

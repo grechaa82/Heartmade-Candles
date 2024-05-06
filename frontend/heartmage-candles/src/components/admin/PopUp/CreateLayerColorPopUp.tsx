@@ -4,16 +4,26 @@ import { LayerColor } from '../../../types/LayerColor';
 import Textarea from '../Textarea';
 import CheckboxBlock from '../CheckboxBlock';
 import PopUp, { PopUpProps } from './PopUp';
+import ImageUploader from '../ImageUploader';
+import ImagePreview from '../ImagePreview';
+
+import { ImagesApi } from '../../../services/ImagesApi';
 
 import Style from './CreateLayerColorPopUp.module.css';
 
 export interface CreateLayerColorPopUpProps extends PopUpProps {
   title: string;
   onSave: (layerColor: LayerColor) => void;
+  uploadImages?: (files: File[]) => Promise<string[]>;
 }
 
-const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({ onClose, title, onSave }) => {
-  const [LayerColor, setLayerColor] = useState<LayerColor>({
+const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
+  onClose,
+  title,
+  onSave,
+  uploadImages,
+}) => {
+  const [layerColor, setLayerColor] = useState<LayerColor>({
     id: 0,
     title: '',
     description: '',
@@ -28,7 +38,9 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({ onClose, title,
     setIsModified(true);
   };
 
-  const handleChangePricePerGram = (event: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChangePricePerGram = (
+    event: ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     setLayerColor((prev) => ({
       ...prev,
       pricePerGram: parseFloat(event.target.value),
@@ -46,14 +58,42 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({ onClose, title,
     setIsModified(true);
   };
 
+  const handleOnClose = async () => {
+    await deleteImages(layerColor.images.map((image) => image.fileName));
+    onClose();
+  };
+
+  const deleteImages = async (uploadedImages?: string[]) => {
+    if (uploadedImages) {
+      const imagesToDelete = uploadedImages;
+      await ImagesApi.deleteImages(imagesToDelete);
+    }
+  };
+
+  const processUpload = async (files: File[]) => {
+    const newFileNames = await uploadImages(files);
+    const newImages = files.map((file, index) => ({
+      fileName: newFileNames[index],
+      alternativeName: file.name,
+    }));
+    setLayerColor((prev) => ({
+      ...prev,
+      images: [...(prev.images || []), ...newImages],
+    }));
+  };
+
   return (
-    <PopUp onClose={onClose}>
+    <PopUp onClose={handleOnClose}>
       <div className={Style.container}>
         <p className={Style.title}>{title}</p>
+        <div className={Style.imageBlock}>
+          <ImageUploader uploadImages={processUpload} />
+          <ImagePreview images={layerColor.images} />
+        </div>
         <form className={`${Style.gridContainer} ${Style.formForLayerColor}`}>
           <div className={`${Style.formItem} ${Style.itemTitle}`}>
             <Textarea
-              text={LayerColor.title}
+              text={layerColor.title}
               label="Название"
               limitation={{ limit: 48 }}
               onChange={handleChangeTitle}
@@ -61,7 +101,7 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({ onClose, title,
           </div>
           <div className={`${Style.formItem} ${Style.itemPrice}`}>
             <Textarea
-              text={LayerColor.pricePerGram.toString()}
+              text={layerColor.pricePerGram.toString()}
               label="Стоимость за грамм"
               onChange={handleChangePricePerGram}
             />
@@ -69,13 +109,13 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({ onClose, title,
           <div className={`${Style.formItem} ${Style.itemActive}`}>
             <CheckboxBlock
               text="Активна"
-              checked={LayerColor.isActive}
+              checked={layerColor.isActive}
               onChange={handleChangeIsActive}
             />
           </div>
           <div className={`${Style.formItem} ${Style.itemDescription}`}>
             <Textarea
-              text={LayerColor.description}
+              text={layerColor.description}
               label="Описание"
               height={175}
               limitation={{ limit: 256 }}
@@ -85,9 +125,11 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({ onClose, title,
           {onSave && (
             <button
               type="button"
-              className={`${Style.saveButton} ${isModified && Style.activeSaveButton}`}
+              className={`${Style.saveButton} ${
+                isModified && Style.activeSaveButton
+              }`}
               onClick={() => {
-                onSave(LayerColor);
+                onSave(layerColor);
                 onClose();
               }}
             >

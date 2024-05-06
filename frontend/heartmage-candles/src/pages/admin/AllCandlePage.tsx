@@ -17,6 +17,7 @@ import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import { CandlesApi } from '../../services/CandlesApi';
 import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
 import { TypeCandlesApi } from '../../services/TypeCandlesApi';
+import { ImagesApi } from '../../services/ImagesApi';
 
 import Style from './AllCandlePage.module.css';
 
@@ -224,6 +225,15 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     fetchData();
   }, []);
 
+  const handleUploadImages = async (files: File[]) => {
+    const imagesResponse = await ImagesApi.uploadImages(files);
+    if (imagesResponse.data && !imagesResponse.error) {
+      return imagesResponse.data;
+    } else {
+      return [];
+    }
+  };
+
   return (
     <>
       <TagsGrid
@@ -264,6 +274,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
             title="Создать свечу"
             typeCandlesArray={typeCandlesData}
             onSave={handleCreateCandle}
+            uploadImages={handleUploadImages}
           />
         }
         deleteProduct={handleDeleteCandle}

@@ -7,6 +7,7 @@ import CreateWickPopUp from '../../components/admin/PopUp/CreateWickPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { WicksApi } from '../../services/WicksApi';
+import { ImagesApi } from '../../services/ImagesApi';
 
 import Style from './AllWickPage.module.css';
 
@@ -96,6 +97,15 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
     fetchWicks();
   }, []);
 
+  const handleUploadImages = async (files: File[]) => {
+    const imagesResponse = await ImagesApi.uploadImages(files);
+    if (imagesResponse.data && !imagesResponse.error) {
+      return imagesResponse.data;
+    } else {
+      return [];
+    }
+  };
+
   return (
     <>
       <ProductsGrid
@@ -107,6 +117,7 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
             onClose={() => console.log('Popup closed')}
             title="Создать фитиль"
             onSave={handleCreateWick}
+            uploadImages={handleUploadImages}
           />
         }
         deleteProduct={handleDeleteWick}

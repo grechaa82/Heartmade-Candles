@@ -7,6 +7,7 @@ import CreateLayerColorPopUp from '../../components/admin/PopUp/CreateLayerColor
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { LayerColorsApi } from '../../services/LayerColorsApi';
+import { ImagesApi } from '../../services/ImagesApi';
 
 import Style from './AllLayerColorPage.module.css';
 
@@ -108,6 +109,15 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
     fetchLayerColors();
   }, []);
 
+  const handleUploadImages = async (files: File[]) => {
+    const imagesResponse = await ImagesApi.uploadImages(files);
+    if (imagesResponse.data && !imagesResponse.error) {
+      return imagesResponse.data;
+    } else {
+      return [];
+    }
+  };
+
   return (
     <>
       <ProductsGrid
@@ -119,6 +129,7 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
             onClose={() => console.log('Popup closed')}
             title="Создать слой"
             onSave={handleCreateLayerColor}
+            uploadImages={handleUploadImages}
           />
         }
         deleteProduct={handleDeleteLayerColor}

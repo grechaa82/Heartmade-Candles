@@ -6,6 +6,10 @@ import ButtonDropdown, { optionData } from '../../shared/ButtonDropdown';
 import { TypeCandle } from '../../../types/TypeCandle';
 import CheckboxBlock from '../CheckboxBlock';
 import PopUp, { PopUpProps } from './PopUp';
+import ImagePreview from '../ImagePreview';
+import ImageUploader from '../ImageUploader';
+
+import { ImagesApi } from '../../../services/ImagesApi';
 
 import Style from './CreateCandlePopUp.module.css';
 
@@ -13,6 +17,7 @@ export interface CreateCandlePopUpProps extends PopUpProps {
   title: string;
   typeCandlesArray: TypeCandle[];
   onSave: (canlde: Candle) => void;
+  uploadImages?: (files: File[]) => Promise<string[]>;
 }
 
 const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
@@ -20,6 +25,7 @@ const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
   title,
   typeCandlesArray,
   onSave,
+  uploadImages,
 }) => {
   const [candle, setCandle] = useState<Candle>({
     id: 0,
@@ -83,10 +89,38 @@ const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
     setIsModified(true);
   };
 
+  const handleOnClose = async () => {
+    await deleteImages(candle.images.map((image) => image.fileName));
+    onClose();
+  };
+
+  const deleteImages = async (uploadedImages?: string[]) => {
+    if (uploadedImages) {
+      const imagesToDelete = uploadedImages;
+      await ImagesApi.deleteImages(imagesToDelete);
+    }
+  };
+
+  const processUpload = async (files: File[]) => {
+    const newFileNames = await uploadImages(files);
+    const newImages = files.map((file, index) => ({
+      fileName: newFileNames[index],
+      alternativeName: file.name,
+    }));
+    setCandle((prev) => ({
+      ...prev,
+      images: [...(prev.images || []), ...newImages],
+    }));
+  };
+
   return (
-    <PopUp onClose={onClose}>
+    <PopUp onClose={handleOnClose}>
       <div className={Style.container}>
         <p className={Style.title}>{title}</p>
+        <div className={Style.imageBlock}>
+          <ImageUploader uploadImages={processUpload} />
+          <ImagePreview images={candle.images} />
+        </div>
         <form className={`${Style.gridContainer} ${Style.formForCandle}`}>
           <div className={`${Style.formItem} ${Style.itemTitle}`}>
             <Textarea
@@ -136,7 +170,9 @@ const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
           {onSave && (
             <button
               type="button"
-              className={`${Style.saveButton} ${isModified && Style.activeSaveButton}`}
+              className={`${Style.saveButton} ${
+                isModified && Style.activeSaveButton
+              }`}
               onClick={() => {
                 onSave(candle);
                 onClose();
