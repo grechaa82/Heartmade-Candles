@@ -48,7 +48,7 @@ try
     builder.Services.AddApiAuthentication(builder.Configuration);
 
     builder.Services
-        .AddAdminServices()
+        .AddAdminServices(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles/Images"))
         .AddAdminRepositories()
         .AddAdminDbContext(builder.Configuration);
 

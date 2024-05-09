@@ -6,7 +6,7 @@ namespace HeartmadeCandles.Admin.BL;
 
 public static class AdminServicesRegistration
 {
-    public static IServiceCollection AddAdminServices(this IServiceCollection services)
+    public static IServiceCollection AddAdminServices(this IServiceCollection services, string pathToStaticFiles)
     {
         services
             .AddScoped<ICandleService, CandleService>()
@@ -15,7 +15,11 @@ public static class AdminServicesRegistration
             .AddScoped<ISmellService, SmellService>()
             .AddScoped<IWickService, WickService>()
             .AddScoped<INumberOfLayerService, NumberOfLayerService>()
-            .AddScoped<ITypeCandleService, TypeCandleService>();
+            .AddScoped<ITypeCandleService, TypeCandleService>()
+            .AddScoped<IImageService>(serviceProvider =>
+            {
+                return new ImageService(pathToStaticFiles);
+            });
 
         return services;
     }

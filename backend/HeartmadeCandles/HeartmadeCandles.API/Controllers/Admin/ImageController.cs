@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using HeartmadeCandles.Admin.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -11,41 +12,43 @@ namespace HeartmadeCandles.API.Controllers.Admin;
 [EnableRateLimiting("FixedWindowPolicy")]
 public class ImageController : Controller
 {
+    private readonly IImageService _imageService;
     private readonly ILogger<ImageController> _logger;
     private readonly string _staticFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles/Images");
 
-    public ImageController(ILogger<ImageController> logger)
+    public ImageController(IImageService imageService, ILogger<ImageController> logger)
     {
+        _imageService = imageService;
         _logger = logger;
     }
 
     [HttpPost]
     public async Task<IActionResult> UploadImages(IFormFileCollection formImages)
     {
-        var result = Result.Success();
-        var fileNames = new List<string>();
-
-        foreach (var formImage in formImages)
+        if (formImages == null || formImages.Count == 0)
         {
-            var fileName = GenerateFileName(Path.GetExtension(formImage.FileName));
-
-            var addImageResult = await AddImage(formImage, fileName);
-            if (addImageResult.IsFailure)
-            {
-                result = Result.Combine(result, Result.Failure($"'{nameof(formImage.FileName)}' was not added"));
-            }
-            else
-            {
-                fileNames.Add(fileName);
-            }
+            return BadRequest("No images provided in the request.");
         }
 
-        if (result.IsFailure)
-        {
-            return BadRequest($"Failed to add images, error message: {result.Error}");
-        }
+        var imageFiles = formImages
+            .Select(file => (file.OpenReadStream(), file.FileName))
+            .ToList();
 
-        return Ok(fileNames);
+        try
+        {
+            var result = await _imageService.UploadImages(imageFiles);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error);
+            }
+
+            return Ok(result.Value);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Failed to add images, error message: {ex}");
+        }
     }
 
     private string GenerateFileName(string extension)
