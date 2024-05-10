@@ -7,6 +7,13 @@ namespace HeartmadeCandles.Admin.BL.Services;
 public class ImageService : IImageService
 {
     private readonly string _staticFilesPath;
+    private readonly Dictionary<int, string> _imageSizes = new Dictionary<int, string>()
+    {
+        { 1200, "large" },
+        { 600, "medium" },
+        { 200, "small" },
+        { 20, "preview" },
+    };
 
     public ImageService(string staticFilesPath)
     {
@@ -17,18 +24,23 @@ public class ImageService : IImageService
     {
         var fileNames = new List<string>();
 
-        foreach (var (stream, fileName) in imageFiles)
+        foreach (var (originalStream, fileName) in imageFiles)
         {
-            var imageResult = await SaveImage(stream, fileName);
-
-            if (imageResult.IsFailure)
+            using (var clonedStream = new MemoryStream())
             {
-                continue;
+                await originalStream.CopyToAsync(clonedStream);
+
+                clonedStream.Position = 0;
+
+                var imageResult = await SaveImage(clonedStream, fileName);
+
+                if (imageResult.IsSuccess)
+                {
+                    fileNames.Add(imageResult.Value);
+                    clonedStream.Position = 0;
+                    await ResizeImage(clonedStream, imageResult.Value);
+                }
             }
-
-            fileNames.Add(imageResult.Value);
-
-            await ResizeImage(stream, imageResult.Value);
         }
 
         return Result.Success(fileNames.ToArray());
@@ -55,48 +67,51 @@ public class ImageService : IImageService
         return Guid.NewGuid() + Path.GetExtension(fileName);
     }
 
-    private async Task<Result> ResizeImage(Stream stream, string fileName)
+    private async Task<Result> ResizeImage(Stream originalStream, string fileName)
     {
-        using (MagickImage cloneImageMagick = new MagickImage(stream))
+        var result = Result.Success();
+
+        using (var image = new MagickImage(originalStream))
         {
-            await SaveImageWithResolutionAsync(cloneImageMagick, fileName, 1200, "large");
-            await SaveImageWithResolutionWebPAsync(cloneImageMagick, fileName, 1200, "large");
-            
-            await SaveImageWithResolutionAsync(cloneImageMagick, fileName, 600, "medium");
-            await SaveImageWithResolutionWebPAsync(cloneImageMagick, fileName, 600, "medium");
+            foreach (var (width, label) in _imageSizes)
+            {
+                result = Result.Combine(
+                    result,
+                    await ResizeAndSaveImage(image, fileName, width, label));
 
-            await SaveImageWithResolutionAsync(cloneImageMagick, fileName, 200, "small");
-            await SaveImageWithResolutionWebPAsync(cloneImageMagick, fileName, 200, "small");
+                result = Result.Combine(
+                    result,
+                    await ResizeAndSaveImage(image, fileName, width, label, MagickFormat.WebP));
+            }
+        }
 
-            await SaveImageWithResolutionAsync(cloneImageMagick, fileName, 20, "preview");
-            await SaveImageWithResolutionWebPAsync(cloneImageMagick, fileName, 20, "preview");
+        return result;
+    }
+
+    private async Task<Result> ResizeAndSaveImage(
+        MagickImage imageMagick,
+        string originalName,
+        int width,
+        string nameSuffix,
+        MagickFormat? format = null)
+    {
+        try
+        {
+            MagickGeometry size = new MagickGeometry(width);
+            imageMagick.Resize(size);
+
+            var fileName = Path.GetFileNameWithoutExtension(originalName);
+            var fileExtension = Path.GetExtension(originalName);
+            var modifiedFileName = $"{fileName}-{nameSuffix}{(format.HasValue ? $".{format.Value.ToString().ToLower()}" : fileExtension)}";
+            var outputImagePath = Path.Combine(_staticFilesPath, modifiedFileName ?? string.Empty);
+
+            await Task.Run(() => imageMagick.Write(outputImagePath, format ?? MagickFormat.Unknown));
 
             return Result.Success();
         }
-    }
-
-    private async Task SaveImageWithResolutionAsync(MagickImage imageMagick, string originalName, int width, string nameSuffix)
-    {
-        MagickGeometry size = new MagickGeometry(width);
-        imageMagick.Resize(size);
-
-        var fileName = Path.GetFileNameWithoutExtension(originalName);
-        var fileExtension = Path.GetExtension(originalName);
-        var modifiedFileName = $"{fileName}-{nameSuffix}{fileExtension}";
-        var outputImagePath = Path.Combine(_staticFilesPath, modifiedFileName);
-
-        await Task.Run(() => imageMagick.Write(outputImagePath));
-    }
-
-    private async Task SaveImageWithResolutionWebPAsync(MagickImage imageMagick, string originalName, int width, string nameSuffix)
-    {
-        MagickGeometry size = new MagickGeometry(width);
-        imageMagick.Resize(size);
-
-        var fileName = Path.GetFileNameWithoutExtension(originalName);
-        var modifiedFileName = $"{fileName}-{nameSuffix}.webp";
-        var outputImagePath = Path.Combine(_staticFilesPath, modifiedFileName);
-
-        await Task.Run(() => imageMagick.Write(outputImagePath, MagickFormat.WebP));
+        catch (Exception ex)
+        {
+            return Result.Failure<string>($"Error saving image: {ex.Message}");
+        }
     }
 }
