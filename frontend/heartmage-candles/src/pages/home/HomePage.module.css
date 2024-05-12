@@ -16,8 +16,9 @@
 }
 
 .mainBanner {
-  display: flex;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1rem;
 }
 
 .banner {
@@ -100,8 +101,8 @@
   }
 
   .mainBanner {
-    flex-direction: column;
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    grid-gap: 1.5rem;
   }
 
   .btnConstructor {

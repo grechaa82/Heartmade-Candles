@@ -1,10 +1,7 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
-import BannerImage1 from '../../assets/banner-image-1.jpg';
-import BannerImage2 from '../../assets/banner-image-2.jpg';
-import BannerImage3 from '../../assets/banner-image-3.jpg';
-import CustomImage from '../../components/shared/Image';
+import Picture from '../../components/shared/Picture';
 
 import Style from './HomePage.module.css';
 
@@ -16,10 +13,9 @@ const HomePage: FC = () => {
         <div className={Style.mainBanner}>
           <div className={Style.banner}>
             <div className={Style.imageBlock}>
-              <CustomImage
-                name={BannerImage1}
+              <Picture
+                name="banner-image-1.jpg"
                 alt="Выбор из разных свечей"
-                src={BannerImage1}
                 className={Style.rectangularImage}
               />
             </div>
@@ -27,10 +23,9 @@ const HomePage: FC = () => {
           </div>
           <div className={Style.banner}>
             <div className={Style.imageBlock}>
-              <CustomImage
-                name={BannerImage2}
+              <Picture
+                name="banner-image-2.jpg"
                 alt="Создание свечи"
-                src={BannerImage2}
                 className={Style.rectangularImage}
               />
             </div>
@@ -38,10 +33,9 @@ const HomePage: FC = () => {
           </div>
           <div className={Style.banner}>
             <div className={Style.imageBlock}>
-              <CustomImage
-                name={BannerImage3}
+              <Picture
+                name="banner-image-3.jpg"
                 alt="Свечи в коробке"
-                src={BannerImage3}
                 className={Style.rectangularImage}
               />
             </div>
