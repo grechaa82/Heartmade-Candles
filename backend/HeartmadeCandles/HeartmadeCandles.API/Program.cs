@@ -38,9 +38,18 @@ try
 
     builder.Services.AddOpenTelemetryMetrics();
 
-    if (!Directory.Exists("StaticFiles/"))
+    const string staticFilesDirectory = "StaticFiles";
+    const string imagesSubdirectory = "Images";
+    var staticFilesImagesPath = Path.Combine(staticFilesDirectory, imagesSubdirectory);
+
+    if (!Directory.Exists(staticFilesDirectory))
     {
-        Directory.CreateDirectory("StaticFiles/Images");
+        Directory.CreateDirectory(staticFilesDirectory);
+    }
+
+    if (!Directory.Exists(staticFilesImagesPath))
+    {
+        Directory.CreateDirectory(staticFilesImagesPath);
     }
 
     builder.Services.AddCustomCors();

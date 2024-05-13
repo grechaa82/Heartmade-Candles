@@ -56,6 +56,11 @@ public class ImageService : IImageService
 
             await Task.Run(() => imageMagick.Write(originalImagePath));
 
+            var webpFileName = Path.ChangeExtension(newFileName, MagickFormat.WebP.ToString().ToLower());
+            var webpImagePath = Path.Combine(_staticFilesPath, webpFileName);
+
+            await Task.Run(() => imageMagick.Write(webpImagePath, MagickFormat.WebP));
+
             stream.Position = 0;
 
             return Result.Success(newFileName);
