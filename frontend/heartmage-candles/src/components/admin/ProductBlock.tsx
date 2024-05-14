@@ -5,7 +5,7 @@ import { BaseProduct } from '../../types/BaseProduct';
 import IconMoreVertLarge from '../../UI/IconMoreVertLarge';
 import ContextMenu, { Action } from './ContextMenu';
 import { Image } from '../../types/Image';
-import CustomImage from '../shared/Image';
+import Picture from '../shared/Picture';
 
 import Style from './ProductBlock.module.css';
 
@@ -75,9 +75,14 @@ const ProductBlock: FC<ProductBlockProps<BaseProduct>> = ({
         className={`${areThereImages ? Style.imageBlock : Style.nonImageBlock}`}
       >
         {firstImage && (
-          <CustomImage
+          <Picture
             name={firstImage.fileName}
             alt={firstImage.alternativeName}
+            sourceSettings={[
+              {
+                size: 'small',
+              },
+            ]}
           />
         )}
       </div>

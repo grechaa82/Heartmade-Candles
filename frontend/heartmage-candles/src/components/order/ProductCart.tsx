@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 
 import { BasketItem } from '../../typesV2/order/BasketItem';
 import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
-import CustomImage from '../shared/Image';
+import Picture from '../shared/Picture';
 
 import Style from './ProductCart.module.css';
 
@@ -22,10 +22,15 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
     <div className={Style.orderItem}>
       <div className={Style.mainInfo}>
         {firstImage && (
-          <CustomImage
+          <Picture
             name={firstImage.fileName}
             alt={firstImage.alternativeName}
             className={Style.squareImage}
+            sourceSettings={[
+              {
+                size: 'small',
+              },
+            ]}
           />
         )}
         <div className={Style.info}>

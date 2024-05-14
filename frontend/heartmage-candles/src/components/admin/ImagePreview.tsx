@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import { Image } from '../../types/Image';
-import CustomImage from '../shared/Image';
+import Picture from '../shared/Picture';
 
 import Style from './ImagePreview.module.css';
 
@@ -14,10 +14,15 @@ const ImagePreview: FC<ImagePreviewProps> = ({ images }) => {
     <div className={Style.imagePrevBlock}>
       {images.map((image, index) => (
         <div className={Style.imagePrev} key={index}>
-          <CustomImage
+          <Picture
             name={image.fileName}
             alt={image.alternativeName}
             className={Style.squareImage}
+            sourceSettings={[
+              {
+                size: 'small',
+              },
+            ]}
           />
         </div>
       ))}

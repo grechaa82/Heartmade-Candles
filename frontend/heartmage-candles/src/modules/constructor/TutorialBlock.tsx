@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 
-import CustomImage from '../../components/shared/Image';
 import { apiUrlToImage } from '../../config';
+import Picture, { SourceSettings } from '../../components/shared/Picture';
 
 import Style from './TutorialBlock.module.css';
 
@@ -9,6 +9,29 @@ interface TutorialBlockProps {}
 
 const TutorialBlock: FC<TutorialBlockProps> = () => {
   const [showVideo, setShowVideo] = useState(true);
+
+  const sourceSettingsForMainImage: SourceSettings[] = [
+    {
+      size: 'small',
+      media: '(max-width: 200px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 630px)',
+    },
+    {
+      size: 'large',
+      media: '(max-width: 1100px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 1401px)',
+    },
+    {
+      size: 'large',
+      media: '(min-width: 1401px)',
+    },
+  ];
 
   return (
     <div className={Style.tutorialBlock}>
@@ -22,10 +45,11 @@ const TutorialBlock: FC<TutorialBlockProps> = () => {
           onEnded={() => setShowVideo(false)}
         />
       ) : (
-        <CustomImage
+        <Picture
           name="constructor-banner.jpg"
           alt="Уютная комната со свечами"
           className={Style.squareImage}
+          sourceSettings={sourceSettingsForMainImage}
         />
       )}
       <div className={Style.slider}>
@@ -35,9 +59,14 @@ const TutorialBlock: FC<TutorialBlockProps> = () => {
             type="button"
             onClick={() => setShowVideo(true)}
           >
-            <CustomImage
+            <Picture
               name="constructor-tutorial-video-prev.png"
               alt="Пример создания свечи"
+              sourceSettings={[
+                {
+                  size: 'small',
+                },
+              ]}
             />
           </button>
         </div>
@@ -47,9 +76,14 @@ const TutorialBlock: FC<TutorialBlockProps> = () => {
             type="button"
             onClick={() => setShowVideo(false)}
           >
-            <CustomImage
+            <Picture
               name="constructor-banner.jpg"
               alt="Уютная комната со свечами"
+              sourceSettings={[
+                {
+                  size: 'small',
+                },
+              ]}
             />
           </button>
         </div>

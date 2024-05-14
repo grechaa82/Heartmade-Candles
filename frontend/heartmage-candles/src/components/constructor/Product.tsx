@@ -5,9 +5,8 @@ import CornerTag from './CornerTag';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import Tag from '../shared/Tag';
 import IconAlertCircleLarge from '../../UI/IconAlertCircleLarge';
-import { apiUrlToImage } from '../../config';
 import InfoBlockPopUp from './InfoBlockPopUp';
-import CustomImage from '../shared/Image';
+import Picture, { SourceSettings } from '../shared/Picture';
 
 import Style from './Product.module.css';
 
@@ -78,6 +77,41 @@ const Product: FC<ProductProps> = ({
     };
   }, [showInfoBlockPopup]);
 
+  const sourceSettings: SourceSettings[] = [
+    {
+      size: 'small',
+      media: '(max-width: 440px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 480px)',
+    },
+    {
+      size: 'small',
+      media: '(max-width: 648px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 720px)',
+    },
+    {
+      size: 'small',
+      media: '(max-width: 856px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 1101px)',
+    },
+    {
+      size: 'small',
+      media: '(max-width: 2150px)',
+    },
+    {
+      size: 'medium',
+      media: '(min-width: 2150px)',
+    },
+  ];
+
   return (
     <div className={`${Style.product} ${Style.withBackground}`}>
       {onSelectProduct ? (
@@ -87,20 +121,22 @@ const Product: FC<ProductProps> = ({
           onClick={() => handleSelectProduct()}
         >
           {firstImage && (
-            <CustomImage
+            <Picture
               name={firstImage.fileName}
               alt={firstImage.alternativeName}
               className={Style.overflowHidden}
+              sourceSettings={sourceSettings}
             />
           )}
         </button>
       ) : (
         <Link to={getProductLink()} className={Style.link}>
           {firstImage && (
-            <CustomImage
+            <Picture
               name={firstImage.fileName}
               alt={firstImage.alternativeName}
               className={Style.overflowHidden}
+              sourceSettings={sourceSettings}
             />
           )}
         </Link>

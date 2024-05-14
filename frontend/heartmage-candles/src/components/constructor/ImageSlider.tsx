@@ -3,8 +3,8 @@ import { FC, useEffect, useState } from 'react';
 import { Image } from '../../types/Image';
 import IconChevronUpLarge from '../../UI/IconChevronUpLarge';
 import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
-import CustomImage from '../shared/Image';
-import CustomImageWithProgressBar from '../shared/CustomImageWithProgressBar';
+import PictureWithProgressBar from '../shared/PictureWithProgressBar';
+import Picture, { SourceSettings } from '../shared/Picture';
 
 import Style from './ImageSlider.module.css';
 
@@ -46,12 +46,36 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
     return () => clearInterval(interval);
   }, [timeLeft, currentImageIndex]);
 
+  const sourceSettingsForMainImage: SourceSettings[] = [
+    {
+      size: 'small',
+      media: '(max-width: 200px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 630px)',
+    },
+    {
+      size: 'large',
+      media: '(max-width: 1100px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 1401px)',
+    },
+    {
+      size: 'large',
+      media: '(min-width: 1401px)',
+    },
+  ];
+
   return (
     <div className={Style.imageBlock}>
-      <CustomImage
+      <Picture
         name={images[currentImageIndex].fileName}
         alt={images[currentImageIndex].alternativeName}
         className={Style.squareImage}
+        sourceSettings={sourceSettingsForMainImage}
       />
       <div className={Style.slider}>
         <button
@@ -70,9 +94,14 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
               type="button"
               onClick={() => setCurrentImageIndex(index)}
             >
-              <CustomImageWithProgressBar
+              <PictureWithProgressBar
                 name={image.fileName}
                 alt={image.alternativeName}
+                sourceSettings={[
+                  {
+                    size: 'small',
+                  },
+                ]}
                 showProgressBar={currentImageIndex === index}
                 progressValue={timeLeft}
                 progressMax={scrollTime}

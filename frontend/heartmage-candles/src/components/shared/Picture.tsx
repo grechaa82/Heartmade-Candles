@@ -4,6 +4,13 @@ import { apiUrlToImage } from '../../config';
 
 import Style from './Picture.module.css';
 
+// I have to pass "SourceSettings" because this issue has not been solved yet https://github.com/w3c/csswg-drafts/issues/5889
+
+export interface SourceSettings {
+  size: sizeType;
+  media?: string;
+}
+
 export interface PictureProps {
   name: string;
   alt: string;
@@ -13,6 +20,7 @@ export interface PictureProps {
   withSize?: boolean;
   withWebP?: boolean;
   className?: string;
+  sourceSettings: SourceSettings[];
 }
 
 type sizeType = 'small' | 'medium' | 'large' | 'preview' | 'default';
@@ -26,6 +34,7 @@ const Picture: FC<PictureProps> = ({
   withSize = true,
   withWebP = true,
   className,
+  sourceSettings = [],
 }) => {
   const newSrc = src
     ? src
@@ -63,57 +72,23 @@ const Picture: FC<PictureProps> = ({
       }
     >
       <picture>
-        <source
-          type="image/webp"
-          srcSet={`${getSrc('small')} 200w`}
-          media="(max-width: 200px)"
-        />
-        <source
-          type="image/webp"
-          srcSet={`${getSrc('medium')} 600w`}
-          media="(max-width: 630px)"
-        />
-        <source
-          type="image/webp"
-          srcSet={`${getSrc('large')} 1200w`}
-          media="(max-width: 768px)"
-        />
-        <source
-          type="image/webp"
-          srcSet={`${getSrc('medium')} 600w`}
-          media="(max-width: 1896px)"
-        />
-        <source
-          type="image/webp"
-          srcSet={`${getSrc('large')} 1200w`}
-          media="(min-width: 1897px)"
-        />
-
-        <source
-          type={`image/${fileExtension}`}
-          srcSet={`${getSrc('small', false)} 200w`}
-          media="(max-width: 200px)"
-        />
-        <source
-          type={`image/${fileExtension}`}
-          srcSet={`${getSrc('medium', false)} 600w`}
-          media="(max-width: 630px)"
-        />
-        <source
-          type={`image/${fileExtension}`}
-          srcSet={`${getSrc('large', false)} 1200w`}
-          media="(max-width: 768px)"
-        />
-        <source
-          type={`image/${fileExtension}`}
-          srcSet={`${getSrc('medium', false)} 600w`}
-          media="(max-width: 1896px)"
-        />
-        <source
-          type={`image/${fileExtension}`}
-          srcSet={`${getSrc('large', false)} 1200w`}
-          media="(min-width: 1897px)"
-        />
+        {withWebP &&
+          sourceSettings.map((source, index) => (
+            <source
+              key={index}
+              type="image/webp"
+              srcSet={getSrc(source.size, withWebP)}
+              media={source.media}
+            />
+          ))}
+        {sourceSettings.map((source, index) => (
+          <source
+            key={index}
+            type={`image/${fileExtension}`}
+            srcSet={getSrc(source.size, false)}
+            media={source.media}
+          />
+        ))}
         <img
           className={Style.image}
           src={getSrc()}

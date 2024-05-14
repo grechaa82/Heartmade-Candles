@@ -4,7 +4,7 @@ import CornerTag from './CornerTag';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 import IconMinusLarge from '../../UI/IconMinusLarge';
-import CustomImage from '../shared/Image';
+import Picture from '../shared/Picture';
 
 import Style from './ProductCart.module.css';
 
@@ -35,9 +35,14 @@ const ProductCart: FC<ProductCartProps> = ({
     <div className={Style.productCart}>
       <div className={Style.imageBlock}>
         {firstImage && (
-          <CustomImage
+          <Picture
             name={firstImage.fileName}
             alt={firstImage.alternativeName}
+            sourceSettings={[
+              {
+                size: 'small',
+              },
+            ]}
           />
         )}
         <div className={Style.quantity}>
