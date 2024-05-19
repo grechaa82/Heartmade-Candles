@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.Core.Interfaces;
 using ImageMagick;
+using Microsoft.Extensions.Logging;
 
 namespace HeartmadeCandles.Admin.BL.Services;
 
@@ -14,10 +15,12 @@ public class ImageService : IImageService
         { 200, "small" },
         { 20, "preview" },
     };
+    private readonly ILogger<ImageService> _logger;
 
-    public ImageService(string staticFilesPath)
+    public ImageService(string staticFilesPath, ILogger<ImageService> logger)
     {
         _staticFilesPath = staticFilesPath;
+        _logger = logger;
     }
 
     public async Task<Result<string[]>> UploadImages(List<(Stream, string)> imageFiles)
@@ -118,5 +121,42 @@ public class ImageService : IImageService
         {
             return Result.Failure<string>($"Error saving image: {ex.Message}");
         }
+    }
+
+    public async Task<Result> DeleteImages(string[] fileNames)
+    {
+        var result = Result.Success();
+
+        var directory = new DirectoryInfo(_staticFilesPath);
+
+        foreach (var fileName in fileNames)
+        {
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            var files = directory.GetFiles(fileNameWithoutExtension + "*.*");
+
+            if (files.Length == 0)
+            {
+                _logger.LogWarning($"No files found matching: {fileNameWithoutExtension}");
+                continue;
+            }
+
+            foreach (FileInfo file in files)
+            {
+                try
+                {
+                    await Task.Run(file.Delete);
+                }
+                catch (Exception ex)
+                {
+                    result = Result.Combine(
+                        result, 
+                        Result.Failure($"Error deleting file {file.Name}: {ex.Message}"));
+
+                    _logger.LogError($"Error deleting file {file.Name}: {ex.Message}");
+                }
+            }
+        }
+
+        return result;
     }
 }

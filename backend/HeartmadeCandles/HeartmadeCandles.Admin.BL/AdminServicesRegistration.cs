@@ -1,6 +1,7 @@
 ﻿using HeartmadeCandles.Admin.BL.Services;
 using HeartmadeCandles.Admin.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace HeartmadeCandles.Admin.BL;
 
@@ -18,7 +19,8 @@ public static class AdminServicesRegistration
             .AddScoped<ITypeCandleService, TypeCandleService>()
             .AddScoped<IImageService>(serviceProvider =>
             {
-                return new ImageService(pathToStaticFiles);
+                var logger = serviceProvider.GetRequiredService<ILogger<ImageService>>();
+                return new ImageService(pathToStaticFiles, logger);
             });
 
         return services;
