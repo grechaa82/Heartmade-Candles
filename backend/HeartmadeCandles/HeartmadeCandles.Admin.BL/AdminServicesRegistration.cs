@@ -7,7 +7,7 @@ namespace HeartmadeCandles.Admin.BL;
 
 public static class AdminServicesRegistration
 {
-    public static IServiceCollection AddAdminServices(this IServiceCollection services, string pathToStaticFiles)
+    public static IServiceCollection AddAdminServices(this IServiceCollection services, string pathToStaticFilesImages)
     {
         services
             .AddScoped<ICandleService, CandleService>()
@@ -20,7 +20,7 @@ public static class AdminServicesRegistration
             .AddScoped<IImageService>(serviceProvider =>
             {
                 var logger = serviceProvider.GetRequiredService<ILogger<ImageService>>();
-                return new ImageService(pathToStaticFiles, logger);
+                return new ImageService(pathToStaticFilesImages, logger);
             });
 
         return services;

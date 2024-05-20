@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
 import Picture, { SourceSettings } from '../../components/shared/Picture';
+import { apiUrlToImage } from '../../config';
 
 import Style from './HomePage.module.css';
 
@@ -39,6 +40,7 @@ const HomePage: FC = () => {
               <Picture
                 name="banner-image-1.jpg"
                 alt="Выбор из разных свечей"
+                url={`${apiUrlToImage}/DefaultImages`}
                 className={Style.rectangularImage}
                 sourceSettings={sourceSettings}
               />
@@ -50,6 +52,7 @@ const HomePage: FC = () => {
               <Picture
                 name="banner-image-2.jpg"
                 alt="Создание свечи"
+                url={`${apiUrlToImage}/DefaultImages`}
                 className={Style.rectangularImage}
                 sourceSettings={sourceSettings}
               />
@@ -61,6 +64,7 @@ const HomePage: FC = () => {
               <Picture
                 name="banner-image-3.jpg"
                 alt="Свечи в коробке"
+                url={`${apiUrlToImage}/DefaultImages`}
                 className={Style.rectangularImage}
                 sourceSettings={sourceSettings}
               />

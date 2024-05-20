@@ -1,6 +1,5 @@
 using HeartmadeCandles.Admin.BL;
 using HeartmadeCandles.Admin.DAL;
-using HeartmadeCandles.API;
 using HeartmadeCandles.API.Extensions;
 using HeartmadeCandles.Bot.BL;
 using HeartmadeCandles.Bot.DAL;
@@ -40,7 +39,10 @@ try
 
     const string staticFilesDirectory = "StaticFiles";
     const string imagesSubdirectory = "Images";
+    const string defaultImagesSubdirectory = "DefaultImages";
+    
     var staticFilesImagesPath = Path.Combine(staticFilesDirectory, imagesSubdirectory);
+    var staticFilesDefaultImagesPath = Path.Combine(staticFilesImagesPath, defaultImagesSubdirectory);
 
     if (!Directory.Exists(staticFilesDirectory))
     {
@@ -52,12 +54,17 @@ try
         Directory.CreateDirectory(staticFilesImagesPath);
     }
 
+    if (!Directory.Exists(staticFilesDefaultImagesPath))
+    {
+        Directory.CreateDirectory(staticFilesDefaultImagesPath);
+    }
+
     builder.Services.AddCustomCors();
 
     builder.Services.AddApiAuthentication(builder.Configuration);
 
     builder.Services
-        .AddAdminServices(Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles/Images"))
+        .AddAdminServices(Path.Combine(Directory.GetCurrentDirectory(), staticFilesImagesPath))
         .AddAdminRepositories()
         .AddAdminDbContext(builder.Configuration);
 

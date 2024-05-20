@@ -38,7 +38,7 @@ const TutorialBlock: FC<TutorialBlockProps> = () => {
       {showVideo ? (
         <video
           className={Style.video}
-          src={`${apiUrlToImage}/constructor-tutorial-video.webm`}
+          src={`${apiUrlToImage}/DefaultImages/constructor-tutorial-video.webm`}
           muted
           autoPlay
           controls
@@ -48,6 +48,7 @@ const TutorialBlock: FC<TutorialBlockProps> = () => {
         <Picture
           name="constructor-banner.jpg"
           alt="Уютная комната со свечами"
+          url={`${apiUrlToImage}/DefaultImages`}
           className={Style.squareImage}
           sourceSettings={sourceSettingsForMainImage}
         />
@@ -62,6 +63,7 @@ const TutorialBlock: FC<TutorialBlockProps> = () => {
             <Picture
               name="constructor-tutorial-video-prev.png"
               alt="Пример создания свечи"
+              url={`${apiUrlToImage}/DefaultImages`}
               sourceSettings={[
                 {
                   size: 'small',
@@ -79,6 +81,7 @@ const TutorialBlock: FC<TutorialBlockProps> = () => {
             <Picture
               name="constructor-banner.jpg"
               alt="Уютная комната со свечами"
+              url={`${apiUrlToImage}/DefaultImages`}
               sourceSettings={[
                 {
                   size: 'small',

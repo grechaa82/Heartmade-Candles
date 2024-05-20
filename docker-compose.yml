@@ -12,7 +12,7 @@ services:
       context: backend/HeartmadeCandles/
       dockerfile: Dockerfile
     volumes:
-      - .backend/HeartmadeCandles/HeartmadeCandles.API/StaticFiles:/app/StaticFiles
+      - ./backend/HeartmadeCandles/HeartmadeCandles.API/StaticFiles:/app/StaticFiles
 
   frontend:
     container_name: client
