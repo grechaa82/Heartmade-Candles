@@ -9,3 +9,9 @@
     border-radius: var(--border-radius-primary);
     object-fit: cover;
 }
+
+.blurImage {
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--border-radius-primary);
+}

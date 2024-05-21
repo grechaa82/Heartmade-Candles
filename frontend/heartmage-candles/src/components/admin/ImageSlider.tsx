@@ -7,7 +7,7 @@ import IconViewListLarge from '../../UI/IconViewListLarge';
 import { Image } from '../../types/Image';
 import AddImagesPopUp from './PopUp/AddImagesPopUp';
 import ChangeImagesPopUp from './PopUp/ChangeImagesPopUp';
-import CustomImage from '../shared/Image';
+import Picture, { SourceSettings } from '../shared/Picture';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -108,12 +108,36 @@ const ImageSlider: FC<ImageSliderProps> = ({
     );
   }
 
+  const sourceSettingsForMainImage: SourceSettings[] = [
+    {
+      size: 'small',
+      media: '(max-width: 200px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 632px)',
+    },
+    {
+      size: 'large',
+      media: '(max-width: 768px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 1525px)',
+    },
+    {
+      size: 'large',
+      media: '(min-width: 1525px)',
+    },
+  ];
+
   return (
     <div className={Style.imageSlider}>
-      <CustomImage
+      <Picture
         name={images[currentImageIndex].fileName}
         alt={images[currentImageIndex].alternativeName}
         className={Style.squareImage}
+        sourceSettings={sourceSettingsForMainImage}
       />
       <div className={Style.slider}>
         <button
@@ -130,7 +154,15 @@ const ImageSlider: FC<ImageSliderProps> = ({
             onClick={() => handleChangeImage(index)}
             key={index}
           >
-            <CustomImage name={image.fileName} alt={image.alternativeName} />
+            <Picture
+              name={image.fileName}
+              alt={image.alternativeName}
+              sourceSettings={[
+                {
+                  size: 'small',
+                },
+              ]}
+            />
           </button>
         ))}
         <button

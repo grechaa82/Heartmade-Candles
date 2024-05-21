@@ -4,7 +4,7 @@ import PopUp, { PopUpProps } from './PopUp';
 import Button from '../../shared/Button';
 import { Image } from '../../../types/Image';
 import IconTrashLarge from '../../../UI/IconTrashLarge';
-import CustomImage from '../../shared/Image';
+import Picture from '../../shared/Picture';
 
 import Style from './ChangeImagesPopUp.module.css';
 
@@ -65,10 +65,15 @@ const ChangeImagesPopUp: FC<ChangeImagesPopUpProps> = ({
             key={index}
           >
             <div className={Style.imagePrev}>
-              <CustomImage
+              <Picture
                 name={image.fileName}
                 alt={image.alternativeName}
                 className={Style.squareImage}
+                sourceSettings={[
+                  {
+                    size: 'small',
+                  },
+                ]}
               />
             </div>
             <div className={Style.info}>

@@ -1,9 +1,7 @@
 import { FC, useState } from 'react';
 
-import ConstructorBanner2 from '../../assets/constructor-banner-2.png';
-import VideoPrev from '../../assets/constructor-tutorial-video-prev.png';
-import Video from '../../assets/constructor-tutorial-video.mp4';
-import CustomImage from '../../components/shared/Image';
+import { apiUrlToImage } from '../../config';
+import Picture, { SourceSettings } from '../../components/shared/Picture';
 
 import Style from './TutorialBlock.module.css';
 
@@ -12,23 +10,47 @@ interface TutorialBlockProps {}
 const TutorialBlock: FC<TutorialBlockProps> = () => {
   const [showVideo, setShowVideo] = useState(true);
 
+  const sourceSettingsForMainImage: SourceSettings[] = [
+    {
+      size: 'small',
+      media: '(max-width: 200px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 630px)',
+    },
+    {
+      size: 'large',
+      media: '(max-width: 1100px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 1401px)',
+    },
+    {
+      size: 'large',
+      media: '(min-width: 1401px)',
+    },
+  ];
+
   return (
     <div className={Style.tutorialBlock}>
       {showVideo ? (
         <video
           className={Style.video}
-          src={Video}
+          src={`${apiUrlToImage}/DefaultImages/constructor-tutorial-video.webm`}
           muted
           autoPlay
           controls
           onEnded={() => setShowVideo(false)}
         />
       ) : (
-        <CustomImage
-          name={ConstructorBanner2}
-          alt={ConstructorBanner2}
-          src={ConstructorBanner2}
+        <Picture
+          name="constructor-banner.jpg"
+          alt="Уютная комната со свечами"
+          url={`${apiUrlToImage}/DefaultImages`}
           className={Style.squareImage}
+          sourceSettings={sourceSettingsForMainImage}
         />
       )}
       <div className={Style.slider}>
@@ -38,7 +60,16 @@ const TutorialBlock: FC<TutorialBlockProps> = () => {
             type="button"
             onClick={() => setShowVideo(true)}
           >
-            <CustomImage name={VideoPrev} alt={VideoPrev} src={VideoPrev} />
+            <Picture
+              name="constructor-tutorial-video-prev.png"
+              alt="Пример создания свечи"
+              url={`${apiUrlToImage}/DefaultImages`}
+              sourceSettings={[
+                {
+                  size: 'small',
+                },
+              ]}
+            />
           </button>
         </div>
         <div className={Style.imageSliderBlock}>
@@ -47,10 +78,15 @@ const TutorialBlock: FC<TutorialBlockProps> = () => {
             type="button"
             onClick={() => setShowVideo(false)}
           >
-            <CustomImage
-              name={ConstructorBanner2}
-              alt={ConstructorBanner2}
-              src={ConstructorBanner2}
+            <Picture
+              name="constructor-banner.jpg"
+              alt="Уютная комната со свечами"
+              url={`${apiUrlToImage}/DefaultImages`}
+              sourceSettings={[
+                {
+                  size: 'small',
+                },
+              ]}
             />
           </button>
         </div>

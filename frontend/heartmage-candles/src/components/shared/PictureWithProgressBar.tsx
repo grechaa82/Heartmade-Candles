@@ -1,16 +1,16 @@
 import { FC } from 'react';
 
-import CustomImage, { CustomImageProps } from './Image';
+import Picture, { PictureProps } from './Picture';
 
-import Style from './CustomImageWithProgressBar.module.css';
+import Style from './PictureWithProgressBar.module.css';
 
-interface CustomImageWithProgressBarProps extends CustomImageProps {
+interface PictureWithProgressBarProps extends PictureProps {
   showProgressBar: boolean;
   progressValue: number;
   progressMax: number;
 }
 
-const CustomImageWithProgressBar: FC<CustomImageWithProgressBarProps> = ({
+const PictureWithProgressBar: FC<PictureWithProgressBarProps> = ({
   showProgressBar,
   progressValue,
   progressMax,
@@ -18,7 +18,7 @@ const CustomImageWithProgressBar: FC<CustomImageWithProgressBarProps> = ({
 }) => {
   return (
     <>
-      <CustomImage {...props} />
+      <Picture {...props} />
       {showProgressBar && (
         <progress
           className={Style.progress}
@@ -30,4 +30,4 @@ const CustomImageWithProgressBar: FC<CustomImageWithProgressBarProps> = ({
   );
 };
 
-export default CustomImageWithProgressBar;
+export default PictureWithProgressBar;

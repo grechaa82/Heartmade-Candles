@@ -28,6 +28,7 @@ const CustomImage: FC<CustomImageProps> = ({
     : url
     ? `${url}/${name}`
     : `${apiUrlToImage}/${name}`;
+
   const style = {
     width: width ? `${width}px` : '100%',
     height: height ? `${height}px` : '100%',

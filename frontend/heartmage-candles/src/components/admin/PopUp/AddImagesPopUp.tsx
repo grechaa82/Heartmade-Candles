@@ -4,7 +4,7 @@ import PopUp, { PopUpProps } from './PopUp';
 import ButtonWithIcon from '../../shared/ButtonWithIcon';
 import IconPlusLarge from '../../../UI/IconPlusLarge';
 import { Image } from '../../../types/Image';
-import CustomImage from '../../shared/Image';
+import Picture from '../../shared/Picture';
 
 import Style from './AddImagesPopUp.module.css';
 
@@ -105,10 +105,15 @@ const AddImagesPopUp: FC<AddImagesPopUpProps> = ({
           <div className={Style.imagePrevBlock}>
             {images.map((image, index) => (
               <div className={Style.imagePrev} key={index}>
-                <CustomImage
+                <Picture
                   name={image.fileName}
                   alt={image.alternativeName}
                   className={Style.squareImage}
+                  sourceSettings={[
+                    {
+                      size: 'small',
+                    },
+                  ]}
                 />
               </div>
             ))}

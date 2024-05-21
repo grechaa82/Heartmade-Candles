@@ -1,14 +1,35 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 
-import BannerImage1 from '../../assets/banner-image-1.jpg';
-import BannerImage2 from '../../assets/banner-image-2.jpg';
-import BannerImage3 from '../../assets/banner-image-3.jpg';
-import CustomImage from '../../components/shared/Image';
+import Picture, { SourceSettings } from '../../components/shared/Picture';
+import { apiUrlToImage } from '../../config';
 
 import Style from './HomePage.module.css';
 
 const HomePage: FC = () => {
+  const sourceSettings: SourceSettings[] = [
+    {
+      size: 'small',
+      media: '(max-width: 200px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 630px)',
+    },
+    {
+      size: 'large',
+      media: '(max-width: 768px)',
+    },
+    {
+      size: 'medium',
+      media: '(max-width: 1896px)',
+    },
+    {
+      size: 'large',
+      media: '(min-width: 1897px)',
+    },
+  ];
+
   return (
     <>
       <div className={Style.container}>
@@ -16,33 +37,36 @@ const HomePage: FC = () => {
         <div className={Style.mainBanner}>
           <div className={Style.banner}>
             <div className={Style.imageBlock}>
-              <CustomImage
-                name={BannerImage1}
+              <Picture
+                name="banner-image-1.jpg"
                 alt="Выбор из разных свечей"
-                src={BannerImage1}
+                url={`${apiUrlToImage}/DefaultImages`}
                 className={Style.rectangularImage}
+                sourceSettings={sourceSettings}
               />
             </div>
             <h3>Выбирайте свечи</h3>
           </div>
           <div className={Style.banner}>
             <div className={Style.imageBlock}>
-              <CustomImage
-                name={BannerImage2}
+              <Picture
+                name="banner-image-2.jpg"
                 alt="Создание свечи"
-                src={BannerImage2}
+                url={`${apiUrlToImage}/DefaultImages`}
                 className={Style.rectangularImage}
+                sourceSettings={sourceSettings}
               />
             </div>
             <h3>Создавайте уникальный дизайн</h3>
           </div>
           <div className={Style.banner}>
             <div className={Style.imageBlock}>
-              <CustomImage
-                name={BannerImage3}
+              <Picture
+                name="banner-image-3.jpg"
                 alt="Свечи в коробке"
-                src={BannerImage3}
+                url={`${apiUrlToImage}/DefaultImages`}
                 className={Style.rectangularImage}
+                sourceSettings={sourceSettings}
               />
             </div>
             <h3>Получайте свои свечи</h3>
