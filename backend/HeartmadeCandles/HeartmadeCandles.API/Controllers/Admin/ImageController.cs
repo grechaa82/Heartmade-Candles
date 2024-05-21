@@ -39,6 +39,10 @@ public class ImageController : Controller
 
             if (result.IsFailure)
             {
+                _logger.LogError(
+                    "Error: Failed in process {processName}, error message: {errorMessage}",
+                    nameof(_imageService.UploadImages),
+                    result.Error);
                 return BadRequest(result.Error);
             }
 
@@ -46,6 +50,7 @@ public class ImageController : Controller
         }
         catch (Exception ex)
         {
+            _logger.LogError("Failed to add images, error message: {errorMessage}", ex);
             return BadRequest($"Failed to add images, error message: {ex}");
         }
     }
@@ -57,6 +62,10 @@ public class ImageController : Controller
         
         if (result.IsFailure)
         {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_imageService.DeleteImages),
+                result.Error);
             return BadRequest($"Failed to delete images, error message: {result.Error}");
         }
 
