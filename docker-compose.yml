@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   backend:
@@ -76,6 +76,7 @@ services:
       - pg_admin
       - seq
       - jaeger
+      - filebrowser
 
   mongo:
     container_name: mongodb
@@ -92,3 +93,11 @@ services:
       - ${VAR_MONGO_EXPRESS_PORT}:8081
     depends_on:
       - mongo
+
+  filebrowser:
+    image: filebrowser/filebrowser
+    container_name: filebrowser
+    ports:
+      - 5001:80
+    volumes:
+      - ./backend/HeartmadeCandles/HeartmadeCandles.API/StaticFiles:/srv
