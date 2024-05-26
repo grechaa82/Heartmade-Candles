@@ -1,2 +1,4 @@
-export const apiUrl = 'https://localhost/api';
-export const apiUrlToImage = 'https://localhost/api/StaticFiles/Images';
+export const apiUrl = `${import.meta.env.VITE_VAR_URL}/api`;
+export const apiUrlToImage = `${
+  import.meta.env.VITE_VAR_URL
+}/api/StaticFiles/Images`;

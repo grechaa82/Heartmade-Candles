@@ -26,6 +26,8 @@ var logger = new LoggerConfiguration()
 
 try
 {
+    builder.Configuration.AddEnvironmentVariables();
+    
     builder.Services.AddLogging(
         loggingBuilder =>
         {
@@ -59,7 +61,7 @@ try
         Directory.CreateDirectory(staticFilesDefaultImagesPath);
     }
 
-    builder.Services.AddCustomCors();
+    builder.Services.AddCustomCors(builder.Configuration);
 
     builder.Services.AddApiAuthentication(builder.Configuration);
 
@@ -78,7 +80,7 @@ try
         .AddOrderRepositories();
 
     builder.Services
-        .AddBotServices()
+        .AddBotServices(builder.Configuration)
         .AddBotRepositories();
 
     builder.Services

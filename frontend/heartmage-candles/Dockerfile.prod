@@ -1,5 +1,11 @@
 FROM node:18.15.0 AS builder
 
+ARG VITE_VAR_URL
+ARG VITE_VAR_FRONTEND_PORT
+
+ENV VITE_VAR_URL=$VITE_VAR_URL
+ENV VITE_VAR_FRONTEND_PORT=$VITE_VAR_FRONTEND_PORT
+
 WORKDIR /app
 
 COPY package.json .
@@ -11,8 +17,6 @@ COPY . .
 RUN npm run build
 
 FROM nginx:latest
-
-EXPOSE 5173
 
 COPY /nginx/default.conf /etc/nginx/nginx.conf
 

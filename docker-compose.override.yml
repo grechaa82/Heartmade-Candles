@@ -1,28 +1,26 @@
-version: '3'
+version: '3.8'
 
 services:
   backend:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - VAR_BACKEND_PORT=${VAR_BACKEND_PORT}
-      - VAR_TELEGRAM_API_TOKEN=${VAR_TELEGRAM_API_TOKEN}
-      - VAR_TELEGRAM_CHAT_ID=${VAR_TELEGRAM_CHAT_ID}
-      - VAR_POSTGRES_SERVER=${VAR_POSTGRES_SERVER}
-      - VAR_POSTGRES_PORT=${VAR_POSTGRES_PORT}
-      - VAR_POSTGRES_DATABASE=${VAR_POSTGRES_DATABASE}
-      - VAR_POSTGRES_USER=${VAR_POSTGRES_USER}
-      - VAR_POSTGRES_PASSWORD=${VAR_POSTGRES_PASSWORD}
-      - VAR_SEQ_PORT=${VAR_SEQ_PORT}
-      - VAR_JWT_SECRET_KEY=${VAR_JWT_SECRET_KEY}
-      - VAR_ADMIN_LOGIN=${VAR_ADMIN_LOGIN}
-      - VAR_ADMIN_PASSWORD=${VAR_ADMIN_PASSWORD}
-      - VAR_POSTGRES_CONNECTIONSTRINGS=${VAR_POSTGRES_CONNECTIONSTRINGS}
-      - VAR_MONGO_CONNECTIONSTRINGS=${VAR_MONGO_CONNECTIONSTRINGS}
+      - HostDomain=${VAR_DOMAIN}
+      - FrontendPort=${VAR_FRONTEND_PORT}
+      - TelegramSettings__Token=${VAR_TELEGRAM_API_TOKEN}
+      - TelegramSettings__AdminChatId=${VAR_TELEGRAM_ADMIN_CHAT_ID}
+      - VAR_TELEGRAM_CHAT_ID=${VAR_TELEGRAM_ADMIN_CHAT_ID}
+      - JwtOptions__SecretKey=${VAR_JWT_SECRET_KEY}
+      - ConnectionStrings__DefaultConnection=${VAR_POSTGRES_CONNECTIONSTRINGS}
+      - DatabaseSettings__ConnectionString=${VAR_MONGO_CONNECTIONSTRINGS}
 
   frontend:
+    build:
+      args:
+        - VITE_VAR_URL=${VAR_URL}
+        - VITE_VAR_FRONTEND_PORT=${VAR_FRONTEND_PORT}
     environment:
-      - VAR_URL=${VAR_URL}
-      - VAR_BACKEND_PORT=${VAR_BACKEND_PORT}
+      - VITE_VAR_URL=${VAR_URL}
+      - VITE_VAR_FRONTEND_PORT=${VAR_FRONTEND_PORT}
 
   db:
     environment:
@@ -49,6 +47,11 @@ services:
       - SAMPLING_STRATEGIES_FILE=/etc/jaeger/sampling_strategies.json
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
       - COLLECTOR_OTLP_ENABLED:"true"
+
+  proxy:
+    environment:
+      - VAR_DOMAIN=${VAR_DOMAIN}
+      - VAR_FRONTEND_PORT=${VAR_FRONTEND_PORT}
 
   mongo:
     environment:

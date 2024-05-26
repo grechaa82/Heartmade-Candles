@@ -44,17 +44,26 @@ public static class ServiceCollectionExtensions
                         .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true));
     }
 
-    public static void AddCustomCors(this IServiceCollection services)
+    public static void AddCustomCors(this IServiceCollection services, IConfiguration configuration)
     {
+        var domain = configuration["HostDomain"];
+        var frontendPort = configuration["FrontendPort"];
+
+        var originParams = new string[]{
+            $"http://{domain}",
+            $"https://{domain}",
+            $"http://{domain}:{frontendPort}",
+            $"https://{domain}:{frontendPort}",
+            "http://localhost:5174"
+        };
+        
         services.AddCors(
             options =>
             {
                 options.AddPolicy(
                     "AllowCors", policy =>
                     {
-                        policy.WithOrigins(
-                                "http://95.140.152.201", "http://localhost:5173", "http://localhost",
-                                "http://localhost:5000", "http://localhost:5174")
+                        policy.WithOrigins(originParams)
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials();
