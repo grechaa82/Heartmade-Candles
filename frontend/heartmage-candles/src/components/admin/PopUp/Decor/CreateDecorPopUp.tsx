@@ -1,32 +1,41 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { Smell } from '../../../../types/Smell';
+import { Decor } from '../../../../types/Decor';
+import { Image } from '../../../../types/Image';
 import Textarea from '../../Textarea';
 import CheckboxBlock from '../../CheckboxBlock';
-import PopUp, { PopUpProps } from '../PopUp';
-import { smellSchema, SmellType } from './Smell.schema';
+import PopUp, { PopUpProps } from './../PopUp';
+import ImageUploader from '../../ImageUploader';
+import ImagePreview from '../../ImagePreview';
+import { decorSchema, DecorType } from './Decor.schema';
 
-import Style from './CreateSmellPopUp.module.css';
+import { ImagesApi } from '../../../../services/ImagesApi';
 
-export interface CreateSmellPopUpProps extends PopUpProps {
+import Style from './CreateDecorPopUp.module.css';
+
+export interface CreateDecorPopUpProps extends PopUpProps {
   title: string;
-  onSave: (smell: Smell) => void;
+  onSave: (decor: Decor) => void;
+  uploadImages?: (files: File[]) => Promise<string[]>;
 }
 
-const CreateSmellPopUp: FC<CreateSmellPopUpProps> = ({
+const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
   onClose,
   title,
   onSave,
+  uploadImages,
 }) => {
+  const [images, setImages] = useState<Image[]>([]);
+
   const {
     handleSubmit,
     formState: { isValid, errors },
     control,
   } = useForm({
     mode: 'onChange',
-    resolver: yupResolver(smellSchema),
+    resolver: yupResolver(decorSchema),
     defaultValues: {
       title: '',
       description: '',
@@ -35,23 +44,48 @@ const CreateSmellPopUp: FC<CreateSmellPopUpProps> = ({
     },
   });
 
-  const onSubmit: SubmitHandler<SmellType> = (data) => {
-    const smell: Smell = {
+  const onSubmit: SubmitHandler<DecorType> = (data) => {
+    const decor: Decor = {
       id: 0,
       title: data.title,
       description: data.description,
-      images: [],
+      images: images,
       isActive: data.isActive,
       price: data.price,
     };
-    onSave(smell);
+    onSave(decor);
     onClose();
   };
 
+  const handleOnClose = async () => {
+    await deleteImages(images.map((image) => image.fileName));
+    onClose();
+  };
+
+  const deleteImages = async (uploadedImages?: string[]) => {
+    if (uploadedImages) {
+      const imagesToDelete = uploadedImages;
+      await ImagesApi.deleteImages(imagesToDelete);
+    }
+  };
+
+  const processUpload = async (files: File[]) => {
+    const newFileNames = await uploadImages(files);
+    const newImages = files.map((file, index) => ({
+      fileName: newFileNames[index],
+      alternativeName: file.name,
+    }));
+    setImages((prevImages) => [...prevImages, ...newImages]);
+  };
+
   return (
-    <PopUp onClose={onClose}>
+    <PopUp onClose={handleOnClose}>
       <div className={Style.container}>
         <p className={Style.title}>{title}</p>
+        <div className={Style.imageBlock}>
+          <ImageUploader uploadImages={processUpload} />
+          <ImagePreview images={images} />
+        </div>
         <form
           className={`${Style.gridContainer} ${Style.formForSmell}`}
           onSubmit={handleSubmit(onSubmit)}
@@ -144,4 +178,4 @@ const CreateSmellPopUp: FC<CreateSmellPopUpProps> = ({
   );
 };
 
-export default CreateSmellPopUp;
+export default CreateDecorPopUp;
