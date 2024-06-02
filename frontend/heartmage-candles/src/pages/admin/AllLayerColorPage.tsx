@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { LayerColor } from '../../types/LayerColor';
 import { LayerColorRequest } from '../../types/Requests/LayerColorRequest';
-import CreateLayerColorPopUp from '../../components/admin/PopUp/CreateLayerColorPopUp';
+import CreateLayerColorPopUp from '../../components/admin/PopUp/LayerColor/CreateLayerColorPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { LayerColorsApi } from '../../services/LayerColorsApi';
