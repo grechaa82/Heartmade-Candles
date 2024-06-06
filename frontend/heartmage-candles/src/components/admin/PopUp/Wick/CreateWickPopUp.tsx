@@ -87,7 +87,7 @@ const CreateWickPopUp: FC<CreateWickPopUpProps> = ({
           <ImagePreview images={images} />
         </div>
         <form
-          className={`${Style.gridContainer} ${Style.formForSmell}`}
+          className={`${Style.gridContainer} ${Style.formForWick}`}
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className={`${Style.formItem} ${Style.itemTitle}`}>

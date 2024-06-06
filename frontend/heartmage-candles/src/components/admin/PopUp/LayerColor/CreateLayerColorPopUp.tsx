@@ -87,7 +87,7 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
           <ImagePreview images={images} />
         </div>
         <form
-          className={`${Style.gridContainer} ${Style.formForSmell}`}
+          className={`${Style.gridContainer} ${Style.formForLayerColor}`}
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className={`${Style.formItem} ${Style.itemTitle}`}>

@@ -2,58 +2,73 @@ import { FC, useState } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { Decor } from '../../../../types/Decor';
+import { Candle } from '../../../../types/Candle';
 import { Image } from '../../../../types/Image';
 import Textarea from '../../Textarea';
+import ButtonDropdown, { optionData } from '../../../shared/ButtonDropdown';
+import { TypeCandle } from '../../../../types/TypeCandle';
 import CheckboxBlock from '../../CheckboxBlock';
-import PopUp, { PopUpProps } from './../PopUp';
-import ImageUploader from '../../ImageUploader';
+import PopUp, { PopUpProps } from '../PopUp';
 import ImagePreview from '../../ImagePreview';
-import { decorSchema, DecorType } from './Decor.schema';
+import ImageUploader from '../../ImageUploader';
 
 import { ImagesApi } from '../../../../services/ImagesApi';
 
-import Style from './CreateDecorPopUp.module.css';
+import Style from './CreateCandlePopUp.module.css';
+import { candleSchema, CandleType } from './Candle.schema';
 
-export interface CreateDecorPopUpProps extends PopUpProps {
+export interface CreateCandlePopUpProps extends PopUpProps {
   title: string;
-  onSave: (decor: Decor) => void;
+  typeCandlesArray: TypeCandle[];
+  onSave: (canlde: Candle) => void;
   uploadImages?: (files: File[]) => Promise<string[]>;
 }
 
-const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
+const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
   onClose,
   title,
+  typeCandlesArray,
   onSave,
   uploadImages,
 }) => {
   const [images, setImages] = useState<Image[]>([]);
 
+  const optionData: optionData[] = typeCandlesArray.map(({ id, title }) => ({
+    id: id.toString(),
+    title,
+  }));
+
   const {
     handleSubmit,
+    setValue,
     formState: { isValid, errors },
     control,
   } = useForm({
     mode: 'onChange',
-    resolver: yupResolver(decorSchema),
+    resolver: yupResolver(candleSchema),
     defaultValues: {
       title: '',
       description: '',
       isActive: false,
       price: 0,
+      weightGrams: 0,
+      typeCandle: typeCandlesArray[0],
     },
   });
 
-  const onSubmit: SubmitHandler<DecorType> = (data) => {
-    const decor: Decor = {
+  const onSubmit: SubmitHandler<CandleType> = (data) => {
+    const candle: Candle = {
       id: 0,
       title: data.title,
       description: data.description,
       images: images,
       isActive: data.isActive,
       price: data.price,
+      weightGrams: data.weightGrams,
+      typeCandle: data.typeCandle,
+      createdAt: new Date().toISOString(),
     };
-    onSave(decor);
+    onSave(candle);
     onClose();
   };
 
@@ -78,6 +93,20 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
     setImages((prevImages) => [...prevImages, ...newImages]);
   };
 
+  console.log(
+    'fass',
+    errors.title ||
+      errors.description ||
+      errors.price ||
+      errors.isActive ||
+      errors.weightGrams ||
+      errors.typeCandle
+      ? Style.invalid
+      : isValid
+      ? Style.valid
+      : Style.default,
+  );
+
   return (
     <PopUp onClose={handleOnClose}>
       <div className={Style.container}>
@@ -87,7 +116,7 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
           <ImagePreview images={images} />
         </div>
         <form
-          className={`${Style.gridContainer} ${Style.formForDecor}`}
+          className={`${Style.gridContainer} ${Style.formForCandle}`}
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className={`${Style.formItem} ${Style.itemTitle}`}>
@@ -120,6 +149,57 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
             />
             {errors?.price && (
               <p className={Style.validationError}>{errors.price.message}</p>
+            )}
+          </div>
+          <div className={`${Style.formItem} ${Style.itemWeightGrams}`}>
+            <Controller
+              name="weightGrams"
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  text={field.value.toString()}
+                  label="Вес в граммах"
+                  onChange={field.onChange}
+                />
+              )}
+            />
+            {errors?.weightGrams && (
+              <p className={Style.validationError}>
+                {errors.weightGrams.message}
+              </p>
+            )}
+          </div>
+          <div className={`${Style.formItem} ${Style.itemType}`}>
+            <Controller
+              name="typeCandle"
+              control={control}
+              render={({ field }) => (
+                <ButtonDropdown
+                  text="Тип свечи"
+                  selected={{
+                    id: field.value.id.toString(),
+                    title: field.value.title,
+                    // id: typeCandlesArray[0].id.toString(),
+                    // title: typeCandlesArray[0].title,
+                  }}
+                  options={optionData}
+                  onChange={(value) =>
+                    setValue(
+                      'typeCandle',
+                      {
+                        id: parseInt(value.id),
+                        title: value.title,
+                      },
+                      { shouldTouch: true },
+                    )
+                  }
+                />
+              )}
+            />
+            {errors?.weightGrams && (
+              <p className={Style.validationError}>
+                {errors.weightGrams.message}
+              </p>
             )}
           </div>
           <div className={`${Style.formItem} ${Style.itemActive}`}>
@@ -156,26 +236,30 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
               </p>
             )}
           </div>
-          <button
-            type="submit"
-            className={`${Style.saveButton} ${
-              errors.title ||
-              errors.description ||
-              errors.price ||
-              errors.isActive
-                ? Style.invalid
-                : isValid
-                ? Style.valid
-                : Style.default
-            }`}
-            disabled={!isValid || Object.keys(errors).length > 0}
-          >
-            Сохранить
-          </button>
+          {onSave && (
+            <button
+              type="submit"
+              className={`${Style.saveButton} ${
+                errors.title ||
+                errors.description ||
+                errors.price ||
+                errors.isActive ||
+                errors.weightGrams ||
+                errors.typeCandle
+                  ? Style.invalid
+                  : isValid
+                  ? Style.valid
+                  : Style.default
+              }`}
+              disabled={!isValid || Object.keys(errors).length > 0}
+            >
+              Сохранить
+            </button>
+          )}
         </form>
       </div>
     </PopUp>
   );
 };
 
-export default CreateDecorPopUp;
+export default CreateCandlePopUp;

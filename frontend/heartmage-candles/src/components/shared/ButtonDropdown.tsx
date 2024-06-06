@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { useState } from 'react';
 
 import { ButtonProps } from './Button';
 import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
@@ -11,21 +11,22 @@ export interface optionData {
   title: string;
 }
 
-export interface ButtonDropdownProps extends ButtonProps {
-  options: optionData[];
-  onClick: (id: string) => void;
+interface ButtonDropdownProps<T extends optionData> extends ButtonProps {
+  options: T[];
+  selected: T;
+  onChange: (value: T) => void;
 }
 
-const ButtonDropdown: FC<ButtonDropdownProps> = ({
-  options,
-  onClick,
+const ButtonDropdown = <T extends optionData>({
   text,
   color = '#000',
   height,
   width,
-}) => {
+  options,
+  selected,
+  onChange,
+}: ButtonDropdownProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<null | optionData>(null);
 
   const buttonStyle = {
     color: color,
@@ -33,10 +34,9 @@ const ButtonDropdown: FC<ButtonDropdownProps> = ({
     ...(width && { width: `${width}px` }),
   };
 
-  const handleOptionClick = (optionData: optionData) => {
-    setSelectedOption(optionData);
+  const handleOptionClick = (option: T) => {
+    onChange(option);
     setIsOpen(false);
-    onClick(optionData.id);
   };
 
   return (
@@ -48,7 +48,7 @@ const ButtonDropdown: FC<ButtonDropdownProps> = ({
         } `}
         type="button"
       >
-        <p>{selectedOption ? selectedOption.title : text}</p>
+        <p>{selected.title}</p>
         <div className={Style.dropdownIcon}>
           <IconChevronDownLarge color="#aaa" />
         </div>

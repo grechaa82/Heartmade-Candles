@@ -7,7 +7,7 @@ import { TypeCandle } from '../../types/TypeCandle';
 import TagsGrid from '../../modules/admin/TagsGrid';
 import { convertToTagData } from './CandleDetailsPage';
 import { TagData } from '../../components/shared/Tag';
-import CreateCandlePopUp from '../../components/admin/PopUp/CreateCandlePopUp';
+import CreateCandlePopUp from '../../components/admin/PopUp/Candle/CreateCandlePopUp';
 import { CandleRequest } from '../../types/Requests/CandleRequest';
 import CreateTagPopUp from '../../components/admin/PopUp/CreateTagPopUp';
 import { NumberOfLayerRequest } from '../../types/Requests/NumberOfLayerRequest';
