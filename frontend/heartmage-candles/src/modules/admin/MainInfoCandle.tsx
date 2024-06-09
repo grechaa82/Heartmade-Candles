@@ -35,18 +35,18 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
   }, [fetchTypeCandle]);
 
   const handleOnSubmit = (data: Candle) => {
-    const candle: Candle = {
+    const newCandle: Candle = {
       id: data.id,
       title: data.title,
       description: data.description,
-      images: [],
+      images: candle.images,
       isActive: data.isActive,
       price: data.price,
       weightGrams: data.weightGrams,
       typeCandle: data.typeCandle,
       createdAt: data.createdAt,
     };
-    onSave(candle);
+    onSave(newCandle);
   };
 
   const handleChangeImages = (images: Image[]) => {

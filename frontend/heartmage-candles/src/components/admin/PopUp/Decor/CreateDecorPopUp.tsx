@@ -1,15 +1,11 @@
 import { FC, useState } from 'react';
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import { Decor } from '../../../../types/Decor';
 import { Image } from '../../../../types/Image';
-import Textarea from '../../Textarea';
-import CheckboxBlock from '../../CheckboxBlock';
 import PopUp, { PopUpProps } from './../PopUp';
 import ImageUploader from '../../ImageUploader';
 import ImagePreview from '../../ImagePreview';
-import { decorSchema, DecorType } from './Decor.schema';
+import DecorForm from '../../Form/Decor/DecorForm';
 
 import { ImagesApi } from '../../../../services/ImagesApi';
 
@@ -29,24 +25,9 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
 }) => {
   const [images, setImages] = useState<Image[]>([]);
 
-  const {
-    handleSubmit,
-    formState: { isValid, errors },
-    control,
-  } = useForm({
-    mode: 'onChange',
-    resolver: yupResolver(decorSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      isActive: false,
-      price: 0,
-    },
-  });
-
-  const onSubmit: SubmitHandler<DecorType> = (data) => {
+  const handleOnSubmit = (data: Decor) => {
     const decor: Decor = {
-      id: 0,
+      id: data.id,
       title: data.title,
       description: data.description,
       images: images,
@@ -86,93 +67,7 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
           <ImageUploader uploadImages={processUpload} />
           <ImagePreview images={images} />
         </div>
-        <form
-          className={`${Style.gridContainer} ${Style.formForDecor}`}
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className={`${Style.formItem} ${Style.itemTitle}`}>
-            <Controller
-              name="title"
-              control={control}
-              render={({ field }) => (
-                <Textarea
-                  text={field.value}
-                  label="Название"
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            {errors?.title && (
-              <p className={Style.validationError}>{errors.title.message}</p>
-            )}
-          </div>
-          <div className={`${Style.formItem} ${Style.itemPrice}`}>
-            <Controller
-              name="price"
-              control={control}
-              render={({ field }) => (
-                <Textarea
-                  text={field.value.toString()}
-                  label="Стоимость"
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            {errors?.price && (
-              <p className={Style.validationError}>{errors.price.message}</p>
-            )}
-          </div>
-          <div className={`${Style.formItem} ${Style.itemActive}`}>
-            <Controller
-              name="isActive"
-              control={control}
-              render={({ field }) => (
-                <CheckboxBlock
-                  text="Активна"
-                  checked={field.value}
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            {errors?.isActive && (
-              <p className={Style.validationError}>{errors.isActive.message}</p>
-            )}
-          </div>
-          <div className={`${Style.formItem} ${Style.itemDescription}`}>
-            <Controller
-              name="description"
-              control={control}
-              render={({ field }) => (
-                <Textarea
-                  text={field.value}
-                  label="Описание"
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            {errors?.description && (
-              <p className={Style.validationError}>
-                {errors.description.message}
-              </p>
-            )}
-          </div>
-          <button
-            type="submit"
-            className={`${Style.saveButton} ${
-              errors.title ||
-              errors.description ||
-              errors.price ||
-              errors.isActive
-                ? Style.invalid
-                : isValid
-                ? Style.valid
-                : Style.default
-            }`}
-            disabled={!isValid || Object.keys(errors).length > 0}
-          >
-            Сохранить
-          </button>
-        </form>
+        <DecorForm onSubmit={handleOnSubmit} />
       </div>
     </PopUp>
   );

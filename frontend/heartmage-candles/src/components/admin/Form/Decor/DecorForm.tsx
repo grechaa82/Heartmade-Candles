@@ -2,74 +2,54 @@ import { FC } from 'react';
 import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { candleSchema, CandleType } from './Candle.schema';
-import { TypeCandle } from '../../../../types/TypeCandle';
-import ButtonDropdown, { optionData } from '../../../shared/ButtonDropdown';
-import { Candle } from '../../../../types/Candle';
+import { decorSchema, DecorType } from './Decor.schema';
+import { Decor } from '../../../../types/Decor';
 import Textarea from '../../Textarea';
 import CheckboxBlock from '../../CheckboxBlock';
 
-import Style from './CandleForm.module.css';
+import Style from './DecorForm.module.css';
 
-export interface CandleFormProps {
-  typeCandlesArray: TypeCandle[];
-  defaultValues?: Candle;
-  onSubmit: (canlde: Candle) => void;
+export interface DecorFormProps {
+  defaultValues?: Decor;
+  onSubmit: (decor: Decor) => void;
 }
 
-const CandleForm: FC<CandleFormProps> = ({
-  typeCandlesArray,
-  defaultValues,
-  onSubmit,
-}) => {
-  const optionData: optionData[] = typeCandlesArray.map(({ id, title }) => ({
-    id: id.toString(),
-    title,
-  }));
-
+const DecorForm: FC<DecorFormProps> = ({ defaultValues, onSubmit }) => {
   const {
     handleSubmit,
-    setValue,
     formState: { isValid, errors, isDirty },
     control,
     reset,
   } = useForm({
     mode: 'onChange',
-    resolver: yupResolver(candleSchema),
+    resolver: yupResolver(decorSchema),
     defaultValues: {
       title: defaultValues ? defaultValues.title : '',
       description: defaultValues ? defaultValues.description : '',
       isActive: defaultValues ? defaultValues.isActive : false,
       price: defaultValues ? defaultValues.price : 0,
-      weightGrams: defaultValues ? defaultValues.weightGrams : 0,
-      typeCandle: defaultValues
-        ? defaultValues.typeCandle
-        : typeCandlesArray[0],
     },
   });
 
-  const handleOnSubmit: SubmitHandler<CandleType> = (data) => {
-    const candle: Candle = {
+  const handleOnSubmit: SubmitHandler<DecorType> = (data) => {
+    const decor: Decor = {
       id: 0,
       title: data.title,
       description: data.description,
       images: [],
       isActive: data.isActive,
       price: data.price,
-      weightGrams: data.weightGrams,
-      typeCandle: data.typeCandle,
-      createdAt: new Date().toISOString(),
     };
-    onSubmit(candle);
-    reset(candle);
+    onSubmit(decor);
+    reset(decor);
   };
 
   return (
     <form
-      className={Style.gridContainer}
+      className={`${Style.gridContainer} ${Style.formForDecor}`}
       onSubmit={handleSubmit(handleOnSubmit)}
     >
-      <div className={Style.itemTitle}>
+      <div className={`${Style.formItem} ${Style.itemTitle}`}>
         <Controller
           name="title"
           control={control}
@@ -85,7 +65,7 @@ const CandleForm: FC<CandleFormProps> = ({
           <p className={Style.validationError}>{errors.title.message}</p>
         )}
       </div>
-      <div className={Style.itemPrice}>
+      <div className={`${Style.formItem} ${Style.itemPrice}`}>
         <Controller
           name="price"
           control={control}
@@ -101,52 +81,7 @@ const CandleForm: FC<CandleFormProps> = ({
           <p className={Style.validationError}>{errors.price.message}</p>
         )}
       </div>
-      <div className={Style.itemWeightGrams}>
-        <Controller
-          name="weightGrams"
-          control={control}
-          render={({ field }) => (
-            <Textarea
-              text={field.value.toString()}
-              label="Вес в граммах"
-              onChange={field.onChange}
-            />
-          )}
-        />
-        {errors?.weightGrams && (
-          <p className={Style.validationError}>{errors.weightGrams.message}</p>
-        )}
-      </div>
-      <div className={Style.itemType}>
-        <Controller
-          name="typeCandle"
-          control={control}
-          render={({ field }) => (
-            <ButtonDropdown
-              text="Тип свечи"
-              selected={{
-                id: field.value.id.toString(),
-                title: field.value.title,
-              }}
-              options={optionData}
-              onChange={(value) =>
-                setValue(
-                  'typeCandle',
-                  {
-                    id: parseInt(value.id),
-                    title: value.title,
-                  },
-                  { shouldTouch: true, shouldDirty: true },
-                )
-              }
-            />
-          )}
-        />
-        {errors?.typeCandle && (
-          <p className={Style.validationError}>{errors.typeCandle.message}</p>
-        )}
-      </div>
-      <div className={Style.itemActive}>
+      <div className={`${Style.formItem} ${Style.itemActive}`}>
         <Controller
           name="isActive"
           control={control}
@@ -162,7 +97,7 @@ const CandleForm: FC<CandleFormProps> = ({
           <p className={Style.validationError}>{errors.isActive.message}</p>
         )}
       </div>
-      <div className={Style.itemDescription}>
+      <div className={`${Style.formItem} ${Style.itemDescription}`}>
         <Controller
           name="description"
           control={control}
@@ -186,9 +121,7 @@ const CandleForm: FC<CandleFormProps> = ({
             errors.title ||
             errors.description ||
             errors.price ||
-            errors.isActive ||
-            errors.weightGrams ||
-            errors.typeCandle
+            errors.isActive
               ? Style.invalid
               : isValid
               ? Style.valid
@@ -203,4 +136,4 @@ const CandleForm: FC<CandleFormProps> = ({
   );
 };
 
-export default CandleForm;
+export default DecorForm;
