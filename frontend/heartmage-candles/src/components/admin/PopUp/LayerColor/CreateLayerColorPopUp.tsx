@@ -1,15 +1,11 @@
 import { FC, useState } from 'react';
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 import { LayerColor } from '../../../../types/LayerColor';
 import { Image } from '../../../../types/Image';
-import Textarea from '../../Textarea';
-import CheckboxBlock from '../../CheckboxBlock';
 import PopUp, { PopUpProps } from '../PopUp';
 import ImageUploader from '../../ImageUploader';
 import ImagePreview from '../../ImagePreview';
-import { layerColorSchema, LayerColorType } from './LayerColor.schema';
+import LayerColorForm from '../../Form/LayerColor/LayerColorForm';
 
 import { ImagesApi } from '../../../../services/ImagesApi';
 
@@ -29,22 +25,7 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
 }) => {
   const [images, setImages] = useState<Image[]>([]);
 
-  const {
-    handleSubmit,
-    formState: { isValid, errors },
-    control,
-  } = useForm({
-    mode: 'onChange',
-    resolver: yupResolver(layerColorSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      isActive: false,
-      pricePerGram: 0,
-    },
-  });
-
-  const onSubmit: SubmitHandler<LayerColorType> = (data) => {
+  const handleOnSubmit = (data: LayerColor) => {
     const layerColor: LayerColor = {
       id: 0,
       title: data.title,
@@ -86,95 +67,7 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
           <ImageUploader uploadImages={processUpload} />
           <ImagePreview images={images} />
         </div>
-        <form
-          className={`${Style.gridContainer} ${Style.formForLayerColor}`}
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className={`${Style.formItem} ${Style.itemTitle}`}>
-            <Controller
-              name="title"
-              control={control}
-              render={({ field }) => (
-                <Textarea
-                  text={field.value}
-                  label="Название"
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            {errors?.title && (
-              <p className={Style.validationError}>{errors.title.message}</p>
-            )}
-          </div>
-          <div className={`${Style.formItem} ${Style.itemPrice}`}>
-            <Controller
-              name="pricePerGram"
-              control={control}
-              render={({ field }) => (
-                <Textarea
-                  text={field.value.toString()}
-                  label="Стоимость за грамм"
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            {errors?.pricePerGram && (
-              <p className={Style.validationError}>
-                {errors.pricePerGram.message}
-              </p>
-            )}
-          </div>
-          <div className={`${Style.formItem} ${Style.itemActive}`}>
-            <Controller
-              name="isActive"
-              control={control}
-              render={({ field }) => (
-                <CheckboxBlock
-                  text="Активна"
-                  checked={field.value}
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            {errors?.isActive && (
-              <p className={Style.validationError}>{errors.isActive.message}</p>
-            )}
-          </div>
-          <div className={`${Style.formItem} ${Style.itemDescription}`}>
-            <Controller
-              name="description"
-              control={control}
-              render={({ field }) => (
-                <Textarea
-                  text={field.value}
-                  label="Описание"
-                  onChange={field.onChange}
-                />
-              )}
-            />
-            {errors?.description && (
-              <p className={Style.validationError}>
-                {errors.description.message}
-              </p>
-            )}
-          </div>
-          <button
-            type="submit"
-            className={`${Style.saveButton} ${
-              errors.title ||
-              errors.description ||
-              errors.pricePerGram ||
-              errors.isActive
-                ? Style.invalid
-                : isValid
-                ? Style.valid
-                : Style.default
-            }`}
-            disabled={!isValid || Object.keys(errors).length > 0}
-          >
-            Сохранить
-          </button>
-        </form>
+        <LayerColorForm onSubmit={handleOnSubmit} />
       </div>
     </PopUp>
   );
