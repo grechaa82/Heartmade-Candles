@@ -6,19 +6,6 @@
   padding: 32px;
 }
 
-.candleInfo {
-  align-items: start;
-  display: flex;
-  justify-content: center;
-  gap: 32px;
-}
-
-.image {
-  height: 530px;
-  width: 530px;
-  background-color: var(--color-eee);
-}
-
 .title {
   grid-area: 1 / 1 / 2 / 3;
   color: var(--color-777);
@@ -39,7 +26,6 @@
 
 @media (max-width: 768px) {
   .container {
-    display: grid;
     grid-template-columns: 100%;
     grid-template-rows: min-content repeat(2, auto);
   }

@@ -5,48 +5,8 @@
   gap: 32px;
 }
 
-.gridContainer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 16px;
-}
-
-.gridContainer > div > .checkboxBlock {
-  height: 100%;
-}
-
-.formForLayerColor {
-  flex: 1;
-}
-
-.itemTitle,
-.itemDescription {
-  grid-column: span 4;
-}
-
-.itemPrice {
-  grid-column: span 3;
-}
-
-.saveButton {
-  border-radius: var(--border-radius-primary);
-  color: var(--color-red);
-  background: var(--color-light-red);
-  border: none;
-  min-height: 58px;
-  font-weight: var(--font-weight-600);
-  font-size: var(--font-size-l);
-  line-height: var(--line-height-much-text);
-  padding: 0;
-  grid-column: span 4;
-}
-
 @media screen and (max-width: 768px) {
-  .candleInfo {
+  .layerColorInfo {
     flex-direction: column;
-  }
-  .gridContainer {
-    display: flex;
-    width: 100%;
   }
 }

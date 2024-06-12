@@ -57,3 +57,11 @@
         width: 100%;
     }
 }
+
+@media (max-width: 580px) {
+    .gridContainer {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+}
