@@ -9,7 +9,7 @@ import { convertToTagData } from './CandleDetailsPage';
 import { TagData } from '../../components/shared/Tag';
 import CreateCandlePopUp from '../../components/admin/PopUp/Candle/CreateCandlePopUp';
 import { CandleRequest } from '../../types/Requests/CandleRequest';
-import CreateTagPopUp from '../../components/admin/PopUp/CreateTagPopUp';
+import CreateTagPopUp from '../../components/admin/PopUp/Tag/CreateTagPopUp';
 import { NumberOfLayerRequest } from '../../types/Requests/NumberOfLayerRequest';
 import { TypeCandleRequest } from '../../types/Requests/TypeCandleRequest';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
@@ -244,7 +244,6 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
           <CreateTagPopUp
             onClose={() => console.log('Popup closed')}
             title="Сознать тип свечи"
-            isNumber={true}
             onSave={handleCreateTypeCandle}
           />
         }
@@ -258,7 +257,6 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
           <CreateTagPopUp
             onClose={() => console.log('Popup closed')}
             title="Сознать количество слоев"
-            isNumber={true}
             onSave={handleCreateNumberOfLayer}
           />
         }
