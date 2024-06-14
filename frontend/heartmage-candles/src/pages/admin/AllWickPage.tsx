@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { Wick } from '../../types/Wick';
 import { WickRequest } from '../../types/Requests/WickRequest';
-import CreateWickPopUp from '../../components/admin/PopUp/Wick/CreateWickPopUp';
+import CreateWickPopUp from '../../modules/admin/PopUp/Wick/CreateWickPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { WicksApi } from '../../services/WicksApi';

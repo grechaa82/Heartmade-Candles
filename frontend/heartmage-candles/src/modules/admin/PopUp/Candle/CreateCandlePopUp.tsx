@@ -1,40 +1,46 @@
 import { FC, useState } from 'react';
 
-import { Wick } from '../../../../types/Wick';
+import { Candle } from '../../../../types/Candle';
 import { Image } from '../../../../types/Image';
-import PopUp, { PopUpProps } from '../PopUp';
-import ImageUploader from '../../ImageUploader';
-import ImagePreview from '../../ImagePreview';
-import WickForm from '../../Form/Wick/WickForm';
+import { TypeCandle } from '../../../../types/TypeCandle';
+import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import ImagePreview from '../../../../components/admin/ImagePreview';
+import ImageUploader from '../../../../components/admin/ImageUploader';
+import CandleForm from '../../../../components/admin/Form/Candle/CandleForm';
 
 import { ImagesApi } from '../../../../services/ImagesApi';
 
-import Style from './CreateWickPopUp.module.css';
+import Style from './CreateCandlePopUp.module.css';
 
-export interface CreateWickPopUpProps extends PopUpProps {
+export interface CreateCandlePopUpProps extends PopUpProps {
   title: string;
-  onSave: (wick: Wick) => void;
+  typeCandlesArray: TypeCandle[];
+  onSave: (candle: Candle) => void;
   uploadImages?: (files: File[]) => Promise<string[]>;
 }
 
-const CreateWickPopUp: FC<CreateWickPopUpProps> = ({
+const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
   onClose,
   title,
+  typeCandlesArray,
   onSave,
   uploadImages,
 }) => {
   const [images, setImages] = useState<Image[]>([]);
 
-  const handleOnSubmit = (data: Wick) => {
-    const newWick: Wick = {
-      id: 0,
+  const handleOnSubmit = (data: Candle) => {
+    const candle: Candle = {
+      id: data.id,
       title: data.title,
       description: data.description,
       images: images,
       isActive: data.isActive,
       price: data.price,
+      weightGrams: data.weightGrams,
+      typeCandle: data.typeCandle,
+      createdAt: data.createdAt,
     };
-    onSave(newWick);
+    onSave(candle);
     onClose();
   };
 
@@ -67,10 +73,13 @@ const CreateWickPopUp: FC<CreateWickPopUpProps> = ({
           <ImageUploader uploadImages={processUpload} />
           <ImagePreview images={images} />
         </div>
-        <WickForm onSubmit={handleOnSubmit} />
+        <CandleForm
+          typeCandlesArray={typeCandlesArray}
+          onSubmit={handleOnSubmit}
+        />
       </div>
     </PopUp>
   );
 };
 
-export default CreateWickPopUp;
+export default CreateCandlePopUp;

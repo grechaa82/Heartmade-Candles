@@ -1,8 +1,8 @@
 import { FC } from 'react';
 
 import { Smell } from '../../../../types/Smell';
-import PopUp, { PopUpProps } from '../PopUp';
-import SmellForm from '../../Form/Smell/SmellForm';
+import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import SmellForm from '../../../../components/admin/Form/Smell/SmellForm';
 
 import Style from './CreateSmellPopUp.module.css';
 

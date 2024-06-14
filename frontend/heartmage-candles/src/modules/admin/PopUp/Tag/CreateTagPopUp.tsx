@@ -1,8 +1,8 @@
 import { FC } from 'react';
 
-import PopUp, { PopUpProps } from '../PopUp';
-import { TagData } from '../../../shared/Tag';
-import TagForm from '../../Form/Tag/TagForm';
+import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import { TagData } from '../../../../components/shared/Tag';
+import TagForm from '../../../../components/admin/Form/Tag/TagForm';
 
 import Style from './CreateTagPopUp.module.css';
 

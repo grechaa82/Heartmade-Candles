@@ -1,23 +1,23 @@
 import { FC, useState } from 'react';
 
-import { LayerColor } from '../../../../types/LayerColor';
+import { Wick } from '../../../../types/Wick';
 import { Image } from '../../../../types/Image';
-import PopUp, { PopUpProps } from '../PopUp';
-import ImageUploader from '../../ImageUploader';
-import ImagePreview from '../../ImagePreview';
-import LayerColorForm from '../../Form/LayerColor/LayerColorForm';
+import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import ImageUploader from '../../../../components/admin/ImageUploader';
+import ImagePreview from '../../../../components/admin/ImagePreview';
+import WickForm from '../../../../components/admin/Form/Wick/WickForm';
 
 import { ImagesApi } from '../../../../services/ImagesApi';
 
-import Style from './CreateLayerColorPopUp.module.css';
+import Style from './CreateWickPopUp.module.css';
 
-export interface CreateLayerColorPopUpProps extends PopUpProps {
+export interface CreateWickPopUpProps extends PopUpProps {
   title: string;
-  onSave: (layerColor: LayerColor) => void;
+  onSave: (wick: Wick) => void;
   uploadImages?: (files: File[]) => Promise<string[]>;
 }
 
-const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
+const CreateWickPopUp: FC<CreateWickPopUpProps> = ({
   onClose,
   title,
   onSave,
@@ -25,16 +25,16 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
 }) => {
   const [images, setImages] = useState<Image[]>([]);
 
-  const handleOnSubmit = (data: LayerColor) => {
-    const layerColor: LayerColor = {
+  const handleOnSubmit = (data: Wick) => {
+    const newWick: Wick = {
       id: 0,
       title: data.title,
       description: data.description,
       images: images,
       isActive: data.isActive,
-      pricePerGram: data.pricePerGram,
+      price: data.price,
     };
-    onSave(layerColor);
+    onSave(newWick);
     onClose();
   };
 
@@ -67,10 +67,10 @@ const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
           <ImageUploader uploadImages={processUpload} />
           <ImagePreview images={images} />
         </div>
-        <LayerColorForm onSubmit={handleOnSubmit} />
+        <WickForm onSubmit={handleOnSubmit} />
       </div>
     </PopUp>
   );
 };
 
-export default CreateLayerColorPopUp;
+export default CreateWickPopUp;

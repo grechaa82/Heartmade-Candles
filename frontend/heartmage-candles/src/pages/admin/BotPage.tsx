@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from 'react';
 
 import TagsGrid from '../../modules/admin/TagsGrid';
 import { TagData } from '../../components/shared/Tag';
-import CreateTagPopUp from '../../components/admin/PopUp/Tag/CreateTagPopUp';
+import CreateTagPopUp from '../../modules/admin/PopUp/Tag/CreateTagPopUp';
 
 import { BotApi } from '../../services/BotApi';
 

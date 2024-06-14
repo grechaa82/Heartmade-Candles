@@ -1,23 +1,23 @@
 import { FC, useState } from 'react';
 
-import { Decor } from '../../../../types/Decor';
+import { LayerColor } from '../../../../types/LayerColor';
 import { Image } from '../../../../types/Image';
-import PopUp, { PopUpProps } from './../PopUp';
-import ImageUploader from '../../ImageUploader';
-import ImagePreview from '../../ImagePreview';
-import DecorForm from '../../Form/Decor/DecorForm';
+import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import ImageUploader from '../../../../components/admin/ImageUploader';
+import ImagePreview from '../../../../components/admin/ImagePreview';
+import LayerColorForm from '../../../../components/admin/Form/LayerColor/LayerColorForm';
 
 import { ImagesApi } from '../../../../services/ImagesApi';
 
-import Style from './CreateDecorPopUp.module.css';
+import Style from './CreateLayerColorPopUp.module.css';
 
-export interface CreateDecorPopUpProps extends PopUpProps {
+export interface CreateLayerColorPopUpProps extends PopUpProps {
   title: string;
-  onSave: (decor: Decor) => void;
+  onSave: (layerColor: LayerColor) => void;
   uploadImages?: (files: File[]) => Promise<string[]>;
 }
 
-const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
+const CreateLayerColorPopUp: FC<CreateLayerColorPopUpProps> = ({
   onClose,
   title,
   onSave,
@@ -25,16 +25,16 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
 }) => {
   const [images, setImages] = useState<Image[]>([]);
 
-  const handleOnSubmit = (data: Decor) => {
-    const decor: Decor = {
-      id: data.id,
+  const handleOnSubmit = (data: LayerColor) => {
+    const layerColor: LayerColor = {
+      id: 0,
       title: data.title,
       description: data.description,
       images: images,
       isActive: data.isActive,
-      price: data.price,
+      pricePerGram: data.pricePerGram,
     };
-    onSave(decor);
+    onSave(layerColor);
     onClose();
   };
 
@@ -67,10 +67,10 @@ const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
           <ImageUploader uploadImages={processUpload} />
           <ImagePreview images={images} />
         </div>
-        <DecorForm onSubmit={handleOnSubmit} />
+        <LayerColorForm onSubmit={handleOnSubmit} />
       </div>
     </PopUp>
   );
 };
 
-export default CreateDecorPopUp;
+export default CreateLayerColorPopUp;

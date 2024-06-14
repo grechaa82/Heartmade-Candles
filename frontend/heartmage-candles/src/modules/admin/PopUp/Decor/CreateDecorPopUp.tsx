@@ -1,46 +1,40 @@
 import { FC, useState } from 'react';
 
-import { Candle } from '../../../../types/Candle';
+import { Decor } from '../../../../types/Decor';
 import { Image } from '../../../../types/Image';
-import { TypeCandle } from '../../../../types/TypeCandle';
-import PopUp, { PopUpProps } from '../PopUp';
-import ImagePreview from '../../ImagePreview';
-import ImageUploader from '../../ImageUploader';
-import CandleForm from '../../Form/Candle/CandleForm';
+import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import ImageUploader from '../../../../components/admin/ImageUploader';
+import ImagePreview from '../../../../components/admin/ImagePreview';
+import DecorForm from '../../../../components/admin/Form/Decor/DecorForm';
 
 import { ImagesApi } from '../../../../services/ImagesApi';
 
-import Style from './CreateCandlePopUp.module.css';
+import Style from './CreateDecorPopUp.module.css';
 
-export interface CreateCandlePopUpProps extends PopUpProps {
+export interface CreateDecorPopUpProps extends PopUpProps {
   title: string;
-  typeCandlesArray: TypeCandle[];
-  onSave: (candle: Candle) => void;
+  onSave: (decor: Decor) => void;
   uploadImages?: (files: File[]) => Promise<string[]>;
 }
 
-const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
+const CreateDecorPopUp: FC<CreateDecorPopUpProps> = ({
   onClose,
   title,
-  typeCandlesArray,
   onSave,
   uploadImages,
 }) => {
   const [images, setImages] = useState<Image[]>([]);
 
-  const handleOnSubmit = (data: Candle) => {
-    const candle: Candle = {
+  const handleOnSubmit = (data: Decor) => {
+    const decor: Decor = {
       id: data.id,
       title: data.title,
       description: data.description,
       images: images,
       isActive: data.isActive,
       price: data.price,
-      weightGrams: data.weightGrams,
-      typeCandle: data.typeCandle,
-      createdAt: data.createdAt,
     };
-    onSave(candle);
+    onSave(decor);
     onClose();
   };
 
@@ -73,13 +67,10 @@ const CreateCandlePopUp: FC<CreateCandlePopUpProps> = ({
           <ImageUploader uploadImages={processUpload} />
           <ImagePreview images={images} />
         </div>
-        <CandleForm
-          typeCandlesArray={typeCandlesArray}
-          onSubmit={handleOnSubmit}
-        />
+        <DecorForm onSubmit={handleOnSubmit} />
       </div>
     </PopUp>
   );
 };
 
-export default CreateCandlePopUp;
+export default CreateDecorPopUp;
