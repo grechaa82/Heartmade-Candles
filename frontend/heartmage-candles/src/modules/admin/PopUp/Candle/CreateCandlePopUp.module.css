@@ -1,0 +1,32 @@
+.container {
+  display: grid;
+  grid-template-columns: 30% 1fr;
+  grid-template-rows: min-content 1fr;
+  grid-gap: 16px;
+  padding: 32px;
+}
+
+.title {
+  grid-area: 1 / 1 / 2 / 3;
+  color: var(--color-777);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-110);
+  margin: 0;
+  margin-bottom: 16px;
+}
+
+.imageBlock {
+  height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 100%;
+    grid-template-rows: min-content repeat(2, auto);
+  }
+}

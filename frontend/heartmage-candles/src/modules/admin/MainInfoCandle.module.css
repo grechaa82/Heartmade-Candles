@@ -4,61 +4,10 @@
   justify-content: center;
   gap: 32px;
 }
-.gridContainer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 16px;
-  gap: 16px;
-  flex-direction: column;
-}
-.formForCandle {
-  flex: 1;
-}
-.formItem {
-}
-.itemTitle,
-.itemDescription {
-  grid-column: span 4;
-}
-.itemPrice,
-.itemWeightGrams {
-  grid-column: span 2;
-}
-.itemType {
-  grid-column: 1/4;
-}
-.itemActive {
-}
-.saveButton {
-  border-radius: var(--border-radius-primary);
-  color: var(--color-red);
-  background: var(--color-light-red);
-  border: none;
-  min-height: 58px;
-  font-weight: var(--font-weight-600);
-  font-size: var(--font-size-l);
-  line-height: var(--line-height-much-text);
-  grid-column: span 4;
-}
 
-@media (max-width: 1440px) {
-  .gridContainer {
-    display: flex;
-  }
-}
 @media (max-width: 768px) {
   .candleInfo {
     display: flex;
     flex-direction: column;
-  }
-  .gridContainer {
-    display: grid;
-    width: 100%;
-  }
-}
-@media (max-width: 580px) {
-  .gridContainer {
-    display: flex;
-    width: 100%;
   }
 }

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { Decor } from '../../types/Decor';
 import { DecorRequest } from '../../types/Requests/DecorRequest';
-import CreateDecorPopUp from '../../components/admin/PopUp/CreateDecorPopUp';
+import CreateDecorPopUp from '../../modules/admin/PopUp/Decor/CreateDecorPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { DecorsApi } from '../../services/DecorsApi';

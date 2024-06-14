@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  gap: 16px;
+  padding: 32px;
+  flex-direction: column;
+}
+
+.title {
+  color: var(--color-777);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-600);
+  line-height: var(--line-height-110);
+  margin: 0;
+  margin-bottom: 16px;
+}
