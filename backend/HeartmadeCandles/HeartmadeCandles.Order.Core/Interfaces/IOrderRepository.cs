@@ -11,5 +11,7 @@ public interface IOrderRepository
 
     Task<Result<string>> CreateOrder(Models.Order order);
 
+    Task<Result> UpdateOrder(Models.Order order);
+
     Task<Result> UpdateOrderStatus(string orderId, OrderStatus status);
 }

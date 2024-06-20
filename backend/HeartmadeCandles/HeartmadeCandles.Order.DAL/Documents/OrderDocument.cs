@@ -22,4 +22,12 @@ public class OrderDocument
 
     [BsonElement("status")]
     public OrderStatus Status { get; set; }
+
+    [BsonElement("createdAt")]
+    [BsonRepresentation(BsonType.DateTime)]
+    public DateTime CreatedAt { get; set; }
+
+    [BsonElement("updatedAt")]
+    [BsonRepresentation(BsonType.DateTime)]
+    public DateTime UpdatedAt { get; set; }
 }

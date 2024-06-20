@@ -10,6 +10,8 @@ public class BotMapping
             Basket = MapOrderBasketToBotBasket(order.Basket),
             Feedback = MapOrderFeedbackToBotFeedback(order.Feedback),
             Status = MapOrderOrderStatusToBotOrderStatus(order.Status),
+            CreatedAt = order.CreatedAt,
+            UpdatedAt = order.UpdatedAt
         };
     }
 

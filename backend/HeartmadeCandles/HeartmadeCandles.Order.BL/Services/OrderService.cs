@@ -73,11 +73,28 @@ public class OrderService : IOrderService
 
     public async Task<Result> UpdateOrderStatus(string orderId, OrderStatus status)
     {
-        var orderResult = await _orderRepository.UpdateOrderStatus(orderId, status);
+        var orderResult =  await _orderRepository.GetOrderById(orderId);
 
-        if (orderResult.IsFailure)
+        if (orderResult.HasValue)
         {
-            return Result.Failure(orderResult.Error);
+            return Result.Failure($"Order by id: {orderId} does not exist");
+        }
+
+        var newOrder = new Core.Models.Order
+        {
+            Basket = orderResult.Value.Basket,
+            BasketId = orderResult.Value.BasketId,
+            Feedback = orderResult.Value.Feedback,
+            Status = status,
+            CreatedAt = orderResult.Value.CreatedAt,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        var result = await _orderRepository.UpdateOrder(newOrder);
+
+        if (result.IsFailure)
+        {
+            return Result.Failure(result.Error);
         }
 
         return Result.Success();

@@ -69,6 +69,29 @@ public class OrderRepository : IOrderRepository
         return Result.Success(orderDocument.Id);
     }
 
+    public async Task<Result> UpdateOrder(Core.Models.Order order)
+    {
+        var orderDocument = OrderMapping.MapToOrderDocument(order);
+
+        var filter = Builders<OrderDocument>.Filter.Eq(x => x.Id, order.Id);
+        var update = Builders<OrderDocument>.Update
+            .Set(x => x.BasketId, orderDocument.BasketId)
+            .Set(x => x.Basket, orderDocument.Basket)
+            .Set(x => x.Feedback, orderDocument.Feedback)
+            .Set(x => x.Status, orderDocument.Status)
+            .Set(x => x.CreatedAt, orderDocument.CreatedAt)
+            .Set(x => x.UpdatedAt, orderDocument.UpdatedAt);
+
+        var result = await _orderCollection.UpdateOneAsync(filter, update);
+
+        if (result.IsAcknowledged && result.ModifiedCount > 0)
+        {
+            return Result.Success();
+        }
+
+        return Result.Failure("Failed to update the order");
+    }
+
     public async Task<Result> UpdateOrderStatus(string orderId, OrderStatus status)
     {
         var update = Builders<OrderDocument>.Update.Set(x => x.Status, status);
