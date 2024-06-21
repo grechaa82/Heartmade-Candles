@@ -38,6 +38,28 @@ public class OrderRepository : IOrderRepository
         return order;
     }
 
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersWithTotalOrders(int pageSige, int pageIndex)
+    {
+        var totalOrders = await _orderCollection.EstimatedDocumentCountAsync();
+
+        var orderDocument = await _orderCollection
+            .Find(_ => true)
+            .Skip(pageIndex * pageSige)
+            .Limit(pageSige)
+            .ToListAsync();
+
+        if (orderDocument.Count == 0)
+        {
+            return (Maybe<Core.Models.Order[]>.None, totalOrders);
+        }
+
+        var order = orderDocument
+            .Select(OrderMapping.MapToOrder)
+            .ToArray();
+
+        return (order, totalOrders);
+    }
+
     public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex)
     {
         var totalOrders = await _orderCollection.CountDocumentsAsync(x => x.Status == status);

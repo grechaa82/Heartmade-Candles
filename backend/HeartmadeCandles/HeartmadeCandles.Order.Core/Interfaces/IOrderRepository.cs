@@ -7,6 +7,8 @@ public interface IOrderRepository
 {
     Task<Maybe<Models.Order>> GetOrderById(string orderId);
 
+    Task<(Maybe<Models.Order[]>, long)> GetOrdersWithTotalOrders(int pageSige, int pageIndex);
+
     Task<(Maybe<Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex);
 
     Task<Result<string>> CreateOrder(Models.Order order);
