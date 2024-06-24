@@ -38,26 +38,65 @@ public class OrderRepository : IOrderRepository
         return order;
     }
 
-    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersWithTotalOrders(int pageSige, int pageIndex)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersWithTotalOrders(OrderQueryOptions queryOptions, int pageSige, int pageIndex)
     {
-        var totalOrders = await _orderCollection.EstimatedDocumentCountAsync();
+        var filterBuilder = Builders<OrderDocument>.Filter;
+        var filter = filterBuilder.Empty;
+
+        if (queryOptions.CreatedFrom.HasValue)
+        {
+            filter &= filterBuilder.Gte(o => o.CreatedAt, queryOptions.CreatedFrom.Value);
+        }
+
+        if (queryOptions.CreatedTo.HasValue)
+        {
+            filter &= filterBuilder.Lte(o => o.CreatedAt, queryOptions.CreatedTo.Value);
+        }
+
+        if (queryOptions.Status.HasValue)
+        {
+            filter &= filterBuilder.Eq(o => o.Status, queryOptions.Status.Value);
+        }
+
+        var totalOrders = await _orderCollection.Find(filter).CountDocumentsAsync();
 
         var orderDocument = await _orderCollection
-            .Find(_ => true)
+            .Find(filter)
             .Skip(pageIndex * pageSige)
             .Limit(pageSige)
             .ToListAsync();
 
-        if (orderDocument.Count == 0)
-        {
-            return (Maybe<Core.Models.Order[]>.None, totalOrders);
-        }
-
-        var order = orderDocument
+        var orders = orderDocument
             .Select(OrderMapping.MapToOrder)
             .ToArray();
 
-        return (order, totalOrders);
+        switch (queryOptions.SortBy?.ToLower())
+        {
+            case "status":
+                orders = queryOptions.Ascending
+                    ? orders.OrderBy(o => o.Status).ToArray()
+                    : orders.OrderByDescending(o => o.Status).ToArray();
+                break;
+            case "totalamount":
+                orders = queryOptions.Ascending
+                    ? orders.OrderBy(o => o.Basket?.TotalPrice ?? 0).ToArray()
+                    : orders.OrderByDescending(o => o.Basket?.TotalPrice ?? 0).ToArray();
+                break;
+            case "createdat":
+                orders = queryOptions.Ascending
+                    ? orders.OrderBy(o => o.CreatedAt).ToArray()
+                    : orders.OrderByDescending(o => o.CreatedAt).ToArray();
+                break;
+            case "updatedat":
+                orders = queryOptions.Ascending
+                    ? orders.OrderBy(o => o.UpdatedAt).ToArray()
+                    : orders.OrderByDescending(o => o.UpdatedAt).ToArray();
+                break;
+            default:
+                break;
+        }
+
+        return (orders, totalOrders);
     }
 
     public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex)

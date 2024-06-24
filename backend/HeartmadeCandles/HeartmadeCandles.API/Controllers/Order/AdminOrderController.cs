@@ -1,4 +1,5 @@
 ﻿using HeartmadeCandles.Order.Core.Interfaces;
+using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -20,10 +21,20 @@ public class AdminOrderController : Controller
         _logger = logger;
     }
 
+
     [HttpGet]
-    public async Task<IActionResult> GetOrders(int pageSige = 10, int pageIndex = 0)
+    public async Task<IActionResult> GetOrders([FromQuery] OrderQueryOptionsResponse orderQueryOptionsResponse)
     {
-        var (orderMaybe, totalOrders) = await _orderService.GetOrdersWithTotalOrders(pageSige, pageIndex);
+        var queryOptions = new OrderQueryOptions
+        {
+            SortBy = orderQueryOptionsResponse.SortBy,
+            Ascending = orderQueryOptionsResponse.Ascending,
+            CreatedFrom = orderQueryOptionsResponse.CreatedFrom,
+            CreatedTo = orderQueryOptionsResponse.CreatedTo,
+            Status = orderQueryOptionsResponse.Status,
+        };
+
+        var (orderMaybe, totalOrders) = await _orderService.GetOrdersWithTotalOrders(queryOptions, orderQueryOptionsResponse.pageSige, orderQueryOptionsResponse.pageIndex);
 
         if (!orderMaybe.HasValue)
         {
@@ -53,4 +64,21 @@ public class AdminOrderController : Controller
 
         return Ok(result.Value);
     }
+}
+
+public class OrderQueryOptionsResponse
+{
+    public string? SortBy { get; init; }
+
+    public bool Ascending { get; init; } = true;
+
+    public DateTime? CreatedFrom { get; init; }
+
+    public DateTime? CreatedTo { get; init; }
+
+    public OrderStatus? Status { get; init; }
+
+    public int pageSige { get; init; } = 10;
+
+    public int pageIndex { get; init; } = 0;
 }

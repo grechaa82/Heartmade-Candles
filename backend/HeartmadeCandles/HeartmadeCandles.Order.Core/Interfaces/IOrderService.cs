@@ -7,7 +7,7 @@ public interface IOrderService
 {
     Task<Result<Models.Order>> GetOrderById(string orderId);
 
-    Task<(Maybe<Models.Order[]>, long)> GetOrdersWithTotalOrders(int pageSige, int pageIndex);
+    Task<(Maybe<Models.Order[]>, long)> GetOrdersWithTotalOrders(OrderQueryOptions queryOptions, int pageSige, int pageIndex);
 
     Task<(Maybe<Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex);
 

@@ -30,9 +30,9 @@ public class OrderService : IOrderService
             : Result.Failure<Core.Models.Order>($"Order by id: {orderId} does not exist");
     }
 
-    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersWithTotalOrders(int pageSige, int pageIndex)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersWithTotalOrders(OrderQueryOptions queryOptions, int pageSige, int pageIndex)
     {
-        return await _orderRepository.GetOrdersWithTotalOrders(pageSige, pageIndex);
+        return await _orderRepository.GetOrdersWithTotalOrders(queryOptions, pageSige, pageIndex);
     }
 
     public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex)
