@@ -1,6 +1,6 @@
 ﻿namespace HeartmadeCandles.Order.Core.Models;
 
-public class OrderQueryOptions
+public class OrderFilterParameters
 {
     public string? SortBy { get; init; }
 
@@ -11,4 +11,6 @@ public class OrderQueryOptions
     public DateTime? CreatedTo { get; init; }
 
     public OrderStatus? Status { get; init; }
+
+    public PaginationSettings Pagination { get; init; } = new PaginationSettings();
 }

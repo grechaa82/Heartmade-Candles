@@ -1,4 +1,5 @@
-﻿using HeartmadeCandles.Order.Core.Interfaces;
+﻿using HeartmadeCandles.API.Contracts.Order.Requests;
+using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,18 +24,23 @@ public class AdminOrderController : Controller
 
 
     [HttpGet]
-    public async Task<IActionResult> GetOrders([FromQuery] OrderQueryOptionsResponse orderQueryOptionsResponse)
+    public async Task<IActionResult> GetOrders([FromQuery] OrderTableParametersRequest orderTableParametersRequest)
     {
-        var queryOptions = new OrderQueryOptions
+        var queryOptions = new OrderFilterParameters
         {
-            SortBy = orderQueryOptionsResponse.SortBy,
-            Ascending = orderQueryOptionsResponse.Ascending,
-            CreatedFrom = orderQueryOptionsResponse.CreatedFrom,
-            CreatedTo = orderQueryOptionsResponse.CreatedTo,
-            Status = orderQueryOptionsResponse.Status,
+            SortBy = orderTableParametersRequest.SortBy,
+            Ascending = orderTableParametersRequest.Ascending,
+            CreatedFrom = orderTableParametersRequest.CreatedFrom,
+            CreatedTo = orderTableParametersRequest.CreatedTo,
+            Status = orderTableParametersRequest.Status,
+            Pagination = new PaginationSettings
+            {
+                PageSize = orderTableParametersRequest.pageSige,
+                PageIndex = orderTableParametersRequest.pageIndex
+            }
         };
 
-        var (orderMaybe, totalOrders) = await _orderService.GetOrdersWithTotalOrders(queryOptions, orderQueryOptionsResponse.pageSige, orderQueryOptionsResponse.pageIndex);
+        var (orderMaybe, totalOrders) = await _orderService.GetOrdersWithTotalOrders(queryOptions);
 
         if (!orderMaybe.HasValue)
         {
@@ -64,21 +70,4 @@ public class AdminOrderController : Controller
 
         return Ok(result.Value);
     }
-}
-
-public class OrderQueryOptionsResponse
-{
-    public string? SortBy { get; init; }
-
-    public bool Ascending { get; init; } = true;
-
-    public DateTime? CreatedFrom { get; init; }
-
-    public DateTime? CreatedTo { get; init; }
-
-    public OrderStatus? Status { get; init; }
-
-    public int pageSige { get; init; } = 10;
-
-    public int pageIndex { get; init; } = 0;
 }
