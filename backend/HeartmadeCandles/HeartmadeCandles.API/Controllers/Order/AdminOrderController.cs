@@ -1,4 +1,5 @@
 ﻿using HeartmadeCandles.API.Contracts.Order.Requests;
+using HeartmadeCandles.API.Contracts.Order.Responses;
 using HeartmadeCandles.Order.Core.Interfaces;
 using HeartmadeCandles.Order.Core.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -40,18 +41,21 @@ public class AdminOrderController : Controller
             }
         };
 
-        var (orderMaybe, totalOrders) = await _orderService.GetOrdersWithTotalOrders(queryOptions);
+        var (orderMaybe, totalCount) = await _orderService.GetOrdersAndTotalCount(queryOptions);
 
         if (!orderMaybe.HasValue)
         {
             _logger.LogWarning(
                 "Error: Failed in process {processName}, error message: {errorMessage}",
-                nameof(_orderService.GetOrdersWithTotalOrders),
+                nameof(_orderService.GetOrdersAndTotalCount),
                 "Orders not found");
             return NotFound();
         }
 
-        return Ok(orderMaybe.Value);
+        return Ok(new OrdersAndTotalCountResponse {
+            Orders = orderMaybe.Value,
+            TotalCount = totalCount,
+        });
     }
 
     [HttpGet("{orderId}")]

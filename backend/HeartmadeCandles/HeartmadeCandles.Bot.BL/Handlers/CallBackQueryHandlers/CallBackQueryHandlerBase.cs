@@ -30,7 +30,7 @@ public abstract class CallBackQueryHandlerBase
 
     public abstract Task Process(CallbackQuery callbackQuery, TelegramUser user);
 
-    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(Core.Models.OrderStatus status, int pageSize, int pageIndex = 0)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusAndTotalCount(Core.Models.OrderStatus status, int pageSize, int pageIndex = 0)
     {
         using var scope = _serviceScopeFactory.CreateScope();
 
@@ -38,7 +38,7 @@ public abstract class CallBackQueryHandlerBase
 
         var orderStatus = BotMapping.MapBotOrderStatusToOrderOrderStatus(status);
 
-        var (orderMaybe, totalOrders) = await orderService.GetOrderByStatusWithTotalOrders(
+        var (orderMaybe, totalCount) = await orderService.GetOrdersByStatusAndTotalCount(
             orderStatus,
             new PaginationSettings
             {
@@ -48,10 +48,10 @@ public abstract class CallBackQueryHandlerBase
 
         if (!orderMaybe.HasValue)
         {
-            return (Maybe.None, totalOrders);
+            return (Maybe.None, totalCount);
         }
 
-        return (BotMapping.MapOrderToBotOrder(orderMaybe.Value), totalOrders);
+        return (BotMapping.MapOrderToBotOrder(orderMaybe.Value), totalCount);
     }
 
     public async Task<Result<Core.Models.Order>> GetOrderById(string orderId)

@@ -67,7 +67,7 @@ public class GetPlacedOrderHandler : CallBackQueryHandlerBase
 
         var pageIndex = int.Parse(callbackData.Last());
 
-        var (orderMaybe, totalOrders) = await GetOrderByStatusWithTotalOrders(OrderStatus.Placed, 1, pageIndex - 1);
+        var (orderMaybe, totalCount) = await GetOrderByStatusAndTotalCount(OrderStatus.Placed, 1, pageIndex - 1);
 
         if (orderMaybe.HasNoValue || orderMaybe.Value.First() == null)
         {
@@ -85,7 +85,7 @@ public class GetPlacedOrderHandler : CallBackQueryHandlerBase
             selectCommands: CallBackQueryCommands.PlacedOrderSelectCommand,
             orderId: orderMaybe.Value.First().Id,
             currentPageIndex: pageIndex,
-            totalOrders: totalOrders);
+            totalCount: totalCount);
 
         await _botClient.EditMessageTextAsync(
             chatId: callbackQuery.Message.Chat.Id,

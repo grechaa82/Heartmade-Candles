@@ -38,7 +38,7 @@ public class OrderRepository : IOrderRepository
         return order;
     }
 
-    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersWithTotalOrders(OrderFilterParameters queryOptions)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersAndTotalCount(OrderFilterParameters queryOptions)
     {
         var filterBuilder = Builders<OrderDocument>.Filter;
         var filter = filterBuilder.Empty;
@@ -58,7 +58,7 @@ public class OrderRepository : IOrderRepository
             filter &= filterBuilder.Eq(o => o.Status, queryOptions.Status.Value);
         }
 
-        var totalOrders = await _orderCollection.Find(filter).CountDocumentsAsync();
+        var totalCount = await _orderCollection.Find(filter).CountDocumentsAsync();
 
         var orderDocument = await _orderCollection
             .Find(filter)
@@ -96,12 +96,12 @@ public class OrderRepository : IOrderRepository
                 break;
         }
 
-        return (orders, totalOrders);
+        return (orders, totalCount);
     }
 
-    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, PaginationSettings pagination)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersByStatusAndTotalCount(OrderStatus status, PaginationSettings pagination)
     {
-        var totalOrders = await _orderCollection.CountDocumentsAsync(x => x.Status == status);
+        var totalCount = await _orderCollection.CountDocumentsAsync(x => x.Status == status);
 
         var orderDocument = await _orderCollection
             .Find(x => x.Status == status)
@@ -111,14 +111,14 @@ public class OrderRepository : IOrderRepository
 
         if (orderDocument.Count == 0)
         {
-            return (Maybe<Core.Models.Order[]>.None, totalOrders);
+            return (Maybe<Core.Models.Order[]>.None, totalCount);
         }
 
         var order = orderDocument
             .Select(OrderMapping.MapToOrder)
             .ToArray();
 
-        return (order, totalOrders);
+        return (order, totalCount);
     }
 
     public async Task<Result<string>> CreateOrder(Core.Models.Order order)

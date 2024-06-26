@@ -7,9 +7,9 @@ public interface IOrderService
 {
     Task<Result<Models.Order>> GetOrderById(string orderId);
 
-    Task<(Maybe<Models.Order[]>, long)> GetOrdersWithTotalOrders(OrderFilterParameters queryOptions);
+    Task<(Maybe<Models.Order[]>, long)> GetOrdersAndTotalCount(OrderFilterParameters queryOptions);
 
-    Task<(Maybe<Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, PaginationSettings pagination);
+    Task<(Maybe<Models.Order[]>, long)> GetOrdersByStatusAndTotalCount(OrderStatus status, PaginationSettings pagination);
 
     Task<Result<string>> CreateOrder(Feedback? feedback, string basketId);
 
