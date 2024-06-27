@@ -77,7 +77,7 @@ public class OrderRepository : IOrderRepository
                     ? orders.OrderBy(o => o.Status).ToArray()
                     : orders.OrderByDescending(o => o.Status).ToArray();
                 break;
-            case "totalamount":
+            case "totalprice":
                 orders = queryOptions.Ascending
                     ? orders.OrderBy(o => o.Basket?.TotalPrice ?? 0).ToArray()
                     : orders.OrderByDescending(o => o.Basket?.TotalPrice ?? 0).ToArray();
