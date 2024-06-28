@@ -1,0 +1,34 @@
+.filterOrderTableBlock {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.dateBlock {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dateInput {
+  box-sizing: border-box;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
+  background: none;
+  padding: 0.875rem 1rem 1rem 1rem;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-l);
+}
+.resetBtn {
+  all: unset;
+}
+.statusInput {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.statusInput > div {
+  min-width: 220px;
+}
+.applyFiltersBtn {
+}

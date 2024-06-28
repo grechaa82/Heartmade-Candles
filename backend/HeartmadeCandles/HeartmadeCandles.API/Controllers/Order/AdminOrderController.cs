@@ -36,7 +36,7 @@ public class AdminOrderController : Controller
             Status = orderTableParametersRequest.Status,
             Pagination = new PaginationSettings
             {
-                PageSize = orderTableParametersRequest.pageSige,
+                PageSize = orderTableParametersRequest.pageSize,
                 PageIndex = orderTableParametersRequest.pageIndex
             }
         };

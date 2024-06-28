@@ -6,16 +6,31 @@ import {
   TypesOfSorting,
 } from '../../../typesV2/order/OrderTableParametersRequest';
 import { Order } from '../../../typesV2/shared/Order';
+import {
+  getStatusString,
+  OrderStatus,
+} from '../../../typesV2/order/OrderStatus';
+import Pagination from './Pagination';
+import FilterOrderTable from './FilterOrderTable';
 
 import Style from './OrderTable.module.css';
-import { getStatusString } from '../../../typesV2/order/OrderStatus';
 
 interface OrderTableProps {}
+
+interface FilterParams {
+  sortBy: TypesOfSorting | null;
+  ascending: boolean;
+  createdFrom: Date | null;
+  createdTo: Date | null;
+  status: OrderStatus | null;
+  pageSize: number;
+  pageIndex: number;
+}
 
 const OrderTable: FC<OrderTableProps> = ({}) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalCount, setTotalCount] = useState(0);
-  const [filterParams, setFilterParams] = useState({
+  const [filterParams, setFilterParams] = useState<FilterParams>({
     sortBy: null,
     ascending: true,
     createdFrom: null,
@@ -56,9 +71,20 @@ const OrderTable: FC<OrderTableProps> = ({}) => {
     });
   };
 
-  const handleFilter = (filters) => {};
+  const handleFilter = (filters: Partial<FilterParams>) => {
+    setFilterParams((prevParams) => ({
+      ...prevParams,
+      ...filters,
+      pageIndex: 0,
+    }));
+  };
 
-  const handlePageChange = (pageIndex) => {};
+  const handlePageChange = (pageIndex: number) => {
+    setFilterParams({
+      ...filterParams,
+      pageIndex,
+    });
+  };
 
   const formatDate = (date: Date) => {
     const day = date.getDate();
@@ -68,6 +94,9 @@ const OrderTable: FC<OrderTableProps> = ({}) => {
 
   return (
     <div>
+      <div>
+        <FilterOrderTable onFilter={handleFilter} />
+      </div>
       <table>
         <thead>
           <tr>
@@ -96,6 +125,14 @@ const OrderTable: FC<OrderTableProps> = ({}) => {
           ))}
         </tbody>
       </table>
+      <div className={Style.paggination}>
+        <Pagination
+          totalCount={totalCount}
+          pageSize={filterParams.pageSize}
+          currentPage={filterParams.pageIndex}
+          onPageChange={handlePageChange}
+        />
+      </div>
     </div>
   );
 };

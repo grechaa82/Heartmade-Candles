@@ -14,7 +14,7 @@ public class OrderTableParametersRequest
 
     public OrderStatus? Status { get; init; }
 
-    public int pageSige { get; init; } = 10;
+    public int pageSize { get; init; } = 10;
 
     public int pageIndex { get; init; } = 0;
 }
