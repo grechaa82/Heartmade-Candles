@@ -1,0 +1,31 @@
+.tr > td {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.Created {
+  color: var(--color-000);
+}
+.Confirmed {
+  color: var(--color-000);
+}
+.Placed {
+  color: #f1b832;
+}
+.Paid {
+  color: var(--color-green);
+}
+.InProgress {
+  color: #3254db;
+}
+.Packed {
+  color: #7d32db;
+}
+.InDelivery {
+  color: #b632db;
+}
+.Completed {
+  color: #db32bb;
+}
+.Cancelled {
+  color: var(--color-d9d9d9);
+}

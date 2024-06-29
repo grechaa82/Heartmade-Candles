@@ -1,0 +1,15 @@
+.paggination {
+  display: flex;
+  justify-content: flex-end;
+}
+.tableControlPanel {
+  display: flex;
+  justify-content: space-between;
+}
+.table {
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-standard);
+  color: var(--color-222);
+  width: 100%;
+}

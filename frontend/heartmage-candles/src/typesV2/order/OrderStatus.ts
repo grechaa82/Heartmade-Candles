@@ -10,14 +10,14 @@ export enum OrderStatus {
   Cancelled,
 }
 
-export function getStatusString(status: number): string {
+export function getStatusStringRus(status: number): string {
   switch (status) {
     case OrderStatus.Created:
       return 'Создан';
     case OrderStatus.Confirmed:
       return 'Подтвержден';
     case OrderStatus.Placed:
-      return 'Размещен';
+      return 'Оформлен';
     case OrderStatus.Paid:
       return 'Оплачен';
     case OrderStatus.InProgress:
@@ -34,3 +34,28 @@ export function getStatusString(status: number): string {
       return 'Неизвестный статус';
   }
 }
+
+export const getStatusString = (status: number): string => {
+  switch (status) {
+    case OrderStatus.Created:
+      return 'Created';
+    case OrderStatus.Confirmed:
+      return 'Confirmed';
+    case OrderStatus.Placed:
+      return 'Placed';
+    case OrderStatus.Paid:
+      return 'Paid';
+    case OrderStatus.InProgress:
+      return 'InProgress';
+    case OrderStatus.Packed:
+      return 'Packed';
+    case OrderStatus.InDelivery:
+      return 'InDelivery';
+    case OrderStatus.Completed:
+      return 'Completed';
+    case OrderStatus.Cancelled:
+      return 'Cancelled';
+    default:
+      return '';
+  }
+};

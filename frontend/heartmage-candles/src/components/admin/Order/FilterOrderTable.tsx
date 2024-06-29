@@ -67,7 +67,7 @@ const FilterOrderTable: FC<FilterOrderTableProps> = ({ onFilter }) => {
 
   const selectedStatus =
     statusOptions.find(
-      (option) => option.id === (filters.status?.toString() || 'all')
+      (option) => option.id === (filters.status?.toString() || 'Все')
     ) || statusOptions[0];
 
   const handleResetAllDate = () => {

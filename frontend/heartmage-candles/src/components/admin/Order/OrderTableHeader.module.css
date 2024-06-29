@@ -1,0 +1,14 @@
+.thead {
+  font-size: var(--font-size-m);
+  line-height: var(--line-height-standard);
+  color: var(--color-aaa);
+}
+.tr > th {
+  font-weight: var(--font-weight-400);
+  text-align: left;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.vhidden {
+  visibility: hidden;
+}
