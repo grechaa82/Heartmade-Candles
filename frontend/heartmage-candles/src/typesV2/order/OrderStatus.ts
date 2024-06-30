@@ -10,8 +10,10 @@ export enum OrderStatus {
   Cancelled,
 }
 
-export function getStatusStringRus(status: number): string {
-  switch (status) {
+export function getStatusStringRus(status: number | string): string {
+  const statusNumber = typeof status === 'string' ? parseInt(status) : status;
+
+  switch (statusNumber) {
     case OrderStatus.Created:
       return 'Создан';
     case OrderStatus.Confirmed:

@@ -1,4 +1,5 @@
 .tr > td {
+  position: relative;
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 }
@@ -28,4 +29,13 @@
 }
 .Cancelled {
   color: var(--color-d9d9d9);
+}
+
+.contextMenuBtn {
+  all: unset;
+  position: relative;
+}
+
+.noBotton {
+  bottom: auto;
 }
