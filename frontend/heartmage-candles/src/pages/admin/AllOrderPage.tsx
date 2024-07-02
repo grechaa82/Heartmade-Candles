@@ -6,6 +6,7 @@ import { OrdersApi } from '../../services/OrdersApi';
 import { OrderTableFilterParams } from '../../typesV2/admin/OrderTableFilterParams';
 import { OrdersAndTotalCount } from '../../typesV2/shared/OrdersAndTotalCount';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
+import { OrderStatus } from '../../typesV2/order/OrderStatus';
 
 import Style from './AllOrderPage.module.css';
 
@@ -34,9 +35,19 @@ const AllOrderPage: FC<AllOrderPageProps> = () => {
     }
   };
 
+  const updateOrderStatus = async (orderId: string, newStatus: OrderStatus) => {
+    const response = await OrdersApi.updateStatus(orderId, newStatus);
+    if (response.error) {
+      setErrorMessage([...errorMessage, response.error as string]);
+    }
+  };
+
   return (
     <>
-      <OrderTable fetchOrders={fetchOrders} />
+      <OrderTable
+        fetchOrders={fetchOrders}
+        updateOrderStatus={updateOrderStatus}
+      />
       <ListErrorPopUp messages={errorMessage} />
     </>
   );

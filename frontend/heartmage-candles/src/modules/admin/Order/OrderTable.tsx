@@ -9,6 +9,7 @@ import { OrderTableFilterParams } from '../../../typesV2/admin/OrderTableFilterP
 import OrderTableHeader from '../../../components/admin/Order/OrderTableHeader';
 import OrderTableBody from '../../../components/admin/Order/OrderTableBody';
 import { OrdersAndTotalCount } from '../../../typesV2/shared/OrdersAndTotalCount';
+import { OrderStatus } from '../../../typesV2/order/OrderStatus';
 
 import Style from './OrderTable.module.css';
 
@@ -16,9 +17,13 @@ interface OrderTableProps {
   fetchOrders: (
     filterParams: OrderTableFilterParams
   ) => Promise<OrdersAndTotalCount>;
+  updateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
 }
 
-const OrderTable: FC<OrderTableProps> = ({ fetchOrders }) => {
+const OrderTable: FC<OrderTableProps> = ({
+  fetchOrders,
+  updateOrderStatus,
+}) => {
   const rowsPerPage: number[] = [10, 25, 50, 100];
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalCount, setTotalCount] = useState(0);
@@ -32,17 +37,17 @@ const OrderTable: FC<OrderTableProps> = ({ fetchOrders }) => {
     pageIndex: 0,
   });
 
-  useEffect(() => {
-    async function fetchData() {
-      const ordersAndTotalCount: OrdersAndTotalCount = await fetchOrders(
-        filterParams
-      );
-      setOrders(ordersAndTotalCount.orders);
-      setTotalCount(ordersAndTotalCount.totalCount);
-    }
+  async function fetchData() {
+    const ordersAndTotalCount: OrdersAndTotalCount = await fetchOrders(
+      filterParams
+    );
+    setOrders(ordersAndTotalCount.orders);
+    setTotalCount(ordersAndTotalCount.totalCount);
+  }
 
+  useEffect(() => {
     fetchData();
-  }, [filterParams, setFilterParams]);
+  }, [filterParams, setFilterParams, orders, setOrders]);
 
   const handleSort = (type: TypesOfSorting) => {
     setFilterParams({
@@ -74,6 +79,11 @@ const OrderTable: FC<OrderTableProps> = ({ fetchOrders }) => {
     });
   };
 
+  const handleUpdateOrderStatus = (orderId: string, newStatus: OrderStatus) => {
+    updateOrderStatus(orderId, newStatus);
+    fetchData();
+  };
+
   return (
     <div>
       <div className={Style.tableControlPanel}>
@@ -89,7 +99,10 @@ const OrderTable: FC<OrderTableProps> = ({ fetchOrders }) => {
           orderTableFilterParams={filterParams}
           sortParams={handleSort}
         />
-        <OrderTableBody orders={orders} />
+        <OrderTableBody
+          orders={orders}
+          updateOrderStatus={handleUpdateOrderStatus}
+        />
       </table>
       <div className={Style.paggination}>
         <Pagination

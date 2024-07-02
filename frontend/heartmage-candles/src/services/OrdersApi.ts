@@ -2,6 +2,7 @@ import { CreateOrderRequest } from '../typesV2/order/CreateOrderRequest';
 import { Order } from '../typesV2/shared/Order';
 import { OrdersAndTotalCount } from '../typesV2/shared/OrdersAndTotalCount';
 import { OrderTableParameters } from '../typesV2/order/OrderTableParametersRequest';
+import { OrderStatus } from '../typesV2/order/OrderStatus';
 
 import { AuthHelper } from '../helpers/AuthHelper';
 import { ApiResponse } from './ApiResponse';
@@ -41,11 +42,15 @@ export const OrdersApi = {
     configuredCandlesString: string
   ): Promise<ApiResponse<Order>> => {
     try {
+      const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(
         `${apiUrl}/orders/${configuredCandlesString}`,
         {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: authorizationString,
+          },
         }
       );
       if (response.ok) {
@@ -57,7 +62,32 @@ export const OrdersApi = {
       throw new Error(error as string);
     }
   },
+  updateStatus: async (
+    id: string,
+    status: OrderStatus
+  ): Promise<ApiResponse<void>> => {
+    try {
+      const authorizationString = AuthHelper.getAuthorizationString();
+      const response = await fetch(
+        `${apiUrl}/admin/orders/${id}?orderStatus=${status}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: authorizationString,
+          },
+        }
+      );
 
+      if (response.ok) {
+        return { data: null, error: null };
+      } else {
+        return { data: null, error: await response.text() };
+      }
+    } catch (error) {
+      throw new Error(error as string);
+    }
+  },
   createOrder: async (
     createOrderRequest: CreateOrderRequest
   ): Promise<ApiResponse<string>> => {

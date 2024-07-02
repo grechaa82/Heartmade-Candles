@@ -16,11 +16,16 @@ import Style from './OrderTableBody.module.css';
 interface OrderTableBodyProps {
   orders: Order[];
   formatDate?: (date: Date) => string;
+  updateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
 }
 
-const OrderTableBody: FC<OrderTableBodyProps> = ({ orders, formatDate }) => {
+const OrderTableBody: FC<OrderTableBodyProps> = ({
+  orders,
+  formatDate,
+  updateOrderStatus,
+}) => {
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
-  const ref = useRef<HTMLDivElement>(null);
+  const menuRefs = useRef<Array<HTMLDivElement | null>>([]);
   const [openOrderPopup, setOpenOrderPopup] = useState<boolean>(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
@@ -35,7 +40,10 @@ const OrderTableBody: FC<OrderTableBodyProps> = ({ orders, formatDate }) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      if (
+        menuRefs.current &&
+        !menuRefs.current.some((ref) => ref?.contains(event.target as Node))
+      ) {
         setOpenMenuIndex(null);
       }
     };
@@ -43,20 +51,20 @@ const OrderTableBody: FC<OrderTableBodyProps> = ({ orders, formatDate }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [ref]);
+  }, []);
 
-  const getActions = (): Action[] => {
+  const getActions = (order: Order): Action[] => {
     const actions: Action[] = [];
 
-    for (let statusKey in OrderStatus) {
-      const status = OrderStatus[statusKey];
-      if (!isNaN(Number(status))) {
+    for (const status of Object.values(OrderStatus)) {
+      if (typeof status === 'number' && status !== order.status) {
         actions.push({
-          label: getStatusStringRus(status),
-          onClick: () => console.log('Action for ' + status),
+          label: getStatusStringRus(status as OrderStatus),
+          onClick: () => updateOrderStatus(order.id, status as OrderStatus),
         });
       }
     }
+
     return actions;
   };
 
@@ -108,7 +116,10 @@ const OrderTableBody: FC<OrderTableBodyProps> = ({ orders, formatDate }) => {
             )}
           </td>
           <td>
-            <div className={Style.contextMenu} ref={ref}>
+            <div
+              className={Style.contextMenu}
+              ref={(el) => (menuRefs.current[index] = el)}
+            >
               <button
                 onClick={() => toggleMenu(index)}
                 className={Style.contextMenuBtn}
@@ -119,7 +130,7 @@ const OrderTableBody: FC<OrderTableBodyProps> = ({ orders, formatDate }) => {
                 <ContextMenu
                   header="Новый статус"
                   className={Style.noBotton}
-                  actions={getActions()}
+                  actions={getActions(order)}
                 />
               )}
             </div>

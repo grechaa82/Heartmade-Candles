@@ -80,22 +80,12 @@ public class OrderService : IOrderService
     {
         var orderResult =  await _orderRepository.GetOrderById(orderId);
 
-        if (orderResult.HasValue)
+        if (!orderResult.HasValue)
         {
             return Result.Failure($"Order by id: {orderId} does not exist");
         }
 
-        var newOrder = new Core.Models.Order
-        {
-            Basket = orderResult.Value.Basket,
-            BasketId = orderResult.Value.BasketId,
-            Feedback = orderResult.Value.Feedback,
-            Status = status,
-            CreatedAt = orderResult.Value.CreatedAt,
-            UpdatedAt = DateTime.UtcNow
-        };
-
-        var result = await _orderRepository.UpdateOrder(newOrder);
+        var result = await _orderRepository.UpdateOrderStatus(orderId, status);
 
         if (result.IsFailure)
         {

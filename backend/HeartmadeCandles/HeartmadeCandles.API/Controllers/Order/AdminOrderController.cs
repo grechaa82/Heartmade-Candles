@@ -74,4 +74,21 @@ public class AdminOrderController : Controller
 
         return Ok(result.Value);
     }
+
+    [HttpPut("{orderId}")]
+    public async Task<IActionResult> UpdateOrderStatus(string orderId, OrderStatus orderStatus)
+    {
+        var result = await _orderService.UpdateOrderStatus(orderId, orderStatus);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_orderService.GetOrderById),
+                result.Error);
+            return BadRequest(result.Error);
+        }
+
+        return Ok();
+    }
 }
