@@ -10,19 +10,22 @@ import OrderTableHeader from '../../../components/admin/Order/OrderTableHeader';
 import OrderTableBody from '../../../components/admin/Order/OrderTableBody';
 import { OrdersAndTotalCount } from '../../../typesV2/shared/OrdersAndTotalCount';
 import { OrderStatus } from '../../../typesV2/order/OrderStatus';
+import SearchOrderPopUp from '../PopUp/Order/SearchOrderPopUp';
 
 import Style from './OrderTable.module.css';
 
 interface OrderTableProps {
   fetchOrders: (
-    filterParams: OrderTableFilterParams
+    filterParams: OrderTableFilterParams,
   ) => Promise<OrdersAndTotalCount>;
   updateOrderStatus: (orderId: string, newStatus: OrderStatus) => void;
+  fetchOrderById: (orderId: string) => Promise<Order>;
 }
 
 const OrderTable: FC<OrderTableProps> = ({
   fetchOrders,
   updateOrderStatus,
+  fetchOrderById,
 }) => {
   const rowsPerPage: number[] = [10, 25, 50, 100];
   const [orders, setOrders] = useState<Order[]>([]);
@@ -36,10 +39,11 @@ const OrderTable: FC<OrderTableProps> = ({
     pageSize: rowsPerPage[0],
     pageIndex: 0,
   });
+  const [searchOrderPopUp, setSearchOrderPopUp] = useState<boolean>(false);
 
   async function fetchData() {
     const ordersAndTotalCount: OrdersAndTotalCount = await fetchOrders(
-      filterParams
+      filterParams,
     );
     setOrders(ordersAndTotalCount.orders);
     setTotalCount(ordersAndTotalCount.totalCount);
@@ -87,7 +91,10 @@ const OrderTable: FC<OrderTableProps> = ({
   return (
     <div>
       <div className={Style.tableControlPanel}>
-        <FilterOrderTable onFilter={handleFilter} />
+        <FilterOrderTable
+          onFilter={handleFilter}
+          setOpenPopUp={setSearchOrderPopUp}
+        />
         <RowsPerPageOptions
           rows={rowsPerPage}
           selected={filterParams.pageSize}
@@ -112,6 +119,12 @@ const OrderTable: FC<OrderTableProps> = ({
           onPageChange={handlePageChange}
         />
       </div>
+      {searchOrderPopUp && (
+        <SearchOrderPopUp
+          onClose={() => setSearchOrderPopUp(false)}
+          fetchOrderById={fetchOrderById}
+        />
+      )}
     </div>
   );
 };

@@ -4,11 +4,13 @@ import { OrderStatus } from '../../../typesV2/order/OrderStatus';
 import ButtonDropdown from '../../shared/ButtonDropdown';
 import Button from '../../shared/Button';
 import IconRemoveLarge from '../../../UI/IconRemoveLarge';
+import IconMagnifyingGlassLarge from '../../../UI/IconMagnifyingGlassLarge';
 
 import Style from './FilterOrderTable.module.css';
 
 interface FilterOrderTableProps {
   onFilter: (filters: Partial<FilterParams>) => void;
+  setOpenPopUp?: (isOpen: boolean) => void;
 }
 
 interface FilterParams {
@@ -17,7 +19,10 @@ interface FilterParams {
   status: OrderStatus | null;
 }
 
-const FilterOrderTable: FC<FilterOrderTableProps> = ({ onFilter }) => {
+const FilterOrderTable: FC<FilterOrderTableProps> = ({
+  onFilter,
+  setOpenPopUp,
+}) => {
   const [filters, setFilters] = useState<FilterParams>({
     createdFrom: null,
     createdTo: null,
@@ -38,7 +43,7 @@ const FilterOrderTable: FC<FilterOrderTableProps> = ({ onFilter }) => {
   };
 
   const handleStatusChange = (
-    selectedOption: { id: string; title: string } | null
+    selectedOption: { id: string; title: string } | null,
   ) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
@@ -67,7 +72,7 @@ const FilterOrderTable: FC<FilterOrderTableProps> = ({ onFilter }) => {
 
   const selectedStatus =
     statusOptions.find(
-      (option) => option.id === (filters.status?.toString() || 'Все')
+      (option) => option.id === (filters.status?.toString() || 'Все'),
     ) || statusOptions[0];
 
   const handleResetAllDate = () => {
@@ -89,6 +94,12 @@ const FilterOrderTable: FC<FilterOrderTableProps> = ({ onFilter }) => {
 
   return (
     <div className={Style.filterOrderTableBlock}>
+      <button
+        className={Style.searchOrderBtn}
+        onClick={() => setOpenPopUp(true)}
+      >
+        <IconMagnifyingGlassLarge color="#000" />
+      </button>
       <div className={Style.dateBlock}>
         <input
           className={Style.dateInput}

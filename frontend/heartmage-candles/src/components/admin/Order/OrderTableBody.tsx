@@ -6,7 +6,7 @@ import {
   getStatusStringRus,
   OrderStatus,
 } from '../../../typesV2/order/OrderStatus';
-import IconMagnifyingGlassLarge from '../../../UI/IconMagnifyingGlassLarge';
+import IconFileTextLarge from '../../../UI/IconFileTextLarge';
 import IconFadersHorizontalLarge from '../../../UI/IconFadersHorizontalLarge';
 import ContextMenu, { Action } from '../ContextMenu';
 import OrderPreviewReportPopUp from '../../../modules/admin/PopUp/Order/OrderPreviewReportPopUp';
@@ -85,12 +85,12 @@ const OrderTableBody: FC<OrderTableBodyProps> = ({
           <td>{order.id.substring(order.id.length - 6)}</td>
           <td>
             {(formatDate ? formatDate : handleFormatDate)(
-              new Date(order.createdAt)
+              new Date(order.createdAt),
             )}
           </td>
           <td>
             {(formatDate ? formatDate : handleFormatDate)(
-              new Date(order.createdAt)
+              new Date(order.createdAt),
             )}
           </td>
           <td>{order.basket.filterString.substring(0, 10)}..</td>
@@ -105,7 +105,7 @@ const OrderTableBody: FC<OrderTableBodyProps> = ({
               className={Style.contextMenuBtn}
               onClick={() => handleOpenOrderPopup(order)}
             >
-              <IconMagnifyingGlassLarge />
+              <IconFileTextLarge />
             </button>
             {openOrderPopup && selectedOrder && (
               <OrderPreviewReportPopUp

@@ -7,6 +7,7 @@ import { OrderTableFilterParams } from '../../typesV2/admin/OrderTableFilterPara
 import { OrdersAndTotalCount } from '../../typesV2/shared/OrdersAndTotalCount';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import { OrderStatus } from '../../typesV2/order/OrderStatus';
+import { Order } from '../../typesV2/shared/Order';
 
 import Style from './AllOrderPage.module.css';
 
@@ -16,10 +17,10 @@ const AllOrderPage: FC<AllOrderPageProps> = () => {
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const fetchOrders = async (
-    filterParams: OrderTableFilterParams
+    filterParams: OrderTableFilterParams,
   ): Promise<OrdersAndTotalCount> => {
     const ordersAndTotalCountResponse = await OrdersApi.getAll(
-      new OrderTableParameters(filterParams)
+      new OrderTableParameters(filterParams),
     );
     if (
       ordersAndTotalCountResponse.data &&
@@ -42,11 +43,22 @@ const AllOrderPage: FC<AllOrderPageProps> = () => {
     }
   };
 
+  const fetchOrderById = async (orderId: string): Promise<Order> => {
+    const orderResponse = await OrdersApi.getById(orderId);
+    if (orderResponse.data && !orderResponse.error) {
+      return orderResponse.data;
+    } else {
+      setErrorMessage([...errorMessage, orderResponse.error as string]);
+      return;
+    }
+  };
+
   return (
     <>
       <OrderTable
         fetchOrders={fetchOrders}
         updateOrderStatus={updateOrderStatus}
+        fetchOrderById={fetchOrderById}
       />
       <ListErrorPopUp messages={errorMessage} />
     </>

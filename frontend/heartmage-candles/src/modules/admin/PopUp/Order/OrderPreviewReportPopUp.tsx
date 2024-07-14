@@ -29,7 +29,7 @@ const OrderPreviewReportPopUp: FC<OrderPreviewReportPopUpProps> = ({
     <PopUp onClose={onClose}>
       <div className={Style.container}>
         <p className={Style.title}>
-          {order.id}{' '}
+          <span>{order.id}</span>
           <span className={Style[getStatusString(order.status)]}>
             {getStatusStringRus(order.status)}
           </span>

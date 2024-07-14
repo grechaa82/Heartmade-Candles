@@ -3,11 +3,13 @@
   align-items: center;
   gap: 2rem;
 }
+
 .dateBlock {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
+
 .dateInput {
   box-sizing: border-box;
   border: 2px solid var(--color-eee);
@@ -19,16 +21,31 @@
   font-weight: var(--font-weight-400);
   font-size: var(--font-size-l);
 }
+
 .resetBtn {
   all: unset;
 }
+
 .statusInput {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-.statusInput > div {
+
+.statusInput>div {
   min-width: 220px;
 }
-.applyFiltersBtn {
+
+.applyFiltersBtn {}
+
+.searchOrderBtn {
+  box-sizing: border-box;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px 16px 16px 16px;
+  gap: 8px;
 }
