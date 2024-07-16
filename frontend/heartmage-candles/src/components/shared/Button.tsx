@@ -6,6 +6,7 @@ export interface ButtonProps {
   color?: string;
   height?: number;
   width?: number;
+  size?: 'xl' | 'l' | 'm' | 's';
 }
 
 export interface ButtonDefaultProps extends ButtonProps {
@@ -18,12 +19,18 @@ const Button: FC<ButtonDefaultProps> = ({
   color,
   height,
   width,
+  size = 'l',
   className,
   onClick,
 }) => {
+  const buttonSizeClass = `buttonSize_${size}`;
+  const textSizeClass = `textSize_${size}`;
+
   return (
     <button
-      className={`${Style.button} ${className ? className : ''}`}
+      className={`${Style.button} ${className ? className : ''} ${
+        Style[buttonSizeClass]
+      }`}
       style={{
         color,
         ...(height && { height: `${height - 4}px` }),
@@ -32,7 +39,7 @@ const Button: FC<ButtonDefaultProps> = ({
       onClick={onClick}
       type="button"
     >
-      <p>{text}</p>
+      <p className={Style[textSizeClass]}>{text}</p>
     </button>
   );
 };

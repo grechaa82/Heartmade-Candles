@@ -45,6 +45,12 @@ const FilterOrderTable: FC<FilterOrderTableProps> = ({
   const handleStatusChange = (
     selectedOption: { id: string; title: string } | null,
   ) => {
+    if (selectedOption.id === 'Все') {
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        status: null,
+      }));
+    }
     setFilters((prevFilters) => ({
       ...prevFilters,
       status: selectedOption
@@ -61,7 +67,7 @@ const FilterOrderTable: FC<FilterOrderTableProps> = ({
     { id: 'Все', title: 'Все' },
     { id: OrderStatus.Created.toString(), title: 'Создан' },
     { id: OrderStatus.Confirmed.toString(), title: 'Подтвержден' },
-    { id: OrderStatus.Placed.toString(), title: 'Размещен' },
+    { id: OrderStatus.Placed.toString(), title: 'Оформлен' },
     { id: OrderStatus.Paid.toString(), title: 'Оплачен' },
     { id: OrderStatus.InProgress.toString(), title: 'В процессе' },
     { id: OrderStatus.Packed.toString(), title: 'Упакован' },
@@ -100,6 +106,20 @@ const FilterOrderTable: FC<FilterOrderTableProps> = ({
       >
         <IconMagnifyingGlassLarge color="#000" />
       </button>
+      <div className={Style.statusBlock}>
+        <div className={Style.statusInput}>
+          <ButtonDropdown
+            text="Status"
+            options={statusOptions}
+            selected={selectedStatus}
+            onChange={handleStatusChange}
+            size="m"
+          />
+        </div>
+        <button className={Style.resetBtn} onClick={handleResetStatus}>
+          <IconRemoveLarge color="#aaa" />
+        </button>
+      </div>
       <div className={Style.dateBlock}>
         <input
           className={Style.dateInput}
@@ -119,23 +139,11 @@ const FilterOrderTable: FC<FilterOrderTableProps> = ({
           <IconRemoveLarge color="#aaa" />
         </button>
       </div>
-      <div className={Style.dateBlock}>
-        <div className={Style.statusInput}>
-          <ButtonDropdown
-            text="Status"
-            options={statusOptions}
-            selected={selectedStatus}
-            onChange={handleStatusChange}
-          />
-        </div>
-        <button className={Style.resetBtn} onClick={handleResetStatus}>
-          <IconRemoveLarge color="#aaa" />
-        </button>
-      </div>
       <Button
         text="Применить"
         className={Style.applyFiltersBtn}
         onClick={handleApplyFilters}
+        size="m"
       />
     </div>
   );

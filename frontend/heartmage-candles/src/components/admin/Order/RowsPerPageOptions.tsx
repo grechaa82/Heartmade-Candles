@@ -26,7 +26,7 @@ const RowsPerPageOptions: FC<RowsPerPageOptionsProps> = ({
   };
 
   const handleStatusChange = (
-    selectedOption: { id: string; title: string } | null
+    selectedOption: { id: string; title: string } | null,
   ) => {
     onChange(parseInt(selectedOption.title));
   };
@@ -36,6 +36,7 @@ const RowsPerPageOptions: FC<RowsPerPageOptionsProps> = ({
       options={rowsOptions}
       selected={selectedRows}
       onChange={handleStatusChange}
+      size="m"
     />
   );
 };

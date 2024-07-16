@@ -24,6 +24,7 @@ const ButtonDropdown = <T extends optionData>({
   width,
   options,
   selected,
+  size = 'l',
   onChange,
 }: ButtonDropdownProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +34,9 @@ const ButtonDropdown = <T extends optionData>({
     ...(height && { height: `${height - 4}px` }),
     ...(width && { width: `${width}px` }),
   };
+
+  const buttonSizeClass = `buttonSize_${size}`;
+  const textSizeClass = `textSize_${size}`;
 
   const handleOptionClick = (option: T) => {
     onChange(option);
@@ -45,10 +49,10 @@ const ButtonDropdown = <T extends optionData>({
         style={buttonStyle}
         className={`${StyleButton.button} ${Style.buttonDropdown} ${
           isOpen ? Style.buttonDropdownIsOpen : ''
-        } `}
+        } ${StyleButton[buttonSizeClass]}`}
         type="button"
       >
-        <p>{selected.title}</p>
+        <p className={StyleButton[textSizeClass]}>{selected.title}</p>
         <div className={Style.dropdownIcon}>
           <IconChevronDownLarge color="#aaa" />
         </div>
@@ -57,7 +61,11 @@ const ButtonDropdown = <T extends optionData>({
         <div className={Style.dropdownMenu}>
           <ul>
             {options.map((option) => (
-              <li key={option.id} onClick={() => handleOptionClick(option)}>
+              <li
+                key={option.id}
+                onClick={() => handleOptionClick(option)}
+                className={StyleButton[textSizeClass]}
+              >
                 {option.title}
               </li>
             ))}

@@ -51,7 +51,7 @@ const OrderTable: FC<OrderTableProps> = ({
 
   useEffect(() => {
     fetchData();
-  }, [filterParams, setFilterParams, orders, setOrders]);
+  }, [filterParams]);
 
   const handleSort = (type: TypesOfSorting) => {
     setFilterParams({
@@ -101,16 +101,18 @@ const OrderTable: FC<OrderTableProps> = ({
           onChange={handlePageSizeChange}
         />
       </div>
-      <table className={Style.table}>
-        <OrderTableHeader
-          orderTableFilterParams={filterParams}
-          sortParams={handleSort}
-        />
-        <OrderTableBody
-          orders={orders}
-          updateOrderStatus={handleUpdateOrderStatus}
-        />
-      </table>
+      <div className={Style.tableContainer}>
+        <table className={Style.table}>
+          <OrderTableHeader
+            orderTableFilterParams={filterParams}
+            sortParams={handleSort}
+          />
+          <OrderTableBody
+            orders={orders}
+            updateOrderStatus={handleUpdateOrderStatus}
+          />
+        </table>
+      </div>
       <div className={Style.paggination}>
         <Pagination
           totalCount={totalCount}

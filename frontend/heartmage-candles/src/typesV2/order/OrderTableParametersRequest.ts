@@ -23,10 +23,15 @@ export class OrderTableParameters {
     const queryParams: string[] = [];
 
     for (const key in this) {
-      if (this[key] !== undefined && this[key] !== null) {
+      if (
+        this[key] !== undefined &&
+        this[key] !== null &&
+        !Number.isNaN(this[key]) &&
+        this[key] !== ''
+      ) {
         if (this[key] instanceof Date) {
           queryParams.push(
-            `${key}=${encodeURIComponent((this[key] as Date).toISOString())}`
+            `${key}=${encodeURIComponent((this[key] as Date).toISOString())}`,
           );
         } else {
           queryParams.push(`${key}=${encodeURIComponent(String(this[key]))}`);

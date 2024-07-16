@@ -1,10 +1,13 @@
 .filterOrderTableBlock {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
+  row-gap: 0.5rem;
 }
 
-.dateBlock {
+.dateBlock,
+.statusBlock {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -15,11 +18,11 @@
   border: 2px solid var(--color-eee);
   border-radius: var(--border-radius-primary);
   background: none;
-  padding: 0.875rem 1rem 1rem 1rem;
+  padding: 0.75rem;
   font-family: 'Inter';
   font-style: normal;
   font-weight: var(--font-weight-400);
-  font-size: var(--font-size-l);
+  font-size: var(--font-size-m);
 }
 
 .resetBtn {
@@ -33,7 +36,7 @@
 }
 
 .statusInput>div {
-  min-width: 220px;
+  min-width: 160px;
 }
 
 .applyFiltersBtn {}
@@ -46,6 +49,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 14px 16px 16px 16px;
+  padding: 0.75rem;
   gap: 8px;
+}
+
+@media (max-width: 580px) {
+  .dateBlock {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
