@@ -106,44 +106,35 @@ const FilterOrderTable: FC<FilterOrderTableProps> = ({
       >
         <IconMagnifyingGlassLarge color="#000" />
       </button>
-      <div className={Style.statusBlock}>
-        <div className={Style.statusInput}>
-          <ButtonDropdown
-            text="Status"
-            options={statusOptions}
-            selected={selectedStatus}
-            onChange={handleStatusChange}
-            size="m"
-          />
-        </div>
-        <button className={Style.resetBtn} onClick={handleResetStatus}>
-          <IconRemoveLarge color="#aaa" />
-        </button>
-      </div>
-      <div className={Style.dateBlock}>
-        <input
-          className={Style.dateInput}
-          type="date"
-          name="createdFrom"
-          value={filters.createdFrom?.toISOString().slice(0, 10) || ''}
-          onChange={handleInputChange}
+      <div className={Style.statusInput}>
+        <ButtonDropdown
+          text="Status"
+          options={statusOptions}
+          selected={selectedStatus}
+          onChange={handleStatusChange}
+          size="m"
         />
-        <input
-          className={Style.dateInput}
-          type="date"
-          name="createdTo"
-          value={filters.createdTo?.toISOString().slice(0, 10) || ''}
-          onChange={handleInputChange}
-        />
-        <button className={Style.resetBtn} onClick={handleResetAllDate}>
-          <IconRemoveLarge color="#aaa" />
-        </button>
       </div>
+      <input
+        className={Style.dateInput}
+        type="date"
+        name="createdFrom"
+        value={filters.createdFrom?.toISOString().slice(0, 10) || ''}
+        onChange={handleInputChange}
+      />
+      <input
+        className={Style.dateInput}
+        type="date"
+        name="createdTo"
+        value={filters.createdTo?.toISOString().slice(0, 10) || ''}
+        onChange={handleInputChange}
+      />
       <Button
         text="Применить"
         className={Style.applyFiltersBtn}
         onClick={handleApplyFilters}
         size="m"
+        height={52}
       />
     </div>
   );

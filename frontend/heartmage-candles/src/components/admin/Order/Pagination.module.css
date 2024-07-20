@@ -1,9 +1,11 @@
 .pagginationBlock {
+  margin-top: 2rem;
   display: flex;
   align-items: center;
   flex-direction: row;
-  gap: 2rem;
+  gap: 0.5rem 2rem;
 }
+
 .info {
   color: var(--color-d9d9d9);
   font-size: var(--font-size-l);
@@ -11,10 +13,12 @@
   line-height: var(--line-height-standard);
   margin: 0;
 }
+
 .pagginationDiv {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
 }
+
 .pagginationBtn {
   all: unset;
   padding: 0.25rem;
@@ -24,13 +28,22 @@
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
 }
+
 .pagginationIcon {
   all: unset;
   cursor: pointer;
   display: flex;
   align-items: center;
 }
+
 .currentPage {
   color: var(--color-222);
   font-weight: var(--font-weight-500);
+}
+
+@media (max-width: 580px) {
+  .pagginationBlock {
+    align-items: flex-end;
+    flex-direction: column;
+  }
 }

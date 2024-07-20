@@ -19,8 +19,8 @@ const Pagination: FC<PaginationProps> = ({
   onPageChange,
 }) => {
   const totalPages = Math.ceil(totalCount / pageSize);
-  const visiblePages = 7;
-  const pageRange = 2;
+  const visiblePages = 5;
+  const pageRange = 1;
   const startPage = Math.max(1, currentPage + 1 - pageRange);
   const endPage = Math.min(totalPages, currentPage + 1 + pageRange);
 
@@ -45,7 +45,7 @@ const Pagination: FC<PaginationProps> = ({
             }`}
           >
             {i}
-          </button>
+          </button>,
         );
       }
     } else {
@@ -57,13 +57,13 @@ const Pagination: FC<PaginationProps> = ({
             className={Style.pagginationBtn}
           >
             1
-          </button>
+          </button>,
         );
         if (startPage > 2)
           pages.push(
             <span className={Style.pagginationBtn} key={`ellipsis-start`}>
-              ...
-            </span>
+              ..
+            </span>,
           );
       }
 
@@ -78,7 +78,7 @@ const Pagination: FC<PaginationProps> = ({
             }`}
           >
             {i}
-          </button>
+          </button>,
         );
       }
 
@@ -86,8 +86,8 @@ const Pagination: FC<PaginationProps> = ({
         if (endPage < totalPages - 1)
           pages.push(
             <span className={Style.pagginationBtn} key={`ellipsis-end`}>
-              ...
-            </span>
+              ..
+            </span>,
           );
         pages.push(
           <button
@@ -96,7 +96,7 @@ const Pagination: FC<PaginationProps> = ({
             className={Style.pagginationBtn}
           >
             {totalPages}
-          </button>
+          </button>,
         );
       }
     }
@@ -110,23 +110,7 @@ const Pagination: FC<PaginationProps> = ({
         Строка {currentPage * pageSize + 1} -{' '}
         {Math.min((currentPage + 1) * pageSize, totalCount)} из {totalCount}
       </p>
-      <div className={Style.pagginationDiv}>
-        <button
-          key="prev"
-          onClick={() => handlePageChange(currentPage - 1)}
-          className={Style.pagginationIcon}
-        >
-          <IconChevronLeftLarge color="#aaa" />
-        </button>
-        {renderPagination()}
-        <button
-          key="next"
-          onClick={() => handlePageChange(currentPage + 1)}
-          className={Style.pagginationIcon}
-        >
-          <IconChevronRightLarge color="#aaa" />
-        </button>
-      </div>
+      <div className={Style.pagginationDiv}>{renderPagination()}</div>
     </div>
   );
 };
