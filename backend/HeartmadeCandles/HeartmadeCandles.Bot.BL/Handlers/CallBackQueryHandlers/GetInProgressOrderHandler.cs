@@ -68,7 +68,7 @@ public class GetInProgressOrderHandler : CallBackQueryHandlerBase
 
         var pageIndex = int.Parse(callbackData.Last());
 
-        var (orderMaybe, totalOrders) = await GetOrderByStatusWithTotalOrders(OrderStatus.InProgress, 1, pageIndex - 1);
+        var (orderMaybe, totalCount) = await GetOrderByStatusAndTotalCount(OrderStatus.InProgress, 1, pageIndex - 1);
 
         if (orderMaybe.HasNoValue || orderMaybe.Value.First() == null)
         {
@@ -86,7 +86,7 @@ public class GetInProgressOrderHandler : CallBackQueryHandlerBase
             selectCommands: CallBackQueryCommands.InProgressOrderSelectCommand,
             orderId: orderMaybe.Value.First().Id,
             currentPageIndex: pageIndex,
-            totalOrders: totalOrders);
+            totalCount: totalCount);
 
         await _botClient.EditMessageTextAsync(
             chatId: callbackQuery.Message.Chat.Id,

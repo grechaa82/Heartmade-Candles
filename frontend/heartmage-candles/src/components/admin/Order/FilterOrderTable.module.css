@@ -1,0 +1,62 @@
+.filterOrderTableBlock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  row-gap: 0.5rem;
+}
+
+.dateBlock,
+.statusBlock {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 52px;
+}
+
+.dateInput {
+  box-sizing: border-box;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
+  background: none;
+  padding: 0.75rem;
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-m);
+}
+
+.resetBtn {
+  all: unset;
+}
+
+.statusInput {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statusInput>div {
+  min-width: 160px;
+}
+
+.applyFiltersBtn {}
+
+.searchOrderBtn {
+  box-sizing: border-box;
+  border: 2px solid var(--color-eee);
+  border-radius: var(--border-radius-primary);
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem;
+  gap: 8px;
+}
+
+@media (max-width: 580px) {
+  .dateBlock {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

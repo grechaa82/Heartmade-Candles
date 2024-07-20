@@ -14,6 +14,7 @@ import AllWickPage from '../pages/admin/AllWickPage';
 import WickPage from '../pages/admin/WickPage';
 import BotPage from '../pages/admin/BotPage';
 import NotFoundPage from '../pages/home/NotFoundPage';
+import AllOrderPage from '../pages/admin/AllOrderPage';
 
 import Style from './AdminRoutes.module.css';
 
@@ -34,6 +35,7 @@ const AdminRoutes: FC = () => {
           <Route index element={<AllWickPage />} path="wicks" />
           <Route element={<WickPage />} path="wicks/:id" />
           <Route element={<BotPage />} path="bot" />
+          <Route element={<AllOrderPage />} path="orders" />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

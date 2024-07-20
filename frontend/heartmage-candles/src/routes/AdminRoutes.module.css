@@ -13,6 +13,8 @@
   margin: 32px auto 0;
   padding: 0 32px;
   width: 100%;
+  flex: 1;
+  overflow: hidden;
 }
 
 .AdminContainer>div {

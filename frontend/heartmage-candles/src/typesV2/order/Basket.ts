@@ -5,4 +5,5 @@ export interface Basket {
   items: BasketItem[];
   totalQuantity: number;
   totalPrice: number;
+  filterString?: string;
 }

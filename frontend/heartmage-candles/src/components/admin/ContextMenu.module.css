@@ -9,6 +9,15 @@
   z-index: 50;
 }
 
+.header {
+  font-size: var(--font-size-m);
+  line-height: var(--line-height-standard);
+  color: var(--color-aaa);
+  margin: 0;
+  text-wrap: nowrap;
+  margin-bottom: 0.5rem;
+}
+
 .contextMenuItem {
   gap: 8px;
 }
@@ -20,7 +29,7 @@ li {
   list-style: none;
 }
 
-.contextMenuItem>button {
+.contextMenuItem > button {
   all: initial;
 }
 

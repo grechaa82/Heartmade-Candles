@@ -30,9 +30,14 @@ public class OrderService : IOrderService
             : Result.Failure<Core.Models.Order>($"Order by id: {orderId} does not exist");
     }
 
-    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrderByStatusWithTotalOrders(OrderStatus status, int pageSige, int pageIndex)
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersAndTotalCount(OrderFilterParameters queryOptions)
     {
-        return await _orderRepository.GetOrderByStatusWithTotalOrders(status, pageSige, pageIndex);
+        return await _orderRepository.GetOrdersAndTotalCount(queryOptions);
+    }
+
+    public async Task<(Maybe<Core.Models.Order[]>, long)> GetOrdersByStatusAndTotalCount(OrderStatus status, PaginationSettings pagination)
+    {
+        return await _orderRepository.GetOrdersByStatusAndTotalCount(status, pagination);
     }
 
     public async Task<Result<string>> CreateOrder(Feedback? feedback, string basketId)
@@ -73,11 +78,18 @@ public class OrderService : IOrderService
 
     public async Task<Result> UpdateOrderStatus(string orderId, OrderStatus status)
     {
-        var orderResult = await _orderRepository.UpdateOrderStatus(orderId, status);
+        var orderResult =  await _orderRepository.GetOrderById(orderId);
 
-        if (orderResult.IsFailure)
+        if (!orderResult.HasValue)
         {
-            return Result.Failure(orderResult.Error);
+            return Result.Failure($"Order by id: {orderId} does not exist");
+        }
+
+        var result = await _orderRepository.UpdateOrderStatus(orderId, status);
+
+        if (result.IsFailure)
+        {
+            return Result.Failure(result.Error);
         }
 
         return Result.Success();

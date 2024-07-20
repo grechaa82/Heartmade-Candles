@@ -1,0 +1,36 @@
+.paggination {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tableControlPanel {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  font-weight: var(--font-weight-400);
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-standard);
+  color: var(--color-222);
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 1rem;
+}
+
+.table th,
+.table td {
+  white-space: nowrap
+}
+
+@media screen and (max-width: 768px) {
+  .tableControlPanel {
+    flex-wrap: wrap;
+    row-gap: 0.5rem
+  }
+}

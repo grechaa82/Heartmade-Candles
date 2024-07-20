@@ -31,7 +31,7 @@
   border: 2px solid var(--color-eee);
   border-radius: var(--border-radius-primary);
   z-index: 5;
-  top: 63px;
+  box-sizing: border-box;
 }
 
 .dropdownMenu>ul {
@@ -43,7 +43,6 @@
   padding: 0;
   font-weight: var(--font-weight-400);
   margin-bottom: 12px;
-  font-size: var(--font-size-l);
   line-height: var(--line-height-standard);
   color: var(--color-222);
   cursor: pointer;

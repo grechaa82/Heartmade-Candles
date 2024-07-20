@@ -9,12 +9,39 @@
   padding: 14px 16px 16px 16px;
   gap: 8px;
 }
+
 button:hover {
   cursor: pointer;
 }
-.button > p {
+
+.button>p {
   font-style: normal;
   font-weight: var(--font-weight-500);
-  font-size: var(--font-size-l);
   margin: 0;
+}
+
+.buttonSize_xl {}
+
+.buttonSize_l {}
+
+.buttonSize_m {
+  padding: 0.75rem;
+}
+
+.buttonSize_s {}
+
+.textSize_xl {
+  font-size: var(--font-size-xl);
+}
+
+.textSize_l {
+  font-size: var(--font-size-l);
+}
+
+.textSize_m {
+  font-size: var(--font-size-m);
+}
+
+.textSize_s {
+  font-size: var(--font-size-s);
 }

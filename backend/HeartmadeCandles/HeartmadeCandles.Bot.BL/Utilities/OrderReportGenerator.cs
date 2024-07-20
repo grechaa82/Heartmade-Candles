@@ -12,6 +12,8 @@ public class OrderReportGenerator
         message.AppendLine($"Номер заказа: {order.Id}");
         message.AppendLine($"Строка конфигурации: {order.Basket.FilterString}");
         message.AppendLine(" ");
+        message.AppendLine($"Создана: {order.CreatedAt}, обновлена: {order.UpdatedAt}");
+        message.AppendLine(" ");
         message.AppendLine($"Обратная связь: {order.Feedback.TypeFeedback} {order.Feedback.UserName}");
         message.AppendLine(" ");
         message.AppendLine(GenerateCandlesReported(order.Basket.Items));
@@ -52,6 +54,8 @@ public class OrderReportGenerator
 
         message.AppendLine($"Номер заказа: {order.Id}");
         message.AppendLine($"Строка конфигурации: {order.Basket.FilterString}");
+        message.AppendLine(" ");
+        message.AppendLine($"Создана: {order.CreatedAt}, обновлена: {order.UpdatedAt}");
         message.AppendLine(" ");
         message.AppendLine(GenerateCandlesPreviewReported(order.Basket.Items));
         message.AppendLine($"Свечей: {order.Basket.TotalQuantity}");

@@ -55,6 +55,9 @@ const Navbar: FC = () => {
         <NavLink className={navLinkClassName} to="/">
           Статистика
         </NavLink>
+        <NavLink className={navLinkClassName} to="/admin/orders">
+          Заказы
+        </NavLink>
         <NavLink className={navLinkClassName} to="/admin/candles">
           Свечи
         </NavLink>

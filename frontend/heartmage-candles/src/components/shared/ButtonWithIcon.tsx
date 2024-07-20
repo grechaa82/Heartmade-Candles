@@ -9,22 +9,29 @@ interface ButtonWithIconProps extends ButtonProps {
   onClick: () => void;
 }
 
-const ButtonWithIcon: FC<ButtonWithIconProps> = ({ icon: Icon, onClick, ...buttonProps }) => {
+const ButtonWithIcon: FC<ButtonWithIconProps> = ({
+  icon: Icon,
+  onClick,
+  ...buttonProps
+}) => {
   const buttonStyle = {
     color: buttonProps.color,
     ...(buttonProps.height && { height: `${buttonProps.height - 4}px` }),
     ...(buttonProps.width && { width: `${buttonProps.width}px` }),
   };
 
+  const buttonSizeClass = `buttonSize_${buttonProps.size}`;
+  const textSizeClass = `textSize_${buttonProps.size}`;
+
   return (
     <button
-      className={`${StyleButton.button} ${Style.buttonButtonWithIcon}`}
+      className={`${StyleButton.button} ${Style.buttonButtonWithIcon} ${StyleButton[buttonSizeClass]}`}
       onClick={onClick}
       style={buttonStyle}
       type="button"
     >
       <Icon color={buttonProps.color} />
-      <p>{buttonProps.text}</p>
+      <p className={StyleButton[textSizeClass]}>{buttonProps.text}</p>
     </button>
   );
 };

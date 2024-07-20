@@ -1,6 +1,6 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-import Style from "./ContextMenu.module.css";
+import Style from './ContextMenu.module.css';
 
 export type Action = {
   label: string;
@@ -8,12 +8,15 @@ export type Action = {
 };
 
 export interface ContextMenuProps {
+  header?: string;
+  className?: string;
   actions: Action[];
 }
 
-const ContextMenu: FC<ContextMenuProps> = ({ actions }) => {
+const ContextMenu: FC<ContextMenuProps> = ({ header, className, actions }) => {
   return (
-    <div className={Style.contextMenu}>
+    <div className={`${Style.contextMenu} ${className ? className : ''}`}>
+      {header && <p className={Style.header}>{header}</p>}
       <ul>
         {actions.map((action, index) => (
           <li
