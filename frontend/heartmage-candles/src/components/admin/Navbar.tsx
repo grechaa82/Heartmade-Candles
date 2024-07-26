@@ -2,7 +2,7 @@ import { FC, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch, useNavigate } from 'react-router-dom';
 
 import { AuthHelper } from '../../helpers/AuthHelper';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../contexts/AuthContext';
 import { AuthApi } from '../../services/AuthApi';
 
 import Style from './Navbar.module.css';

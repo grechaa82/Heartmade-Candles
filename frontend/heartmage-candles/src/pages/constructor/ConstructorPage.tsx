@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useRef } from 'react';
+import { FC, useContext, useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import ListProductsCart from '../../modules/constructor/ListProductsCart';
@@ -25,15 +25,31 @@ import { ConstructorApi } from '../../services/ConstructorApi';
 import { BasketApi } from '../../services/BasketApi';
 
 import Style from './ConstructorPage.module.css';
+import {
+  ConstructorProvider,
+  useConstructorContext,
+} from '../../contexts/ConstructorContext';
+import { CandleProvider, useCandleContext } from '../../contexts/CandleContext';
 
 const ConstructorPage: FC = () => {
+  const { candleTypeWithCandles } = useConstructorContext();
+  const {
+    candle,
+    configuredCandle,
+    setCandle,
+    setConfiguredCandle,
+    fetchCandleById,
+  } = useCandleContext();
+
+  console.log('ConstructorPage', candleTypeWithCandles);
+  //
   const [candleDetail, setCandleDetail] = useState<CandleDetail>();
   const [configuredCandleDetails, setConfiguredCandleDetails] = useState<
     ConfiguredCandleDetail[]
   >([]);
   const [isConfiguredCandleDetailLoading, setIsConfiguredCandleDetailLoading] =
     useState(true);
-  const [candleTypeWithCandles, setCandleTypeWithCandles] =
+  const [candleTypeWithCandlesFass, setCandleTypeWithCandles] =
     useState<CandleTypeWithCandles[]>();
   const [priceConfiguredCandleDetail, setPriceConfiguredCandleDetail] =
     useState<number>(0);
@@ -44,17 +60,6 @@ const ConstructorPage: FC = () => {
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const blockCandleFormRef = useRef<HTMLDivElement>(null);
-
-  async function showCandleForm(candleId: number) {
-    const candleDetailResponse = await ConstructorApi.getCandleById(
-      candleId.toString(),
-    );
-    if (candleDetailResponse.data && !candleDetailResponse.error) {
-      setCandleDetail(candleDetailResponse.data);
-    } else {
-      setErrorMessage([...errorMessage, candleDetailResponse.error as string]);
-    }
-  }
 
   function handleHideCandleForm() {
     setErrorMessage([]);
@@ -128,21 +133,6 @@ const ConstructorPage: FC = () => {
     }
     return errorMessageInConfiguredCandleDetail;
   };
-
-  useEffect(() => {
-    setIsConfiguredCandleDetailLoading(true);
-    async function fetchData() {
-      const candlesResponse = await ConstructorApi.getCandles();
-      if (candlesResponse.data && !candlesResponse.error) {
-        setCandleTypeWithCandles(candlesResponse.data);
-      } else {
-        setErrorMessage([...errorMessage, candlesResponse.error as string]);
-      }
-    }
-
-    fetchData();
-    setIsConfiguredCandleDetailLoading(false);
-  }, []);
 
   useEffect(() => {
     setIsConfiguredCandleDetailLoading(true);
@@ -236,7 +226,7 @@ const ConstructorPage: FC = () => {
     if (blockCandleFormRef.current) {
       blockCandleFormRef.current.scrollTop = 0;
     }
-    showCandleForm(candle.id);
+    fetchCandleById(candle.id.toString());
     setPriceConfiguredCandleDetail(0);
   };
 
@@ -251,7 +241,7 @@ const ConstructorPage: FC = () => {
   };
 
   const handleOnCreateBasket = async () => {
-    if (candleDetail !== undefined) {
+    if (candle !== undefined) {
       setErrorMessage([
         ...errorMessage,
         'Пожалуйста закончите настройку свечи',
@@ -339,7 +329,7 @@ const ConstructorPage: FC = () => {
             price={totalPrice}
             onCreateBasket={handleOnCreateBasket}
             buttonState={
-              candleDetail !== undefined || configuredCandleDetails.length <= 0
+              candle !== undefined || configuredCandleDetails.length <= 0
                 ? 'invalid'
                 : 'valid'
             }
@@ -347,20 +337,22 @@ const ConstructorPage: FC = () => {
         )}
       </div>
       <div className={Style.imagePanel}>
-        {candleDetail ? (
-          <ImageSlider images={candleDetail.candle.images} />
+        {candle ? (
+          <ImageSlider images={candle.candle.images} />
         ) : (
           <TutorialBlock />
         )}
       </div>
       <div className={Style.rightPanel} ref={blockCandleFormRef}>
-        {candleDetail ? (
-          <CandleForm
-            candleDetail={candleDetail}
-            addCandleDetail={addConfiguredCandleDetailToListProductsCart}
-            calculatePriceCandleDetail={calculatePriceConfiguredCandleDetail}
-            hideCandleForm={handleHideCandleForm}
-          />
+        {candle ? (
+          <CandleProvider>
+            <CandleForm
+              candleDetail={candle}
+              addCandleDetail={addConfiguredCandleDetailToListProductsCart}
+              calculatePriceCandleDetail={calculatePriceConfiguredCandleDetail}
+              hideCandleForm={handleHideCandleForm}
+            />
+          </CandleProvider>
         ) : !candleTypeWithCandles ? (
           <CandleSelectionPanelSkeleton />
         ) : (

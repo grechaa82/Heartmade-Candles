@@ -1,7 +1,7 @@
 import { FC, useContext, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import { AuthHelper } from '../helpers/AuthHelper';
 import { AuthApi } from '../services/AuthApi';
 
