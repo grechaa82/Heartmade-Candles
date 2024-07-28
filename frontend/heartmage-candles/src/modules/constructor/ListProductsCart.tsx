@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import ProductCart from '../../components/constructor/ProductCart';
+import ConfiguredCandleCart from '../../components/constructor/ConfiguredCandleCart';
 import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';
 import Button from '../../components/shared/Button';
 
@@ -9,7 +9,7 @@ import Style from './ListProductsCart.module.css';
 export interface ListProductsCartProps {
   products: ConfiguredCandleDetail[];
   onChangeCandleDetailWithQuantity: (
-    CandleDetailWithQuantity: ConfiguredCandleDetail[]
+    CandleDetailWithQuantity: ConfiguredCandleDetail[],
   ) => void;
   price: number;
   onCreateBasket: () => void;
@@ -25,7 +25,7 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
 }) => {
   const handleChangingQuantityProduct = (
     newQuantity: number,
-    index: number
+    index: number,
   ) => {
     if (products[index]) {
       const updatedConfiguredCandleDetail = [...products];
@@ -42,10 +42,10 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
     <>
       <div className={Style.listProductsCart}>
         {products.map((product, index) => (
-          <ProductCart
+          <ConfiguredCandleCart
             key={index}
             index={index}
-            product={product.candle}
+            product={product}
             onChangingQuantityProduct={handleChangingQuantityProduct}
             quantity={product.quantity}
           />

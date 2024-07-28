@@ -17,6 +17,7 @@ import BasketPage from '../pages/order/BasketPage';
 import ThankPage from '../pages/order/ThankPage';
 import AuthSuccessPage from '../pages/userAndAuth/AuthSuccessPage';
 import UserCreatePage from '../pages/userAndAuth/UserCreatePage';
+import { CandleProvider } from '../contexts/CandleContext';
 
 const Routes: FC = () => {
   const { isAuth } = useContext(AuthContext);
@@ -32,7 +33,9 @@ const Routes: FC = () => {
         path="constructor"
         element={
           <ConstructorProvider>
-            <ConstructorPage />
+            <CandleProvider>
+              <ConstructorPage />
+            </CandleProvider>
           </ConstructorProvider>
         }
       />

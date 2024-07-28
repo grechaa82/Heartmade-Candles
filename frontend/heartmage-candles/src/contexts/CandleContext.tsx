@@ -18,6 +18,7 @@ export interface CandleProviderProps {
 type ICandleContext = {
   candle: CandleDetail | undefined;
   configuredCandle: ConfiguredCandle | undefined;
+  priceConfiguredCandle: number;
   setCandle: (candleDetail: CandleDetail) => void;
   setConfiguredCandle: (configuredCandle: ConfiguredCandle) => void;
   fetchCandleById: (id: string) => Promise<void>;
@@ -26,6 +27,7 @@ type ICandleContext = {
 const initialValue: ICandleContext = {
   candle: undefined,
   configuredCandle: undefined,
+  priceConfiguredCandle: 0,
   setCandle: () => {},
   setConfiguredCandle: () => {},
   fetchCandleById: async () => {},
@@ -40,9 +42,11 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
   const [configuredCandle, setConfiguredCandle] = useState<
     ConfiguredCandle | undefined
   >(initialValue.configuredCandle);
+  const [priceConfiguredCandle, setPriceConfiguredCandle] = useState<number>(
+    initialValue.priceConfiguredCandle,
+  );
 
   const fetchCandleById = async (id: string) => {
-    console.log('fetchCandleById');
     const candleDetailResponse = await ConstructorApi.getCandleById(id);
     if (candleDetailResponse.data && !candleDetailResponse.error) {
       setCandle(candleDetailResponse.data);
@@ -59,10 +63,13 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
     setCandle(undefined);
   };
 
+  useEffect(() => {}, []);
+
   const contextValue = useMemo(
     () => ({
       candle,
       configuredCandle,
+      priceConfiguredCandle,
       setCandle,
       setConfiguredCandle: handleSetConfiguredCandle,
       fetchCandleById,

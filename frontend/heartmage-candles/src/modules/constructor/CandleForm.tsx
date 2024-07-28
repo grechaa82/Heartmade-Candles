@@ -20,7 +20,7 @@ export interface CandleFormProps {
   candleDetail: CandleDetail;
   addCandleDetail: (configuredCandleDetail: ConfiguredCandleDetail) => void;
   calculatePriceCandleDetail: (
-    configuredCandleDetail: ConfiguredCandleDetail
+    configuredCandleDetail: ConfiguredCandleDetail,
   ) => number;
   hideCandleForm: () => void;
 }
@@ -44,8 +44,8 @@ const CandleForm: FC<CandleFormProps> = ({
         [],
         candleDetail.wicks.length === 1 ? candleDetail.wicks[0] : undefined,
         undefined,
-        undefined
-      )
+        undefined,
+      ),
     );
 
   const handleNumberOfLayerState = (selectedNumberOfLayer: TagData) => {
@@ -57,8 +57,8 @@ const CandleForm: FC<CandleFormProps> = ({
         [],
         configuredCandleDetailState.wick,
         configuredCandleDetailState.decor,
-        configuredCandleDetailState.smell
-      )
+        configuredCandleDetailState.smell,
+      ),
     );
   };
 
@@ -79,8 +79,8 @@ const CandleForm: FC<CandleFormProps> = ({
           newLayerColors,
           configuredCandleDetailState.wick,
           configuredCandleDetailState.decor,
-          configuredCandleDetailState.smell
-        )
+          configuredCandleDetailState.smell,
+        ),
       );
 
       return;
@@ -99,16 +99,16 @@ const CandleForm: FC<CandleFormProps> = ({
         layerColorToAdd,
         configuredCandleDetailState.wick,
         configuredCandleDetailState.decor,
-        configuredCandleDetailState.smell
-      )
+        configuredCandleDetailState.smell,
+      ),
     );
   };
 
   const handleDeselectLayerColorState = (
-    deselectedLayerColor: ImageProduct
+    deselectedLayerColor: ImageProduct,
   ) => {
     const updatedLayerColors = configuredCandleDetailState.layerColors?.filter(
-      (layerColor) => layerColor !== deselectedLayerColor
+      (layerColor) => layerColor !== deselectedLayerColor,
     );
 
     setConfiguredCandleDetailState(
@@ -119,8 +119,8 @@ const CandleForm: FC<CandleFormProps> = ({
         updatedLayerColors,
         configuredCandleDetailState.wick,
         configuredCandleDetailState.decor,
-        configuredCandleDetailState.smell
-      )
+        configuredCandleDetailState.smell,
+      ),
     );
   };
 
@@ -133,8 +133,8 @@ const CandleForm: FC<CandleFormProps> = ({
         configuredCandleDetailState.layerColors,
         configuredCandleDetailState.wick,
         selectedDecor,
-        configuredCandleDetailState.smell
-      )
+        configuredCandleDetailState.smell,
+      ),
     );
   };
 
@@ -147,8 +147,8 @@ const CandleForm: FC<CandleFormProps> = ({
         configuredCandleDetailState.layerColors,
         configuredCandleDetailState.wick,
         undefined,
-        configuredCandleDetailState.smell
-      )
+        configuredCandleDetailState.smell,
+      ),
     );
   };
 
@@ -161,8 +161,8 @@ const CandleForm: FC<CandleFormProps> = ({
         configuredCandleDetailState.layerColors,
         configuredCandleDetailState.wick,
         configuredCandleDetailState.decor,
-        convertTagDataToSmell(selectedSmell, candleDetail)
-      )
+        convertTagDataToSmell(selectedSmell, candleDetail),
+      ),
     );
   };
 
@@ -175,8 +175,8 @@ const CandleForm: FC<CandleFormProps> = ({
         configuredCandleDetailState.layerColors,
         configuredCandleDetailState.wick,
         configuredCandleDetailState.decor,
-        undefined
-      )
+        undefined,
+      ),
     );
   };
 
@@ -189,8 +189,8 @@ const CandleForm: FC<CandleFormProps> = ({
         configuredCandleDetailState.layerColors,
         selectedWick,
         configuredCandleDetailState.decor,
-        configuredCandleDetailState.smell
-      )
+        configuredCandleDetailState.smell,
+      ),
     );
   };
 
@@ -200,7 +200,7 @@ const CandleForm: FC<CandleFormProps> = ({
 
   useEffect(() => {
     setPriceConfiguredCandleDetail(
-      calculatePriceCandleDetail(configuredCandleDetailState)
+      calculatePriceCandleDetail(configuredCandleDetailState),
     );
   }, [configuredCandleDetailState]);
 
@@ -225,7 +225,7 @@ const CandleForm: FC<CandleFormProps> = ({
             configuredCandleDetailState.numberOfLayer
               ? [
                   convertNumberOfLayerToTagData(
-                    configuredCandleDetailState.numberOfLayer
+                    configuredCandleDetailState.numberOfLayer,
                   ),
                 ]
               : []
@@ -302,7 +302,7 @@ const CandleForm: FC<CandleFormProps> = ({
 export default CandleForm;
 
 export function convertNumberOfLayerToTagData(
-  numberOfLayer: NumberOfLayer
+  numberOfLayer: NumberOfLayer,
 ): TagData {
   const tagData: TagData = {
     id: numberOfLayer.id,
@@ -313,7 +313,7 @@ export function convertNumberOfLayerToTagData(
 }
 
 export function convertNumberOfLayersToTagData(
-  numberOfLayers: NumberOfLayer[] | undefined
+  numberOfLayers: NumberOfLayer[] | undefined,
 ): TagData[] {
   if (!numberOfLayers) return [];
 
@@ -362,10 +362,10 @@ export function convertTagDataToNumberOfLayer(tagData: TagData): NumberOfLayer {
 
 export function convertTagDataToSmell(
   tagData: TagData,
-  candleDetail: CandleDetail
+  candleDetail: CandleDetail,
 ): Smell | undefined {
   const matchingSmell = candleDetail?.smells?.find(
-    (smell) => smell.id === tagData.id
+    (smell) => smell.id === tagData.id,
   );
   return matchingSmell;
 }

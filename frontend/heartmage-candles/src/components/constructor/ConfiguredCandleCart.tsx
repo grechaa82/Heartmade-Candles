@@ -1,28 +1,30 @@
 import { FC } from 'react';
 
 import CornerTag from './CornerTag';
-import { ImageProduct } from '../../typesV2/shared/BaseProduct';
+import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 import IconMinusLarge from '../../UI/IconMinusLarge';
 import Picture from '../shared/Picture';
 
-import Style from './ProductCart.module.css';
+import Style from './ConfiguredCandleCart.module.css';
 
-export interface ProductCartProps {
-  product: ImageProduct;
+export interface ConfiguredCandleCartProps {
+  product: ConfiguredCandleDetail;
   onChangingQuantityProduct: (newQuantity: number, key: number) => void;
   quantity: number;
   index: number;
 }
 
-const ProductCart: FC<ProductCartProps> = ({
+const ConfiguredCandleCart: FC<ConfiguredCandleCartProps> = ({
   product,
   onChangingQuantityProduct,
   quantity,
   index,
 }) => {
   const firstImage =
-    product.images && product.images.length > 0 ? product.images[0] : null;
+    product.candle.images && product.candle.images.length > 0
+      ? product.candle.images[0]
+      : null;
 
   const onIncreasesQuantityProduct = () => {
     onChangingQuantityProduct(quantity + 1, index);
@@ -67,4 +69,4 @@ const ProductCart: FC<ProductCartProps> = ({
   );
 };
 
-export default ProductCart;
+export default ConfiguredCandleCart;

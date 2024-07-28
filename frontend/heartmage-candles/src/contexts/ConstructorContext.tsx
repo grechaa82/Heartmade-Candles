@@ -9,6 +9,8 @@ import {
 } from 'react';
 import { CandleTypeWithCandles } from '../typesV2/constructor/CandleTypeWithCandles';
 import { ConstructorApi } from '../services/ConstructorApi';
+import { ConfiguredCandleDetail } from '../typesV2/constructor/ConfiguredCandleDetail';
+import { calculatePrice } from '../helpers/CalculatePrice';
 
 export interface ConstructorProviderProps {
   children?: ReactNode;
@@ -16,10 +18,16 @@ export interface ConstructorProviderProps {
 
 type IConstructorContext = {
   candleTypeWithCandles: CandleTypeWithCandles[];
+  configuredCandles: ConfiguredCandleDetail[];
+  totalPrice: number;
+  setConfiguredCandles: (configuredCandles: ConfiguredCandleDetail[]) => void;
 };
 
 const initialValue: IConstructorContext = {
   candleTypeWithCandles: [],
+  configuredCandles: [],
+  totalPrice: 0,
+  setConfiguredCandles: () => {},
 };
 
 const ConstructorContext = createContext<IConstructorContext>(initialValue);
@@ -31,10 +39,38 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
     CandleTypeWithCandles[]
   >(initialValue.candleTypeWithCandles);
 
+  const [configuredCandles, setConfiguredCandles] = useState<
+    ConfiguredCandleDetail[]
+  >([]);
+
+  const [totalPrice, setTotalPrice] = useState<number>(initialValue.totalPrice);
+
+  const handleSetConfiguredCandles = (
+    configuredCandles: ConfiguredCandleDetail[],
+  ) => {
+    setConfiguredCandles(configuredCandles);
+    setTotalPrice(
+      calculateTotalPrice(
+        configuredCandles.map((candleWithValidity) => {
+          return candleWithValidity;
+        }),
+      ),
+    );
+  };
+
+  function calculateTotalPrice(configuredCandles: ConfiguredCandleDetail[]) {
+    let newTotalPrice = 0;
+    for (const configuredCandle of configuredCandles) {
+      newTotalPrice += Math.round(
+        calculatePrice(configuredCandle) * configuredCandle.quantity,
+      );
+    }
+    return newTotalPrice;
+  }
+
   useEffect(() => {
     async function fetchData() {
       const candlesResponse = await ConstructorApi.getCandles();
-      console.log('Candles response:', candlesResponse);
       if (candlesResponse.data && !candlesResponse.error) {
         setCandleTypeWithCandles(candlesResponse.data);
       } else {
@@ -51,8 +87,11 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
   const contextValue = useMemo(
     () => ({
       candleTypeWithCandles,
+      configuredCandles,
+      totalPrice,
+      setConfiguredCandles: handleSetConfiguredCandles,
     }),
-    [candleTypeWithCandles],
+    [candleTypeWithCandles, configuredCandles, totalPrice],
   );
 
   return (

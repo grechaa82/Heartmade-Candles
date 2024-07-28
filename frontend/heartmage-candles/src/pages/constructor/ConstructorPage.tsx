@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import ListProductsCart from '../../modules/constructor/ListProductsCart';
 import CandleForm from '../../modules/constructor/CandleForm';
-import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
 import {
   ConfiguredCandleDetail,
   validateConfiguredCandleDetail,
@@ -12,7 +11,6 @@ import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import { OrderItemFilter } from '../../typesV2/shared/OrderItemFilter';
 import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
 import CandleSelectionPanelSkeleton from '../../modules/constructor/CandleSelectionPanelSkeleton';
-import { CandleTypeWithCandles } from '../../typesV2/constructor/CandleTypeWithCandles';
 import { calculatePrice } from '../../helpers/CalculatePrice';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import ImageSlider from '../../components/constructor/ImageSlider';
@@ -32,28 +30,24 @@ import {
 import { CandleProvider, useCandleContext } from '../../contexts/CandleContext';
 
 const ConstructorPage: FC = () => {
-  const { candleTypeWithCandles } = useConstructorContext();
+  const {
+    candleTypeWithCandles,
+    configuredCandles,
+    totalPrice,
+    setConfiguredCandles,
+  } = useConstructorContext();
   const {
     candle,
     configuredCandle,
+    priceConfiguredCandle,
     setCandle,
     setConfiguredCandle,
     fetchCandleById,
   } = useCandleContext();
 
-  console.log('ConstructorPage', candleTypeWithCandles);
-  //
-  const [candleDetail, setCandleDetail] = useState<CandleDetail>();
-  const [configuredCandleDetails, setConfiguredCandleDetails] = useState<
-    ConfiguredCandleDetail[]
-  >([]);
   const [isConfiguredCandleDetailLoading, setIsConfiguredCandleDetailLoading] =
     useState(true);
-  const [candleTypeWithCandlesFass, setCandleTypeWithCandles] =
-    useState<CandleTypeWithCandles[]>();
-  const [priceConfiguredCandleDetail, setPriceConfiguredCandleDetail] =
-    useState<number>(0);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -63,7 +57,7 @@ const ConstructorPage: FC = () => {
 
   function handleHideCandleForm() {
     setErrorMessage([]);
-    setCandleDetail(undefined);
+    setCandle(undefined);
   }
 
   const addConfiguredCandleDetailToListProductsCart = (
@@ -77,10 +71,8 @@ const ConstructorPage: FC = () => {
       return;
     }
     addQueryString(convertToCandleString([configuredCandleDetailToAdd]));
-    setConfiguredCandleDetails((prev) => [
-      ...prev,
-      configuredCandleDetailToAdd,
-    ]);
+
+    setConfiguredCandles([...configuredCandles, configuredCandleDetailToAdd]);
     handleHideCandleForm();
   };
 
@@ -162,17 +154,13 @@ const ConstructorPage: FC = () => {
 
       validConfiguredCandleDetail.push(...candleDetails);
 
-      setConfiguredCandleDetails(candleDetails);
-
-      setNewTotalPrice(candleDetails);
-
       allErrorMessages = [...allErrorMessages, ...errorMessages];
 
       if (allErrorMessages.length) {
         setErrorMessage(allErrorMessages);
       }
 
-      setConfiguredCandleDetails(validConfiguredCandleDetail);
+      setConfiguredCandles([...candleDetails]);
 
       setIsConfiguredCandleDetailLoading(false);
     });
@@ -213,13 +201,10 @@ const ConstructorPage: FC = () => {
     };
   }
 
-  const handleChangeConfiguredCandleDetail = (
-    value: ConfiguredCandleDetail[],
-  ) => {
+  const handleChangeConfiguredCandle = (value: ConfiguredCandleDetail[]) => {
     navigate('');
     addQueryString(convertToCandleString(value));
-    setConfiguredCandleDetails(value);
-    setNewTotalPrice(value);
+    setConfiguredCandles(value);
   };
 
   const handleSelectCandle = (candle: ImageProduct) => {
@@ -227,7 +212,6 @@ const ConstructorPage: FC = () => {
       blockCandleFormRef.current.scrollTop = 0;
     }
     fetchCandleById(candle.id.toString());
-    setPriceConfiguredCandleDetail(0);
   };
 
   const calculatePriceConfiguredCandleDetail = (
@@ -236,7 +220,6 @@ const ConstructorPage: FC = () => {
     const priceConfiguredCandleDetail = Math.round(
       calculatePrice(configuredCandleDetail),
     );
-    setPriceConfiguredCandleDetail(priceConfiguredCandleDetail);
     return priceConfiguredCandleDetail;
   };
 
@@ -246,35 +229,29 @@ const ConstructorPage: FC = () => {
         ...errorMessage,
         'Пожалуйста закончите настройку свечи',
       ]);
-    } else if (configuredCandleDetails.length <= 0) {
+    } else if (configuredCandles.length <= 0) {
       setErrorMessage([
         ...errorMessage,
         'В корзине пока пусто, добавьте свечи',
       ]);
-    } else if (configuredCandleDetails.length > 0) {
+    } else if (configuredCandles.length > 0) {
       let candleDetailFilterBasketRequest: CandleDetailFilterBasketRequest = {
         candleDetailFilterRequests: [],
-        configuredCandleFiltersString: convertToCandleString(
-          configuredCandleDetails,
-        ),
+        configuredCandleFiltersString: convertToCandleString(configuredCandles),
       };
 
-      configuredCandleDetails.forEach((configuredCandleDetail) => {
+      configuredCandles.forEach((configuredCandle) => {
         const filterRequest: CandleDetailFilterRequest = {
-          candleId: configuredCandleDetail.candle.id,
-          decorId: configuredCandleDetail.decor
-            ? configuredCandleDetail.decor.id
-            : 0,
-          numberOfLayerId: configuredCandleDetail.numberOfLayer!.id,
-          layerColorIds: configuredCandleDetail.layerColors!.map(
+          candleId: configuredCandle.candle.id,
+          decorId: configuredCandle.decor ? configuredCandle.decor.id : 0,
+          numberOfLayerId: configuredCandle.numberOfLayer!.id,
+          layerColorIds: configuredCandle.layerColors!.map(
             (layerColor) => layerColor.id,
           ),
-          smellId: configuredCandleDetail.smell
-            ? configuredCandleDetail.smell.id
-            : 0,
-          wickId: configuredCandleDetail.wick!.id,
-          quantity: configuredCandleDetail.quantity,
-          filterString: configuredCandleDetail.getFilter(),
+          smellId: configuredCandle.smell ? configuredCandle.smell.id : 0,
+          wickId: configuredCandle.wick!.id,
+          quantity: configuredCandle.quantity,
+          filterString: configuredCandle.getFilter(),
         };
 
         candleDetailFilterBasketRequest.candleDetailFilterRequests.push(
@@ -299,37 +276,24 @@ const ConstructorPage: FC = () => {
     }
   };
 
-  function setNewTotalPrice(configuredCandleDetails: ConfiguredCandleDetail[]) {
-    let newTotalPrice = 0;
-    for (const configuredCandleDetail of configuredCandleDetails) {
-      newTotalPrice += Math.round(
-        calculatePrice(configuredCandleDetail) *
-          configuredCandleDetail.quantity,
-      );
-    }
-    setTotalPrice(newTotalPrice);
-  }
-
   return (
     <div className={Style.container}>
       <ListErrorPopUp messages={errorMessage} />
       <div
         className={`${Style.leftPanel} ${
-          configuredCandleDetails.length === 0 ? Style.noElements : ''
+          configuredCandles.length === 0 ? Style.noElements : ''
         }`}
       >
         {isConfiguredCandleDetailLoading ? (
           <ListProductsCartSkeleton />
         ) : (
           <ListProductsCart
-            products={configuredCandleDetails}
-            onChangeCandleDetailWithQuantity={
-              handleChangeConfiguredCandleDetail
-            }
+            products={configuredCandles}
+            onChangeCandleDetailWithQuantity={handleChangeConfiguredCandle}
             price={totalPrice}
             onCreateBasket={handleOnCreateBasket}
             buttonState={
-              candle !== undefined || configuredCandleDetails.length <= 0
+              candle !== undefined || configuredCandles.length <= 0
                 ? 'invalid'
                 : 'valid'
             }
@@ -345,14 +309,12 @@ const ConstructorPage: FC = () => {
       </div>
       <div className={Style.rightPanel} ref={blockCandleFormRef}>
         {candle ? (
-          <CandleProvider>
-            <CandleForm
-              candleDetail={candle}
-              addCandleDetail={addConfiguredCandleDetailToListProductsCart}
-              calculatePriceCandleDetail={calculatePriceConfiguredCandleDetail}
-              hideCandleForm={handleHideCandleForm}
-            />
-          </CandleProvider>
+          <CandleForm
+            candleDetail={candle}
+            addCandleDetail={addConfiguredCandleDetailToListProductsCart}
+            calculatePriceCandleDetail={calculatePriceConfiguredCandleDetail}
+            hideCandleForm={handleHideCandleForm}
+          />
         ) : !candleTypeWithCandles ? (
           <CandleSelectionPanelSkeleton />
         ) : (
