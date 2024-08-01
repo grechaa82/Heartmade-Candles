@@ -1,13 +1,13 @@
 import { FC } from 'react';
 
 import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
-import { CandleTypeWithCandles } from '../../typesV2/constructor/CandleTypeWithCandles';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 
 import Style from './CandleSelectionPanel.module.css';
+import { CandlesByType } from '../../typesV2/constructor/CandlesByType';
 
 export interface CandleSelectionPanelProps {
-  data: CandleTypeWithCandles[];
+  data: CandlesByType[];
   onSelectCandle: (product: ImageProduct) => void;
 }
 

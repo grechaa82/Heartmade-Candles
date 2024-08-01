@@ -13,11 +13,13 @@ import { TagData } from '../../components/shared/Tag';
 import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
+import { useCandleContext } from '../../contexts/CandleContext';
 
 import Style from './CandleForm.module.css';
 
 export interface CandleFormProps {
   candleDetail: CandleDetail;
+  configuredCandleDetail?: ConfiguredCandleDetail;
   addCandleDetail: (configuredCandleDetail: ConfiguredCandleDetail) => void;
   calculatePriceCandleDetail: (
     configuredCandleDetail: ConfiguredCandleDetail,
@@ -27,15 +29,29 @@ export interface CandleFormProps {
 
 const CandleForm: FC<CandleFormProps> = ({
   candleDetail,
+  configuredCandleDetail,
   addCandleDetail,
   calculatePriceCandleDetail,
   hideCandleForm,
 }) => {
+  const {
+    candle,
+    configuredCandle,
+    priceConfiguredCandle,
+    setCandle,
+    setConfiguredCandle,
+    fetchCandleById,
+  } = useCandleContext();
+
   const [priceConfiguredCandleDetail, setPriceConfiguredCandleDetail] =
     useState<number>(0);
   const [configuredCandleDetailState, setConfiguredCandleDetailState] =
-    useState<ConfiguredCandleDetail>(
-      new ConfiguredCandleDetail(
+    useState<ConfiguredCandleDetail>(() => {
+      if (configuredCandleDetail) {
+        return configuredCandleDetail;
+      }
+
+      return new ConfiguredCandleDetail(
         candleDetail.candle,
         1,
         candleDetail.numberOfLayers.length === 1
@@ -45,8 +61,8 @@ const CandleForm: FC<CandleFormProps> = ({
         candleDetail.wicks.length === 1 ? candleDetail.wicks[0] : undefined,
         undefined,
         undefined,
-      ),
-    );
+      );
+    });
 
   const handleNumberOfLayerState = (selectedNumberOfLayer: TagData) => {
     setConfiguredCandleDetailState(
@@ -236,7 +252,9 @@ const CandleForm: FC<CandleFormProps> = ({
           title={'Цвета слоев *'}
           data={candleDetail.layerColors ? candleDetail.layerColors : []}
           selectedData={
-            configuredCandleDetailState?.layerColors
+            configuredCandleDetail?.layerColors
+              ? configuredCandleDetail.layerColors
+              : configuredCandleDetailState?.layerColors
               ? configuredCandleDetailState.layerColors
               : []
           }
@@ -280,6 +298,11 @@ const CandleForm: FC<CandleFormProps> = ({
           }
           onSelectProduct={handleWickState}
         />
+        <div>
+          {configuredCandle &&
+            configuredCandle.errors &&
+            configuredCandle.errors.map((value) => <p>{value.toString()}</p>)}
+        </div>
         <div className={Style.configurationInfoBlock}>
           <div className={Style.priceBlock}>
             <span className={Style.priceTitle}>Свеча на</span>

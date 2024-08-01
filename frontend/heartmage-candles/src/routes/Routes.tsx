@@ -4,6 +4,7 @@ import { Routes as Router, Route } from 'react-router-dom';
 import PrivateRoutes from './PrivateRoutes';
 import { AuthContext } from '../contexts/AuthContext';
 import { ConstructorProvider } from '../contexts/ConstructorContext';
+import { CandleProvider } from '../contexts/CandleContext';
 import AuthPage from '../pages/userAndAuth/AuthPage';
 import AdminRoutes from './AdminRoutes';
 import HelpPage from '../pages/home/HelpPage';
@@ -13,11 +14,11 @@ import AboutUs from '../pages/home/AboutUsPage';
 import HomePage from '../pages/home/HomePage';
 import NotFoundPage from '../pages/home/NotFoundPage';
 import ConstructorPage from '../pages/constructor/ConstructorPage';
+import ConstructorPageV2 from '../pages/constructor/ConstructorPageV2';
 import BasketPage from '../pages/order/BasketPage';
 import ThankPage from '../pages/order/ThankPage';
 import AuthSuccessPage from '../pages/userAndAuth/AuthSuccessPage';
 import UserCreatePage from '../pages/userAndAuth/UserCreatePage';
-import { CandleProvider } from '../contexts/CandleContext';
 
 const Routes: FC = () => {
   const { isAuth } = useContext(AuthContext);
@@ -35,6 +36,16 @@ const Routes: FC = () => {
           <ConstructorProvider>
             <CandleProvider>
               <ConstructorPage />
+            </CandleProvider>
+          </ConstructorProvider>
+        }
+      />
+      <Route
+        path="constructorV2"
+        element={
+          <ConstructorProvider>
+            <CandleProvider>
+              <ConstructorPageV2 />
             </CandleProvider>
           </ConstructorProvider>
         }

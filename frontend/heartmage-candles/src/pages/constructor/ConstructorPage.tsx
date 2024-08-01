@@ -2,7 +2,6 @@ import { FC, useContext, useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import ListProductsCart from '../../modules/constructor/ListProductsCart';
-import CandleForm from '../../modules/constructor/CandleForm';
 import {
   ConfiguredCandleDetail,
   validateConfiguredCandleDetail,
@@ -28,10 +27,11 @@ import {
   useConstructorContext,
 } from '../../contexts/ConstructorContext';
 import { CandleProvider, useCandleContext } from '../../contexts/CandleContext';
+import CandleForm from '../../modules/constructor/CandleForm';
 
 const ConstructorPage: FC = () => {
   const {
-    candleTypeWithCandles,
+    candlesByType: candleTypeWithCandles,
     configuredCandles,
     totalPrice,
     setConfiguredCandles,
@@ -44,6 +44,8 @@ const ConstructorPage: FC = () => {
     setConfiguredCandle,
     fetchCandleById,
   } = useCandleContext();
+
+  console.log('fass', configuredCandle);
 
   const [isConfiguredCandleDetailLoading, setIsConfiguredCandleDetailLoading] =
     useState(true);
@@ -58,6 +60,7 @@ const ConstructorPage: FC = () => {
   function handleHideCandleForm() {
     setErrorMessage([]);
     setCandle(undefined);
+    setConfiguredCandle(undefined);
   }
 
   const addConfiguredCandleDetailToListProductsCart = (
@@ -276,6 +279,19 @@ const ConstructorPage: FC = () => {
     }
   };
 
+  const handleOnSelectConfiguredCandle = (
+    configuredCandle: ConfiguredCandleDetail,
+  ) => {
+    fetchCandleById(configuredCandle.candle.id.toString());
+    setConfiguredCandle(configuredCandle);
+
+    console.log(
+      'fass handleOnSelectConfiguredCandle',
+      configuredCandle,
+      candle,
+    );
+  };
+
   return (
     <div className={Style.container}>
       <ListErrorPopUp messages={errorMessage} />
@@ -297,6 +313,7 @@ const ConstructorPage: FC = () => {
                 ? 'invalid'
                 : 'valid'
             }
+            onSelect={handleOnSelectConfiguredCandle}
           />
         )}
       </div>
@@ -311,6 +328,7 @@ const ConstructorPage: FC = () => {
         {candle ? (
           <CandleForm
             candleDetail={candle}
+            configuredCandleDetail={configuredCandle}
             addCandleDetail={addConfiguredCandleDetailToListProductsCart}
             calculatePriceCandleDetail={calculatePriceConfiguredCandleDetail}
             hideCandleForm={handleHideCandleForm}

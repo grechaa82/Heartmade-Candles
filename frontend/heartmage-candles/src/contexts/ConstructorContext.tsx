@@ -7,7 +7,7 @@ import {
   createContext,
   ReactNode,
 } from 'react';
-import { CandleTypeWithCandles } from '../typesV2/constructor/CandleTypeWithCandles';
+import { CandlesByType } from '../typesV2/constructor/CandlesByType';
 import { ConstructorApi } from '../services/ConstructorApi';
 import { ConfiguredCandleDetail } from '../typesV2/constructor/ConfiguredCandleDetail';
 import { calculatePrice } from '../helpers/CalculatePrice';
@@ -17,14 +17,14 @@ export interface ConstructorProviderProps {
 }
 
 type IConstructorContext = {
-  candleTypeWithCandles: CandleTypeWithCandles[];
+  candlesByType: CandlesByType[];
   configuredCandles: ConfiguredCandleDetail[];
   totalPrice: number;
   setConfiguredCandles: (configuredCandles: ConfiguredCandleDetail[]) => void;
 };
 
 const initialValue: IConstructorContext = {
-  candleTypeWithCandles: [],
+  candlesByType: [],
   configuredCandles: [],
   totalPrice: 0,
   setConfiguredCandles: () => {},
@@ -35,9 +35,9 @@ const ConstructorContext = createContext<IConstructorContext>(initialValue);
 export const ConstructorProvider: FC<ConstructorProviderProps> = ({
   children,
 }) => {
-  const [candleTypeWithCandles, setCandleTypeWithCandles] = useState<
-    CandleTypeWithCandles[]
-  >(initialValue.candleTypeWithCandles);
+  const [candlesByType, setCandlesByType] = useState<CandlesByType[]>(
+    initialValue.candlesByType,
+  );
 
   const [configuredCandles, setConfiguredCandles] = useState<
     ConfiguredCandleDetail[]
@@ -72,7 +72,7 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
     async function fetchData() {
       const candlesResponse = await ConstructorApi.getCandles();
       if (candlesResponse.data && !candlesResponse.error) {
-        setCandleTypeWithCandles(candlesResponse.data);
+        setCandlesByType(candlesResponse.data);
       } else {
         console.error(
           'Ошибка при загрузке данных с сервера',
@@ -86,12 +86,12 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
 
   const contextValue = useMemo(
     () => ({
-      candleTypeWithCandles,
+      candlesByType,
       configuredCandles,
       totalPrice,
       setConfiguredCandles: handleSetConfiguredCandles,
     }),
-    [candleTypeWithCandles, configuredCandles, totalPrice],
+    [candlesByType, configuredCandles, totalPrice],
   );
 
   return (

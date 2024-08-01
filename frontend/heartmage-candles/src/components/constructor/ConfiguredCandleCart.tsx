@@ -13,6 +13,7 @@ export interface ConfiguredCandleCartProps {
   onChangingQuantityProduct: (newQuantity: number, key: number) => void;
   quantity: number;
   index: number;
+  onSelect?: (configuredCandle: ConfiguredCandleDetail) => void;
 }
 
 const ConfiguredCandleCart: FC<ConfiguredCandleCartProps> = ({
@@ -20,6 +21,7 @@ const ConfiguredCandleCart: FC<ConfiguredCandleCartProps> = ({
   onChangingQuantityProduct,
   quantity,
   index,
+  onSelect,
 }) => {
   const firstImage =
     product.candle.images && product.candle.images.length > 0
@@ -35,7 +37,7 @@ const ConfiguredCandleCart: FC<ConfiguredCandleCartProps> = ({
 
   return (
     <div className={Style.productCart}>
-      <div className={Style.imageBlock}>
+      <div className={Style.imageBlock} onClick={() => onSelect(product)}>
         {firstImage && (
           <Picture
             name={firstImage.fileName}

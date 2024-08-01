@@ -1,6 +1,6 @@
 import { Candle } from '../shared/BaseProduct';
 
-export interface CandleTypeWithCandles {
+export interface CandlesByType {
   type: string;
   candles: Candle[];
 }

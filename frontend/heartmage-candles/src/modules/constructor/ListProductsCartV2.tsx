@@ -6,43 +6,27 @@ import Button from '../../components/shared/Button';
 
 import Style from './ListProductsCart.module.css';
 
-export interface ListProductsCartProps {
-  products: ConfiguredCandleDetail[];
-  onChangeCandleDetailWithQuantity: (
-    CandleDetailWithQuantity: ConfiguredCandleDetail[],
-  ) => void;
-  price: number;
-  onCreateBasket: () => void;
-  buttonState?: 'default' | 'invalid' | 'valid';
-  onSelect?: (configuredCandle: ConfiguredCandleDetail) => void;
-}
+export interface ListProductsCartPropsV2 {}
 
-const ListProductsCart: FC<ListProductsCartProps> = ({
-  products,
-  onChangeCandleDetailWithQuantity,
-  price,
-  onCreateBasket,
-  buttonState = 'default',
-  onSelect,
-}) => {
-  const handleChangingQuantityProduct = (
-    newQuantity: number,
-    index: number,
-  ) => {
-    if (products[index]) {
-      const updatedConfiguredCandleDetail = [...products];
-      if (newQuantity <= 0) {
-        updatedConfiguredCandleDetail.splice(index, 1);
-      } else {
-        updatedConfiguredCandleDetail[index].quantity = newQuantity;
-      }
-      onChangeCandleDetailWithQuantity(updatedConfiguredCandleDetail);
-    }
-  };
+const ListProductsCartV2: FC<ListProductsCartPropsV2> = ({}) => {
+  // const handleChangingQuantityProduct = (
+  //   newQuantity: number,
+  //   index: number,
+  // ) => {
+  //   if (products[index]) {
+  //     const updatedConfiguredCandleDetail = [...products];
+  //     if (newQuantity <= 0) {
+  //       updatedConfiguredCandleDetail.splice(index, 1);
+  //     } else {
+  //       updatedConfiguredCandleDetail[index].quantity = newQuantity;
+  //     }
+  //     onChangeCandleDetailWithQuantity(updatedConfiguredCandleDetail);
+  //   }
+  // };
 
   return (
     <>
-      <div className={Style.listProductsCart}>
+      {/* <div className={Style.listProductsCart}>
         {products.map((product, index) => (
           <ConfiguredCandleCart
             key={index}
@@ -64,9 +48,9 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
             className={Style[buttonState]}
           />
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
 
-export default ListProductsCart;
+export default ListProductsCartV2;

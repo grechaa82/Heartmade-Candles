@@ -33,10 +33,14 @@ const ProductsGridSelector: FC<ProductsGridSelectorProps<ImageProduct>> = ({
             pageUrl="candles"
             onSelectProduct={onSelectProduct}
             onDeselectProduct={onDeselectProduct}
-            isSelected={selectedData?.includes(product)}
+            isSelected={selectedData?.some(
+              (selected) => selected.id === product.id,
+            )}
             index={
               withIndex && selectedData
-                ? selectedData.indexOf(product) + 1
+                ? selectedData.findIndex(
+                    (selected) => selected.id === product.id,
+                  ) + 1
                 : undefined
             }
           />

@@ -8,8 +8,10 @@ import {
   ReactNode,
 } from 'react';
 import { CandleDetail } from '../typesV2/constructor/CandleDetail';
-import { ConfiguredCandle } from '../typesV2/order/ConfiguredCandle';
 import { ConstructorApi } from '../services/ConstructorApi';
+import { ConfiguredCandleDetail } from '../typesV2/constructor/ConfiguredCandleDetail';
+import { CustomCandle } from '../typesV2/constructor/CustomCandle';
+import { CustomCandleBuilder } from '../typesV2/constructor/CustomCandleBuilder';
 
 export interface CandleProviderProps {
   children?: ReactNode;
@@ -17,11 +19,16 @@ export interface CandleProviderProps {
 
 type ICandleContext = {
   candle: CandleDetail | undefined;
-  configuredCandle: ConfiguredCandle | undefined;
+  configuredCandle: ConfiguredCandleDetail | undefined;
   priceConfiguredCandle: number;
   setCandle: (candleDetail: CandleDetail) => void;
-  setConfiguredCandle: (configuredCandle: ConfiguredCandle) => void;
+  setConfiguredCandle: (configuredCandle: ConfiguredCandleDetail) => void;
   fetchCandleById: (id: string) => Promise<void>;
+  customCandle: CustomCandle;
+  customCandleBuilder: CustomCandleBuilder;
+  updateCustomCandle: (
+    updater: (builder: CustomCandleBuilder) => CustomCandleBuilder,
+  ) => void;
 };
 
 const initialValue: ICandleContext = {
@@ -31,6 +38,9 @@ const initialValue: ICandleContext = {
   setCandle: () => {},
   setConfiguredCandle: () => {},
   fetchCandleById: async () => {},
+  customCandle: undefined,
+  customCandleBuilder: new CustomCandleBuilder(),
+  updateCustomCandle: () => {},
 };
 
 const CandleContext = createContext<ICandleContext>(initialValue);
@@ -40,11 +50,18 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
     initialValue.candle,
   );
   const [configuredCandle, setConfiguredCandle] = useState<
-    ConfiguredCandle | undefined
+    ConfiguredCandleDetail | undefined
   >(initialValue.configuredCandle);
   const [priceConfiguredCandle, setPriceConfiguredCandle] = useState<number>(
     initialValue.priceConfiguredCandle,
   );
+  const [customCandle, setCustomCandle] = useState<CustomCandle>(
+    initialValue.customCandle,
+  );
+  const [customCandleBuilder, setCustomCandleBuilder] =
+    useState<CustomCandleBuilder>(initialValue.customCandleBuilder);
+
+  console.log('CandleProvider configuredCandle', configuredCandle);
 
   const fetchCandleById = async (id: string) => {
     const candleDetailResponse = await ConstructorApi.getCandleById(id);
@@ -58,12 +75,22 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
     }
   };
 
-  const handleSetConfiguredCandle = (configuredCandle: ConfiguredCandle) => {
+  const handleSetConfiguredCandle = (
+    configuredCandle: ConfiguredCandleDetail,
+  ) => {
     setConfiguredCandle(configuredCandle);
     setCandle(undefined);
   };
 
-  useEffect(() => {}, []);
+  const updateCustomCandle = (
+    builderUpdater: (builder: CustomCandleBuilder) => CustomCandleBuilder,
+  ) => {
+    setCustomCandleBuilder((prevBuilder) => {
+      const updatedBuilder = builderUpdater(prevBuilder);
+      setCustomCandle(updatedBuilder.getCustomCandle());
+      return updatedBuilder;
+    });
+  };
 
   const contextValue = useMemo(
     () => ({
@@ -73,8 +100,17 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
       setCandle,
       setConfiguredCandle: handleSetConfiguredCandle,
       fetchCandleById,
+      customCandle,
+      customCandleBuilder,
+      updateCustomCandle,
     }),
-    [candle, configuredCandle],
+    [
+      candle,
+      configuredCandle,
+      customCandle,
+      customCandleBuilder,
+      customCandleBuilder.customCandle,
+    ],
   );
 
   console.log(candle);
