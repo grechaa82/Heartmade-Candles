@@ -30,7 +30,7 @@ const TagSelector: FC<TagSelectorProps> = ({
             onSelectTag={onSelectTag}
             onDeselectTag={onDeselectTag}
             isSelected={selectedData?.some(
-              (selectedData) => selectedData.id === tag.id
+              (selectedData) => selectedData?.id === tag.id,
             )}
           />
         ))}

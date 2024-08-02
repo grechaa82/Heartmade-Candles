@@ -17,12 +17,19 @@ import { useCandleContext } from '../../contexts/CandleContext';
 
 import Style from './CandleForm.module.css';
 import { useConstructorContext } from '../../contexts/ConstructorContext';
+import { CustomCandle } from '../../typesV2/constructor/CustomCandle';
 
 export interface CandleFormProps {}
 
 const CandleFormV2: FC<CandleFormProps> = ({}) => {
-  const { candlesByType, configuredCandles, totalPrice, setConfiguredCandles } =
-    useConstructorContext();
+  const {
+    candlesByType,
+    configuredCandles,
+    totalPrice,
+    setConfiguredCandles,
+    customCandles,
+    setCustomCandles,
+  } = useConstructorContext();
   const {
     candle,
     configuredCandle,
@@ -31,35 +38,110 @@ const CandleFormV2: FC<CandleFormProps> = ({}) => {
     setConfiguredCandle,
     fetchCandleById,
     customCandleBuilder,
-    updateCustomCandle,
+    updateCustomCandleBuilder,
   } = useCandleContext();
+
+  console.log(candle, customCandleBuilder);
 
   const [errors, setErrors] = useState<string[]>(
     customCandleBuilder.getErrors(),
   );
-  const customCandle = customCandleBuilder.getCustomCandle();
+  const [customCandle, setCustomCandle] = useState<CustomCandle>(
+    customCandleBuilder.getCustomCandle(),
+  );
 
   const handleNumberOfLayerState = (selectedNumberOfLayer: TagData) => {
-    updateCustomCandle((builder) =>
-      builder.setNumberOfLayer(
-        convertTagDataToNumberOfLayer(selectedNumberOfLayer),
-      ),
+    setCustomCandle(
+      customCandleBuilder
+        .setNumberOfLayer(convertTagDataToNumberOfLayer(selectedNumberOfLayer))
+        .getCustomCandle(),
+    );
+  };
+
+  const handleLayerColorState = (selectedLayerColor: ImageProduct) => {
+    const currentLayerColors =
+      customCandleBuilder.getCustomCandle().layerColors || [];
+
+    const isMaxLayers =
+      customCandleBuilder.getCustomCandle().numberOfLayer?.number ===
+      currentLayerColors.length;
+
+    if (isMaxLayers) {
+      currentLayerColors[currentLayerColors.length - 1] = selectedLayerColor;
+    } else {
+      currentLayerColors.push(selectedLayerColor);
+    }
+
+    setCustomCandle(
+      customCandleBuilder.setLayerColor(currentLayerColors).getCustomCandle(),
+    );
+  };
+
+  const handleDeselectLayerColorState = (
+    deselectedLayerColor: ImageProduct,
+  ) => {
+    const updatedLayerColors =
+      customCandleBuilder
+        .getCustomCandle()
+        .layerColors?.filter(
+          (layerColor) => layerColor !== deselectedLayerColor,
+        ) || [];
+
+    setCustomCandle(
+      customCandleBuilder.setLayerColor(updatedLayerColors).getCustomCandle(),
     );
   };
 
   const handleDecorState = (selectedDecor: ImageProduct) => {
-    updateCustomCandle((builder) => builder.setDecor(selectedDecor));
+    setCustomCandle(
+      customCandleBuilder.setDecor(selectedDecor).getCustomCandle(),
+    );
   };
 
   const handleDeselectDecorState = (deselectedDecor: ImageProduct) => {
-    customCandleBuilder.setDecor(undefined);
+    setCustomCandle(customCandleBuilder.setDecor(null).getCustomCandle());
   };
 
-  const handleAddCandleDetail = () => {};
+  const handleSmellState = (selectedSmell: TagData) => {
+    setCustomCandle(
+      customCandleBuilder
+        .setSmell(convertTagDataToSmell(selectedSmell, candle))
+        .getCustomCandle(),
+    );
+  };
+
+  const handleDeselectSmellState = (deselectedSmell: TagData) => {
+    setCustomCandle(customCandleBuilder.setSmell(null).getCustomCandle());
+  };
+
+  const handleWickState = (selectedWick: ImageProduct) => {
+    setCustomCandle(
+      customCandleBuilder.setWick(selectedWick).getCustomCandle(),
+    );
+  };
+
+  const handleAddCandleDetail = () => {
+    if (customCandleBuilder.checkCustomCandleAgainstCandleDetail(candle)) {
+      const buildResult = customCandleBuilder.build();
+      if (!buildResult.success || !buildResult.customCandle) {
+        setErrors(buildResult.errors);
+        return;
+      }
+
+      let newCandlesArray = customCandles;
+      newCandlesArray.push(buildResult.customCandle);
+      setCustomCandles(newCandlesArray);
+      updateCustomCandleBuilder();
+    }
+  };
 
   useEffect(() => {
     setErrors(customCandleBuilder.getErrors());
-  }, [customCandleBuilder]);
+  }, [
+    customCandleBuilder,
+    customCandleBuilder.getCustomCandle(),
+    customCandleBuilder.errors,
+  ]);
 
   return (
     <>
@@ -87,7 +169,20 @@ const CandleFormV2: FC<CandleFormProps> = ({}) => {
           }
           onSelectTag={handleNumberOfLayerState}
         />
-
+        <ProductsGridSelector
+          title={'Цвета слоев *'}
+          data={candle.layerColors ? candle.layerColors : []}
+          selectedData={
+            customCandle?.layerColors
+              ? customCandle.layerColors
+              : customCandleBuilder?.customCandle.layerColors
+              ? customCandleBuilder.customCandle.layerColors
+              : []
+          }
+          onSelectProduct={handleLayerColorState}
+          onDeselectProduct={handleDeselectLayerColorState}
+          withIndex={true}
+        />
         {candle.decors && candle.decors.length > 0 && (
           <ProductsGridSelector
             title={'Декор'}
@@ -101,6 +196,31 @@ const CandleFormV2: FC<CandleFormProps> = ({}) => {
             onDeselectProduct={handleDeselectDecorState}
           />
         )}
+        {candle.smells && candle.smells.length > 0 && (
+          <TagSelector
+            title="Запах"
+            data={convertSmellsToTagData(candle.smells)}
+            selectedData={
+              customCandle?.smell
+                ? [
+                    convertSmellToTagData(
+                      customCandleBuilder.customCandle.smell,
+                    ),
+                  ]
+                : []
+            }
+            onSelectTag={handleSmellState}
+            onDeselectTag={handleDeselectSmellState}
+          />
+        )}
+        <ProductsGridSelector
+          title={'Фитиль *'}
+          data={candle.wicks ? candle.wicks : []}
+          selectedData={
+            customCandle.wick ? [customCandleBuilder.customCandle.wick] : []
+          }
+          onSelectProduct={handleWickState}
+        />
         <div>
           {customCandleBuilder &&
             customCandleBuilder.errors &&

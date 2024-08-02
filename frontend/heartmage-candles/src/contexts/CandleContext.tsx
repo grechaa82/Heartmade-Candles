@@ -26,9 +26,7 @@ type ICandleContext = {
   fetchCandleById: (id: string) => Promise<void>;
   customCandle: CustomCandle;
   customCandleBuilder: CustomCandleBuilder;
-  updateCustomCandle: (
-    updater: (builder: CustomCandleBuilder) => CustomCandleBuilder,
-  ) => void;
+  updateCustomCandleBuilder: () => void;
 };
 
 const initialValue: ICandleContext = {
@@ -40,7 +38,7 @@ const initialValue: ICandleContext = {
   fetchCandleById: async () => {},
   customCandle: undefined,
   customCandleBuilder: new CustomCandleBuilder(),
-  updateCustomCandle: () => {},
+  updateCustomCandleBuilder: () => {},
 };
 
 const CandleContext = createContext<ICandleContext>(initialValue);
@@ -61,12 +59,11 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
   const [customCandleBuilder, setCustomCandleBuilder] =
     useState<CustomCandleBuilder>(initialValue.customCandleBuilder);
 
-  console.log('CandleProvider configuredCandle', configuredCandle);
-
   const fetchCandleById = async (id: string) => {
     const candleDetailResponse = await ConstructorApi.getCandleById(id);
     if (candleDetailResponse.data && !candleDetailResponse.error) {
       setCandle(candleDetailResponse.data);
+      customCandleBuilder.setCandle(candleDetailResponse.data.candle);
     } else {
       console.error(
         'Ошибка при загрузке данных с сервера',
@@ -82,14 +79,10 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
     setCandle(undefined);
   };
 
-  const updateCustomCandle = (
-    builderUpdater: (builder: CustomCandleBuilder) => CustomCandleBuilder,
-  ) => {
-    setCustomCandleBuilder((prevBuilder) => {
-      const updatedBuilder = builderUpdater(prevBuilder);
-      setCustomCandle(updatedBuilder.getCustomCandle());
-      return updatedBuilder;
-    });
+  const updateCustomCandleBuilder = () => {
+    setCandle(initialValue.candle);
+    setCustomCandle(initialValue.customCandle);
+    setCustomCandleBuilder(initialValue.customCandleBuilder);
   };
 
   const contextValue = useMemo(
@@ -102,7 +95,7 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
       fetchCandleById,
       customCandle,
       customCandleBuilder,
-      updateCustomCandle,
+      updateCustomCandleBuilder,
     }),
     [
       candle,
@@ -112,8 +105,6 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
       customCandleBuilder.customCandle,
     ],
   );
-
-  console.log(candle);
 
   return (
     <CandleContext.Provider value={contextValue}>

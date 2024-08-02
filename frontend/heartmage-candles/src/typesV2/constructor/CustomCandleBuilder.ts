@@ -16,7 +16,16 @@ export interface BuildResult {
 }
 
 export class CustomCandleBuilder {
-  public customCandle: CustomCandle;
+  public customCandle: CustomCandle = {
+    candle: null,
+    numberOfLayer: null,
+    layerColors: [],
+    wick: null,
+    decor: null,
+    smell: null,
+    quantity: 1,
+    filter: '',
+  };
   public errors: string[] = [];
   public isValid: boolean = false;
 
@@ -53,7 +62,11 @@ export class CustomCandleBuilder {
   }
 
   public setCandle(candle: Candle): this {
-    this.customCandle.candle = candle;
+    this.customCandle = {
+      ...this.customCandle,
+      candle: candle,
+    };
+
     this.validate();
     return this;
   }
@@ -63,13 +76,22 @@ export class CustomCandleBuilder {
       this.errors.push('Необходимо указать количество слоев');
       return this;
     }
-    this.customCandle.numberOfLayer = numberOfLayer;
+
+    this.customCandle = {
+      ...this.customCandle,
+      numberOfLayer: numberOfLayer,
+    };
+
     this.validate();
     return this;
   }
 
   public setLayerColor(layerColor: LayerColor[]): this {
-    this.customCandle.layerColors = layerColor;
+    this.customCandle = {
+      ...this.customCandle,
+      layerColors: layerColor,
+    };
+
     this.validate();
     return this;
   }
@@ -93,19 +115,30 @@ export class CustomCandleBuilder {
   }
 
   public setWick(wick: Wick): this {
-    this.customCandle.wick = wick;
+    this.customCandle = {
+      ...this.customCandle,
+      wick: wick,
+    };
     this.validate();
     return this;
   }
 
   public setDecor(decor: Decor): this {
-    this.customCandle.decor = decor;
+    this.customCandle = {
+      ...this.customCandle,
+      decor: decor,
+    };
+
     this.validate();
     return this;
   }
 
   public setSmell(smell: Smell): this {
-    this.customCandle.smell = smell;
+    this.customCandle = {
+      ...this.customCandle,
+      smell: smell,
+    };
+
     this.validate();
     return this;
   }
@@ -172,7 +205,7 @@ export class CustomCandleBuilder {
             (layerColor) => layerColor.id === color.id,
           )
         ) {
-          this.errors.push(`Цвет слоя ${color.id} недоступен`);
+          this.errors.push(`Цвет слоя ${color.title} недоступен`);
         }
       });
     }

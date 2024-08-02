@@ -11,6 +11,7 @@ import { CandlesByType } from '../typesV2/constructor/CandlesByType';
 import { ConstructorApi } from '../services/ConstructorApi';
 import { ConfiguredCandleDetail } from '../typesV2/constructor/ConfiguredCandleDetail';
 import { calculatePrice } from '../helpers/CalculatePrice';
+import { CustomCandle } from '../typesV2/constructor/CustomCandle';
 
 export interface ConstructorProviderProps {
   children?: ReactNode;
@@ -21,6 +22,8 @@ type IConstructorContext = {
   configuredCandles: ConfiguredCandleDetail[];
   totalPrice: number;
   setConfiguredCandles: (configuredCandles: ConfiguredCandleDetail[]) => void;
+  customCandles: CustomCandle[];
+  setCustomCandles: (customCandle: CustomCandle[]) => void;
 };
 
 const initialValue: IConstructorContext = {
@@ -28,6 +31,8 @@ const initialValue: IConstructorContext = {
   configuredCandles: [],
   totalPrice: 0,
   setConfiguredCandles: () => {},
+  customCandles: [],
+  setCustomCandles: () => {},
 };
 
 const ConstructorContext = createContext<IConstructorContext>(initialValue);
@@ -44,6 +49,10 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
   >([]);
 
   const [totalPrice, setTotalPrice] = useState<number>(initialValue.totalPrice);
+
+  const [customCandles, setCustomCandles] = useState<CustomCandle[]>(
+    initialValue.customCandles,
+  );
 
   const handleSetConfiguredCandles = (
     configuredCandles: ConfiguredCandleDetail[],
@@ -90,8 +99,10 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
       configuredCandles,
       totalPrice,
       setConfiguredCandles: handleSetConfiguredCandles,
+      customCandles,
+      setCustomCandles,
     }),
-    [candlesByType, configuredCandles, totalPrice],
+    [candlesByType, configuredCandles, totalPrice, customCandles],
   );
 
   return (
