@@ -26,6 +26,7 @@ type ICandleContext = {
   fetchCandleById: (id: string) => Promise<void>;
   customCandle: CustomCandle;
   customCandleBuilder: CustomCandleBuilder;
+  setCustomCandleBuilder: (customCandleBuilder: CustomCandleBuilder) => void;
   updateCustomCandleBuilder: () => void;
 };
 
@@ -38,6 +39,7 @@ const initialValue: ICandleContext = {
   fetchCandleById: async () => {},
   customCandle: undefined,
   customCandleBuilder: new CustomCandleBuilder(),
+  setCustomCandleBuilder: () => {},
   updateCustomCandleBuilder: () => {},
 };
 
@@ -80,9 +82,9 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
   };
 
   const updateCustomCandleBuilder = () => {
-    setCandle(initialValue.candle);
-    setCustomCandle(initialValue.customCandle);
-    setCustomCandleBuilder(initialValue.customCandleBuilder);
+    setCandle(undefined);
+    setCustomCandle(undefined);
+    setCustomCandleBuilder(new CustomCandleBuilder());
   };
 
   const contextValue = useMemo(
@@ -95,6 +97,7 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
       fetchCandleById,
       customCandle,
       customCandleBuilder,
+      setCustomCandleBuilder,
       updateCustomCandleBuilder,
     }),
     [

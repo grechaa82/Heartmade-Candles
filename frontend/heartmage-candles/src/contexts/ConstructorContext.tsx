@@ -10,7 +10,10 @@ import {
 import { CandlesByType } from '../typesV2/constructor/CandlesByType';
 import { ConstructorApi } from '../services/ConstructorApi';
 import { ConfiguredCandleDetail } from '../typesV2/constructor/ConfiguredCandleDetail';
-import { calculatePrice } from '../helpers/CalculatePrice';
+import {
+  calculateCustomCandlePrice,
+  calculatePrice,
+} from '../helpers/CalculatePrice';
 import { CustomCandle } from '../typesV2/constructor/CustomCandle';
 
 export interface ConstructorProviderProps {
@@ -58,20 +61,24 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
     configuredCandles: ConfiguredCandleDetail[],
   ) => {
     setConfiguredCandles(configuredCandles);
+  };
+
+  const handleSetCustomCandles = (customCandles: CustomCandle[]) => {
+    setCustomCandles(customCandles);
     setTotalPrice(
       calculateTotalPrice(
-        configuredCandles.map((candleWithValidity) => {
+        customCandles.map((candleWithValidity) => {
           return candleWithValidity;
         }),
       ),
     );
   };
 
-  function calculateTotalPrice(configuredCandles: ConfiguredCandleDetail[]) {
+  function calculateTotalPrice(customCandles: CustomCandle[]) {
     let newTotalPrice = 0;
-    for (const configuredCandle of configuredCandles) {
+    for (const customCandle of customCandles) {
       newTotalPrice += Math.round(
-        calculatePrice(configuredCandle) * configuredCandle.quantity,
+        calculateCustomCandlePrice(customCandle) * customCandle.quantity,
       );
     }
     return newTotalPrice;
@@ -100,7 +107,7 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
       totalPrice,
       setConfiguredCandles: handleSetConfiguredCandles,
       customCandles,
-      setCustomCandles,
+      setCustomCandles: handleSetCustomCandles,
     }),
     [candlesByType, configuredCandles, totalPrice, customCandles],
   );

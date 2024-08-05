@@ -32,6 +32,7 @@ export class CustomCandleBuilder {
   public getCustomCandle(): CustomCandle {
     return this.customCandle;
   }
+
   public getFilter(): string {
     if (!this.isValid) {
       return;
@@ -61,7 +62,7 @@ export class CustomCandleBuilder {
     return this.customCandle.filter;
   }
 
-  public setCandle(candle: Candle): this {
+  public setCandle(candle: Candle): CustomCandleBuilder {
     this.customCandle = {
       ...this.customCandle,
       candle: candle,
@@ -71,7 +72,7 @@ export class CustomCandleBuilder {
     return this;
   }
 
-  public setNumberOfLayer(numberOfLayer: NumberOfLayer): this {
+  public setNumberOfLayer(numberOfLayer: NumberOfLayer): CustomCandleBuilder {
     if (!numberOfLayer) {
       this.errors.push('Необходимо указать количество слоев');
       return this;
@@ -80,13 +81,22 @@ export class CustomCandleBuilder {
     this.customCandle = {
       ...this.customCandle,
       numberOfLayer: numberOfLayer,
+      layerColors: [],
     };
 
     this.validate();
     return this;
   }
 
-  public setLayerColor(layerColor: LayerColor[]): this {
+  public setLayerColor(layerColor: LayerColor[]): CustomCandleBuilder {
+    if (
+      !this.customCandle.numberOfLayer ||
+      this.customCandle.numberOfLayer === null
+    ) {
+      this.errors.push('Сначала необходимо выбрать количество слоев');
+      return this;
+    }
+
     this.customCandle = {
       ...this.customCandle,
       layerColors: layerColor,
@@ -96,34 +106,40 @@ export class CustomCandleBuilder {
     return this;
   }
 
-  public addLayerColor(layerColor: LayerColor): this {
+  public addLayerColor(layerColor: LayerColor): CustomCandleBuilder {
     if (!this.customCandle.numberOfLayer) {
       this.errors.push('Необходимо сначала выбрать количество слоев');
       return this;
     }
-    if (
-      this.customCandle.numberOfLayer.number ===
-      this.customCandle.layerColors.length
-    ) {
-      this.customCandle.layerColors[this.customCandle.layerColors.length - 1] =
-        layerColor;
+
+    const newLayerColors = [...this.customCandle.layerColors];
+
+    if (this.customCandle.numberOfLayer.number === newLayerColors.length) {
+      newLayerColors[newLayerColors.length - 1] = layerColor;
     } else {
-      this.customCandle.layerColors.push(layerColor);
+      newLayerColors.push(layerColor);
     }
+
+    this.customCandle = {
+      ...this.customCandle,
+      layerColors: newLayerColors,
+    };
+
     this.validate();
     return this;
   }
 
-  public setWick(wick: Wick): this {
+  public setWick(wick: Wick): CustomCandleBuilder {
     this.customCandle = {
       ...this.customCandle,
       wick: wick,
     };
+
     this.validate();
     return this;
   }
 
-  public setDecor(decor: Decor): this {
+  public setDecor(decor: Decor): CustomCandleBuilder {
     this.customCandle = {
       ...this.customCandle,
       decor: decor,
@@ -133,7 +149,7 @@ export class CustomCandleBuilder {
     return this;
   }
 
-  public setSmell(smell: Smell): this {
+  public setSmell(smell: Smell): CustomCandleBuilder {
     this.customCandle = {
       ...this.customCandle,
       smell: smell,
@@ -143,8 +159,12 @@ export class CustomCandleBuilder {
     return this;
   }
 
-  public setQuantity(quantity: number): this {
-    this.customCandle.quantity = quantity;
+  public setQuantity(quantity: number): CustomCandleBuilder {
+    this.customCandle = {
+      ...this.customCandle,
+      quantity: quantity,
+    };
+
     this.validate();
     return this;
   }
@@ -152,13 +172,12 @@ export class CustomCandleBuilder {
   private validate(): void {
     this.errors = [];
 
-    if (!this.customCandle.numberOfLayer) {
-      this.errors.push('Необходимо указать количество слоев');
-    } else if (this.customCandle.numberOfLayer.number === undefined) {
-      this.errors.push('Количество слоев не указано');
-    }
-
     if (
+      !this.customCandle.numberOfLayer ||
+      this.customCandle.numberOfLayer === null
+    ) {
+      this.errors.push('Необходимо указать количество слоев');
+    } else if (
       !this.customCandle.layerColors ||
       this.customCandle.layerColors.length < 0
     ) {

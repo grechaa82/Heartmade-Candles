@@ -1,7 +1,6 @@
 import { FC, useState, useEffect } from 'react';
 
 import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
-import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';
 import {
   NumberOfLayer,
   Smell,
@@ -14,34 +13,21 @@ import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import { useCandleContext } from '../../contexts/CandleContext';
-
-import Style from './CandleForm.module.css';
 import { useConstructorContext } from '../../contexts/ConstructorContext';
 import { CustomCandle } from '../../typesV2/constructor/CustomCandle';
+import { calculateCustomCandlePrice } from '../../helpers/CalculatePrice';
 
-export interface CandleFormProps {}
+import Style from './CandleForm.module.css';
 
-const CandleFormV2: FC<CandleFormProps> = ({}) => {
-  const {
-    candlesByType,
-    configuredCandles,
-    totalPrice,
-    setConfiguredCandles,
-    customCandles,
-    setCustomCandles,
-  } = useConstructorContext();
-  const {
-    candle,
-    configuredCandle,
-    priceConfiguredCandle,
-    setCandle,
-    setConfiguredCandle,
-    fetchCandleById,
-    customCandleBuilder,
-    updateCustomCandleBuilder,
-  } = useCandleContext();
+export interface CandleFormProps {
+  hideCandleForm: () => void;
+  isEditing: boolean;
+}
 
-  console.log(candle, customCandleBuilder);
+const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
+  const { customCandles, setCustomCandles } = useConstructorContext();
+  const { candle, customCandleBuilder, updateCustomCandleBuilder } =
+    useCandleContext();
 
   const [errors, setErrors] = useState<string[]>(
     customCandleBuilder.getErrors(),
@@ -59,22 +45,10 @@ const CandleFormV2: FC<CandleFormProps> = ({}) => {
   };
 
   const handleLayerColorState = (selectedLayerColor: ImageProduct) => {
-    const currentLayerColors =
-      customCandleBuilder.getCustomCandle().layerColors || [];
-
-    const isMaxLayers =
-      customCandleBuilder.getCustomCandle().numberOfLayer?.number ===
-      currentLayerColors.length;
-
-    if (isMaxLayers) {
-      currentLayerColors[currentLayerColors.length - 1] = selectedLayerColor;
-    } else {
-      currentLayerColors.push(selectedLayerColor);
-    }
-
-    setCustomCandle(
-      customCandleBuilder.setLayerColor(currentLayerColors).getCustomCandle(),
-    );
+    const newCustomCandle = customCandleBuilder
+      .addLayerColor(selectedLayerColor)
+      .getCustomCandle();
+    setCustomCandle(newCustomCandle);
   };
 
   const handleDeselectLayerColorState = (
@@ -127,12 +101,12 @@ const CandleFormV2: FC<CandleFormProps> = ({}) => {
         setErrors(buildResult.errors);
         return;
       }
-
       let newCandlesArray = customCandles;
       newCandlesArray.push(buildResult.customCandle);
       setCustomCandles(newCandlesArray);
       updateCustomCandleBuilder();
     }
+    return;
   };
 
   useEffect(() => {
@@ -147,12 +121,14 @@ const CandleFormV2: FC<CandleFormProps> = ({}) => {
     <>
       <div className={Style.candleFrom}>
         <div className={Style.mainInfo}>
-          {/* <button
-            className={Style.hideCandleForm}
-            onClick={() => hideCandleForm()}
-          >
-            <IconArrowLeftLarge />
-          </button> */}
+          {!isEditing && (
+            <button
+              className={Style.hideCandleForm}
+              onClick={() => hideCandleForm()}
+            >
+              <IconArrowLeftLarge />
+            </button>
+          )}
           <p className={Style.title}>{candle.candle.title}</p>
         </div>
         <TagSelector
@@ -222,21 +198,21 @@ const CandleFormV2: FC<CandleFormProps> = ({}) => {
           onSelectProduct={handleWickState}
         />
         <div>
-          {customCandleBuilder &&
-            customCandleBuilder.errors &&
-            customCandleBuilder.errors.map((value, index) => (
-              <p key={index}>{value.toString()}</p>
-            ))}
+          {errors.map((value, index) => (
+            <p key={index}>{value.toString()}</p>
+          ))}
         </div>
         <div className={Style.configurationInfoBlock}>
           <div className={Style.priceBlock}>
             <span className={Style.priceTitle}>Свеча на</span>
-            <span className={Style.price}>{priceConfiguredCandle} р</span>
+            <span className={Style.price}>
+              {calculateCustomCandlePrice(customCandle)} р
+            </span>
           </div>
           <div className={Style.addBtn}>
             <ButtonWithIcon
               color="#2E67EA"
-              text="Добавить"
+              text={isEditing ? 'Изменить' : 'Добавить'}
               icon={IconPlusLarge}
               onClick={() => handleAddCandleDetail()}
             />

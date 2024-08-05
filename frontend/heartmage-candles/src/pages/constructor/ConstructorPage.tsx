@@ -45,8 +45,6 @@ const ConstructorPage: FC = () => {
     fetchCandleById,
   } = useCandleContext();
 
-  console.log('fass', configuredCandle);
-
   const [isConfiguredCandleDetailLoading, setIsConfiguredCandleDetailLoading] =
     useState(true);
 
