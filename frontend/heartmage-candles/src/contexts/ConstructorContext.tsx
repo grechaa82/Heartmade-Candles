@@ -27,6 +27,7 @@ type IConstructorContext = {
   setConfiguredCandles: (configuredCandles: ConfiguredCandleDetail[]) => void;
   customCandles: CustomCandle[];
   setCustomCandles: (customCandle: CustomCandle[]) => void;
+  isLoadingCandlesByType: boolean;
 };
 
 const initialValue: IConstructorContext = {
@@ -36,6 +37,7 @@ const initialValue: IConstructorContext = {
   setConfiguredCandles: () => {},
   customCandles: [],
   setCustomCandles: () => {},
+  isLoadingCandlesByType: true,
 };
 
 const ConstructorContext = createContext<IConstructorContext>(initialValue);
@@ -46,15 +48,15 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
   const [candlesByType, setCandlesByType] = useState<CandlesByType[]>(
     initialValue.candlesByType,
   );
-
   const [configuredCandles, setConfiguredCandles] = useState<
     ConfiguredCandleDetail[]
   >([]);
-
   const [totalPrice, setTotalPrice] = useState<number>(initialValue.totalPrice);
-
   const [customCandles, setCustomCandles] = useState<CustomCandle[]>(
     initialValue.customCandles,
+  );
+  const [isLoadingCandlesByType, setIsLoadingCandlesByType] = useState(
+    initialValue.isLoadingCandlesByType,
   );
 
   const handleSetConfiguredCandles = (
@@ -89,6 +91,7 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
       const candlesResponse = await ConstructorApi.getCandles();
       if (candlesResponse.data && !candlesResponse.error) {
         setCandlesByType(candlesResponse.data);
+        setIsLoadingCandlesByType(false);
       } else {
         console.error(
           'Ошибка при загрузке данных с сервера',
@@ -108,6 +111,7 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
       setConfiguredCandles: handleSetConfiguredCandles,
       customCandles,
       setCustomCandles: handleSetCustomCandles,
+      isLoadingCandlesByType,
     }),
     [candlesByType, configuredCandles, totalPrice, customCandles],
   );

@@ -17,3 +17,21 @@ export interface CustomCandle {
   quantity: number;
   filter?: string;
 }
+
+export function getFilter(customCandle: CustomCandle) {
+  const parts = [
+    `c-${customCandle.candle.id}`,
+    `n-${customCandle.numberOfLayer?.id}`,
+    customCandle.layerColors
+      ? `l-${customCandle.layerColors.map((item) => item.id).join('_')}`
+      : '',
+    customCandle.decor ? `d-${customCandle.decor.id}` : '',
+    customCandle.smell ? `s-${customCandle.smell.id}` : '',
+    `w-${customCandle.wick?.id}`,
+    `q-${customCandle.quantity}`,
+  ];
+
+  const filter = parts.filter((part) => part !== '').join('~');
+
+  return filter;
+}

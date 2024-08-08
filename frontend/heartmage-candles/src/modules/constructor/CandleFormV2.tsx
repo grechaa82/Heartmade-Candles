@@ -18,6 +18,7 @@ import { CustomCandle } from '../../typesV2/constructor/CustomCandle';
 import { calculateCustomCandlePrice } from '../../helpers/CalculatePrice';
 
 import Style from './CandleForm.module.css';
+import ProductsGridSelectorV2 from '../../components/constructor/ProductsGridSelectorV2';
 
 export interface CandleFormProps {
   hideCandleForm: () => void;
@@ -145,7 +146,7 @@ const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
           }
           onSelectTag={handleNumberOfLayerState}
         />
-        <ProductsGridSelector
+        <ProductsGridSelectorV2
           title={'Цвета слоев *'}
           data={candle.layerColors ? candle.layerColors : []}
           selectedData={
@@ -189,7 +190,7 @@ const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
             onDeselectTag={handleDeselectSmellState}
           />
         )}
-        <ProductsGridSelector
+        <ProductsGridSelectorV2
           title={'Фитиль *'}
           data={candle.wicks ? candle.wicks : []}
           selectedData={

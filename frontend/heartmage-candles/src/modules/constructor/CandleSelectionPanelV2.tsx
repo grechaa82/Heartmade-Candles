@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
+import ProductsGridSelectorV2 from '../../components/constructor/ProductsGridSelectorV2';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import { useCandleContext } from '../../contexts/CandleContext';
 import { useConstructorContext } from '../../contexts/ConstructorContext';
@@ -21,7 +21,7 @@ const CandleSelectionPanelV2: FC<CandleSelectionPanelPropsV2> = ({}) => {
     <div className={Style.content}>
       {candlesByType &&
         candlesByType.map((item, index) => (
-          <ProductsGridSelector
+          <ProductsGridSelectorV2
             key={index}
             title={item.type}
             data={item.candles}

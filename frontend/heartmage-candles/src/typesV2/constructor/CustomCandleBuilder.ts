@@ -197,6 +197,7 @@ export class CustomCandleBuilder {
     }
 
     this.isValid = this.errors.length === 0;
+    this.customCandle.filter = this.getFilter();
   }
 
   public checkCustomCandleAgainstCandleDetail(
