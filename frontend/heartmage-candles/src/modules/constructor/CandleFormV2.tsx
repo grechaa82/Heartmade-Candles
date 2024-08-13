@@ -96,7 +96,15 @@ const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
   };
 
   const handleAddCandleDetail = () => {
-    if (customCandleBuilder.checkCustomCandleAgainstCandleDetail(candle)) {
+    const newCustomCandle =
+      customCandleBuilder.checkCustomCandleAgainstCandleDetail(
+        customCandleBuilder.getCustomCandle(),
+        candle,
+      );
+
+    if (newCustomCandle.isValid) {
+      setErrors(newCustomCandle.errors);
+    } else {
       const buildResult = customCandleBuilder.build();
       if (!buildResult.success || !buildResult.customCandle) {
         setErrors(buildResult.errors);
@@ -107,6 +115,7 @@ const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
       setCustomCandles(newCandlesArray);
       updateCustomCandleBuilder();
     }
+
     return;
   };
 

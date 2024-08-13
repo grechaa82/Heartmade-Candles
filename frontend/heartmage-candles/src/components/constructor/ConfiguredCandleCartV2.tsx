@@ -36,7 +36,11 @@ const ConfiguredCandleCart: FC<ConfiguredCandleCartProps> = ({
   };
 
   return (
-    <div className={Style.productCart}>
+    <div
+      className={`${Style.productCart} ${
+        product.isValid ? Style.valid : Style.invalid
+      }`}
+    >
       <div className={Style.imageBlock} onClick={() => onSelect(product)}>
         {firstImage && (
           <Picture

@@ -1,38 +1,29 @@
-import { FC, useContext, useState, useEffect, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { FC, useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import CandleSelectionPanelSkeleton from '../../modules/constructor/CandleSelectionPanelSkeleton';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import ImageSlider from '../../components/constructor/ImageSlider';
 import TutorialBlock from '../../modules/constructor/TutorialBlock';
-
-import { ConstructorApi } from '../../services/ConstructorApi';
-import { BasketApi } from '../../services/BasketApi';
-
-import Style from './ConstructorPage.module.css';
-import {
-  ConstructorProvider,
-  useConstructorContext,
-} from '../../contexts/ConstructorContext';
-import { CandleProvider, useCandleContext } from '../../contexts/CandleContext';
+import { useConstructorContext } from '../../contexts/ConstructorContext';
+import { useCandleContext } from '../../contexts/CandleContext';
 import ListProductsCartV2 from '../../modules/constructor/ListProductsCartV2';
 import CandleFormV2 from '../../modules/constructor/CandleFormV2';
 import CandleSelectionPanelV2 from '../../modules/constructor/CandleSelectionPanelV2';
 import {
   CustomCandle,
-  getFilter,
+  getFilterFromCustomCandle,
 } from '../../typesV2/constructor/CustomCandle';
 import { CandleDetailFilterBasketRequest } from '../../typesV2/order/CandleDetailFilterBasketRequest';
 import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
-import { OrderItemFilter } from '../../typesV2/shared/OrderItemFilter';
-import { CustomCandleBuilder } from '../../typesV2/constructor/CustomCandleBuilder';
+
+import { BasketApi } from '../../services/BasketApi';
+
+import Style from './ConstructorPage.module.css';
 
 const ConstructorPageV2: FC = () => {
-  const {
-    candlesByType,
-    customCandles,
-    isLoadingCandlesByType: isLoading,
-  } = useConstructorContext();
+  const { customCandles, isLoadingCandlesByType: isLoading } =
+    useConstructorContext();
   const {
     candle,
     fetchCandleById,
@@ -40,10 +31,7 @@ const ConstructorPageV2: FC = () => {
     updateCustomCandleBuilder,
   } = useCandleContext();
   const [isEditing, setIsEditing] = useState(false);
-  const [isConfiguredCandleDetailLoading, setIsConfiguredCandleDetailLoading] =
-    useState(true);
 
-  const location = useLocation();
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
@@ -53,7 +41,7 @@ const ConstructorPageV2: FC = () => {
   useEffect(() => {
     if (customCandles.length > 0) {
       const newFilterString = customCandles
-        .map((customCandle) => getFilter(customCandle))
+        .map((customCandle) => getFilterFromCustomCandle(customCandle))
         .join('.');
 
       const newUrlSearchParams = new URLSearchParams(`?${newFilterString}`);
@@ -63,83 +51,6 @@ const ConstructorPageV2: FC = () => {
       navigate(`?${newQueryString}`);
     }
   }, [customCandles]);
-
-  useEffect(() => {
-    let newCustomCandles: CustomCandle[] = [];
-
-    let allErrorMessages: string[] = [];
-
-    const searchParams = new URLSearchParams(location.search);
-    const filters = decodeURI(searchParams.toString().replace(/=$/, ''));
-
-    if (filters.length < OrderItemFilter.MIN_LENGTH_FILTER) {
-      return;
-    }
-
-    const orderItemFilters: OrderItemFilter[] = filters
-      .split('.')
-      .map(OrderItemFilter.parseToOrderItemFilter);
-
-    orderItemFilters.map(async (orderItemFilter) => {
-      const candleDetailResponse = await ConstructorApi.getCandleById(
-        orderItemFilter.candleId.toString(),
-      );
-      if (candleDetailResponse.data && !candleDetailResponse.error) {
-        const customCandleBuilder = new CustomCandleBuilder();
-
-        const selectedNumberOfLayer =
-          candleDetailResponse.data.numberOfLayers.find(
-            (numberOfLayer) =>
-              numberOfLayer.id === orderItemFilter.numberOfLayerId,
-          );
-
-        const selectedLayerColors =
-          candleDetailResponse.data.layerColors.filter((color) =>
-            orderItemFilter.layerColorIds.includes(color.id),
-          );
-
-        const selectedWick = candleDetailResponse.data.wicks.find(
-          (wick) => wick.id === orderItemFilter.wickId,
-        );
-
-        const selectedDecor = candleDetailResponse.data.decors?.find(
-          (decor) => decor.id === orderItemFilter.decorId,
-        );
-
-        const selectedSmell = candleDetailResponse.data.smells?.find(
-          (smell) => smell.id === orderItemFilter.smellId,
-        );
-
-        customCandleBuilder
-          .setCandle(candleDetailResponse.data.candle)
-          .setNumberOfLayer(selectedNumberOfLayer)
-          .setLayerColor(selectedLayerColors)
-          .setWick(selectedWick)
-          .setDecor(selectedDecor)
-          .setSmell(selectedSmell)
-          .setQuantity(orderItemFilter.quantity);
-
-        if (
-          customCandleBuilder.checkCustomCandleAgainstCandleDetail(
-            candleDetailResponse.data,
-          )
-        ) {
-        }
-
-        const buildResult = customCandleBuilder.build();
-        if (buildResult.success) {
-          newCustomCandles.push(buildResult.customCandle);
-        }
-      } else {
-        console.error(
-          'Error fetching candle details:',
-          candleDetailResponse.error,
-        );
-      }
-    });
-
-    console.log('закончился вызов location.search');
-  }, [location.search]);
 
   const handleOnSelectInProductCart = (customCandle: CustomCandle) => {
     const existingCandleIndex = customCandles.findIndex(
