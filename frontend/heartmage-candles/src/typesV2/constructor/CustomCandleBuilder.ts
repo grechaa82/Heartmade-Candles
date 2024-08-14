@@ -28,15 +28,13 @@ export class CustomCandleBuilder {
     isValid: false,
     errors: [],
   };
-  public errors: string[] = [];
-  public isValid: boolean = false;
 
   public getCustomCandle(): CustomCandle {
     return this.customCandle;
   }
 
   public getFilter(): string {
-    if (!this.isValid) {
+    if (!this.customCandle.isValid) {
       return;
     }
     if (!this.customCandle.filter) {
@@ -76,9 +74,7 @@ export class CustomCandleBuilder {
 
   public setNumberOfLayer(numberOfLayer: NumberOfLayer): CustomCandleBuilder {
     if (!numberOfLayer) {
-      const errorMessage = 'Необходимо указать количество слоев';
-      this.errors.push(errorMessage);
-      this.customCandle.errors.push(errorMessage);
+      this.customCandle.errors.push('Необходимо указать количество слоев');
       return this;
     }
 
@@ -97,9 +93,9 @@ export class CustomCandleBuilder {
       !this.customCandle.numberOfLayer ||
       this.customCandle.numberOfLayer === null
     ) {
-      const errorMessage = 'Сначала необходимо выбрать количество слоев';
-      this.errors.push(errorMessage);
-      this.customCandle.errors.push(errorMessage);
+      this.customCandle.errors.push(
+        'Сначала необходимо выбрать количество слоев',
+      );
     }
 
     this.customCandle = {
@@ -113,9 +109,10 @@ export class CustomCandleBuilder {
 
   public addLayerColor(layerColor: LayerColor): CustomCandleBuilder {
     if (!this.customCandle.numberOfLayer) {
-      const errorMessage = 'Необходимо сначала выбрать количество слоев';
-      this.errors.push(errorMessage);
-      this.customCandle.errors.push(errorMessage);
+      this.customCandle.errors.push(
+        'Необходимо сначала выбрать количество слоев',
+      );
+      return this;
     }
 
     const newLayerColors = [...this.customCandle.layerColors];
@@ -175,54 +172,67 @@ export class CustomCandleBuilder {
     return this;
   }
 
+  public setErrors(errors: string[]): CustomCandleBuilder {
+    if (errors && errors.length > 0) {
+      this.customCandle.errors = errors;
+      this.customCandle.isValid = false;
+    } else {
+      this.customCandle.errors = [];
+      this.customCandle.isValid = true;
+    }
+
+    return this;
+  }
+
   private validate(): void {
-    this.errors = [];
+    this.customCandle.errors = [];
 
     if (
       !this.customCandle.numberOfLayer ||
       this.customCandle.numberOfLayer === null
     ) {
-      const errorMessage = 'Необходимо указать количество слоев';
-      this.errors.push(errorMessage);
-      this.customCandle.errors.push(errorMessage);
+      this.customCandle.errors.push('Необходимо указать количество слоев');
     } else if (
       !this.customCandle.layerColors ||
       this.customCandle.layerColors.length < 0
     ) {
-      const errorMessage = 'Необходимо указать цвет слоев';
-      this.errors.push(errorMessage);
-      this.customCandle.errors.push(errorMessage);
+      this.customCandle.errors.push('Необходимо указать цвет слоев');
     } else if (
       this.customCandle.numberOfLayer &&
       this.customCandle.numberOfLayer.number !==
         this.customCandle.layerColors.length
     ) {
-      const errorMessage =
-        'Количество слоев не соответствует количеству указанных цветов';
-      this.errors.push(errorMessage);
-      this.customCandle.errors.push(errorMessage);
+      this.customCandle.errors.push(
+        'Количество слоев не соответствует количеству указанных цветов',
+      );
     }
 
     if (!this.customCandle.wick) {
-      this.errors.push('Необходимо указать фитиль');
+      this.customCandle.errors.push('Необходимо указать фитиль');
     }
 
-    this.isValid = this.errors.length === 0;
+    this.customCandle.isValid = this.customCandle.errors.length === 0;
+
     this.customCandle.filter = this.getFilter();
   }
 
-  public checkCustomCandleAgainstCandleDetail(
+  public static checkCustomCandleAgainstCandleDetail(
     customCandle: CustomCandle,
     candleDetail: CandleDetail,
   ): CustomCandle {
-    const errors: string[] = customCandle.errors || [];
-    const customCandleBuilder = new CustomCandleBuilder();
+    const errors: string[] = [];
+    const newCustomCandleBuilder = new CustomCandleBuilder();
 
-    if (!candleDetail.candle) {
+    if (!candleDetail?.candle) {
       errors.push('Необходимо указать свечу');
-      return;
+      return {
+        ...customCandle,
+        isValid: false,
+        errors: [...errors, 'Необходимо указать свечу'],
+      };
+    } else {
+      newCustomCandleBuilder.setCandle(customCandle.candle);
     }
-    customCandleBuilder.setCandle(customCandle.candle);
 
     if (
       customCandle.numberOfLayer &&
@@ -232,7 +242,7 @@ export class CustomCandleBuilder {
     ) {
       errors.push('Выбранное количество слоев недоступно в списке');
     } else {
-      customCandleBuilder.setNumberOfLayer(customCandle.numberOfLayer);
+      newCustomCandleBuilder.setNumberOfLayer(customCandle.numberOfLayer);
     }
 
     if (customCandle.layerColors) {
@@ -245,7 +255,7 @@ export class CustomCandleBuilder {
           errors.push(`Цвет слоя ${color.title} недоступен`);
         }
       });
-      customCandleBuilder.setLayerColor(customCandle.layerColors);
+      newCustomCandleBuilder.setLayerColor(customCandle.layerColors);
     }
 
     if (
@@ -254,7 +264,7 @@ export class CustomCandleBuilder {
     ) {
       errors.push('Выбранный декор недоступен');
     } else {
-      customCandleBuilder.setDecor(customCandle.decor);
+      newCustomCandleBuilder.setDecor(customCandle.decor);
     }
 
     if (
@@ -263,7 +273,7 @@ export class CustomCandleBuilder {
     ) {
       errors.push('Выбранный запах недоступен');
     } else {
-      customCandleBuilder.setSmell(customCandle.smell);
+      newCustomCandleBuilder.setSmell(customCandle.smell);
     }
 
     if (
@@ -272,12 +282,12 @@ export class CustomCandleBuilder {
     ) {
       errors.push('Выбранный фитиль не доступен');
     } else {
-      customCandleBuilder.setWick(customCandle.wick);
+      newCustomCandleBuilder.setWick(customCandle.wick);
     }
 
-    customCandleBuilder.setQuantity(customCandle.quantity);
+    newCustomCandleBuilder.setQuantity(customCandle.quantity);
 
-    const customCandleBuildResult = customCandleBuilder.build();
+    const customCandleBuildResult = newCustomCandleBuilder.build();
 
     return {
       ...customCandleBuildResult.customCandle,
@@ -287,13 +297,6 @@ export class CustomCandleBuilder {
   }
 
   public build(): BuildResult {
-    if (!this.isValid || this.errors.length > 0) {
-      return {
-        success: false,
-        errors: this.errors,
-      };
-    }
-
     const customCandle: CustomCandle = {
       candle: this.customCandle.candle,
       numberOfLayer: this.customCandle.numberOfLayer,
@@ -303,17 +306,18 @@ export class CustomCandleBuilder {
       smell: this.customCandle.smell,
       quantity: this.customCandle.quantity,
       filter: this.customCandle.filter,
-      isValid: this.isValid,
-      errors: this.errors,
+      isValid: this.customCandle.isValid,
+      errors: this.customCandle.errors,
     };
 
     return {
-      success: true,
-      customCandle,
+      success: this.customCandle.isValid,
+      errors: this.customCandle.errors,
+      customCandle: customCandle,
     };
   }
 
   public getErrors(): string[] {
-    return this.errors;
+    return this.getCustomCandle().errors;
   }
 }

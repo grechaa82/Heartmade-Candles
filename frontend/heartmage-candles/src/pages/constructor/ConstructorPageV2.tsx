@@ -20,6 +20,7 @@ import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilte
 import { BasketApi } from '../../services/BasketApi';
 
 import Style from './ConstructorPage.module.css';
+import { CustomCandleBuilder } from '../../typesV2/constructor/CustomCandleBuilder';
 
 const ConstructorPageV2: FC = () => {
   const { customCandles, isLoadingCandlesByType: isLoading } =
@@ -28,6 +29,7 @@ const ConstructorPageV2: FC = () => {
     candle,
     fetchCandleById,
     customCandleBuilder,
+    setCustomCandleBuilder,
     updateCustomCandleBuilder,
   } = useCandleContext();
   const [isEditing, setIsEditing] = useState(false);
@@ -38,31 +40,17 @@ const ConstructorPageV2: FC = () => {
 
   const blockCandleFormRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (customCandles.length > 0) {
-      const newFilterString = customCandles
-        .map((customCandle) => getFilterFromCustomCandle(customCandle))
-        .join('.');
-
-      const newUrlSearchParams = new URLSearchParams(`?${newFilterString}`);
-
-      const newQueryString = newUrlSearchParams.toString().replace('=', '');
-
-      navigate(`?${newQueryString}`);
-    }
-  }, [customCandles]);
-
-  const handleOnSelectInProductCart = (customCandle: CustomCandle) => {
+  const handleOnSelectInProductCart = (selectedCustomCandle: CustomCandle) => {
     const existingCandleIndex = customCandles.findIndex(
       (item) =>
-        item.candle.id === customCandle.candle.id &&
-        item.numberOfLayer === customCandle.numberOfLayer &&
+        item.candle.id === selectedCustomCandle.candle.id &&
+        item.numberOfLayer === selectedCustomCandle.numberOfLayer &&
         JSON.stringify(item.layerColors) ===
-          JSON.stringify(customCandle.layerColors) &&
-        item.wick === customCandle.wick &&
-        item.decor === customCandle.decor &&
-        item.smell === customCandle.smell &&
-        item.quantity === customCandle.quantity,
+          JSON.stringify(selectedCustomCandle.layerColors) &&
+        item.wick === selectedCustomCandle.wick &&
+        item.decor === selectedCustomCandle.decor &&
+        item.smell === selectedCustomCandle.smell &&
+        item.quantity === selectedCustomCandle.quantity,
     );
 
     if (existingCandleIndex >= 0) {
@@ -70,16 +58,18 @@ const ConstructorPageV2: FC = () => {
       setIsEditing(true);
     }
 
-    fetchCandleById(customCandle.candle.id.toString());
+    const newCustomCandleBuilder = new CustomCandleBuilder()
+      .setCandle(selectedCustomCandle.candle)
+      .setNumberOfLayer(selectedCustomCandle.numberOfLayer)
+      .setLayerColor(selectedCustomCandle.layerColors)
+      .setWick(selectedCustomCandle.wick)
+      .setDecor(selectedCustomCandle.decor)
+      .setSmell(selectedCustomCandle.smell)
+      .setQuantity(selectedCustomCandle.quantity)
+      .setErrors(selectedCustomCandle.errors);
 
-    customCandleBuilder
-      .setCandle(customCandle.candle)
-      .setNumberOfLayer(customCandle.numberOfLayer)
-      .setLayerColor(customCandle.layerColors)
-      .setWick(customCandle.wick)
-      .setDecor(customCandle.decor)
-      .setSmell(customCandle.smell)
-      .setQuantity(customCandle.quantity);
+    fetchCandleById(selectedCustomCandle.candle.id.toString());
+    setCustomCandleBuilder(newCustomCandleBuilder);
   };
 
   const handleHideCandleForm = () => {
@@ -97,6 +87,11 @@ const ConstructorPageV2: FC = () => {
       setErrorMessage([
         ...errorMessage,
         'В корзине пока пусто, добавьте свечи',
+      ]);
+    } else if (customCandles.some((candle) => !candle.isValid)) {
+      setErrorMessage([
+        ...errorMessage,
+        'Некоторые свечи в корзине имеют ошибки, пожалуйста, исправьте их',
       ]);
     } else if (customCandles.length > 0) {
       let candleDetailFilterBasketRequest: CandleDetailFilterBasketRequest = {
@@ -138,6 +133,20 @@ const ConstructorPageV2: FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (customCandles.length > 0) {
+      const newFilterString = customCandles
+        .map((customCandle) => getFilterFromCustomCandle(customCandle))
+        .join('.');
+
+      const newUrlSearchParams = new URLSearchParams(`?${newFilterString}`);
+
+      const newQueryString = newUrlSearchParams.toString().replace('=', '');
+
+      navigate(`?${newQueryString}`);
+    }
+  }, [customCandles]);
+
   return (
     <div className={Style.container}>
       <ListErrorPopUp messages={errorMessage} />
@@ -148,7 +157,9 @@ const ConstructorPageV2: FC = () => {
       >
         <ListProductsCartV2
           buttonState={
-            candle !== undefined || customCandles.length <= 0
+            candle !== undefined ||
+            customCandles.length <= 0 ||
+            customCandles.some((candle) => !candle.isValid)
               ? 'invalid'
               : 'valid'
           }

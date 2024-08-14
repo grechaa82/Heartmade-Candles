@@ -94,10 +94,6 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
         setCandlesByType(candlesResponse.data);
         setIsLoadingCandlesByType(false);
       } else {
-        console.error(
-          'Ошибка при загрузке данных с сервера',
-          candlesResponse.error,
-        );
       }
     }
 
@@ -113,27 +109,35 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
 
     const fetchCandleDetails = async (customCandle) => {
       const existingDetail = candleDetails.find(
-        (detail) => detail.candle.id === customCandle.candle.id,
+        (detail) => detail.candle?.id === customCandle.candle?.id,
       );
 
       if (existingDetail) {
-        const newCustomCandle = checkCustomCandleAgainstCandleDetail(
-          customCandle,
-          existingDetail,
-        );
-        newCustomCandles.push(newCustomCandle);
+        const newCustomCandle =
+          CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
+            customCandle,
+            existingDetail,
+          );
+        if (newCustomCandles) {
+          newCustomCandles.push(newCustomCandle);
+        } else {
+        }
       } else {
         const candleDetailResponse = await ConstructorApi.getCandleById(
           customCandle.candle.id.toString(),
         );
 
         if (candleDetailResponse.data && !candleDetailResponse.error) {
-          const newCustomCandle = checkCustomCandleAgainstCandleDetail(
-            customCandle,
-            candleDetailResponse.data,
-          );
-          newCustomCandles.push(newCustomCandle);
-          candleDetails.push(candleDetailResponse.data);
+          const newCustomCandle =
+            CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
+              customCandle,
+              candleDetailResponse.data,
+            );
+          if (newCustomCandles) {
+            newCustomCandles.push(newCustomCandle);
+            candleDetails.push(candleDetailResponse.data);
+          } else {
+          }
         } else {
         }
       }
@@ -146,78 +150,6 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
 
     fetchAllCustomCandles();
   }, [candlesByType, setCandlesByType]);
-
-  function checkCustomCandleAgainstCandleDetail(
-    customCandle: CustomCandle,
-    candleDetail: CandleDetail,
-  ): CustomCandle {
-    let errors: string[] = customCandle.errors;
-    const customCandleBuilder = new CustomCandleBuilder();
-
-    if (!candleDetail.candle) {
-      errors.push('Необходимо указать свечу');
-      return;
-    } else customCandleBuilder.setCandle(customCandle.candle);
-
-    if (
-      customCandle.numberOfLayer &&
-      !candleDetail.numberOfLayers.some(
-        (layer) => layer.id === customCandle.numberOfLayer.id,
-      )
-    ) {
-      errors.push('Выбранное количество слоев недоступно в списке');
-    } else customCandleBuilder.setNumberOfLayer(customCandle.numberOfLayer);
-
-    if (customCandle.layerColors) {
-      customCandle.layerColors.forEach((color) => {
-        if (
-          !candleDetail.layerColors.some(
-            (layerColor) => layerColor.id === color.id,
-          )
-        ) {
-          errors.push(`Цвет слоя ${color.title} недоступен`);
-        } else customCandleBuilder.setLayerColor(customCandle.layerColors);
-      });
-    }
-
-    if (
-      customCandle.decor &&
-      !candleDetail.decors?.some((decor) => decor.id === customCandle.decor.id)
-    ) {
-      errors.push('Выбранный декор недоступен');
-    } else customCandleBuilder.setDecor(customCandle.decor);
-
-    if (
-      customCandle.smell &&
-      !candleDetail.smells?.some((smell) => smell.id === customCandle.smell.id)
-    ) {
-      errors.push('Выбранный запах недоступен');
-    } else customCandleBuilder.setSmell(customCandle.smell);
-
-    if (
-      customCandle.wick &&
-      !candleDetail.wicks?.some((wick) => wick.id === customCandle.wick?.id)
-    ) {
-      errors.push('Выбранный фитиль не доступен');
-    } else customCandleBuilder.setWick(customCandle.wick);
-
-    customCandleBuilder.setQuantity(customCandle.quantity);
-
-    const customCandleBuildResult = customCandleBuilder.build();
-
-    return {
-      candle: customCandleBuildResult.customCandle.candle,
-      numberOfLayer: customCandleBuildResult.customCandle.numberOfLayer,
-      layerColors: customCandleBuildResult.customCandle.layerColors,
-      wick: customCandleBuildResult.customCandle.wick,
-      decor: customCandleBuildResult.customCandle.decor,
-      smell: customCandleBuildResult.customCandle.smell,
-      quantity: customCandleBuildResult.customCandle.quantity,
-      filter: customCandleBuildResult.customCandle.filter,
-      isValid: errors.length === 0,
-      errors: errors,
-    };
-  }
 
   const contextValue = useMemo(
     () => ({

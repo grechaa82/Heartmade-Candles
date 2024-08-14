@@ -189,7 +189,6 @@ const CandleDetailsPage: FC = () => {
 
   const updateCandleDecors = async (updatedItems: BaseProduct[]) => {
     if (id) {
-      console.log(1);
       const updatedDecors = updatedItems as Decor[];
       const ids = updatedDecors.map((d) => d.id);
 

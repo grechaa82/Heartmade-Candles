@@ -26,6 +26,7 @@ type ICandleContext = {
   fetchCandleById: (id: string) => Promise<void>;
   customCandle: CustomCandle;
   customCandleBuilder: CustomCandleBuilder;
+  setCustomCandle: (customCandle: CustomCandle) => void;
   setCustomCandleBuilder: (customCandleBuilder: CustomCandleBuilder) => void;
   updateCustomCandleBuilder: () => void;
 };
@@ -39,6 +40,7 @@ const initialValue: ICandleContext = {
   fetchCandleById: async () => {},
   customCandle: undefined,
   customCandleBuilder: new CustomCandleBuilder(),
+  setCustomCandle: () => {},
   setCustomCandleBuilder: () => {},
   updateCustomCandleBuilder: () => {},
 };
@@ -97,16 +99,11 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
       fetchCandleById,
       customCandle,
       customCandleBuilder,
+      setCustomCandle,
       setCustomCandleBuilder,
       updateCustomCandleBuilder,
     }),
-    [
-      candle,
-      configuredCandle,
-      customCandle,
-      customCandleBuilder,
-      customCandleBuilder.customCandle,
-    ],
+    [candle, configuredCandle, customCandle, customCandleBuilder],
   );
 
   return (

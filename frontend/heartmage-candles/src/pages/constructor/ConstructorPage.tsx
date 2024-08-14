@@ -282,12 +282,6 @@ const ConstructorPage: FC = () => {
   ) => {
     fetchCandleById(configuredCandle.candle.id.toString());
     setConfiguredCandle(configuredCandle);
-
-    console.log(
-      'fass handleOnSelectConfiguredCandle',
-      configuredCandle,
-      candle,
-    );
   };
 
   return (

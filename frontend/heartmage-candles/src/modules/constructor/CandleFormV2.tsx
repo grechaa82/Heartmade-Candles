@@ -19,6 +19,7 @@ import { calculateCustomCandlePrice } from '../../helpers/CalculatePrice';
 
 import Style from './CandleForm.module.css';
 import ProductsGridSelectorV2 from '../../components/constructor/ProductsGridSelectorV2';
+import { CustomCandleBuilder } from '../../typesV2/constructor/CustomCandleBuilder';
 
 export interface CandleFormProps {
   hideCandleForm: () => void;
@@ -30,11 +31,11 @@ const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
   const { candle, customCandleBuilder, updateCustomCandleBuilder } =
     useCandleContext();
 
+  const [customCandle, setCustomCandle] = useState<CustomCandle>(
+    customCandleBuilder.customCandle,
+  );
   const [errors, setErrors] = useState<string[]>(
     customCandleBuilder.getErrors(),
-  );
-  const [customCandle, setCustomCandle] = useState<CustomCandle>(
-    customCandleBuilder.getCustomCandle(),
   );
 
   const handleNumberOfLayerState = (selectedNumberOfLayer: TagData) => {
@@ -59,7 +60,7 @@ const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
       customCandleBuilder
         .getCustomCandle()
         .layerColors?.filter(
-          (layerColor) => layerColor !== deselectedLayerColor,
+          (layerColor) => layerColor.id !== deselectedLayerColor.id,
         ) || [];
 
     setCustomCandle(
@@ -97,13 +98,14 @@ const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
 
   const handleAddCandleDetail = () => {
     const newCustomCandle =
-      customCandleBuilder.checkCustomCandleAgainstCandleDetail(
+      CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
         customCandleBuilder.getCustomCandle(),
         candle,
       );
 
-    if (newCustomCandle.isValid) {
+    if (!newCustomCandle.isValid || newCustomCandle.errors.length > 0) {
       setErrors(newCustomCandle.errors);
+      return;
     } else {
       const buildResult = customCandleBuilder.build();
       if (!buildResult.success || !buildResult.customCandle) {
@@ -114,18 +116,33 @@ const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
       newCandlesArray.push(buildResult.customCandle);
       setCustomCandles(newCandlesArray);
       updateCustomCandleBuilder();
+      hideCandleForm();
     }
-
-    return;
   };
 
   useEffect(() => {
-    setErrors(customCandleBuilder.getErrors());
-  }, [
-    customCandleBuilder,
-    customCandleBuilder.getCustomCandle(),
-    customCandleBuilder.errors,
-  ]);
+    const currentErrors = customCandleBuilder.customCandle.errors || [];
+    setErrors(currentErrors);
+  }, [customCandleBuilder.customCandle.errors]);
+
+  useEffect(() => {
+    if (isEditing) {
+      const currentLayerColors = customCandle.layerColors || [];
+      const candleLayerColors = candle.layerColors || [];
+      const errors = customCandle.errors;
+
+      const updatedLayerColors = currentLayerColors.filter((color) =>
+        candleLayerColors.some((c) => c.id === color.id),
+      );
+
+      const newCustomCandle = customCandleBuilder
+        .setLayerColor(updatedLayerColors)
+        .setErrors(errors)
+        .getCustomCandle();
+
+      setCustomCandle(newCustomCandle);
+    }
+  }, []);
 
   return (
     <>
@@ -203,7 +220,9 @@ const CandleFormV2: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
           title={'Фитиль *'}
           data={candle.wicks ? candle.wicks : []}
           selectedData={
-            customCandle.wick ? [customCandleBuilder.customCandle.wick] : []
+            customCandleBuilder.customCandle.wick
+              ? [customCandleBuilder.customCandle.wick]
+              : []
           }
           onSelectProduct={handleWickState}
         />
