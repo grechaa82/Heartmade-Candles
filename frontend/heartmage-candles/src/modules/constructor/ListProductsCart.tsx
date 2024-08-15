@@ -1,62 +1,66 @@
 import { FC } from 'react';
 
-import ConfiguredCandleCart from '../../components/constructor/ConfiguredCandleCart';
-import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';
+import { useConstructorContext } from '../../contexts/ConstructorContext';
+import { CustomCandle } from '../../typesV2/constructor/CustomCandle';
+import ConfiguredCandleCartV2 from '../../components/constructor/ConfiguredCandleCartV2';
 import Button from '../../components/shared/Button';
 
 import Style from './ListProductsCart.module.css';
 
+type ButtonState = 'default' | 'invalid' | 'valid';
+
 export interface ListProductsCartProps {
-  products: ConfiguredCandleDetail[];
-  onChangeCandleDetailWithQuantity: (
-    CandleDetailWithQuantity: ConfiguredCandleDetail[],
-  ) => void;
-  price: number;
-  onCreateBasket: () => void;
   buttonState?: 'default' | 'invalid' | 'valid';
-  onSelect?: (configuredCandle: ConfiguredCandleDetail) => void;
+  onSelect: (customCandle: CustomCandle) => void;
+  onCreateBasket: () => void;
 }
 
 const ListProductsCart: FC<ListProductsCartProps> = ({
-  products,
-  onChangeCandleDetailWithQuantity,
-  price,
-  onCreateBasket,
   buttonState = 'default',
   onSelect,
+  onCreateBasket,
 }) => {
+  const { customCandles, totalPrice, setCustomCandles } =
+    useConstructorContext();
+
   const handleChangingQuantityProduct = (
     newQuantity: number,
     index: number,
   ) => {
-    if (products[index]) {
-      const updatedConfiguredCandleDetail = [...products];
+    const newCustomCandles = [...customCandles];
+
+    if (newCustomCandles[index]) {
       if (newQuantity <= 0) {
-        updatedConfiguredCandleDetail.splice(index, 1);
+        newCustomCandles.splice(index, 1);
       } else {
-        updatedConfiguredCandleDetail[index].quantity = newQuantity;
+        newCustomCandles[index].quantity = newQuantity;
       }
-      onChangeCandleDetailWithQuantity(updatedConfiguredCandleDetail);
     }
+
+    setCustomCandles(newCustomCandles);
+  };
+
+  const handleOnSelect = (customCandle: CustomCandle) => {
+    onSelect(customCandle);
   };
 
   return (
     <>
       <div className={Style.listProductsCart}>
-        {products.map((product, index) => (
-          <ConfiguredCandleCart
+        {customCandles.map((product, index) => (
+          <ConfiguredCandleCartV2
             key={index}
             index={index}
             product={product}
             onChangingQuantityProduct={handleChangingQuantityProduct}
             quantity={product.quantity}
-            onSelect={onSelect}
+            onSelect={handleOnSelect}
           />
         ))}
         <div className={Style.infoBlock}>
           <div className={Style.priceBlock}>
             <span className={Style.priceTitle}>Итого</span>
-            <span className={Style.price}>{price} р</span>
+            <span className={Style.price}>{totalPrice} р</span>
           </div>
           <Button
             text="Заказать"

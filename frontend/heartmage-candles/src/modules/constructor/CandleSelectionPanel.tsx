@@ -2,28 +2,30 @@ import { FC } from 'react';
 
 import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
+import { useCandleContext } from '../../contexts/CandleContext';
+import { useConstructorContext } from '../../contexts/ConstructorContext';
 
 import Style from './CandleSelectionPanel.module.css';
-import { CandlesByType } from '../../typesV2/constructor/CandlesByType';
 
-export interface CandleSelectionPanelProps {
-  data: CandlesByType[];
-  onSelectCandle: (product: ImageProduct) => void;
-}
+export interface CandleSelectionPanelProps {}
 
-const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({
-  data,
-  onSelectCandle,
-}) => {
+const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({}) => {
+  const { candlesByType } = useConstructorContext();
+  const { fetchCandleById } = useCandleContext();
+
+  const handleOnSelectProduct = (candle: ImageProduct) => {
+    fetchCandleById(candle.id.toString());
+  };
+
   return (
     <div className={Style.content}>
-      {data &&
-        data.map((item, index) => (
+      {candlesByType &&
+        candlesByType.map((item, index) => (
           <ProductsGridSelector
             key={index}
             title={item.type}
             data={item.candles}
-            onSelectProduct={onSelectCandle}
+            onSelectProduct={handleOnSelectProduct}
           />
         ))}
     </div>

@@ -9,7 +9,6 @@ import {
 } from 'react';
 import { CandlesByType } from '../typesV2/constructor/CandlesByType';
 import { ConstructorApi } from '../services/ConstructorApi';
-import { ConfiguredCandleDetail } from '../typesV2/constructor/ConfiguredCandleDetail';
 import { calculateCustomCandlePrice } from '../helpers/CalculatePrice';
 import { CustomCandle } from '../typesV2/constructor/CustomCandle';
 import { CandleDetail } from '../typesV2/constructor/CandleDetail';
@@ -21,9 +20,7 @@ export interface ConstructorProviderProps {
 
 type IConstructorContext = {
   candlesByType: CandlesByType[];
-  configuredCandles: ConfiguredCandleDetail[];
   totalPrice: number;
-  setConfiguredCandles: (configuredCandles: ConfiguredCandleDetail[]) => void;
   customCandles: CustomCandle[];
   setCustomCandles: (customCandle: CustomCandle[]) => void;
   isLoadingCandlesByType: boolean;
@@ -31,9 +28,7 @@ type IConstructorContext = {
 
 const initialValue: IConstructorContext = {
   candlesByType: [],
-  configuredCandles: [],
   totalPrice: 0,
-  setConfiguredCandles: () => {},
   customCandles: [],
   setCustomCandles: () => {},
   isLoadingCandlesByType: true,
@@ -47,9 +42,6 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
   const [candlesByType, setCandlesByType] = useState<CandlesByType[]>(
     initialValue.candlesByType,
   );
-  const [configuredCandles, setConfiguredCandles] = useState<
-    ConfiguredCandleDetail[]
-  >([]);
   const [totalPrice, setTotalPrice] = useState<number>(initialValue.totalPrice);
   const [customCandles, setCustomCandles] = useState<CustomCandle[]>(
     initialValue.customCandles,
@@ -57,12 +49,6 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
   const [isLoadingCandlesByType, setIsLoadingCandlesByType] = useState(
     initialValue.isLoadingCandlesByType,
   );
-
-  const handleSetConfiguredCandles = (
-    configuredCandles: ConfiguredCandleDetail[],
-  ) => {
-    setConfiguredCandles(configuredCandles);
-  };
 
   const handleSetCustomCandles = (customCandles: CustomCandle[]) => {
     setCustomCandles(customCandles);
@@ -86,7 +72,7 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
   }
 
   useEffect(() => {
-    const delay = 30000;
+    const delay = 60000;
 
     async function fetchData() {
       const candlesResponse = await ConstructorApi.getCandles();
@@ -154,14 +140,12 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
   const contextValue = useMemo(
     () => ({
       candlesByType,
-      configuredCandles,
       totalPrice,
-      setConfiguredCandles: handleSetConfiguredCandles,
       customCandles,
       setCustomCandles: handleSetCustomCandles,
       isLoadingCandlesByType,
     }),
-    [candlesByType, configuredCandles, totalPrice, customCandles],
+    [candlesByType, totalPrice, customCandles],
   );
 
   return (

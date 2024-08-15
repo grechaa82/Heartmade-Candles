@@ -1,7 +1,6 @@
 import {
   FC,
   useContext,
-  useEffect,
   useMemo,
   useState,
   createContext,
@@ -9,8 +8,6 @@ import {
 } from 'react';
 import { CandleDetail } from '../typesV2/constructor/CandleDetail';
 import { ConstructorApi } from '../services/ConstructorApi';
-import { ConfiguredCandleDetail } from '../typesV2/constructor/ConfiguredCandleDetail';
-import { CustomCandle } from '../typesV2/constructor/CustomCandle';
 import { CustomCandleBuilder } from '../typesV2/constructor/CustomCandleBuilder';
 
 export interface CandleProviderProps {
@@ -19,28 +16,16 @@ export interface CandleProviderProps {
 
 type ICandleContext = {
   candle: CandleDetail | undefined;
-  configuredCandle: ConfiguredCandleDetail | undefined;
-  priceConfiguredCandle: number;
-  setCandle: (candleDetail: CandleDetail) => void;
-  setConfiguredCandle: (configuredCandle: ConfiguredCandleDetail) => void;
-  fetchCandleById: (id: string) => Promise<void>;
-  customCandle: CustomCandle;
   customCandleBuilder: CustomCandleBuilder;
-  setCustomCandle: (customCandle: CustomCandle) => void;
+  fetchCandleById: (id: string) => Promise<void>;
   setCustomCandleBuilder: (customCandleBuilder: CustomCandleBuilder) => void;
   updateCustomCandleBuilder: () => void;
 };
 
 const initialValue: ICandleContext = {
   candle: undefined,
-  configuredCandle: undefined,
-  priceConfiguredCandle: 0,
-  setCandle: () => {},
-  setConfiguredCandle: () => {},
-  fetchCandleById: async () => {},
-  customCandle: undefined,
   customCandleBuilder: new CustomCandleBuilder(),
-  setCustomCandle: () => {},
+  fetchCandleById: async () => {},
   setCustomCandleBuilder: () => {},
   updateCustomCandleBuilder: () => {},
 };
@@ -50,15 +35,6 @@ const CandleContext = createContext<ICandleContext>(initialValue);
 export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
   const [candle, setCandle] = useState<CandleDetail | undefined>(
     initialValue.candle,
-  );
-  const [configuredCandle, setConfiguredCandle] = useState<
-    ConfiguredCandleDetail | undefined
-  >(initialValue.configuredCandle);
-  const [priceConfiguredCandle, setPriceConfiguredCandle] = useState<number>(
-    initialValue.priceConfiguredCandle,
-  );
-  const [customCandle, setCustomCandle] = useState<CustomCandle>(
-    initialValue.customCandle,
   );
   const [customCandleBuilder, setCustomCandleBuilder] =
     useState<CustomCandleBuilder>(initialValue.customCandleBuilder);
@@ -76,34 +52,20 @@ export const CandleProvider: FC<CandleProviderProps> = ({ children }) => {
     }
   };
 
-  const handleSetConfiguredCandle = (
-    configuredCandle: ConfiguredCandleDetail,
-  ) => {
-    setConfiguredCandle(configuredCandle);
-    setCandle(undefined);
-  };
-
   const updateCustomCandleBuilder = () => {
     setCandle(undefined);
-    setCustomCandle(undefined);
     setCustomCandleBuilder(new CustomCandleBuilder());
   };
 
   const contextValue = useMemo(
     () => ({
       candle,
-      configuredCandle,
-      priceConfiguredCandle,
-      setCandle,
-      setConfiguredCandle: handleSetConfiguredCandle,
-      fetchCandleById,
-      customCandle,
       customCandleBuilder,
-      setCustomCandle,
+      fetchCandleById,
       setCustomCandleBuilder,
       updateCustomCandleBuilder,
     }),
-    [candle, configuredCandle, customCandle, customCandleBuilder],
+    [candle, customCandleBuilder],
   );
 
   return (

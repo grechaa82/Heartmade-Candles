@@ -1,247 +1,170 @@
 import { FC, useState, useEffect } from 'react';
 
 import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
-import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';
 import {
   NumberOfLayer,
   Smell,
   ImageProduct,
 } from '../../typesV2/shared/BaseProduct';
-import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
 import TagSelector from '../../components/constructor/TagSelector';
 import { TagData } from '../../components/shared/Tag';
 import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import { useCandleContext } from '../../contexts/CandleContext';
+import { useConstructorContext } from '../../contexts/ConstructorContext';
+import { CustomCandle } from '../../typesV2/constructor/CustomCandle';
+import { calculateCustomCandlePrice } from '../../helpers/CalculatePrice';
+import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
+import { CustomCandleBuilder } from '../../typesV2/constructor/CustomCandleBuilder';
 
 import Style from './CandleForm.module.css';
 
 export interface CandleFormProps {
-  candleDetail: CandleDetail;
-  configuredCandleDetail?: ConfiguredCandleDetail;
-  addCandleDetail: (configuredCandleDetail: ConfiguredCandleDetail) => void;
-  calculatePriceCandleDetail: (
-    configuredCandleDetail: ConfiguredCandleDetail,
-  ) => number;
   hideCandleForm: () => void;
+  isEditing: boolean;
 }
 
-const CandleForm: FC<CandleFormProps> = ({
-  candleDetail,
-  configuredCandleDetail,
-  addCandleDetail,
-  calculatePriceCandleDetail,
-  hideCandleForm,
-}) => {
-  const {
-    candle,
-    configuredCandle,
-    priceConfiguredCandle,
-    setCandle,
-    setConfiguredCandle,
-    fetchCandleById,
-  } = useCandleContext();
+const CandleForm: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
+  const { customCandles, setCustomCandles } = useConstructorContext();
+  const { candle, customCandleBuilder, updateCustomCandleBuilder } =
+    useCandleContext();
 
-  const [priceConfiguredCandleDetail, setPriceConfiguredCandleDetail] =
-    useState<number>(0);
-  const [configuredCandleDetailState, setConfiguredCandleDetailState] =
-    useState<ConfiguredCandleDetail>(() => {
-      if (configuredCandleDetail) {
-        return configuredCandleDetail;
-      }
-
-      return new ConfiguredCandleDetail(
-        candleDetail.candle,
-        1,
-        candleDetail.numberOfLayers.length === 1
-          ? candleDetail.numberOfLayers[0]
-          : undefined,
-        [],
-        candleDetail.wicks.length === 1 ? candleDetail.wicks[0] : undefined,
-        undefined,
-        undefined,
-      );
-    });
+  const [customCandle, setCustomCandle] = useState<CustomCandle>(
+    customCandleBuilder.customCandle,
+  );
+  const [errors, setErrors] = useState<string[]>(
+    customCandleBuilder.getErrors(),
+  );
 
   const handleNumberOfLayerState = (selectedNumberOfLayer: TagData) => {
-    setConfiguredCandleDetailState(
-      new ConfiguredCandleDetail(
-        configuredCandleDetailState.candle,
-        configuredCandleDetailState.quantity,
-        convertTagDataToNumberOfLayer(selectedNumberOfLayer),
-        [],
-        configuredCandleDetailState.wick,
-        configuredCandleDetailState.decor,
-        configuredCandleDetailState.smell,
-      ),
+    setCustomCandle(
+      customCandleBuilder
+        .setNumberOfLayer(convertTagDataToNumberOfLayer(selectedNumberOfLayer))
+        .getCustomCandle(),
     );
   };
 
   const handleLayerColorState = (selectedLayerColor: ImageProduct) => {
-    if (
-      configuredCandleDetailState.layerColors &&
-      configuredCandleDetailState.numberOfLayer?.number ===
-        configuredCandleDetailState.layerColors?.length
-    ) {
-      const newLayerColors = configuredCandleDetailState.layerColors;
-      newLayerColors[newLayerColors.length - 1] = selectedLayerColor;
-
-      setConfiguredCandleDetailState(
-        new ConfiguredCandleDetail(
-          configuredCandleDetailState.candle,
-          configuredCandleDetailState.quantity,
-          configuredCandleDetailState.numberOfLayer,
-          newLayerColors,
-          configuredCandleDetailState.wick,
-          configuredCandleDetailState.decor,
-          configuredCandleDetailState.smell,
-        ),
-      );
-
-      return;
-    }
-
-    const layerColorToAdd = configuredCandleDetailState.layerColors
-      ? configuredCandleDetailState.layerColors
-      : [];
-    layerColorToAdd.push(selectedLayerColor);
-
-    setConfiguredCandleDetailState(
-      new ConfiguredCandleDetail(
-        configuredCandleDetailState.candle,
-        configuredCandleDetailState.quantity,
-        configuredCandleDetailState.numberOfLayer,
-        layerColorToAdd,
-        configuredCandleDetailState.wick,
-        configuredCandleDetailState.decor,
-        configuredCandleDetailState.smell,
-      ),
-    );
+    const newCustomCandle = customCandleBuilder
+      .addLayerColor(selectedLayerColor)
+      .getCustomCandle();
+    setCustomCandle(newCustomCandle);
   };
 
   const handleDeselectLayerColorState = (
     deselectedLayerColor: ImageProduct,
   ) => {
-    const updatedLayerColors = configuredCandleDetailState.layerColors?.filter(
-      (layerColor) => layerColor !== deselectedLayerColor,
-    );
+    const updatedLayerColors =
+      customCandleBuilder
+        .getCustomCandle()
+        .layerColors?.filter(
+          (layerColor) => layerColor.id !== deselectedLayerColor.id,
+        ) || [];
 
-    setConfiguredCandleDetailState(
-      new ConfiguredCandleDetail(
-        configuredCandleDetailState.candle,
-        configuredCandleDetailState.quantity,
-        configuredCandleDetailState.numberOfLayer,
-        updatedLayerColors,
-        configuredCandleDetailState.wick,
-        configuredCandleDetailState.decor,
-        configuredCandleDetailState.smell,
-      ),
+    setCustomCandle(
+      customCandleBuilder.setLayerColor(updatedLayerColors).getCustomCandle(),
     );
   };
 
   const handleDecorState = (selectedDecor: ImageProduct) => {
-    setConfiguredCandleDetailState(
-      new ConfiguredCandleDetail(
-        configuredCandleDetailState.candle,
-        configuredCandleDetailState.quantity,
-        configuredCandleDetailState.numberOfLayer,
-        configuredCandleDetailState.layerColors,
-        configuredCandleDetailState.wick,
-        selectedDecor,
-        configuredCandleDetailState.smell,
-      ),
+    setCustomCandle(
+      customCandleBuilder.setDecor(selectedDecor).getCustomCandle(),
     );
   };
 
   const handleDeselectDecorState = (deselectedDecor: ImageProduct) => {
-    setConfiguredCandleDetailState(
-      new ConfiguredCandleDetail(
-        configuredCandleDetailState.candle,
-        configuredCandleDetailState.quantity,
-        configuredCandleDetailState.numberOfLayer,
-        configuredCandleDetailState.layerColors,
-        configuredCandleDetailState.wick,
-        undefined,
-        configuredCandleDetailState.smell,
-      ),
-    );
+    setCustomCandle(customCandleBuilder.setDecor(null).getCustomCandle());
   };
 
   const handleSmellState = (selectedSmell: TagData) => {
-    setConfiguredCandleDetailState(
-      new ConfiguredCandleDetail(
-        configuredCandleDetailState.candle,
-        configuredCandleDetailState.quantity,
-        configuredCandleDetailState.numberOfLayer,
-        configuredCandleDetailState.layerColors,
-        configuredCandleDetailState.wick,
-        configuredCandleDetailState.decor,
-        convertTagDataToSmell(selectedSmell, candleDetail),
-      ),
+    setCustomCandle(
+      customCandleBuilder
+        .setSmell(convertTagDataToSmell(selectedSmell, candle))
+        .getCustomCandle(),
     );
   };
 
   const handleDeselectSmellState = (deselectedSmell: TagData) => {
-    setConfiguredCandleDetailState(
-      new ConfiguredCandleDetail(
-        configuredCandleDetailState.candle,
-        configuredCandleDetailState.quantity,
-        configuredCandleDetailState.numberOfLayer,
-        configuredCandleDetailState.layerColors,
-        configuredCandleDetailState.wick,
-        configuredCandleDetailState.decor,
-        undefined,
-      ),
-    );
+    setCustomCandle(customCandleBuilder.setSmell(null).getCustomCandle());
   };
 
   const handleWickState = (selectedWick: ImageProduct) => {
-    setConfiguredCandleDetailState(
-      new ConfiguredCandleDetail(
-        configuredCandleDetailState.candle,
-        configuredCandleDetailState.quantity,
-        configuredCandleDetailState.numberOfLayer,
-        configuredCandleDetailState.layerColors,
-        selectedWick,
-        configuredCandleDetailState.decor,
-        configuredCandleDetailState.smell,
-      ),
+    setCustomCandle(
+      customCandleBuilder.setWick(selectedWick).getCustomCandle(),
     );
   };
 
   const handleAddCandleDetail = () => {
-    addCandleDetail(configuredCandleDetailState);
+    const newCustomCandle =
+      CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
+        customCandleBuilder.getCustomCandle(),
+        candle,
+      );
+
+    if (!newCustomCandle.isValid || newCustomCandle.errors.length > 0) {
+      setErrors(newCustomCandle.errors);
+      return;
+    } else {
+      const buildResult = customCandleBuilder.build();
+      if (!buildResult.success || !buildResult.customCandle) {
+        setErrors(buildResult.errors);
+        return;
+      }
+      let newCandlesArray = customCandles;
+      newCandlesArray.push(buildResult.customCandle);
+      setCustomCandles(newCandlesArray);
+      updateCustomCandleBuilder();
+      hideCandleForm();
+    }
   };
 
   useEffect(() => {
-    setPriceConfiguredCandleDetail(
-      calculatePriceCandleDetail(configuredCandleDetailState),
-    );
-  }, [configuredCandleDetailState]);
+    const currentErrors = customCandleBuilder.customCandle.errors || [];
+    setErrors(currentErrors);
+  }, [customCandleBuilder.customCandle.errors]);
+
+  useEffect(() => {
+    if (isEditing) {
+      const currentLayerColors = customCandle.layerColors || [];
+      const candleLayerColors = candle.layerColors || [];
+      const errors = customCandle.errors;
+
+      const updatedLayerColors = currentLayerColors.filter((color) =>
+        candleLayerColors.some((c) => c.id === color.id),
+      );
+
+      const newCustomCandle = customCandleBuilder
+        .setLayerColor(updatedLayerColors)
+        .setErrors(errors)
+        .getCustomCandle();
+
+      setCustomCandle(newCustomCandle);
+    }
+  }, []);
 
   return (
     <>
       <div className={Style.candleFrom}>
         <div className={Style.mainInfo}>
-          <button
-            className={Style.hideCandleForm}
-            onClick={() => hideCandleForm()}
-          >
-            <IconArrowLeftLarge />
-          </button>
-          <p className={Style.title}>
-            {configuredCandleDetailState.candle.title}
-          </p>
+          {!isEditing && (
+            <button
+              className={Style.hideCandleForm}
+              onClick={() => hideCandleForm()}
+            >
+              <IconArrowLeftLarge />
+            </button>
+          )}
+          <p className={Style.title}>{candle.candle.title}</p>
         </div>
         <TagSelector
           title="Количество слоев *"
-          data={convertNumberOfLayersToTagData(candleDetail.numberOfLayers)}
+          data={convertNumberOfLayersToTagData(candle.numberOfLayers)}
           selectedData={
-            configuredCandleDetailState.numberOfLayer
+            customCandle?.numberOfLayer
               ? [
                   convertNumberOfLayerToTagData(
-                    configuredCandleDetailState.numberOfLayer,
+                    customCandleBuilder.customCandle.numberOfLayer,
                   ),
                 ]
               : []
@@ -250,38 +173,42 @@ const CandleForm: FC<CandleFormProps> = ({
         />
         <ProductsGridSelector
           title={'Цвета слоев *'}
-          data={candleDetail.layerColors ? candleDetail.layerColors : []}
+          data={candle.layerColors ? candle.layerColors : []}
           selectedData={
-            configuredCandleDetail?.layerColors
-              ? configuredCandleDetail.layerColors
-              : configuredCandleDetailState?.layerColors
-              ? configuredCandleDetailState.layerColors
+            customCandle?.layerColors
+              ? customCandle.layerColors
+              : customCandleBuilder?.customCandle.layerColors
+              ? customCandleBuilder.customCandle.layerColors
               : []
           }
           onSelectProduct={handleLayerColorState}
           onDeselectProduct={handleDeselectLayerColorState}
           withIndex={true}
         />
-        {candleDetail.decors && candleDetail.decors.length > 0 && (
+        {candle.decors && candle.decors.length > 0 && (
           <ProductsGridSelector
             title={'Декор'}
-            data={candleDetail.decors}
+            data={candle.decors}
             selectedData={
-              configuredCandleDetailState.decor
-                ? [configuredCandleDetailState.decor]
+              customCandle?.decor !== undefined
+                ? [customCandleBuilder.customCandle.decor]
                 : []
             }
             onSelectProduct={handleDecorState}
             onDeselectProduct={handleDeselectDecorState}
           />
         )}
-        {candleDetail.smells && candleDetail.smells.length > 0 && (
+        {candle.smells && candle.smells.length > 0 && (
           <TagSelector
             title="Запах"
-            data={convertSmellsToTagData(candleDetail.smells)}
+            data={convertSmellsToTagData(candle.smells)}
             selectedData={
-              configuredCandleDetailState.smell
-                ? [convertSmellToTagData(configuredCandleDetailState.smell)]
+              customCandle?.smell
+                ? [
+                    convertSmellToTagData(
+                      customCandleBuilder.customCandle.smell,
+                    ),
+                  ]
                 : []
             }
             onSelectTag={handleSmellState}
@@ -290,28 +217,30 @@ const CandleForm: FC<CandleFormProps> = ({
         )}
         <ProductsGridSelector
           title={'Фитиль *'}
-          data={candleDetail.wicks ? candleDetail.wicks : []}
+          data={candle.wicks ? candle.wicks : []}
           selectedData={
-            configuredCandleDetailState.wick
-              ? [configuredCandleDetailState.wick]
+            customCandleBuilder.customCandle.wick
+              ? [customCandleBuilder.customCandle.wick]
               : []
           }
           onSelectProduct={handleWickState}
         />
         <div>
-          {configuredCandle &&
-            configuredCandle.errors &&
-            configuredCandle.errors.map((value) => <p>{value.toString()}</p>)}
+          {errors.map((value, index) => (
+            <p key={index}>{value.toString()}</p>
+          ))}
         </div>
         <div className={Style.configurationInfoBlock}>
           <div className={Style.priceBlock}>
             <span className={Style.priceTitle}>Свеча на</span>
-            <span className={Style.price}>{priceConfiguredCandleDetail} р</span>
+            <span className={Style.price}>
+              {calculateCustomCandlePrice(customCandle)} р
+            </span>
           </div>
           <div className={Style.addBtn}>
             <ButtonWithIcon
               color="#2E67EA"
-              text="Добавить"
+              text={isEditing ? 'Изменить' : 'Добавить'}
               icon={IconPlusLarge}
               onClick={() => handleAddCandleDetail()}
             />

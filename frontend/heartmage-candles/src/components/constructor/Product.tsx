@@ -1,7 +1,6 @@
 import { FC, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import CornerTag from './CornerTag';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import Tag from '../shared/Tag';
 import IconAlertCircleLarge from '../../UI/IconAlertCircleLarge';
@@ -152,26 +151,29 @@ const Product: FC<ProductProps> = ({
           />
         )}
       </div>
-      <div className={Style.price}>
-        {<CornerTag number={product.price} type="price" />}
-      </div>
-      <div
-        className={Style.descriptionWrapper}
-        onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
-        ref={elementRef}
-      >
-        <button className={Style.descriptionBtn}>
-          <IconAlertCircleLarge color="#aaa" />
-        </button>
-        {showInfoBlockPopup && (
-          <InfoBlockPopUp
-            title={product.title}
-            description={product.description}
-            x={position.x}
-            y={position.y}
-          />
-        )}
+      <div className={Style.infoBlock}>
+        <p className={Style.price}>
+          {product.price}
+          <span> р</span>
+        </p>
+        <div
+          className={Style.descriptionWrapper}
+          onMouseEnter={handleMouseOver}
+          onMouseLeave={handleMouseLeave}
+          ref={elementRef}
+        >
+          <button className={Style.descriptionBtn}>
+            <IconAlertCircleLarge color="#aaa" />
+          </button>
+          {showInfoBlockPopup && (
+            <InfoBlockPopUp
+              title={product.title}
+              description={product.description}
+              x={position.x}
+              y={position.y}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

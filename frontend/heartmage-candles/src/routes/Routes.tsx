@@ -14,7 +14,6 @@ import AboutUs from '../pages/home/AboutUsPage';
 import HomePage from '../pages/home/HomePage';
 import NotFoundPage from '../pages/home/NotFoundPage';
 import ConstructorPage from '../pages/constructor/ConstructorPage';
-import ConstructorPageV2 from '../pages/constructor/ConstructorPageV2';
 import BasketPage from '../pages/order/BasketPage';
 import ThankPage from '../pages/order/ThankPage';
 import AuthSuccessPage from '../pages/userAndAuth/AuthSuccessPage';
@@ -36,16 +35,6 @@ const Routes: FC = () => {
           <ConstructorProvider>
             <CandleProvider>
               <ConstructorPage />
-            </CandleProvider>
-          </ConstructorProvider>
-        }
-      />
-      <Route
-        path="constructorV2"
-        element={
-          <ConstructorProvider>
-            <CandleProvider>
-              <ConstructorPageV2 />
             </CandleProvider>
           </ConstructorProvider>
         }
