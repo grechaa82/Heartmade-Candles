@@ -49,7 +49,9 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
           </div>
           <div className={Style.secondaryBlock}>
             <p className={Style.quantity}>{product.quantity} шт</p>
-            <p className={Style.price}>{product.price} p</p>
+            <p className={Style.price}>
+              {product.price.toLocaleString('ru-RU', { useGrouping: true })} Р
+            </p>
           </div>
         </div>
       </div>

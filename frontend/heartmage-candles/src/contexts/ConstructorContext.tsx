@@ -92,8 +92,9 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
   useEffect(() => {
     let newCustomCandles: CustomCandle[] = [];
     let candleDetails: CandleDetail[] = [];
+    let errors: string[] = [];
 
-    const fetchCandleDetails = async (customCandle) => {
+    const fetchCandleDetails = async (customCandle: CustomCandle) => {
       const existingDetail = candleDetails.find(
         (detail) => detail.candle?.id === customCandle.candle?.id,
       );
@@ -104,10 +105,8 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
             customCandle,
             existingDetail,
           );
-        if (newCustomCandles) {
-          newCustomCandles.push(newCustomCandle);
-        } else {
-        }
+
+        newCustomCandles.push(newCustomCandle);
       } else {
         const candleDetailResponse = await ConstructorApi.getCandleById(
           customCandle.candle.id.toString(),
@@ -119,12 +118,10 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
               customCandle,
               candleDetailResponse.data,
             );
-          if (newCustomCandles) {
-            newCustomCandles.push(newCustomCandle);
-            candleDetails.push(candleDetailResponse.data);
-          } else {
-          }
+          newCustomCandles.push(newCustomCandle);
+          candleDetails.push(candleDetailResponse.data);
         } else {
+          errors.push(`Не удалось найти свечу: ${customCandle.candle.title}`);
         }
       }
     };

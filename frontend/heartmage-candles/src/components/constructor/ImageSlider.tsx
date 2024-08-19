@@ -34,6 +34,11 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
     setTimeLeft(scrollTime);
   };
 
+  const handleSetCurrentImageIndex = (index: number) => {
+    setTimeLeft(scrollTime);
+    setCurrentImageIndex(index);
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       if (timeLeft > 0) {
@@ -57,34 +62,29 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
     },
     {
       size: 'large',
-      media: '(max-width: 1100px)',
+      media: '(max-width: 1200px)',
     },
     {
       size: 'medium',
-      media: '(max-width: 1401px)',
+      media: '(max-width: 1690px)',
     },
     {
       size: 'large',
-      media: '(min-width: 1401px)',
+      media: '(min-width: 1691px)',
     },
   ];
 
   return (
     <div className={Style.imageBlock}>
-      <Picture
-        name={images[currentImageIndex].fileName}
-        alt={images[currentImageIndex].alternativeName}
-        className={Style.squareImage}
-        sourceSettings={sourceSettingsForMainImage}
-      />
+      <div className={Style.mainImage}>
+        <Picture
+          name={images[currentImageIndex].fileName}
+          alt={images[currentImageIndex].alternativeName}
+          className={Style.squareImage}
+          sourceSettings={sourceSettingsForMainImage}
+        />
+      </div>
       <div className={Style.slider}>
-        <button
-          className={Style.iconChevronBtn}
-          onClick={() => handleChangeImage(currentImageIndex, -1)}
-          type="button"
-        >
-          <IconChevronUpLarge color="#777" />
-        </button>
         {images.map((image, index) => (
           <div className={Style.imageSliderBlock} key={index}>
             <button
@@ -92,7 +92,7 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
                 currentImageIndex === index ? Style.selected : ''
               }`}
               type="button"
-              onClick={() => setCurrentImageIndex(index)}
+              onClick={() => handleSetCurrentImageIndex(index)}
             >
               <PictureWithProgressBar
                 name={image.fileName}
@@ -109,13 +109,6 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
             </button>
           </div>
         ))}
-        <button
-          className={Style.iconChevronBtn}
-          onClick={() => handleChangeImage(currentImageIndex, 1)}
-          type="button"
-        >
-          <IconChevronDownLarge color="#777" />
-        </button>
       </div>
     </div>
   );

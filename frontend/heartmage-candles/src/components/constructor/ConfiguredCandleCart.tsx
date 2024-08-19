@@ -1,19 +1,18 @@
 import { FC } from 'react';
 
-import CornerTag from './CornerTag';
-import { ConfiguredCandleDetail } from '../../typesV2/constructor/ConfiguredCandleDetail';
 import IconPlusLarge from '../../UI/IconPlusLarge';
 import IconMinusLarge from '../../UI/IconMinusLarge';
 import Picture from '../shared/Picture';
+import { CustomCandle } from '../../typesV2/constructor/CustomCandle';
 
 import Style from './ConfiguredCandleCart.module.css';
 
 export interface ConfiguredCandleCartProps {
-  product: ConfiguredCandleDetail;
+  product: CustomCandle;
   onChangingQuantityProduct: (newQuantity: number, key: number) => void;
   quantity: number;
   index: number;
-  onSelect?: (configuredCandle: ConfiguredCandleDetail) => void;
+  onSelect?: (customCandle: CustomCandle) => void;
 }
 
 const ConfiguredCandleCart: FC<ConfiguredCandleCartProps> = ({
@@ -37,7 +36,12 @@ const ConfiguredCandleCart: FC<ConfiguredCandleCartProps> = ({
 
   return (
     <div className={Style.productCart}>
-      <div className={Style.imageBlock} onClick={() => onSelect(product)}>
+      <div
+        className={`${Style.imageBlock} ${
+          product.isValid ? Style.valid : Style.invalid
+        }`}
+        onClick={() => onSelect(product)}
+      >
         {firstImage && (
           <Picture
             name={firstImage.fileName}
@@ -49,9 +53,6 @@ const ConfiguredCandleCart: FC<ConfiguredCandleCartProps> = ({
             ]}
           />
         )}
-        <div className={Style.quantity}>
-          <CornerTag number={quantity} type="coutner" />
-        </div>
       </div>
       <div className={Style.quantityManagement}>
         <button
@@ -60,6 +61,7 @@ const ConfiguredCandleCart: FC<ConfiguredCandleCartProps> = ({
         >
           <IconPlusLarge color="#aaa" />
         </button>
+        <p className={Style.quantity}>{quantity}</p>
         <button
           className={Style.iconBtn}
           onClick={() => onDecreasesQuantityProduct()}

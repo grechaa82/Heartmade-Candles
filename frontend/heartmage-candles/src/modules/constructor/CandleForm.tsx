@@ -8,8 +8,6 @@ import {
 } from '../../typesV2/shared/BaseProduct';
 import TagSelector from '../../components/constructor/TagSelector';
 import { TagData } from '../../components/shared/Tag';
-import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
-import IconPlusLarge from '../../UI/IconPlusLarge';
 import IconArrowLeftLarge from '../../UI/IconArrowLeftLarge';
 import { useCandleContext } from '../../contexts/CandleContext';
 import { useConstructorContext } from '../../contexts/ConstructorContext';
@@ -17,6 +15,7 @@ import { CustomCandle } from '../../typesV2/constructor/CustomCandle';
 import { calculateCustomCandlePrice } from '../../helpers/CalculatePrice';
 import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
 import { CustomCandleBuilder } from '../../typesV2/constructor/CustomCandleBuilder';
+import Button from '../../components/shared/Button';
 
 import Style from './CandleForm.module.css';
 
@@ -225,24 +224,31 @@ const CandleForm: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
           }
           onSelectProduct={handleWickState}
         />
-        <div>
-          {errors.map((value, index) => (
-            <p key={index}>{value.toString()}</p>
-          ))}
-        </div>
+        {errors.length > 0 && (
+          <ul className={Style.errorBlock}>
+            {errors.map((value, index) => (
+              <li key={index} className={Style.errorMessage}>
+                <div className={Style.ellipseError}></div>
+                <div>{value.toString()}</div>
+              </li>
+            ))}
+          </ul>
+        )}
         <div className={Style.configurationInfoBlock}>
           <div className={Style.priceBlock}>
             <span className={Style.priceTitle}>Свеча на</span>
             <span className={Style.price}>
-              {calculateCustomCandlePrice(customCandle)} р
+              {Math.round(
+                calculateCustomCandlePrice(customCandle),
+              ).toLocaleString('ru-RU', { useGrouping: true })}{' '}
+              Р
             </span>
           </div>
           <div className={Style.addBtn}>
-            <ButtonWithIcon
-              color="#2E67EA"
+            <Button
               text={isEditing ? 'Изменить' : 'Добавить'}
-              icon={IconPlusLarge}
               onClick={() => handleAddCandleDetail()}
+              className={customCandle.isValid ? Style.valid : Style.invalid}
             />
           </div>
         </div>

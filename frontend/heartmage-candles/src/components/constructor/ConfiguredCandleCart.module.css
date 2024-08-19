@@ -4,8 +4,9 @@
 
 .imageBlock {
   position: relative;
-  width: 72px;
-  height: 72px;
+  width: 94px;
+  height: 94px;
+  background-color: var(--color-f7f7f7);
 }
 
 .image {
@@ -24,27 +25,31 @@
   object-fit: cover;
 }
 
-.quantity {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-
 .quantityManagement {
   display: flex;
   flex-direction: column;
-  gap: 16px;
   margin-left: 4px;
+  justify-content: space-between;
+  align-items: center;
 }
+
+.quantity {
+  margin: 0;
+  font-size: var(--font-size-l);
+  line-height: var(--line-height-standard);
+  font-weight: var(--font-weight-400);
+}
+
 
 .iconBtn {
   all: unset;
+  width: 24px;
+  height: 24px;
 }
 
-.valid {
-  border: 2px solid green;
-}
+.valid {}
 
 .invalid {
-  border: 2px solid red;
+  background-color: var(--color-light-red);
+  box-sizing: border-box;
 }

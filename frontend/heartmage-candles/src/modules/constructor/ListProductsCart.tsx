@@ -2,12 +2,10 @@ import { FC } from 'react';
 
 import { useConstructorContext } from '../../contexts/ConstructorContext';
 import { CustomCandle } from '../../typesV2/constructor/CustomCandle';
-import ConfiguredCandleCartV2 from '../../components/constructor/ConfiguredCandleCartV2';
+import ConfiguredCandleCart from '../../components/constructor/ConfiguredCandleCart';
 import Button from '../../components/shared/Button';
 
 import Style from './ListProductsCart.module.css';
-
-type ButtonState = 'default' | 'invalid' | 'valid';
 
 export interface ListProductsCartProps {
   buttonState?: 'default' | 'invalid' | 'valid';
@@ -48,7 +46,7 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
     <>
       <div className={Style.listProductsCart}>
         {customCandles.map((product, index) => (
-          <ConfiguredCandleCartV2
+          <ConfiguredCandleCart
             key={index}
             index={index}
             product={product}
@@ -60,7 +58,9 @@ const ListProductsCart: FC<ListProductsCartProps> = ({
         <div className={Style.infoBlock}>
           <div className={Style.priceBlock}>
             <span className={Style.priceTitle}>Итого</span>
-            <span className={Style.price}>{totalPrice} р</span>
+            <span className={Style.price}>
+              {totalPrice.toLocaleString('ru-RU', { useGrouping: true })} P
+            </span>
           </div>
           <Button
             text="Заказать"
