@@ -1,8 +1,6 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, memo, useCallback, useEffect, useState } from 'react';
 
 import { Image } from '../../types/Image';
-import IconChevronUpLarge from '../../UI/IconChevronUpLarge';
-import IconChevronDownLarge from '../../UI/IconChevronDownLarge';
 import PictureWithProgressBar from '../shared/PictureWithProgressBar';
 import Picture, { SourceSettings } from '../shared/Picture';
 
@@ -13,44 +11,76 @@ interface ImageSliderProps {
 }
 
 const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [scrollTime, setScrollTime] = useState(10);
-  const [timeLeft, setTimeLeft] = useState(scrollTime);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
+  const [scrollTime] = useState<number>(10);
+  const [timeLeft, setTimeLeft] = useState<number>(scrollTime);
 
-  const handleChangeImage = (index: number, moveToIndex?: number) => {
-    let current = index;
-    if (moveToIndex && moveToIndex === -1) {
-      current -= 1;
-      if (current < 0) {
-        current = images.length - 1;
+  const handleChangeImage = useCallback(
+    (index: number, moveToIndex?: number) => {
+      let current = index;
+      if (moveToIndex === -1) {
+        current = (current - 1 + images.length) % images.length;
+      } else if (moveToIndex === 1) {
+        current = (current + 1) % images.length;
       }
-    } else if (moveToIndex && moveToIndex === 1) {
-      current += 1;
-      if (current >= images.length) {
-        current = 0;
-      }
-    }
-    setCurrentImageIndex(current);
-    setTimeLeft(scrollTime);
-  };
+      setCurrentImageIndex(current);
+      setTimeLeft(scrollTime);
+    },
+    [images.length, scrollTime],
+  );
 
-  const handleSetCurrentImageIndex = (index: number) => {
-    setTimeLeft(scrollTime);
-    setCurrentImageIndex(index);
-  };
+  const handleSetCurrentImageIndex = useCallback(
+    (index: number) => {
+      setCurrentImageIndex(index);
+      setTimeLeft(scrollTime);
+    },
+    [scrollTime],
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
       if (timeLeft > 0) {
-        setTimeLeft(timeLeft - 1);
+        setTimeLeft((prev) => prev - 1);
       } else {
         handleChangeImage(currentImageIndex, 1);
       }
-    }, scrollTime * 100);
+    }, 1000);
 
     return () => clearInterval(interval);
-  }, [timeLeft, currentImageIndex]);
+  }, [timeLeft, currentImageIndex, handleChangeImage]);
 
+  return (
+    <div className={Style.imageBlock}>
+      <MainImage image={images[currentImageIndex]} />
+      <div className={Style.slider}>
+        {images.map((image, index) => (
+          <div className={Style.imageSliderBlock} key={index}>
+            <button
+              className={`${Style.sliderBtn} ${
+                currentImageIndex === index ? Style.selected : ''
+              }`}
+              type="button"
+              onClick={() => handleSetCurrentImageIndex(index)}
+            >
+              <PictureWithProgressBar
+                name={image.fileName}
+                alt={image.alternativeName}
+                sourceSettings={[{ size: 'small' }]}
+                showProgressBar={currentImageIndex === index}
+                progressValue={timeLeft}
+                progressMax={scrollTime}
+              />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ImageSlider;
+
+const MainImage: FC<{ image: Image }> = memo(({ image }) => {
   const sourceSettingsForMainImage: SourceSettings[] = [
     {
       size: 'small',
@@ -75,43 +105,13 @@ const ImageSlider: FC<ImageSliderProps> = ({ images }) => {
   ];
 
   return (
-    <div className={Style.imageBlock}>
-      <div className={Style.mainImage}>
-        <Picture
-          name={images[currentImageIndex].fileName}
-          alt={images[currentImageIndex].alternativeName}
-          className={Style.squareImage}
-          sourceSettings={sourceSettingsForMainImage}
-        />
-      </div>
-      <div className={Style.slider}>
-        {images.map((image, index) => (
-          <div className={Style.imageSliderBlock} key={index}>
-            <button
-              className={`${Style.sliderBtn} ${
-                currentImageIndex === index ? Style.selected : ''
-              }`}
-              type="button"
-              onClick={() => handleSetCurrentImageIndex(index)}
-            >
-              <PictureWithProgressBar
-                name={image.fileName}
-                alt={image.alternativeName}
-                sourceSettings={[
-                  {
-                    size: 'small',
-                  },
-                ]}
-                showProgressBar={currentImageIndex === index}
-                progressValue={timeLeft}
-                progressMax={scrollTime}
-              />
-            </button>
-          </div>
-        ))}
-      </div>
+    <div className={Style.mainImage}>
+      <Picture
+        name={image.fileName}
+        alt={image.alternativeName}
+        className={Style.squareImage}
+        sourceSettings={sourceSettingsForMainImage}
+      />
     </div>
   );
-};
-
-export default ImageSlider;
+});

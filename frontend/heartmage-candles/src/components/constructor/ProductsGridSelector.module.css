@@ -1,18 +1,38 @@
-.productGrid>h2 {
+.productGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerContainer {
+  display: flex;
+  text-align: center;
+  justify-content: space-between;
+}
+
+.sectionHeader {
   display: inline-block;
   font-size: var(--font-size-xl);
   font-style: normal;
   font-weight: var(--font-weight-400);
   line-height: var(--line-height-standard);
-  color: var(--color-222);
-  margin: 0 0 16px 0;
-  padding: 0;
+  color: var(--color-000);
+  margin: 0;
+}
+
+.toggleButton {
+  all: unset;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-standard);
+  color: var(--color-000);
+  margin: 0;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-gap: 20px;
+  grid-gap: 1.25rem;
 }
 
 @media (max-width: 1440px) {
