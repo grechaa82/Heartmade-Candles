@@ -7,6 +7,8 @@ public interface IConstructorService
 {
     Task<Result<CandleTypeWithCandles[]>> GetCandles();
 
+    Task<Result<Candle[]>> GetCandlesByType(string typeCandle, int pageSize, int pageIndex);
+
     Task<Result<CandleDetail>> GetCandleDetailById(int candleId);
 
     Task<Result<CandleDetail>> GetCandleByFilter(CandleDetailFilter candleDetailFilter);

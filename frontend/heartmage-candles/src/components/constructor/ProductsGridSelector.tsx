@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 import Product from './Product';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
@@ -12,6 +12,7 @@ export interface ProductsGridSelectorProps<ImageProduct> {
   onSelectProduct?: (product: ImageProduct) => void;
   onDeselectProduct?: (product: ImageProduct) => void;
   withIndex?: boolean;
+  children?: ReactNode;
 }
 
 const ProductsGridSelector: FC<ProductsGridSelectorProps<ImageProduct>> = ({
@@ -21,6 +22,7 @@ const ProductsGridSelector: FC<ProductsGridSelectorProps<ImageProduct>> = ({
   onSelectProduct,
   onDeselectProduct,
   withIndex = false,
+  children,
 }) => {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -39,27 +41,30 @@ const ProductsGridSelector: FC<ProductsGridSelectorProps<ImageProduct>> = ({
         </button>
       </div>
       {isOpen && (
-        <div className={Style.grid}>
-          {data.map((product) => (
-            <Product
-              key={product.id}
-              product={product}
-              pageUrl="candles"
-              onSelectProduct={onSelectProduct}
-              onDeselectProduct={onDeselectProduct}
-              isSelected={selectedData?.some(
-                (selected) => selected?.id === product.id,
-              )}
-              index={
-                withIndex && selectedData
-                  ? selectedData.findIndex(
-                      (selected) => selected?.id === product.id,
-                    ) + 1
-                  : undefined
-              }
-            />
-          ))}
-        </div>
+        <>
+          <div className={Style.grid}>
+            {data.map((product) => (
+              <Product
+                key={product.id}
+                product={product}
+                pageUrl="candles"
+                onSelectProduct={onSelectProduct}
+                onDeselectProduct={onDeselectProduct}
+                isSelected={selectedData?.some(
+                  (selected) => selected?.id === product.id,
+                )}
+                index={
+                  withIndex && selectedData
+                    ? selectedData.findIndex(
+                        (selected) => selected?.id === product.id,
+                      ) + 1
+                    : undefined
+                }
+              />
+            ))}
+          </div>
+          {children}
+        </>
       )}
     </div>
   );

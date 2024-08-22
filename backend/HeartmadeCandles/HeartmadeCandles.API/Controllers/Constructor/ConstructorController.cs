@@ -36,6 +36,24 @@ public class ConstructorController : Controller
         return Ok(result.Value);
     }
 
+    [HttpGet("candles/type")]
+    public async Task<IActionResult> GetCandlesByType(string typeCandle, int pageSize = 15, int pageIndex = 0)
+    {
+        var result = await _constructorService.GetCandlesByType(typeCandle, pageSize, pageIndex);
+
+        if (result.IsFailure)
+        {
+            _logger.LogError(
+                "Error: Failed in process {processName}, error message: {errorMessage}",
+                nameof(_constructorService.GetCandlesByType),
+                result.Error);
+            return BadRequest(
+                $"Error: Failed in process {nameof(_constructorService.GetCandlesByType)}, error message: {result.Error}");
+        }
+
+        return Ok(result.Value);
+    }
+
     [HttpGet("candles/{candleId}")]
     public async Task<IActionResult> GetCandleById(int candleId)
     {

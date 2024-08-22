@@ -4,13 +4,14 @@ import ProductsGridSelector from '../../components/constructor/ProductsGridSelec
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import { useCandleContext } from '../../contexts/CandleContext';
 import { useConstructorContext } from '../../contexts/ConstructorContext';
+import Button from '../../components/shared/Button';
 
 import Style from './CandleSelectionPanel.module.css';
 
 export interface CandleSelectionPanelProps {}
 
 const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({}) => {
-  const { candlesByType } = useConstructorContext();
+  const { candlesByType, loadMoreCandlesByType } = useConstructorContext();
   const { fetchCandleById } = useCandleContext();
 
   const handleOnSelectProduct = (candle: ImageProduct) => {
@@ -26,7 +27,18 @@ const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({}) => {
             title={item.type}
             data={item.candles}
             onSelectProduct={handleOnSelectProduct}
-          />
+          >
+            <Button
+              text={item.pageSize ? `+ ${item.pageSize}` : 'Добавить'}
+              onClick={() =>
+                loadMoreCandlesByType(
+                  item.type,
+                  item.pageSize,
+                  item.pageIndex + 1,
+                )
+              }
+            />
+          </ProductsGridSelector>
         ))}
     </div>
   );

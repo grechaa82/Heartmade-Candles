@@ -27,9 +27,41 @@ public class ConstructorRepository : IConstructorRepository
                 c => new CandleTypeWithCandles
                 {
                     Type = c.Key,
-                    Candles = c.Select(candle => MapToCandle(candle)).ToArray()
+                    Candles = c.OrderBy(candle => candle.Id)
+                        .Select(candle => MapToCandle(candle))
+                        .Take(15)
+                        .ToArray()
                 })
             .ToArray();
+
+        return Result.Success(result);
+    }
+
+
+    public async Task<Result<Candle[]>> GetCandlesByType(string typeCandle, int pageSize, int pageIndex)
+    {
+        var typeCandleExists = await _context.TypeCandle
+            .AnyAsync(t => t.Title == typeCandle);
+
+        if (!typeCandleExists)
+        {
+            return Result.Failure<Candle[]>($"TypeCandle: {typeCandle} not found");
+        }
+
+        var items = await _context.Candle
+            .AsNoTracking()
+            .Where(c => c.IsActive && c.TypeCandle.Title == typeCandle)
+            .OrderBy(c => c.Id)
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
+            .ToArrayAsync();
+
+        if (items.Length == 0)
+        {
+            return Result.Failure<Candle[]>("There are no available items");
+        }
+
+        var result = items.Select(MapToCandle).ToArray();
 
         return Result.Success(result);
     }

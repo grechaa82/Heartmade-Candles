@@ -23,6 +23,11 @@ type IConstructorContext = {
   totalPrice: number;
   customCandles: CustomCandle[];
   setCustomCandles: (customCandle: CustomCandle[]) => void;
+  loadMoreCandlesByType: (
+    typeCandle: string,
+    pageSize: number,
+    pageIndex: number,
+  ) => void;
   isLoadingCandlesByType: boolean;
 };
 
@@ -31,6 +36,7 @@ const initialValue: IConstructorContext = {
   totalPrice: 0,
   customCandles: [],
   setCustomCandles: () => {},
+  loadMoreCandlesByType: () => {},
   isLoadingCandlesByType: true,
 };
 
@@ -71,23 +77,80 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
     return newTotalPrice;
   }
 
-  useEffect(() => {
-    const delay = 60000;
+  const loadMoreCandlesByType = async (
+    typeCandle: string,
+    pageSize: number,
+    pageIndex: number,
+  ) => {
+    const candleDetailResponse = await ConstructorApi.getCandlesByType(
+      typeCandle,
+      pageSize,
+      pageIndex,
+    );
 
+    if (candleDetailResponse.data && !candleDetailResponse.error) {
+      setCandlesByType((prevCandlesByType) => {
+        const existingType = prevCandlesByType.find(
+          (candles) => candles.type === typeCandle,
+        );
+        if (existingType) {
+          return prevCandlesByType.map((candles) => {
+            if (candles.type === typeCandle) {
+              return {
+                ...candles,
+                candles: [...candles.candles, ...candleDetailResponse.data],
+                pageIndex: pageIndex,
+              };
+            }
+            return candles;
+          });
+        } else {
+          return [
+            ...prevCandlesByType,
+            { type: typeCandle, candles: candleDetailResponse.data },
+          ];
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
     async function fetchData() {
       const candlesResponse = await ConstructorApi.getCandles();
       if (candlesResponse.data && !candlesResponse.error) {
-        setCandlesByType(candlesResponse.data);
+        const updatedCandlesByType = candlesResponse.data.map((candles) => ({
+          ...candles,
+          pageSize: candles.candles.length,
+          pageIndex: 0,
+        }));
+        setCandlesByType(updatedCandlesByType);
         setIsLoadingCandlesByType(false);
-      } else {
       }
     }
 
     fetchData();
-    const interval = setInterval(fetchData, delay);
-
-    return () => clearInterval(interval);
   }, []);
+
+  // TODO: Можно не обновлять весь список свечей. А можно проверять состояние свечей в customCandles
+  // useEffect(() => {
+  //   const delay = 30000;
+  //   async function fetchData() {
+  //     const candlesResponse = await ConstructorApi.getCandles();
+  //     if (candlesResponse.data && !candlesResponse.error) {
+  //       const updatedCandlesByType = candlesResponse.data.map((candles) => ({
+  //         ...candles,
+  //         pageSize: candles.candles.length,
+  //         pageIndex: 0,
+  //       }));
+  //       setCandlesByType(updatedCandlesByType);
+  //       setIsLoadingCandlesByType(false);
+  //     } else {
+  //     }
+  //   }
+  //   fetchData();
+  //   const interval = setInterval(fetchData, delay);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   useEffect(() => {
     let newCustomCandles: CustomCandle[] = [];
@@ -140,6 +203,7 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
       totalPrice,
       customCandles,
       setCustomCandles: handleSetCustomCandles,
+      loadMoreCandlesByType,
       isLoadingCandlesByType,
     }),
     [candlesByType, totalPrice, customCandles],
