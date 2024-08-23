@@ -22,16 +22,18 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
     <div className={Style.orderItem}>
       <div className={Style.mainInfo}>
         {firstImage && (
-          <Picture
-            name={firstImage.fileName}
-            alt={firstImage.alternativeName}
-            className={Style.squareImage}
-            sourceSettings={[
-              {
-                size: 'small',
-              },
-            ]}
-          />
+          <div className={Style.mainImage}>
+            <Picture
+              name={firstImage.fileName}
+              alt={firstImage.alternativeName}
+              className={Style.squareImage}
+              sourceSettings={[
+                {
+                  size: 'small',
+                },
+              ]}
+            />
+          </div>
         )}
         <div className={Style.info}>
           <div className={Style.titleBlock}>

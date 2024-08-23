@@ -29,6 +29,7 @@ const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({}) => {
             onSelectProduct={handleOnSelectProduct}
           >
             <Button
+              className={Style.loadMoreBtn}
               text={item.pageSize ? `+ ${item.pageSize}` : 'Добавить'}
               onClick={() =>
                 loadMoreCandlesByType(
