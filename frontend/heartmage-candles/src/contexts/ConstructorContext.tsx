@@ -131,26 +131,43 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
     fetchData();
   }, []);
 
-  // TODO: Можно не обновлять весь список свечей. А можно проверять состояние свечей в customCandles
-  // useEffect(() => {
-  //   const delay = 30000;
-  //   async function fetchData() {
-  //     const candlesResponse = await ConstructorApi.getCandles();
-  //     if (candlesResponse.data && !candlesResponse.error) {
-  //       const updatedCandlesByType = candlesResponse.data.map((candles) => ({
-  //         ...candles,
-  //         pageSize: candles.candles.length,
-  //         pageIndex: 0,
-  //       }));
-  //       setCandlesByType(updatedCandlesByType);
-  //       setIsLoadingCandlesByType(false);
-  //     } else {
-  //     }
-  //   }
-  //   fetchData();
-  //   const interval = setInterval(fetchData, delay);
-  //   return () => clearInterval(interval);
-  // }, []);
+  useEffect(() => {
+    const delay = 60000;
+    async function fetchData() {
+      const currentCandlesByType = candlesByType;
+      const updatedCandlesByType: CandlesByType[] = new Array(
+        currentCandlesByType.length,
+      ).fill(null);
+
+      const promises = currentCandlesByType.map(async (item, index) => {
+        const candlesResponse = await ConstructorApi.getCandlesByType(
+          item.type,
+          item.candles.length,
+          0,
+        );
+        if (candlesResponse.data && !candlesResponse.error) {
+          const newCandlesByType: CandlesByType = {
+            type: item.type,
+            candles: candlesResponse.data,
+            pageSize: item.pageSize,
+            pageIndex: item.pageIndex,
+          };
+          updatedCandlesByType[index] = newCandlesByType;
+        }
+      });
+
+      await Promise.all(promises);
+
+      if (updatedCandlesByType.length > 0) {
+        setCandlesByType(updatedCandlesByType);
+      }
+      setIsLoadingCandlesByType(false);
+    }
+
+    fetchData();
+    const interval = setInterval(fetchData, delay);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     let newCustomCandles: CustomCandle[] = [];

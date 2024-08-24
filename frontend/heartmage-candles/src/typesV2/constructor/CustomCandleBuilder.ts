@@ -230,8 +230,6 @@ export class CustomCandleBuilder {
         isValid: false,
         errors: [...errors, 'Необходимо указать свечу'],
       };
-    } else {
-      newCustomCandleBuilder.setCandle(customCandle.candle);
     }
 
     if (
@@ -241,8 +239,6 @@ export class CustomCandleBuilder {
       )
     ) {
       errors.push('Выбранное количество слоев недоступно в списке');
-    } else {
-      newCustomCandleBuilder.setNumberOfLayer(customCandle.numberOfLayer);
     }
 
     if (customCandle.layerColors) {
@@ -255,7 +251,6 @@ export class CustomCandleBuilder {
           errors.push(`Цвет слоя ${color.title} недоступен`);
         }
       });
-      newCustomCandleBuilder.setLayerColor(customCandle.layerColors);
     }
 
     if (
@@ -263,8 +258,8 @@ export class CustomCandleBuilder {
       !candleDetail.decors?.some((decor) => decor.id === customCandle.decor.id)
     ) {
       errors.push('Выбранный декор недоступен');
-    } else {
-      newCustomCandleBuilder.setDecor(customCandle.decor);
+    } else if (candleDetail.decors) {
+      newCustomCandleBuilder.setDecor(null);
     }
 
     if (
@@ -272,8 +267,8 @@ export class CustomCandleBuilder {
       !candleDetail.smells?.some((smell) => smell.id === customCandle.smell.id)
     ) {
       errors.push('Выбранный запах недоступен');
-    } else {
-      newCustomCandleBuilder.setSmell(customCandle.smell);
+    } else if (candleDetail.smells) {
+      newCustomCandleBuilder.setSmell(null);
     }
 
     if (
@@ -281,11 +276,16 @@ export class CustomCandleBuilder {
       !candleDetail.wicks?.some((wick) => wick.id === customCandle.wick?.id)
     ) {
       errors.push('Выбранный фитиль не доступен');
-    } else {
-      newCustomCandleBuilder.setWick(customCandle.wick);
     }
 
-    newCustomCandleBuilder.setQuantity(customCandle.quantity);
+    newCustomCandleBuilder
+      .setCandle(customCandle.candle)
+      .setNumberOfLayer(customCandle.numberOfLayer)
+      .setLayerColor(customCandle.layerColors)
+      .setWick(customCandle.wick)
+      .setDecor(customCandle.decor)
+      .setSmell(customCandle.smell)
+      .setQuantity(customCandle.quantity);
 
     const customCandleBuildResult = newCustomCandleBuilder.build();
 

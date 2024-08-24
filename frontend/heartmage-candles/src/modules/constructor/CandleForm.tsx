@@ -125,20 +125,29 @@ const CandleForm: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
 
   useEffect(() => {
     if (isEditing) {
-      const currentLayerColors = customCandle.layerColors || [];
-      const candleLayerColors = candle.layerColors || [];
-      const errors = customCandle.errors;
+      const currentCustomCandle = customCandle || null;
+      const currentCandle = candle || null;
+      let errors = customCandle.errors;
 
-      const updatedLayerColors = currentLayerColors.filter((color) =>
-        candleLayerColors.some((c) => c.id === color.id),
+      if (customCandle.decor && currentCandle.decors.length === 0) {
+        errors = errors.filter((error) => !error.includes('декор'));
+        customCandleBuilder.setDecor(null);
+      }
+      if (customCandle.smell && currentCandle.smells.length === 0) {
+        errors = errors.filter((error) => !error.includes('запах'));
+        customCandleBuilder.setSmell(null);
+      }
+
+      const updatedLayerColors = currentCustomCandle.layerColors.filter(
+        (color) => currentCandle.layerColors.some((c) => c.id === color.id),
       );
 
-      const newCustomCandle = customCandleBuilder
+      const newCustomCandleBuildResult = customCandleBuilder
         .setLayerColor(updatedLayerColors)
         .setErrors(errors)
-        .getCustomCandle();
+        .build();
 
-      setCustomCandle(newCustomCandle);
+      setCustomCandle(newCustomCandleBuildResult.customCandle);
     }
   }, []);
 

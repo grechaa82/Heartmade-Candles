@@ -15,8 +15,8 @@ const CandleSelectionPanelSkeleton: FC = () => {
       </div>
       <div className={Style.gridSkeleton}>
         {countProductsSkeleton.map((item, index) => (
-          <div className={Style.productSkeleton}>
-            <div className={Style.imageSkeleton} key={index}>
+          <div className={Style.productSkeleton} key={index}>
+            <div className={Style.imageSkeleton}>
               <Skeleton />
             </div>
             <div className={Style.infoBlockSkeleton}>
