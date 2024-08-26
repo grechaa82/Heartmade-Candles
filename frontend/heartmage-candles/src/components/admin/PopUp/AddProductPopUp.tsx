@@ -2,11 +2,12 @@ import { FC, useEffect, useState } from 'react';
 
 import { BaseProduct } from '../../../types/BaseProduct';
 import ProductBlock from '../ProductBlock';
-import PopUp, { PopUpProps } from './PopUp';
+import PopUp, { PopUpProps } from '../../shared/PopUp/PopUp';
 
 import Style from './AddProductPopUp.module.css';
 
-export interface AddProductPopUpProps<T extends BaseProduct> extends PopUpProps {
+export interface AddProductPopUpProps<T extends BaseProduct>
+  extends PopUpProps {
   title: string;
   selectedData: T[];
   setSelectedData: (data: T[]) => void;
@@ -62,7 +63,9 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
               <button
                 key={item.id}
                 className={`${Style.productButton} ${
-                  selectedData.some((p) => p.id === item.id) ? Style.selectedButton : ''
+                  selectedData.some((p) => p.id === item.id)
+                    ? Style.selectedButton
+                    : ''
                 }`}
                 onClick={() =>
                   selectedData.some((p) => p.id === item.id)
@@ -80,7 +83,9 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
         {onSave && (
           <button
             type="button"
-            className={`${Style.saveButton} ${isModified && Style.activeSaveButton}`}
+            className={`${Style.saveButton} ${
+              isModified && Style.activeSaveButton
+            }`}
             onClick={() => {
               onSave(selectedData);
               onClose();

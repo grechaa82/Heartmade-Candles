@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 
 import { LayerColor } from '../../../../types/LayerColor';
 import { Image } from '../../../../types/Image';
-import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import PopUp, { PopUpProps } from '../../../../components/shared/PopUp/PopUp';
 import ImageUploader from '../../../../components/admin/ImageUploader';
 import ImagePreview from '../../../../components/admin/ImagePreview';
 import LayerColorForm from '../../../../components/admin/Form/LayerColor/LayerColorForm';

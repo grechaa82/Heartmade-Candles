@@ -3,7 +3,7 @@ import { FC, useState } from 'react';
 import { Candle } from '../../../../types/Candle';
 import { Image } from '../../../../types/Image';
 import { TypeCandle } from '../../../../types/TypeCandle';
-import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import PopUp, { PopUpProps } from '../../../../components/shared/PopUp/PopUp';
 import ImagePreview from '../../../../components/admin/ImagePreview';
 import ImageUploader from '../../../../components/admin/ImageUploader';
 import CandleForm from '../../../../components/admin/Form/Candle/CandleForm';

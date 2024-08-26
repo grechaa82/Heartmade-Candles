@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 
 import { Decor } from '../../../../types/Decor';
 import { Image } from '../../../../types/Image';
-import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import PopUp, { PopUpProps } from '../../../../components/shared/PopUp/PopUp';
 import ImageUploader from '../../../../components/admin/ImageUploader';
 import ImagePreview from '../../../../components/admin/ImagePreview';
 import DecorForm from '../../../../components/admin/Form/Decor/DecorForm';

@@ -1,6 +1,6 @@
 import { FC, useState, DragEvent } from 'react';
 
-import PopUp, { PopUpProps } from './PopUp';
+import PopUp, { PopUpProps } from '../../shared/PopUp/PopUp';
 import Button from '../../shared/Button';
 import { Image } from '../../../types/Image';
 import IconTrashLarge from '../../../UI/IconTrashLarge';

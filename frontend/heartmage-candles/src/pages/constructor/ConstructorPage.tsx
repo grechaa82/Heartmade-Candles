@@ -1,5 +1,5 @@
 import { FC, useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import CandleSelectionPanelSkeleton from '../../modules/constructor/CandleSelectionPanelSkeleton';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
@@ -14,17 +14,28 @@ import {
   CustomCandle,
   getFilterFromCustomCandle,
 } from '../../typesV2/constructor/CustomCandle';
+import {
+  CustomCandleFilter,
+  tryParseFilterToCustomCandleFilter,
+} from '../../typesV2/constructor/CustomCandleFilter';
 import { CandleDetailFilterBasketRequest } from '../../typesV2/order/CandleDetailFilterBasketRequest';
 import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
 import { CustomCandleBuilder } from '../../typesV2/constructor/CustomCandleBuilder';
+import { ConstructorApi } from '../../services/ConstructorApi';
+import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
+import LoadCandlePopUp from '../../modules/constructor/PopUp/LoadCandlePopUp';
 
 import { BasketApi } from '../../services/BasketApi';
 
 import Style from './ConstructorPage.module.css';
 
 const ConstructorPage: FC = () => {
-  const { customCandles, isLoadingCandlesByType: isLoading } =
-    useConstructorContext();
+  const {
+    candlesByType,
+    customCandles,
+    isLoadingCandlesByType: isLoading,
+    setCustomCandles,
+  } = useConstructorContext();
   const {
     candle,
     fetchCandleById,
@@ -32,7 +43,8 @@ const ConstructorPage: FC = () => {
     updateCustomCandleBuilder,
   } = useCandleContext();
   const [isEditing, setIsEditing] = useState(false);
-
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
 
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
@@ -146,6 +158,116 @@ const ConstructorPage: FC = () => {
     }
   }, [customCandles]);
 
+  useEffect(() => {
+    const localSearch = location.search.replace(/^\?/, '');
+
+    if (localSearch) {
+      const customCandleFilters: CustomCandleFilter[] = localSearch
+        .split('.')
+        .map(tryParseFilterToCustomCandleFilter);
+
+      if (customCandleFilters.length > 0) {
+        handlePopUpOpen();
+      }
+    }
+  }, []);
+
+  const loadCandles = async () => {
+    let newCustomCandles: CustomCandle[] = [];
+    let errors: string[] = [];
+
+    const localSearch = location.search.replace(/^\?/, '');
+
+    const customCandleFilters: CustomCandleFilter[] = localSearch
+      .split('.')
+      .map(tryParseFilterToCustomCandleFilter)
+      .filter((item) => item !== null);
+
+    if (customCandleFilters.length === 0) {
+      return;
+    }
+
+    const promises = customCandleFilters.map(async (item) => {
+      const candleDetailResponse = await ConstructorApi.getCandleById(
+        item.candleId.toString(),
+      );
+
+      if (candleDetailResponse.data && !candleDetailResponse.error) {
+        const candleDetail: CandleDetail = candleDetailResponse.data;
+        let errors: string[] = [];
+
+        const customCandleBuilder = new CustomCandleBuilder()
+          .setCandle(candleDetail.candle)
+          .setQuantity(item.quantity);
+
+        if (item.numberOfLayerId) {
+          const numberOfLayer = candleDetail.numberOfLayers.find(
+            (layer) => layer.id === item.numberOfLayerId,
+          );
+          if (!numberOfLayer) {
+            errors.push(`Не удалось найти слой с ID ${item.numberOfLayerId}`);
+          } else {
+            customCandleBuilder.setNumberOfLayer(numberOfLayer);
+          }
+        }
+
+        if (item.layerColorsIds) {
+          const layerColors = candleDetail.layerColors.filter((color) =>
+            item.layerColorsIds.includes(color.id),
+          );
+          if (layerColors.length === 0) {
+            errors.push(`Не удалось найти цвета для ID ${item.layerColorsIds}`);
+          }
+          customCandleBuilder.setLayerColor(layerColors);
+        }
+
+        if (item.wickId) {
+          const wick = candleDetail.wicks.find((w) => w.id === item.wickId);
+          if (!wick) {
+            errors.push(`Не удалось найти фитиль с ID ${item.wickId}`);
+          }
+          customCandleBuilder.setWick(wick);
+        }
+
+        if (item.decorId) {
+          const decor = candleDetail.decors.find((d) => d.id === item.decorId);
+          if (!decor) {
+            errors.push(`Не удалось найти декор с ID ${item.decorId}`);
+          } else {
+            customCandleBuilder.setDecor(decor);
+          }
+        }
+
+        if (item.smellId) {
+          const smell = candleDetail.smells.find((s) => s.id === item.smellId);
+          if (!smell) {
+            errors.push(`Не удалось найти аромат с ID ${item.smellId}`);
+          }
+          customCandleBuilder.setSmell(smell);
+        }
+
+        customCandleBuilder.setErrors(errors);
+
+        const result = customCandleBuilder.build();
+
+        newCustomCandles.push(result.customCandle);
+      }
+    });
+
+    await Promise.all(promises);
+
+    setCustomCandles(newCustomCandles);
+  };
+
+  const handlePopUpOpen = () => {
+    setIsPopUpOpen(true);
+  };
+
+  const handlePopUpClose = () => {
+    navigate('');
+    setIsPopUpOpen(false);
+  };
+
   return (
     <div className={Style.container}>
       <ListErrorPopUp messages={errorMessage} />
@@ -185,6 +307,9 @@ const ConstructorPage: FC = () => {
           <CandleSelectionPanel />
         )}
       </div>
+      {isPopUpOpen && (
+        <LoadCandlePopUp onClose={handlePopUpClose} loadCandles={loadCandles} />
+      )}
     </div>
   );
 };

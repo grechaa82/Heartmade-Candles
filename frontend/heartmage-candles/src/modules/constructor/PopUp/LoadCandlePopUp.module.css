@@ -1,0 +1,38 @@
+.container {
+    padding: 32px;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+}
+
+.title {
+    display: inline-block;
+    font-size: var(--font-size-xl);
+    font-style: normal;
+    font-weight: var(--font-weight-400);
+    line-height: var(--line-height-standard);
+    color: var(--color-000);
+    margin: 0;
+}
+
+.buttonBlock {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.cancelBtn {
+    color: var(--color-222);
+    border: 2px solid var(--color-eee);
+    background: none;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.confirmationBtn {
+    color: var(--color-fff);
+    border: 2px solid var(--color-blue);
+    background: var(--color-blue);
+    box-sizing: border-box;
+    width: 100%;
+}
