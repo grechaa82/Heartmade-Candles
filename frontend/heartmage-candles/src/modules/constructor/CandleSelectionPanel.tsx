@@ -2,21 +2,19 @@ import { FC } from 'react';
 
 import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
-import { useCandleContext } from '../../contexts/CandleContext';
 import { useConstructorContext } from '../../contexts/ConstructorContext';
 import Button from '../../components/shared/Button';
 
 import Style from './CandleSelectionPanel.module.css';
 
-export interface CandleSelectionPanelProps {}
+export interface CandleSelectionPanelProps {
+  onSelectProduct: (candle: ImageProduct) => void;
+}
 
-const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({}) => {
+const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({
+  onSelectProduct,
+}) => {
   const { candlesByType, loadMoreCandlesByType } = useConstructorContext();
-  const { fetchCandleById } = useCandleContext();
-
-  const handleOnSelectProduct = (candle: ImageProduct) => {
-    fetchCandleById(candle.id.toString());
-  };
 
   return (
     <div className={Style.content}>
@@ -26,7 +24,7 @@ const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({}) => {
             key={index}
             title={item.type}
             data={item.candles}
-            onSelectProduct={handleOnSelectProduct}
+            onSelectProduct={onSelectProduct}
           >
             <Button
               className={Style.loadMoreBtn}

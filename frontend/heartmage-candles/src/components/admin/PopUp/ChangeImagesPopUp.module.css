@@ -58,4 +58,5 @@
 .squareImage {
   overflow: hidden;
   aspect-ratio: 1;
+  background: var(--color-f7f7f7);
 }

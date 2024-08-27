@@ -24,6 +24,7 @@ import { CustomCandleBuilder } from '../../typesV2/constructor/CustomCandleBuild
 import { ConstructorApi } from '../../services/ConstructorApi';
 import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
 import LoadCandlePopUp from '../../modules/constructor/PopUp/LoadCandlePopUp';
+import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 
 import { BasketApi } from '../../services/BasketApi';
 
@@ -31,7 +32,6 @@ import Style from './ConstructorPage.module.css';
 
 const ConstructorPage: FC = () => {
   const {
-    candlesByType,
     customCandles,
     isLoadingCandlesByType: isLoading,
     setCustomCandles,
@@ -176,9 +176,11 @@ const ConstructorPage: FC = () => {
     let newCustomCandles: CustomCandle[] = [];
     let errors: string[] = [];
 
-    const localSearch = location.search.replace(/^\?/, '');
+    const filterString = decodeURI(
+      new URLSearchParams(location.search).toString().replace(/=$/, ''),
+    );
 
-    const customCandleFilters: CustomCandleFilter[] = localSearch
+    const customCandleFilters: CustomCandleFilter[] = filterString
       .split('.')
       .map(tryParseFilterToCustomCandleFilter)
       .filter((item) => item !== null);
@@ -268,9 +270,19 @@ const ConstructorPage: FC = () => {
     setIsPopUpOpen(false);
   };
 
+  const handleOnSelectProduct = (candle: ImageProduct) => {
+    fetchCandleById(candle.id.toString());
+    if (blockCandleFormRef.current) {
+      blockCandleFormRef.current.scrollTop = 0;
+    }
+  };
+
   return (
     <div className={Style.container}>
       <ListErrorPopUp messages={errorMessage} />
+      {isPopUpOpen && (
+        <LoadCandlePopUp onClose={handlePopUpClose} loadCandles={loadCandles} />
+      )}
       <div
         className={`${Style.leftPanel} ${
           customCandles.length === 0 ? Style.noElements : ''
@@ -304,12 +316,9 @@ const ConstructorPage: FC = () => {
         ) : isLoading ? (
           <CandleSelectionPanelSkeleton />
         ) : (
-          <CandleSelectionPanel />
+          <CandleSelectionPanel onSelectProduct={handleOnSelectProduct} />
         )}
       </div>
-      {isPopUpOpen && (
-        <LoadCandlePopUp onClose={handlePopUpClose} loadCandles={loadCandles} />
-      )}
     </div>
   );
 };
