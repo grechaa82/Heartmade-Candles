@@ -129,11 +129,17 @@ const CandleForm: FC<CandleFormProps> = ({ hideCandleForm, isEditing }) => {
       const currentCandle = candle || null;
       let errors = customCandle.errors;
 
-      if (customCandle.decor && currentCandle.decors.length === 0) {
+      if (
+        (customCandle.decor || !customCandle.decor) &&
+        currentCandle.decors.length === 0
+      ) {
         errors = errors.filter((error) => !error.includes('декор'));
         customCandleBuilder.setDecor(null);
       }
-      if (customCandle.smell && currentCandle.smells.length === 0) {
+      if (
+        (customCandle.smell || !customCandle.smell) &&
+        currentCandle.smells.length === 0
+      ) {
         errors = errors.filter((error) => !error.includes('запах'));
         customCandleBuilder.setSmell(null);
       }

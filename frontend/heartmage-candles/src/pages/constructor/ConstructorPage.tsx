@@ -42,13 +42,13 @@ const ConstructorPage: FC = () => {
     setCustomCandleBuilder,
     updateCustomCandleBuilder,
   } = useCandleContext();
+
   const [isEditing, setIsEditing] = useState(false);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
+  const location = useLocation();
+  const navigate = useNavigate();
   const blockCandleFormRef = useRef<HTMLDivElement>(null);
 
   const handleOnSelectInProductCart = (selectedCustomCandle: CustomCandle) => {
@@ -134,7 +134,10 @@ const ConstructorPage: FC = () => {
       if (basketIdResponse.data && !basketIdResponse.error) {
         navigate(`/baskets/${basketIdResponse.data}`);
       } else {
-        setErrorMessage([...errorMessage, basketIdResponse.error as string]);
+        checkConditionOfCandles(customCandles);
+        const errors =
+          'К сожалению, ваш заказ невозможен, необходимо перенастроить свечу';
+        setErrorMessage([...errorMessage, errors]);
       }
     } else {
       setErrorMessage([
@@ -142,6 +145,53 @@ const ConstructorPage: FC = () => {
         'Что-то пошло не так, попробуйте повторить действие',
       ]);
     }
+  };
+
+  const checkConditionOfCandles = async (
+    currentCustomCandle: CustomCandle[],
+  ) => {
+    let newCustomCandles: CustomCandle[] = [];
+    let candleDetails: CandleDetail[] = [];
+    let errors: string[] = [];
+
+    if (currentCustomCandle.length === 0) {
+      return;
+    }
+
+    const fetchCandleDetails = async (customCandle: CustomCandle) => {
+      const existingDetail = candleDetails.find(
+        (detail) => detail.candle?.id === customCandle.candle?.id,
+      );
+      if (existingDetail) {
+        const newCustomCandle =
+          CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
+            customCandle,
+            existingDetail,
+          );
+
+        newCustomCandles.push(newCustomCandle);
+      } else {
+        const candleDetailResponse = await ConstructorApi.getCandleById(
+          customCandle.candle.id.toString(),
+        );
+
+        if (candleDetailResponse.data && !candleDetailResponse.error) {
+          const newCustomCandle =
+            CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
+              customCandle,
+              candleDetailResponse.data,
+            );
+          newCustomCandles.push(newCustomCandle);
+          candleDetails.push(candleDetailResponse.data);
+        } else {
+          errors.push(`Не удалось найти свечу: ${customCandle.candle.title}`);
+        }
+      }
+    };
+
+    await Promise.all(currentCustomCandle.map(fetchCandleDetails));
+
+    setCustomCandles(newCustomCandles);
   };
 
   useEffect(() => {
@@ -156,7 +206,7 @@ const ConstructorPage: FC = () => {
 
       navigate(`?${newQueryString}`);
     }
-  }, [customCandles]);
+  }, [customCandles, setCustomCandles]);
 
   useEffect(() => {
     const localSearch = location.search.replace(/^\?/, '');

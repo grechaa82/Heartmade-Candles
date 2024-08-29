@@ -131,88 +131,45 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const delay = 60000;
-    async function fetchData() {
-      const currentCandlesByType = candlesByType;
-      const updatedCandlesByType: CandlesByType[] = new Array(
-        currentCandlesByType.length,
-      ).fill(null);
+  // useEffect(() => {
+  //   const delay = 45000;
+  //   async function fetchData() {
+  //     const currentCandlesByType = candlesByType;
+  //     const updatedCandlesByType: CandlesByType[] = new Array(
+  //       currentCandlesByType.length,
+  //     ).fill(null);
 
-      const promises = currentCandlesByType.map(async (item, index) => {
-        const candlesResponse = await ConstructorApi.getCandlesByType(
-          item.type,
-          item.candles.length,
-          0,
-        );
-        if (candlesResponse.data && !candlesResponse.error) {
-          const newCandlesByType: CandlesByType = {
-            type: item.type,
-            candles: candlesResponse.data,
-            pageSize: item.pageSize,
-            pageIndex: item.pageIndex,
-          };
-          updatedCandlesByType[index] = newCandlesByType;
-        }
-      });
+  //     const promises = currentCandlesByType.map(async (item, index) => {
+  //       const candlesResponse = await ConstructorApi.getCandlesByType(
+  //         item.type,
+  //         item.candles.length,
+  //         0,
+  //       );
+  //       if (candlesResponse.data && !candlesResponse.error) {
+  //         const newCandlesByType: CandlesByType = {
+  //           type: item.type,
+  //           candles: candlesResponse.data,
+  //           pageSize: item.pageSize,
+  //           pageIndex: item.pageIndex,
+  //         };
+  //         updatedCandlesByType[index] = newCandlesByType;
+  //       }
+  //     });
 
-      await Promise.all(promises);
+  //     await Promise.all(promises);
 
-      if (updatedCandlesByType.length > 0) {
-        setCandlesByType(updatedCandlesByType);
-      }
-      setIsLoadingCandlesByType(false);
-    }
+  //     if (updatedCandlesByType.length > 0) {
+  //       setCandlesByType(updatedCandlesByType);
+  //     }
+  //     setIsLoadingCandlesByType(false);
 
-    fetchData();
-    const interval = setInterval(fetchData, delay);
-    return () => clearInterval(interval);
-  }, []);
+  //     await checkConditionOfCandles(customCandles);
+  //   }
 
-  useEffect(() => {
-    let newCustomCandles: CustomCandle[] = [];
-    let candleDetails: CandleDetail[] = [];
-    let errors: string[] = [];
-
-    const fetchCandleDetails = async (customCandle: CustomCandle) => {
-      const existingDetail = candleDetails.find(
-        (detail) => detail.candle?.id === customCandle.candle?.id,
-      );
-
-      if (existingDetail) {
-        const newCustomCandle =
-          CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
-            customCandle,
-            existingDetail,
-          );
-
-        newCustomCandles.push(newCustomCandle);
-      } else {
-        const candleDetailResponse = await ConstructorApi.getCandleById(
-          customCandle.candle.id.toString(),
-        );
-
-        if (candleDetailResponse.data && !candleDetailResponse.error) {
-          const newCustomCandle =
-            CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
-              customCandle,
-              candleDetailResponse.data,
-            );
-          newCustomCandles.push(newCustomCandle);
-          candleDetails.push(candleDetailResponse.data);
-        } else {
-          errors.push(`Не удалось найти свечу: ${customCandle.candle.title}`);
-        }
-      }
-    };
-
-    const fetchAllCustomCandles = async () => {
-      await Promise.all(customCandles.map(fetchCandleDetails));
-      setCustomCandles(newCustomCandles);
-    };
-
-    fetchAllCustomCandles();
-  }, [candlesByType, setCandlesByType]);
+  //   fetchData();
+  //   const interval = setInterval(fetchData, delay);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const contextValue = useMemo(
     () => ({
