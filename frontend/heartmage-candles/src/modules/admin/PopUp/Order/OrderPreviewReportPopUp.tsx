@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import PopUp, { PopUpProps } from '../../../../components/shared/PopUp/PopUp';
 import { Order } from '../../../../typesV2/shared/Order';
 import ListProductsCart from '../../../order/ListProductsCart';
 

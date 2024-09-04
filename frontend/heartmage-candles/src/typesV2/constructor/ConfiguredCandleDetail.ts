@@ -1,4 +1,11 @@
-import { Candle, NumberOfLayer, LayerColor, Wick, Decor, Smell } from '../shared/BaseProduct';
+import {
+  Candle,
+  NumberOfLayer,
+  LayerColor,
+  Wick,
+  Decor,
+  Smell,
+} from '../shared/BaseProduct';
 import { CandleDetail } from './CandleDetail';
 import { OrderItemFilter } from '../shared/OrderItemFilter';
 
@@ -11,6 +18,8 @@ export class ConfiguredCandleDetail {
   decor?: Decor;
   smell?: Smell;
   filter?: string;
+  isValid: boolean;
+  errors: string[];
 
   constructor(
     candle: Candle,
@@ -20,6 +29,8 @@ export class ConfiguredCandleDetail {
     wick?: Wick,
     decor?: Decor,
     smell?: Smell,
+    isValid: boolean = false,
+    errors: string[] = [],
   ) {
     this.candle = candle;
     this.layerColors = layerColors;
@@ -28,6 +39,8 @@ export class ConfiguredCandleDetail {
     this.quantity = quantity;
     this.decor = decor;
     this.smell = smell;
+    this.isValid = isValid;
+    this.errors = errors;
   }
 
   getFilter(): string {
@@ -35,7 +48,9 @@ export class ConfiguredCandleDetail {
       const parts = [
         `c-${this.candle.id}`,
         `n-${this.numberOfLayer?.id}`,
-        this.layerColors ? `l-${this.layerColors.map((item) => item.id).join('_')}` : '',
+        this.layerColors
+          ? `l-${this.layerColors.map((item) => item.id).join('_')}`
+          : '',
         this.decor ? `d-${this.decor.id}` : '',
         this.smell ? `s-${this.smell.id}` : '',
         `w-${this.wick?.id}`,
@@ -52,7 +67,7 @@ export class ConfiguredCandleDetail {
 export function validateConfiguredCandleDetail(
   candleDetail: CandleDetail,
   orderItemFilter: OrderItemFilter,
-): ConfiguredCandleDetail | string[] {
+): ConfiguredCandleDetail {
   const errorMessageInvalidCandleComponents: string[] = [];
   let isValid = true;
 
@@ -62,7 +77,11 @@ export function validateConfiguredCandleDetail(
     !candleDetail.decors.some((d) => d.id === orderItemFilter.decorId)
   ) {
     errorMessageInvalidCandleComponents.push(
-      generateErrorMessage(candleDetail.candle.title, 'декора', orderItemFilter.decorId.toString()),
+      generateErrorMessage(
+        candleDetail.candle.title,
+        'декора',
+        orderItemFilter.decorId.toString(),
+      ),
     );
     isValid = false;
   }
@@ -71,7 +90,9 @@ export function validateConfiguredCandleDetail(
     candleDetail.layerColors &&
     orderItemFilter.layerColorIds &&
     !orderItemFilter.layerColorIds.every((layerColorId) =>
-      candleDetail.layerColors?.some((layerColor) => layerColor.id === layerColorId),
+      candleDetail.layerColors?.some(
+        (layerColor) => layerColor.id === layerColorId,
+      ),
     )
   ) {
     errorMessageInvalidCandleComponents.push(
@@ -87,7 +108,9 @@ export function validateConfiguredCandleDetail(
   if (
     candleDetail.numberOfLayers &&
     orderItemFilter.numberOfLayerId &&
-    !candleDetail.numberOfLayers.some((n) => n.id === orderItemFilter.numberOfLayerId)
+    !candleDetail.numberOfLayers.some(
+      (n) => n.id === orderItemFilter.numberOfLayerId,
+    )
   ) {
     errorMessageInvalidCandleComponents.push(
       generateErrorMessage(
@@ -105,7 +128,11 @@ export function validateConfiguredCandleDetail(
     !candleDetail.smells.some((s) => s.id === orderItemFilter.smellId)
   ) {
     errorMessageInvalidCandleComponents.push(
-      generateErrorMessage(candleDetail.candle.title, 'запаха', orderItemFilter.smellId.toString()),
+      generateErrorMessage(
+        candleDetail.candle.title,
+        'запаха',
+        orderItemFilter.smellId.toString(),
+      ),
     );
     isValid = false;
   }
@@ -116,28 +143,40 @@ export function validateConfiguredCandleDetail(
     !candleDetail.wicks.some((w) => w.id === orderItemFilter.wickId)
   ) {
     errorMessageInvalidCandleComponents.push(
-      generateErrorMessage(candleDetail.candle.title, 'фитиля', orderItemFilter.wickId.toString()),
+      generateErrorMessage(
+        candleDetail.candle.title,
+        'фитиля',
+        orderItemFilter.wickId.toString(),
+      ),
     );
     isValid = false;
   }
 
-  if (!isValid) {
-    return errorMessageInvalidCandleComponents;
-  } else {
-    const newConfiguredCandleDetail = createConfiguredCandleDetail(candleDetail, orderItemFilter);
-    return newConfiguredCandleDetail ? newConfiguredCandleDetail : ['Что-то пошло не так'];
-  }
+  return createConfiguredCandleDetail(
+    candleDetail,
+    orderItemFilter,
+    isValid,
+    errorMessageInvalidCandleComponents,
+  );
 }
 
-function generateErrorMessage(candleTitle: string, property: string, id: string) {
+function generateErrorMessage(
+  candleTitle: string,
+  property: string,
+  id: string,
+) {
   return `У свечи '${candleTitle}' нет ${property}: ${id}`;
 }
 
 function createConfiguredCandleDetail(
   candleDetail: CandleDetail,
   orderItemFilter: OrderItemFilter,
+  isValid: boolean,
+  errors: string[],
 ): ConfiguredCandleDetail | undefined {
-  const decor = candleDetail.decors?.find((d) => d.id === orderItemFilter.decorId);
+  const decor = candleDetail.decors?.find(
+    (d) => d.id === orderItemFilter.decorId,
+  );
 
   const layerColors = candleDetail.layerColors.filter((layerColor) =>
     orderItemFilter.layerColorIds.includes(layerColor.id),
@@ -147,9 +186,13 @@ function createConfiguredCandleDetail(
     (numberOfLayer) => numberOfLayer.id === orderItemFilter.numberOfLayerId,
   );
 
-  const smell = candleDetail.smells?.find((smell) => smell.id === orderItemFilter.smellId);
+  const smell = candleDetail.smells?.find(
+    (smell) => smell.id === orderItemFilter.smellId,
+  );
 
-  const wick = candleDetail.wicks?.find((wick) => wick.id === orderItemFilter.wickId);
+  const wick = candleDetail.wicks?.find(
+    (wick) => wick.id === orderItemFilter.wickId,
+  );
 
   if (numberOfLayer && wick) {
     const configuredCandleDetail = new ConfiguredCandleDetail(
@@ -160,6 +203,8 @@ function createConfiguredCandleDetail(
       wick,
       decor,
       smell,
+      isValid,
+      errors,
     );
 
     return configuredCandleDetail;

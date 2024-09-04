@@ -22,16 +22,18 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
     <div className={Style.orderItem}>
       <div className={Style.mainInfo}>
         {firstImage && (
-          <Picture
-            name={firstImage.fileName}
-            alt={firstImage.alternativeName}
-            className={Style.squareImage}
-            sourceSettings={[
-              {
-                size: 'small',
-              },
-            ]}
-          />
+          <div className={Style.mainImage}>
+            <Picture
+              name={firstImage.fileName}
+              alt={firstImage.alternativeName}
+              className={Style.squareImage}
+              sourceSettings={[
+                {
+                  size: 'small',
+                },
+              ]}
+            />
+          </div>
         )}
         <div className={Style.info}>
           <div className={Style.titleBlock}>
@@ -49,7 +51,9 @@ const ProductCart: FC<ProductCartProps> = ({ product }) => {
           </div>
           <div className={Style.secondaryBlock}>
             <p className={Style.quantity}>{product.quantity} шт</p>
-            <p className={Style.price}>{product.price} p</p>
+            <p className={Style.price}>
+              {product.price.toLocaleString('ru-RU', { useGrouping: true })} Р
+            </p>
           </div>
         </div>
       </div>

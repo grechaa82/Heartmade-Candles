@@ -31,7 +31,7 @@ const TotalPricePanel: FC<TotalPricePanelProps> = ({
         <div className={Style.totalPriceBlock}>
           <p>Итого</p>
           <p className={Style.totalPrice}>
-            {totalPrice.toLocaleString('ru-RU', { useGrouping: true })} p
+            {totalPrice.toLocaleString('ru-RU', { useGrouping: true })} Р
           </p>
         </div>
         <div className={Style.totalQuantityBlock}>

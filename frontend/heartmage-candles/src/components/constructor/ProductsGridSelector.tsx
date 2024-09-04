@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, ReactNode, useState } from 'react';
 
 import Product from './Product';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
@@ -12,6 +12,7 @@ export interface ProductsGridSelectorProps<ImageProduct> {
   onSelectProduct?: (product: ImageProduct) => void;
   onDeselectProduct?: (product: ImageProduct) => void;
   withIndex?: boolean;
+  children?: ReactNode;
 }
 
 const ProductsGridSelector: FC<ProductsGridSelectorProps<ImageProduct>> = ({
@@ -21,27 +22,50 @@ const ProductsGridSelector: FC<ProductsGridSelectorProps<ImageProduct>> = ({
   onSelectProduct,
   onDeselectProduct,
   withIndex = false,
+  children,
 }) => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggleOpen = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
     <div className={Style.productGrid}>
-      <h2>{title}</h2>
-      <div className={Style.grid}>
-        {data.map((product) => (
-          <Product
-            key={product.id}
-            product={product}
-            pageUrl="candles"
-            onSelectProduct={onSelectProduct}
-            onDeselectProduct={onDeselectProduct}
-            isSelected={selectedData?.includes(product)}
-            index={
-              withIndex && selectedData
-                ? selectedData.indexOf(product) + 1
-                : undefined
-            }
-          />
-        ))}
+      <div className={Style.headerContainer}>
+        <h2 className={Style.sectionHeader} onClick={toggleOpen}>
+          {title}
+        </h2>
+        <button className={Style.toggleButton} onClick={toggleOpen}>
+          {isOpen ? '–' : '+'}
+        </button>
       </div>
+      {isOpen && (
+        <>
+          <div className={Style.grid}>
+            {data.map((product) => (
+              <Product
+                key={product.id}
+                product={product}
+                pageUrl="candles"
+                onSelectProduct={onSelectProduct}
+                onDeselectProduct={onDeselectProduct}
+                isSelected={selectedData?.some(
+                  (selected) => selected?.id === product.id,
+                )}
+                index={
+                  withIndex && selectedData
+                    ? selectedData.findIndex(
+                        (selected) => selected?.id === product.id,
+                      ) + 1
+                    : undefined
+                }
+              />
+            ))}
+          </div>
+          {children}
+        </>
+      )}
     </div>
   );
 };

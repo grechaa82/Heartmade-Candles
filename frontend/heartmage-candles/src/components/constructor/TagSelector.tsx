@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import Tag, { TagData } from '../shared/Tag';
 
@@ -19,22 +19,37 @@ const TagSelector: FC<TagSelectorProps> = ({
   onSelectTag,
   onDeselectTag,
 }) => {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggleOpen = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
     <div className={Style.selectedTag}>
-      <h2>{title}</h2>
-      <div className={Style.tagGrid}>
-        {data.map((tag) => (
-          <Tag
-            key={tag.id}
-            tag={tag}
-            onSelectTag={onSelectTag}
-            onDeselectTag={onDeselectTag}
-            isSelected={selectedData?.some(
-              (selectedData) => selectedData.id === tag.id
-            )}
-          />
-        ))}
+      <div className={Style.headerContainer}>
+        <h2 className={Style.sectionHeader} onClick={toggleOpen}>
+          {title}
+        </h2>
+        <button className={Style.toggleButton} onClick={toggleOpen}>
+          {isOpen ? '–' : '+'}
+        </button>
       </div>
+      {isOpen && (
+        <div className={Style.tagGrid}>
+          {data.map((tag) => (
+            <Tag
+              key={tag.id}
+              tag={tag}
+              onSelectTag={onSelectTag}
+              onDeselectTag={onDeselectTag}
+              isSelected={selectedData?.some(
+                (selectedData) => selectedData?.id === tag.id,
+              )}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

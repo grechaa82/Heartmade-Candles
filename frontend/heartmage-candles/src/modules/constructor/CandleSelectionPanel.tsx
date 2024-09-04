@@ -1,30 +1,43 @@
 import { FC } from 'react';
 
 import ProductsGridSelector from '../../components/constructor/ProductsGridSelector';
-import { CandleTypeWithCandles } from '../../typesV2/constructor/CandleTypeWithCandles';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
+import { useConstructorContext } from '../../contexts/ConstructorContext';
+import Button from '../../components/shared/Button';
 
 import Style from './CandleSelectionPanel.module.css';
 
 export interface CandleSelectionPanelProps {
-  data: CandleTypeWithCandles[];
-  onSelectCandle: (product: ImageProduct) => void;
+  onSelectProduct: (candle: ImageProduct) => void;
 }
 
 const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({
-  data,
-  onSelectCandle,
+  onSelectProduct,
 }) => {
+  const { candlesByType, loadMoreCandlesByType } = useConstructorContext();
+
   return (
     <div className={Style.content}>
-      {data &&
-        data.map((item, index) => (
+      {candlesByType &&
+        candlesByType.map((item, index) => (
           <ProductsGridSelector
             key={index}
             title={item.type}
             data={item.candles}
-            onSelectProduct={onSelectCandle}
-          />
+            onSelectProduct={onSelectProduct}
+          >
+            <Button
+              className={Style.loadMoreBtn}
+              text={item.pageSize ? `+ ${item.pageSize}` : 'Добавить'}
+              onClick={() =>
+                loadMoreCandlesByType(
+                  item.type,
+                  item.pageSize,
+                  item.pageIndex + 1,
+                )
+              }
+            />
+          </ProductsGridSelector>
         ))}
     </div>
   );

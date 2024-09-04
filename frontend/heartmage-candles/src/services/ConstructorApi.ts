@@ -1,12 +1,13 @@
 import { CandleDetail } from '../typesV2/constructor/CandleDetail';
 import { CandleDetailResponse } from '../typesV2/constructor/CandleDetailResponse';
-import { CandleTypeWithCandles } from '../typesV2/constructor/CandleTypeWithCandles';
+import { CandlesByType } from '../typesV2/constructor/CandlesByType';
 import { ApiResponse } from './ApiResponse';
+import { Candle } from '../typesV2/shared/BaseProduct';
 
 import { apiUrl } from '../config';
 
 export const ConstructorApi = {
-  getCandles: async (): Promise<ApiResponse<CandleTypeWithCandles[]>> => {
+  getCandles: async (): Promise<ApiResponse<CandlesByType[]>> => {
     try {
       const response = await fetch(`${apiUrl}/constructor/candles`, {
         method: 'GET',
@@ -14,7 +15,10 @@ export const ConstructorApi = {
         headers: { 'Content-Type': 'application/json' },
       });
       if (response.ok) {
-        return { data: (await response.json()) as CandleTypeWithCandles[], error: null };
+        return {
+          data: (await response.json()) as CandlesByType[],
+          error: null,
+        };
       } else {
         return { data: null, error: await response.text() };
       }
@@ -22,12 +26,45 @@ export const ConstructorApi = {
       throw new Error(error as string);
     }
   },
-  getCandleById: async (candleId: string): Promise<ApiResponse<CandleDetail>> => {
+  getCandlesByType: async (
+    typeCandle: string,
+    pageSize: number = 15,
+    pageIndex: number = 0,
+  ): Promise<ApiResponse<Candle[]>> => {
     try {
-      const response = await fetch(`${apiUrl}/constructor/candles/${candleId}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const response = await fetch(
+        `${apiUrl}/constructor/candles/type?typeCandle=${encodeURIComponent(
+          typeCandle,
+        )}&pageSize=${pageSize}&pageIndex=${pageIndex}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+
+      if (response.ok) {
+        return {
+          data: (await response.json()) as Candle[],
+          error: null,
+        };
+      } else {
+        return { data: null, error: await response.text() };
+      }
+    } catch (error) {
+      throw new Error(error as string);
+    }
+  },
+  getCandleById: async (
+    candleId: string,
+  ): Promise<ApiResponse<CandleDetail>> => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/constructor/candles/${candleId}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
       if (response.ok) {
         const responseData = (await response.json()) as CandleDetailResponse;
 

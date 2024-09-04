@@ -9,6 +9,10 @@
   min-width: 31.25rem;
 }
 
+.mainImage {
+  background-color: var(--color-f7f7f7);
+}
+
 .squareImage {
   overflow: hidden;
   aspect-ratio: 1;
@@ -21,15 +25,12 @@
   flex-direction: column;
 }
 
-.iconChevronBtn {
-  all: unset;
-}
-
 .imageSliderBlock {
   position: relative;
   width: 3.75rem;
   height: 3.75rem;
   overflow: hidden;
+  background-color: var(--color-f7f7f7);
 }
 
 .sliderBtn {
@@ -51,9 +52,5 @@
 
   .slider {
     flex-direction: row;
-  }
-
-  .iconChevronBtn {
-    transform: rotate(-90deg);
   }
 }

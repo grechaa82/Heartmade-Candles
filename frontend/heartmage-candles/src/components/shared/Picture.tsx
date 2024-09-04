@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 
 import { apiUrlToImage } from '../../config';
 
@@ -36,6 +36,8 @@ const Picture: FC<PictureProps> = ({
   className,
   sourceSettings = [],
 }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const newSrc = src
     ? src
     : url
@@ -61,10 +63,10 @@ const Picture: FC<PictureProps> = ({
   return (
     <div
       className={`${Style.picture} ${className ? className : ''} ${
-        Style.blurImage
+        !isLoaded && withPreview ? Style.blurImage : ''
       }`}
       style={
-        withPreview
+        withPreview && !isLoaded
           ? {
               backgroundImage: `url(${getSrc('preview', withWebP)})`,
             }
@@ -95,6 +97,7 @@ const Picture: FC<PictureProps> = ({
           alt={alt}
           decoding="async"
           loading="lazy"
+          onLoad={() => setIsLoaded(true)}
         />
       </picture>
     </div>

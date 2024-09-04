@@ -5,7 +5,7 @@ import Skeleton from '../../components/shared/skeleton';
 import Style from './CandleSelectionPanelSkeleton.module.css';
 
 const CandleSelectionPanelSkeleton: FC = () => {
-  const countProductsSkeleton = [0, 0, 0, 0, 0, 0];
+  const countProductsSkeleton = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   const countGridsSkeleton = [0, 0];
 
   const productsGridSelectorSkeleton = (
@@ -15,10 +15,19 @@ const CandleSelectionPanelSkeleton: FC = () => {
       </div>
       <div className={Style.gridSkeleton}>
         {countProductsSkeleton.map((item, index) => (
-          <div className={Style.gridItem} key={index}>
-            <Skeleton />
+          <div className={Style.productSkeleton} key={index}>
+            <div className={Style.imageSkeleton}>
+              <Skeleton />
+            </div>
+            <div className={Style.infoBlockSkeleton}>
+              <Skeleton />
+              <Skeleton />
+            </div>
           </div>
         ))}
+      </div>
+      <div className={Style.btnSkeleton}>
+        <Skeleton />
       </div>
     </>
   );

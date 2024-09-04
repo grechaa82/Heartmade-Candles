@@ -1,305 +1,143 @@
 import { FC, useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import ListProductsCart from '../../modules/constructor/ListProductsCart';
-import CandleForm from '../../modules/constructor/CandleForm';
-import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
-import {
-  ConfiguredCandleDetail,
-  validateConfiguredCandleDetail,
-} from '../../typesV2/constructor/ConfiguredCandleDetail';
-import { ImageProduct } from '../../typesV2/shared/BaseProduct';
-import { OrderItemFilter } from '../../typesV2/shared/OrderItemFilter';
-import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
 import CandleSelectionPanelSkeleton from '../../modules/constructor/CandleSelectionPanelSkeleton';
-import { CandleTypeWithCandles } from '../../typesV2/constructor/CandleTypeWithCandles';
-import { calculatePrice } from '../../helpers/CalculatePrice';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import ImageSlider from '../../components/constructor/ImageSlider';
-import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
-import { CandleDetailFilterBasketRequest } from '../../typesV2/order/CandleDetailFilterBasketRequest';
-import ListProductsCartSkeleton from '../../modules/constructor/ListProductsCartSkeleton';
 import TutorialBlock from '../../modules/constructor/TutorialBlock';
-
+import { useConstructorContext } from '../../contexts/ConstructorContext';
+import { useCandleContext } from '../../contexts/CandleContext';
+import ListProductsCart from '../../modules/constructor/ListProductsCart';
+import CandleForm from '../../modules/constructor/CandleForm';
+import CandleSelectionPanel from '../../modules/constructor/CandleSelectionPanel';
+import {
+  CustomCandle,
+  getFilterFromCustomCandle,
+} from '../../typesV2/constructor/CustomCandle';
+import {
+  CustomCandleFilter,
+  tryParseFilterToCustomCandleFilter,
+} from '../../typesV2/constructor/CustomCandleFilter';
+import { CandleDetailFilterBasketRequest } from '../../typesV2/order/CandleDetailFilterBasketRequest';
+import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
+import { CustomCandleBuilder } from '../../typesV2/constructor/CustomCandleBuilder';
 import { ConstructorApi } from '../../services/ConstructorApi';
+import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
+import LoadCandlePopUp from '../../modules/constructor/PopUp/LoadCandlePopUp';
+import { ImageProduct } from '../../typesV2/shared/BaseProduct';
+
 import { BasketApi } from '../../services/BasketApi';
 
 import Style from './ConstructorPage.module.css';
 
 const ConstructorPage: FC = () => {
-  const [candleDetail, setCandleDetail] = useState<CandleDetail>();
-  const [configuredCandleDetails, setConfiguredCandleDetails] = useState<
-    ConfiguredCandleDetail[]
-  >([]);
-  const [isConfiguredCandleDetailLoading, setIsConfiguredCandleDetailLoading] =
-    useState(true);
-  const [candleTypeWithCandles, setCandleTypeWithCandles] =
-    useState<CandleTypeWithCandles[]>();
-  const [priceConfiguredCandleDetail, setPriceConfiguredCandleDetail] =
-    useState<number>(0);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const {
+    customCandles,
+    isLoadingCandlesByType: isLoading,
+    setCustomCandles,
+  } = useConstructorContext();
+  const {
+    candle,
+    fetchCandleById,
+    setCustomCandleBuilder,
+    updateCustomCandleBuilder,
+  } = useCandleContext();
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
+  const location = useLocation();
+  const navigate = useNavigate();
   const blockCandleFormRef = useRef<HTMLDivElement>(null);
 
-  async function showCandleForm(candleId: number) {
-    const candleDetailResponse = await ConstructorApi.getCandleById(
-      candleId.toString(),
+  const handleOnSelectInProductCart = (selectedCustomCandle: CustomCandle) => {
+    const existingCandleIndex = customCandles.findIndex(
+      (item) =>
+        item.candle.id === selectedCustomCandle.candle.id &&
+        item.numberOfLayer === selectedCustomCandle.numberOfLayer &&
+        JSON.stringify(item.layerColors) ===
+          JSON.stringify(selectedCustomCandle.layerColors) &&
+        item.wick === selectedCustomCandle.wick &&
+        item.decor === selectedCustomCandle.decor &&
+        item.smell === selectedCustomCandle.smell &&
+        item.quantity === selectedCustomCandle.quantity,
     );
-    if (candleDetailResponse.data && !candleDetailResponse.error) {
-      setCandleDetail(candleDetailResponse.data);
-    } else {
-      setErrorMessage([...errorMessage, candleDetailResponse.error as string]);
-    }
-  }
 
-  function handleHideCandleForm() {
-    setErrorMessage([]);
-    setCandleDetail(undefined);
-  }
-
-  const addConfiguredCandleDetailToListProductsCart = (
-    configuredCandleDetailToAdd: ConfiguredCandleDetail,
-  ): void => {
-    const validCandleDetail: string[] = checkConfiguredCandleDetail(
-      configuredCandleDetailToAdd,
-    );
-    if (validCandleDetail.length > 0) {
-      setErrorMessage((prev) => [...prev, ...validCandleDetail.flat()]);
-      return;
+    if (existingCandleIndex >= 0) {
+      customCandles.splice(existingCandleIndex, 1);
+      setIsEditing(true);
     }
-    addQueryString(convertToCandleString([configuredCandleDetailToAdd]));
-    setConfiguredCandleDetails((prev) => [
-      ...prev,
-      configuredCandleDetailToAdd,
-    ]);
-    handleHideCandleForm();
+
+    const newCustomCandleBuilder = new CustomCandleBuilder()
+      .setCandle(selectedCustomCandle.candle)
+      .setNumberOfLayer(selectedCustomCandle.numberOfLayer)
+      .setLayerColor(selectedCustomCandle.layerColors)
+      .setWick(selectedCustomCandle.wick)
+      .setDecor(selectedCustomCandle.decor)
+      .setSmell(selectedCustomCandle.smell)
+      .setQuantity(selectedCustomCandle.quantity)
+      .setErrors(selectedCustomCandle.errors);
+
+    fetchCandleById(selectedCustomCandle.candle.id.toString());
+    setCustomCandleBuilder(newCustomCandleBuilder);
   };
 
-  function convertToCandleString(value: ConfiguredCandleDetail[]): string {
-    return value.map((detail) => detail.getFilter()).join('.');
-  }
-
-  const addQueryString = (queryString: string) => {
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    let currentQueryString = urlSearchParams.toString();
-    if (!currentQueryString) {
-      currentQueryString = queryString;
-    } else {
-      const lastCharacter = currentQueryString.slice(-1);
-      currentQueryString += (lastCharacter !== '.' ? '.' : '') + queryString;
-    }
-    const newUrlSearchParams = new URLSearchParams(`?${currentQueryString}`);
-    const newQueryString = newUrlSearchParams.toString().replace('=', '');
-    navigate(`?${newQueryString}`);
-  };
-
-  const checkConfiguredCandleDetail = (
-    configuredCandleDetail: ConfiguredCandleDetail,
-  ): string[] => {
-    const errorMessageInConfiguredCandleDetail: string[] = [];
-    const errorMessageParts: string[] = [];
-    if (!configuredCandleDetail.numberOfLayer) {
-      errorMessageParts.push('количество слоев');
-    }
-    if (!configuredCandleDetail.layerColors) {
-      errorMessageParts.push('восковые слои');
-    }
-    if (!configuredCandleDetail.wick) {
-      errorMessageParts.push('фитиль');
-    }
-    if (errorMessageParts.length > 0) {
-      errorMessageInConfiguredCandleDetail.push(
-        `Не выбрано следующее обязательное поле(я): ${errorMessageParts.join(
-          ', ',
-        )}`,
-      );
-    }
-    if (
-      configuredCandleDetail.numberOfLayer?.number !==
-      configuredCandleDetail.layerColors?.length
-    ) {
-      errorMessageInConfiguredCandleDetail.push(
-        'Количество слоев не совпадает с количеством выбранных цветовых слоев',
-      );
-    }
-    return errorMessageInConfiguredCandleDetail;
-  };
-
-  useEffect(() => {
-    setIsConfiguredCandleDetailLoading(true);
-    async function fetchData() {
-      const candlesResponse = await ConstructorApi.getCandles();
-      if (candlesResponse.data && !candlesResponse.error) {
-        setCandleTypeWithCandles(candlesResponse.data);
-      } else {
-        setErrorMessage([...errorMessage, candlesResponse.error as string]);
-      }
-    }
-
-    fetchData();
-    setIsConfiguredCandleDetailLoading(false);
-  }, []);
-
-  useEffect(() => {
-    setIsConfiguredCandleDetailLoading(true);
-    let validConfiguredCandleDetail: ConfiguredCandleDetail[] = [];
-    let invalidConfiguredCandleDetail: ConfiguredCandleDetail[] = [];
-
-    let allErrorMessages: string[] = [];
-
-    const searchParams = new URLSearchParams(location.search);
-    const filters = decodeURI(searchParams.toString().replace(/=$/, ''));
-
-    if (filters.length < OrderItemFilter.MIN_LENGTH_FILTER) {
-      setIsConfiguredCandleDetailLoading(false);
-      return;
-    }
-
-    /* 
-      Добавить проверку что filters.split('.') можно спарсить в OrderItemFilter
-      const orderItemFilters: OrderItemFilter[] = filters.tryParseToOrderItemFilter();
-    */
-    const orderItemFilters: OrderItemFilter[] = filters
-      .split('.')
-      .map(OrderItemFilter.parseToOrderItemFilter);
-
-    getValidConfiguredCandleDetail(orderItemFilters).then((result) => {
-      const { candleDetails, errorMessages } = result;
-
-      validConfiguredCandleDetail.push(...candleDetails);
-
-      setConfiguredCandleDetails(candleDetails);
-
-      setNewTotalPrice(candleDetails);
-
-      allErrorMessages = [...allErrorMessages, ...errorMessages];
-
-      if (allErrorMessages.length) {
-        setErrorMessage(allErrorMessages);
-      }
-
-      setConfiguredCandleDetails(validConfiguredCandleDetail);
-
-      setIsConfiguredCandleDetailLoading(false);
-    });
-  }, [location.search]);
-
-  async function getValidConfiguredCandleDetail(
-    orderItemFilters: OrderItemFilter[],
-  ) {
-    let validConfiguredCandleDetail: ConfiguredCandleDetail[] = [];
-    let allErrorMessages: string[] = [];
-
-    for (const filter of orderItemFilters) {
-      const candleDetailResponse = await ConstructorApi.getCandleById(
-        filter.candleId.toString(),
-      );
-      if (candleDetailResponse.data && !candleDetailResponse.error) {
-        const validationResult = validateConfiguredCandleDetail(
-          candleDetailResponse.data,
-          filter,
-        );
-
-        if (Array.isArray(validationResult)) {
-          allErrorMessages = [...allErrorMessages, ...validationResult];
-        } else {
-          validConfiguredCandleDetail.push(validationResult);
-        }
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          candleDetailResponse.error as string,
-        ]);
-      }
-    }
-
-    return {
-      candleDetails: validConfiguredCandleDetail,
-      errorMessages: allErrorMessages,
-    };
-  }
-
-  const handleChangeConfiguredCandleDetail = (
-    value: ConfiguredCandleDetail[],
-  ) => {
-    navigate('');
-    addQueryString(convertToCandleString(value));
-    setConfiguredCandleDetails(value);
-    setNewTotalPrice(value);
-  };
-
-  const handleSelectCandle = (candle: ImageProduct) => {
-    if (blockCandleFormRef.current) {
-      blockCandleFormRef.current.scrollTop = 0;
-    }
-    showCandleForm(candle.id);
-    setPriceConfiguredCandleDetail(0);
-  };
-
-  const calculatePriceConfiguredCandleDetail = (
-    configuredCandleDetail: ConfiguredCandleDetail,
-  ): number => {
-    const priceConfiguredCandleDetail = Math.round(
-      calculatePrice(configuredCandleDetail),
-    );
-    setPriceConfiguredCandleDetail(priceConfiguredCandleDetail);
-    return priceConfiguredCandleDetail;
+  const handleHideCandleForm = () => {
+    updateCustomCandleBuilder();
+    setIsEditing(false);
   };
 
   const handleOnCreateBasket = async () => {
-    if (candleDetail !== undefined) {
+    if (candle !== undefined) {
       setErrorMessage([
         ...errorMessage,
         'Пожалуйста закончите настройку свечи',
       ]);
-    } else if (configuredCandleDetails.length <= 0) {
+    } else if (customCandles.length <= 0) {
       setErrorMessage([
         ...errorMessage,
         'В корзине пока пусто, добавьте свечи',
       ]);
-    } else if (configuredCandleDetails.length > 0) {
+    } else if (customCandles.some((candle) => !candle.isValid)) {
+      setErrorMessage([
+        ...errorMessage,
+        'Некоторые свечи в корзине имеют ошибки, пожалуйста, исправьте их',
+      ]);
+    } else if (customCandles.length > 0) {
       let candleDetailFilterBasketRequest: CandleDetailFilterBasketRequest = {
         candleDetailFilterRequests: [],
-        configuredCandleFiltersString: convertToCandleString(
-          configuredCandleDetails,
-        ),
+        configuredCandleFiltersString: customCandles
+          .map((detail) => detail.filter)
+          .join('.'),
       };
-
-      configuredCandleDetails.forEach((configuredCandleDetail) => {
+      customCandles.forEach((configuredCandle) => {
         const filterRequest: CandleDetailFilterRequest = {
-          candleId: configuredCandleDetail.candle.id,
-          decorId: configuredCandleDetail.decor
-            ? configuredCandleDetail.decor.id
-            : 0,
-          numberOfLayerId: configuredCandleDetail.numberOfLayer!.id,
-          layerColorIds: configuredCandleDetail.layerColors!.map(
+          candleId: configuredCandle.candle.id,
+          decorId: configuredCandle.decor ? configuredCandle.decor.id : 0,
+          numberOfLayerId: configuredCandle.numberOfLayer!.id,
+          layerColorIds: configuredCandle.layerColors!.map(
             (layerColor) => layerColor.id,
           ),
-          smellId: configuredCandleDetail.smell
-            ? configuredCandleDetail.smell.id
-            : 0,
-          wickId: configuredCandleDetail.wick!.id,
-          quantity: configuredCandleDetail.quantity,
-          filterString: configuredCandleDetail.getFilter(),
+          smellId: configuredCandle.smell ? configuredCandle.smell.id : 0,
+          wickId: configuredCandle.wick!.id,
+          quantity: configuredCandle.quantity,
+          filterString: configuredCandle.filter,
         };
-
         candleDetailFilterBasketRequest.candleDetailFilterRequests.push(
           filterRequest,
         );
       });
-
       var basketIdResponse = await BasketApi.createBasket(
         candleDetailFilterBasketRequest,
       );
-
       if (basketIdResponse.data && !basketIdResponse.error) {
         navigate(`/baskets/${basketIdResponse.data}`);
       } else {
-        setErrorMessage([...errorMessage, basketIdResponse.error as string]);
+        checkConditionOfCandles(customCandles);
+        const errors =
+          'К сожалению, ваш заказ невозможен, необходимо перенастроить свечу';
+        setErrorMessage([...errorMessage, errors]);
       }
     } else {
       setErrorMessage([
@@ -309,65 +147,226 @@ const ConstructorPage: FC = () => {
     }
   };
 
-  function setNewTotalPrice(configuredCandleDetails: ConfiguredCandleDetail[]) {
-    let newTotalPrice = 0;
-    for (const configuredCandleDetail of configuredCandleDetails) {
-      newTotalPrice += Math.round(
-        calculatePrice(configuredCandleDetail) *
-          configuredCandleDetail.quantity,
-      );
+  const checkConditionOfCandles = async (
+    currentCustomCandle: CustomCandle[],
+  ) => {
+    let newCustomCandles: CustomCandle[] = [];
+    let candleDetails: CandleDetail[] = [];
+    let errors: string[] = [];
+
+    if (currentCustomCandle.length === 0) {
+      return;
     }
-    setTotalPrice(newTotalPrice);
-  }
+
+    const fetchCandleDetails = async (customCandle: CustomCandle) => {
+      const existingDetail = candleDetails.find(
+        (detail) => detail.candle?.id === customCandle.candle?.id,
+      );
+      if (existingDetail) {
+        const newCustomCandle =
+          CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
+            customCandle,
+            existingDetail,
+          );
+
+        newCustomCandles.push(newCustomCandle);
+      } else {
+        const candleDetailResponse = await ConstructorApi.getCandleById(
+          customCandle.candle.id.toString(),
+        );
+
+        if (candleDetailResponse.data && !candleDetailResponse.error) {
+          const newCustomCandle =
+            CustomCandleBuilder.checkCustomCandleAgainstCandleDetail(
+              customCandle,
+              candleDetailResponse.data,
+            );
+          newCustomCandles.push(newCustomCandle);
+          candleDetails.push(candleDetailResponse.data);
+        } else {
+          errors.push(`Не удалось найти свечу: ${customCandle.candle.title}`);
+        }
+      }
+    };
+
+    await Promise.all(currentCustomCandle.map(fetchCandleDetails));
+
+    setCustomCandles(newCustomCandles);
+  };
+
+  useEffect(() => {
+    if (customCandles.length > 0) {
+      const newFilterString = customCandles
+        .map((customCandle) => getFilterFromCustomCandle(customCandle))
+        .join('.');
+
+      const newUrlSearchParams = new URLSearchParams(`?${newFilterString}`);
+
+      const newQueryString = newUrlSearchParams.toString().replace('=', '');
+
+      navigate(`?${newQueryString}`);
+    }
+  }, [customCandles, setCustomCandles]);
+
+  useEffect(() => {
+    const localSearch = location.search.replace(/^\?/, '');
+
+    if (localSearch) {
+      const customCandleFilters: CustomCandleFilter[] = localSearch
+        .split('.')
+        .map(tryParseFilterToCustomCandleFilter);
+
+      if (customCandleFilters.length > 0) {
+        handlePopUpOpen();
+      }
+    }
+  }, []);
+
+  const loadCandles = async () => {
+    let newCustomCandles: CustomCandle[] = [];
+    let errors: string[] = [];
+
+    const filterString = decodeURI(
+      new URLSearchParams(location.search).toString().replace(/=$/, ''),
+    );
+
+    const customCandleFilters: CustomCandleFilter[] = filterString
+      .split('.')
+      .map(tryParseFilterToCustomCandleFilter)
+      .filter((item) => item !== null);
+
+    if (customCandleFilters.length === 0) {
+      return;
+    }
+
+    const promises = customCandleFilters.map(async (item) => {
+      const candleDetailResponse = await ConstructorApi.getCandleById(
+        item.candleId.toString(),
+      );
+
+      if (candleDetailResponse.data && !candleDetailResponse.error) {
+        const candleDetail: CandleDetail = candleDetailResponse.data;
+        let errors: string[] = [];
+
+        const customCandleBuilder = new CustomCandleBuilder()
+          .setCandle(candleDetail.candle)
+          .setQuantity(item.quantity);
+
+        if (item.numberOfLayerId) {
+          const numberOfLayer = candleDetail.numberOfLayers.find(
+            (layer) => layer.id === item.numberOfLayerId,
+          );
+          if (!numberOfLayer) {
+            errors.push(`Не удалось найти слой с ID ${item.numberOfLayerId}`);
+          } else {
+            customCandleBuilder.setNumberOfLayer(numberOfLayer);
+          }
+        }
+
+        if (item.layerColorsIds) {
+          const layerColors = candleDetail.layerColors.filter((color) =>
+            item.layerColorsIds.includes(color.id),
+          );
+          if (layerColors.length === 0) {
+            errors.push(`Не удалось найти цвета для ID ${item.layerColorsIds}`);
+          }
+          customCandleBuilder.setLayerColor(layerColors);
+        }
+
+        if (item.wickId) {
+          const wick = candleDetail.wicks.find((w) => w.id === item.wickId);
+          if (!wick) {
+            errors.push(`Не удалось найти фитиль с ID ${item.wickId}`);
+          }
+          customCandleBuilder.setWick(wick);
+        }
+
+        if (item.decorId) {
+          const decor = candleDetail.decors.find((d) => d.id === item.decorId);
+          if (!decor) {
+            errors.push(`Не удалось найти декор с ID ${item.decorId}`);
+          } else {
+            customCandleBuilder.setDecor(decor);
+          }
+        }
+
+        if (item.smellId) {
+          const smell = candleDetail.smells.find((s) => s.id === item.smellId);
+          if (!smell) {
+            errors.push(`Не удалось найти аромат с ID ${item.smellId}`);
+          }
+          customCandleBuilder.setSmell(smell);
+        }
+
+        customCandleBuilder.setErrors(errors);
+
+        const result = customCandleBuilder.build();
+
+        newCustomCandles.push(result.customCandle);
+      }
+    });
+
+    await Promise.all(promises);
+
+    setCustomCandles(newCustomCandles);
+  };
+
+  const handlePopUpOpen = () => {
+    setIsPopUpOpen(true);
+  };
+
+  const handlePopUpClose = () => {
+    navigate('');
+    setIsPopUpOpen(false);
+  };
+
+  const handleOnSelectProduct = (candle: ImageProduct) => {
+    fetchCandleById(candle.id.toString());
+    if (blockCandleFormRef.current) {
+      blockCandleFormRef.current.scrollTop = 0;
+    }
+  };
 
   return (
     <div className={Style.container}>
       <ListErrorPopUp messages={errorMessage} />
+      {isPopUpOpen && (
+        <LoadCandlePopUp onClose={handlePopUpClose} loadCandles={loadCandles} />
+      )}
       <div
         className={`${Style.leftPanel} ${
-          configuredCandleDetails.length === 0 ? Style.noElements : ''
+          customCandles.length === 0 ? Style.noElements : ''
         }`}
       >
-        {isConfiguredCandleDetailLoading ? (
-          <ListProductsCartSkeleton />
-        ) : (
-          <ListProductsCart
-            products={configuredCandleDetails}
-            onChangeCandleDetailWithQuantity={
-              handleChangeConfiguredCandleDetail
-            }
-            price={totalPrice}
-            onCreateBasket={handleOnCreateBasket}
-            buttonState={
-              candleDetail !== undefined || configuredCandleDetails.length <= 0
-                ? 'invalid'
-                : 'valid'
-            }
-          />
-        )}
+        <ListProductsCart
+          buttonState={
+            candle !== undefined ||
+            customCandles.length <= 0 ||
+            customCandles.some((candle) => !candle.isValid)
+              ? 'invalid'
+              : 'valid'
+          }
+          onSelect={handleOnSelectInProductCart}
+          onCreateBasket={handleOnCreateBasket}
+        />
       </div>
       <div className={Style.imagePanel}>
-        {candleDetail ? (
-          <ImageSlider images={candleDetail.candle.images} />
+        {candle ? (
+          <ImageSlider images={candle.candle.images} />
         ) : (
           <TutorialBlock />
         )}
       </div>
       <div className={Style.rightPanel} ref={blockCandleFormRef}>
-        {candleDetail ? (
+        {candle ? (
           <CandleForm
-            candleDetail={candleDetail}
-            addCandleDetail={addConfiguredCandleDetailToListProductsCart}
-            calculatePriceCandleDetail={calculatePriceConfiguredCandleDetail}
             hideCandleForm={handleHideCandleForm}
+            isEditing={isEditing}
           />
-        ) : !candleTypeWithCandles ? (
+        ) : isLoading ? (
           <CandleSelectionPanelSkeleton />
         ) : (
-          <CandleSelectionPanel
-            data={candleTypeWithCandles}
-            onSelectCandle={handleSelectCandle}
-          />
+          <CandleSelectionPanel onSelectProduct={handleOnSelectProduct} />
         )}
       </div>
     </div>

@@ -52,6 +52,7 @@
   border: none;
   width: 3.75rem;
   aspect-ratio: 1;
+  background: var(--color-f7f7f7);
 }
 
 .imageNoAvailable {
@@ -100,4 +101,5 @@
 .squareImage {
   overflow: hidden;
   aspect-ratio: 1;
+  background: var(--color-f7f7f7);
 }

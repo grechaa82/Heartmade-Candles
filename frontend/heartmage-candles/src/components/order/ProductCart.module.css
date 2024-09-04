@@ -3,13 +3,17 @@
 .mainInfo {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+}
+
+.mainImage {
+  background: var(--color-f7f7f7);
 }
 
 .squareImage {
-  aspect-ratio: 1;
   height: 108px;
   width: 108px;
-  margin-right: 8px;
+  aspect-ratio: 1;
 }
 
 .info {

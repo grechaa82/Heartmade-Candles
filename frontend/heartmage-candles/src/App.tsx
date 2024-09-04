@@ -1,4 +1,4 @@
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/shared/Header';
 import Routes from './routes/Routes';
 

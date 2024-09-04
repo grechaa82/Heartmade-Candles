@@ -2,7 +2,9 @@ import { FC, useContext } from 'react';
 import { Routes as Router, Route } from 'react-router-dom';
 
 import PrivateRoutes from './PrivateRoutes';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
+import { ConstructorProvider } from '../contexts/ConstructorContext';
+import { CandleProvider } from '../contexts/CandleContext';
 import AuthPage from '../pages/userAndAuth/AuthPage';
 import AdminRoutes from './AdminRoutes';
 import HelpPage from '../pages/home/HelpPage';
@@ -27,7 +29,16 @@ const Routes: FC = () => {
       <Route element={<ContactPage />} path="contact" />
       <Route element={<ReviewPage />} path="review" />
       <Route element={<HelpPage />} path="help" />
-      <Route element={<ConstructorPage />} path="constructor" />
+      <Route
+        path="constructor"
+        element={
+          <ConstructorProvider>
+            <CandleProvider>
+              <ConstructorPage />
+            </CandleProvider>
+          </ConstructorProvider>
+        }
+      />
       <Route element={<BasketPage />} path="baskets/:id" />
       <Route element={<ThankPage />} path="orders/:id/thank" />
       <Route element={<AuthPage />} path="auth" />

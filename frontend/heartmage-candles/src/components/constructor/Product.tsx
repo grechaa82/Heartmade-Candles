@@ -1,10 +1,8 @@
 import { FC, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
-import CornerTag from './CornerTag';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 import Tag from '../shared/Tag';
-import IconAlertCircleLarge from '../../UI/IconAlertCircleLarge';
 import InfoBlockPopUp from './InfoBlockPopUp';
 import Picture, { SourceSettings } from '../shared/Picture';
 
@@ -141,37 +139,32 @@ const Product: FC<ProductProps> = ({
           )}
         </Link>
       )}
-      <div className={Style.indexTag}>
-        {index !== undefined && isSelected && (
-          <Tag
-            tag={{
-              id: index,
-              text: index.toString(),
-            }}
-            appearanceTag="primary"
-          />
-        )}
-      </div>
-      <div className={Style.price}>
-        {<CornerTag number={product.price} type="price" />}
-      </div>
-      <div
-        className={Style.descriptionWrapper}
-        onMouseEnter={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
-        ref={elementRef}
-      >
-        <button className={Style.descriptionBtn}>
-          <IconAlertCircleLarge color="#aaa" />
-        </button>
-        {showInfoBlockPopup && (
-          <InfoBlockPopUp
-            title={product.title}
-            description={product.description}
-            x={position.x}
-            y={position.y}
-          />
-        )}
+      {index !== undefined && isSelected && (
+        <div className={Style.indexTag}>
+          <p>{index}</p>
+        </div>
+      )}
+      <div className={Style.infoBlock}>
+        <p className={Style.price}>
+          {product.price.toLocaleString('ru-RU', { useGrouping: true })}
+          <span> Р</span>
+        </p>
+        <div
+          className={Style.descriptionWrapper}
+          onMouseEnter={handleMouseOver}
+          onMouseLeave={handleMouseLeave}
+          ref={elementRef}
+        >
+          <button className={Style.descriptionBtn}>!</button>
+          {showInfoBlockPopup && (
+            <InfoBlockPopUp
+              title={product.title}
+              description={product.description}
+              x={position.x}
+              y={position.y}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

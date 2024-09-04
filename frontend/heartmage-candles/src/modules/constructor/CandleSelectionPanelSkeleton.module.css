@@ -4,20 +4,26 @@
   gap: 3rem;
   width: 100%;
 }
+
 .productGridSkeleton {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
+
 .titleSkeleton {
   height: 2.25rem;
 }
+
 .gridSkeleton {
   display: grid;
-  grid-template-columns: repeat(3, auto);
-  grid-gap: 0.5rem;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 1.25rem;
 }
-.gridItem {
+
+.productSkeleton {}
+
+.imageSkeleton {
   position: relative;
   max-width: 15.625rem;
   max-height: 15.625rem;
@@ -26,26 +32,38 @@
   aspect-ratio: 1 / 1;
 }
 
+.infoBlockSkeleton {
+  height: 26px;
+  display: flex;
+  padding: 4px 8px 0;
+  gap: 4px;
+}
+
+.btnSkeleton {
+  height: 57px;
+}
+
+
 @media (max-width: 1440px) {
   .gridSkeleton {
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .gridSkeleton {
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(5, 1fr);
   }
 }
 
 @media (max-width: 720px) {
   .gridSkeleton {
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 480px) {
   .gridSkeleton {
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: repeat(2, 1fr);
   }
 }

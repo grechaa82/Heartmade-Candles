@@ -37,7 +37,9 @@ const Tag: FC<TagProps> = ({
 
   return (
     <div
-      className={`${Style.tag} ${Style[appearanceTag]} ${isSelected ? Style.selected : ''}`}
+      className={`${Style.tag} ${Style[appearanceTag]} ${
+        isSelected ? Style.selected : ''
+      }`}
       onClick={() => handleSelectTag()}
     >
       <p className={Style.title}>{tag.text}</p>

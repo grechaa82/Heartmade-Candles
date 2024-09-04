@@ -18,6 +18,11 @@ public class ConstructorService : IConstructorService
         return await _constructorRepository.GetCandles();
     }
 
+    public async Task<Result<Candle[]>> GetCandlesByType(string typeCandle, int pageSize, int pageIndex)
+    {
+        return await _constructorRepository.GetCandlesByType(typeCandle, pageSize, pageIndex);
+    }
+
     public async Task<Result<CandleDetail>> GetCandleDetailById(int candleId)
     {
         return await _constructorRepository.GetCandleById(candleId)

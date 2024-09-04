@@ -1,6 +1,6 @@
 import { FC, useState } from 'react';
 
-import PopUp, { PopUpProps } from './PopUp';
+import PopUp, { PopUpProps } from '../../shared/PopUp/PopUp';
 import ButtonWithIcon from '../../shared/ButtonWithIcon';
 import IconPlusLarge from '../../../UI/IconPlusLarge';
 import { Image } from '../../../types/Image';

@@ -4,7 +4,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../contexts/AuthContext';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 
 import { AuthApi } from '../../services/AuthApi';

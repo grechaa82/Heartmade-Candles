@@ -82,9 +82,10 @@
 }
 
 .imageBlock {
-  width: 108px;
+  width: auto;
   height: 108px;
   aspect-ratio: 1;
+  background: var(--color-f7f7f7);
 }
 
 .nonImageBlock {

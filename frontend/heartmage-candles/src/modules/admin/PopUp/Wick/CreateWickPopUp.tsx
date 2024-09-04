@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 
 import { Wick } from '../../../../types/Wick';
 import { Image } from '../../../../types/Image';
-import PopUp, { PopUpProps } from '../../../../components/admin/PopUp/PopUp';
+import PopUp, { PopUpProps } from '../../../../components/shared/PopUp/PopUp';
 import ImageUploader from '../../../../components/admin/ImageUploader';
 import ImagePreview from '../../../../components/admin/ImagePreview';
 import WickForm from '../../../../components/admin/Form/Wick/WickForm';
