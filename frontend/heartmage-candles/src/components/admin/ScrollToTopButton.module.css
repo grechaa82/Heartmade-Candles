@@ -1,0 +1,21 @@
+.toTopBtn {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.5rem 0.625rem;
+    font-size: var(--font-size-m);
+    background-color: var(--color-eee);
+    border: none;
+    border-radius: var(--border-radius-primary);
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.icon>svg {
+    transform: rotate(90deg);
+
+}
+
+.icon>svg>path {
+    fill: var(--color-777);
+}

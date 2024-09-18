@@ -15,6 +15,7 @@ import WickPage from '../pages/admin/WickPage';
 import BotPage from '../pages/admin/BotPage';
 import NotFoundPage from '../pages/home/NotFoundPage';
 import AllOrderPage from '../pages/admin/AllOrderPage';
+import ScrollToTopButton from '../components/admin/ScrollToTopButton';
 
 import Style from './AdminRoutes.module.css';
 
@@ -39,6 +40,7 @@ const AdminRoutes: FC = () => {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
+      <ScrollToTopButton />
     </div>
   );
 };
