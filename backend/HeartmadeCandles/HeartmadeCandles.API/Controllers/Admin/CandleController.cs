@@ -1,5 +1,6 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
+using HeartmadeCandles.API.Contracts.Order.Requests;
 using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -25,16 +26,22 @@ public class CandleController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] CandleParametersRequest candleParametersRequest)
     {
-        var candlesMaybe = await _candleService.GetAll();
+        var candlesResult = await _candleService.GetAll(
+            candleParametersRequest.TypeFilter,
+            pagination: new PaginationSettings
+            {
+                PageSize = candleParametersRequest.PaginationSettings.PageSize,
+                PageIndex = candleParametersRequest.PaginationSettings.PageIndex
+            });
 
-        if (!candlesMaybe.HasValue)
+        if (candlesResult.IsFailure)
         {
-            return Ok(Array.Empty<Candle>());
+            return BadRequest(candlesResult.Error);
         }
 
-        return Ok(candlesMaybe.Value);
+        return Ok(candlesResult.Value);
     }
 
     [HttpGet("{id:int}")]

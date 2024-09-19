@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
+using HeartmadeCandles.Admin.DAL.Entities;
 using HeartmadeCandles.Admin.DAL.Mapping;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,11 +16,19 @@ public class CandleRepository : ICandleRepository
         _context = context;
     }
 
-    public async Task<Maybe<Candle[]>> GetAll()
+    public async Task<Maybe<Candle[]>> GetAll(TypeCandle? typeCandle, PaginationSettings pagination)
     {
-        var items = await _context.Candle
-            .AsNoTracking()
-            .Include(c => c.TypeCandle)
+        IQueryable<CandleEntity> query = _context.Candle.AsNoTracking().Include(c => c.TypeCandle);
+
+        if (typeCandle != null)
+        {
+            query = query.Where(item => item.TypeCandleId == typeCandle.Id);
+        }
+
+        var items = await query
+            .OrderBy(item => item.Id)
+            .Skip(pagination.PageSize * pagination.PageIndex)
+            .Take(pagination.PageSize)
             .ToArrayAsync();
 
         if (!items.Any())
@@ -27,15 +36,11 @@ public class CandleRepository : ICandleRepository
             return Maybe<Candle[]>.None;
         }
 
-        var result = items.Select(
-                item =>
-                {
-                    var typeCandle = TypeCandleMapping.MapToCandleType(item.TypeCandle);
-                    return CandleMapping.MapToCandle(
-                        item,
-                        typeCandle);
-                })
-            .ToArray();
+        var result = items.Select(item =>
+        {
+            var mappedTypeCandle = TypeCandleMapping.MapToCandleType(item.TypeCandle);
+            return CandleMapping.MapToCandle(item, mappedTypeCandle);
+        }).ToArray();
 
         return result;
     }

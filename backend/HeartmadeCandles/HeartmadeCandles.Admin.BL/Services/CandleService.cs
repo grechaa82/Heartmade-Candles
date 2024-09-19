@@ -32,9 +32,37 @@ public class CandleService : ICandleService
         _wickRepository = wickRepository;
     }
 
-    public async Task<Maybe<Candle[]>> GetAll()
+    public async Task<Result<Candle[]>> GetAll(string? typeFilter, PaginationSettings pagination)
     {
-        return await _candleRepository.GetAll();
+        if (!string.IsNullOrWhiteSpace(typeFilter))
+        {
+            var typeCandleMaybe = await _typeCandleRepository.Get(typeFilter);
+
+            if (!typeCandleMaybe.HasValue)
+            {
+                return Result.Failure<Candle[]>($"This type of candle: '{typeFilter}' does not exist");
+            }
+
+            var candlesMaybe = await _candleRepository.GetAll(typeCandleMaybe.Value, pagination);
+            
+            if (!candlesMaybe.HasValue)
+            {
+                return Result.Failure<Candle[]>("Candles not found");
+            }
+
+            return Result.Success(candlesMaybe.Value);
+        }
+        else
+        {
+            var candlesMaybe = await _candleRepository.GetAll(null, pagination);
+
+            if (!candlesMaybe.HasValue)
+            {
+                return Result.Failure<Candle[]>("Candles not found");
+            }
+
+            return Result.Success(candlesMaybe.Value);
+        }
     }
 
     public async Task<Maybe<CandleDetail>> Get(int candleId)
