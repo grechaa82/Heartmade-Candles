@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import { Candle } from '../../types/Candle';
@@ -13,6 +13,7 @@ import CreateTagPopUp from '../../modules/admin/PopUp/Tag/CreateTagPopUp';
 import { NumberOfLayerRequest } from '../../types/Requests/NumberOfLayerRequest';
 import { TypeCandleRequest } from '../../types/Requests/TypeCandleRequest';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
+import { PaginationSettings } from '../../typesV2/shared/PaginationSettings';
 
 import { CandlesApi } from '../../services/CandlesApi';
 import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
@@ -20,6 +21,7 @@ import { TypeCandlesApi } from '../../services/TypeCandlesApi';
 import { ImagesApi } from '../../services/ImagesApi';
 
 import Style from './AllCandlePage.module.css';
+import { optionData } from '../../components/shared/ButtonDropdown';
 
 export interface AllCandlePageProps {}
 
@@ -29,7 +31,13 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     [],
   );
   const [candlesData, setCandlesData] = useState<Candle[]>([]);
-
+  const [typeFilter, setTypeFilter] = useState<string>(null);
+  const [pagination, setPagination] = useState<PaginationSettings>({
+    pageSize: 6,
+    pageIndex: 0,
+  });
+  const [loading, setLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleCreateCandle = async (createdItem: Candle) => {
@@ -195,11 +203,62 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     }
   };
 
+  console.log(candlesData.length);
+
   useEffect(() => {
     async function fetchData() {
-      const candlesResponse = await CandlesApi.getAll();
+      if (!loading && hasMore) {
+        setLoading(true);
+        const candlesResponse = await CandlesApi.getAll(typeFilter, pagination);
+        if (candlesResponse.data && !candlesResponse.error) {
+          setCandlesData((prevCandles) => [
+            ...prevCandles,
+            ...candlesResponse.data,
+          ]);
+          setPagination({
+            pageSize: pagination.pageSize,
+            pageIndex: pagination.pageIndex + 1,
+          });
+          if (candlesResponse.data.length < pagination.pageSize) {
+            setHasMore(false);
+          }
+        } else {
+          setErrorMessage([...errorMessage, candlesResponse.error as string]);
+        }
+
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [loading, typeFilter, setTypeFilter]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleScroll = () => {
+    if (
+      document.documentElement.scrollHeight -
+        (document.documentElement.scrollTop + window.innerHeight) <
+      100
+      // && !loading
+      // && hasMore
+    ) {
+      setLoading(true);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      const candlesResponse = await CandlesApi.getAll(typeFilter, pagination);
       if (candlesResponse.data && !candlesResponse.error) {
         setCandlesData(candlesResponse.data);
+        setPagination({
+          pageSize: pagination.pageSize,
+          pageIndex: pagination.pageIndex + 1,
+        });
       } else {
         setErrorMessage([...errorMessage, candlesResponse.error as string]);
       }
@@ -233,6 +292,15 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
       return [];
     }
   };
+
+  const optionDataCandleFilters: optionData[] = [{ id: 'Все', title: 'Все' }];
+  typeCandlesData.map((item) => {
+    const optionDataFilter: optionData = {
+      id: item.id.toString(),
+      title: item.title,
+    };
+    optionDataCandleFilters.push(optionDataFilter);
+  });
 
   return (
     <>
@@ -277,6 +345,9 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         }
         deleteProduct={handleDeleteCandle}
         updateIsActiveProduct={handleUpdateIsActiveCandle}
+        filters={optionDataCandleFilters}
+        selectedFilter={{ id: typeFilter, title: typeFilter }}
+        onFiltersSelect={(filter) => setTypeFilter(filter.title)}
       />
       <ListErrorPopUp messages={errorMessage} />
     </>

@@ -5,18 +5,45 @@ import { ApiResponse } from './ApiResponse';
 import { AuthHelper } from '../helpers/AuthHelper';
 
 import { apiUrl } from '../config';
+import { PaginationSettings } from '../typesV2/shared/PaginationSettings';
 
 export const CandlesApi = {
-  getAll: async (): Promise<ApiResponse<Candle[]>> => {
+  getAll: async (
+    typeFilter?: string,
+    pagination: PaginationSettings = { pageSize: 20, pageIndex: 0 },
+  ): Promise<ApiResponse<Candle[]>> => {
     try {
+      console.log(
+        'Делаю запрос на сервер с такими данными: ',
+        typeFilter,
+        pagination,
+      );
+
       const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/candles`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
+      const queryParams = new URLSearchParams();
+
+      if (typeFilter) {
+        queryParams.append('TypeFilter', typeFilter);
+      }
+      queryParams.append(
+        'PaginationSettings.PageSize',
+        pagination.pageSize.toString(),
+      );
+      queryParams.append(
+        'PaginationSettings.PageIndex',
+        pagination.pageIndex.toString(),
+      );
+
+      const response = await fetch(
+        `${apiUrl}/admin/candles?${queryParams.toString()}`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: authorizationString,
+          },
         },
-      });
+      );
 
       if (response.ok) {
         return { data: await response.json(), error: null };

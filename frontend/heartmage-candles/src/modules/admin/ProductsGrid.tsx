@@ -11,6 +11,9 @@ import { BaseProduct } from '../../types/BaseProduct';
 import ProductBlock from '../../components/admin/ProductBlock';
 import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
 import IconPlusLarge from '../../UI/IconPlusLarge';
+import ButtonDropdown, {
+  optionData,
+} from '../../components/shared/ButtonDropdown';
 
 import Style from './ProductsGrid.module.css';
 
@@ -19,6 +22,9 @@ export interface ProductsGridProps<T extends BaseProduct> {
   data: T[];
   pageUrl?: string;
   popUpComponent?: ReactNode;
+  filters?: optionData[];
+  selectedFilter?: optionData;
+  onFiltersSelect?: (filter: optionData) => void;
   deleteProduct?: (id: string) => void;
   updateIsActiveProduct?: (id: string) => void;
 }
@@ -30,6 +36,9 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
   data,
   pageUrl,
   popUpComponent,
+  filters,
+  selectedFilter,
+  onFiltersSelect,
   deleteProduct,
   updateIsActiveProduct,
 }) => {
@@ -78,6 +87,14 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
             text="Добавить"
             onClick={handlePopUpOpen}
             color="#2E67EA"
+          />
+        )}
+        {filters && onFiltersSelect && (
+          <ButtonDropdown
+            text={'Тип свечей'}
+            options={filters}
+            selected={selectedFilter}
+            onChange={onFiltersSelect}
           />
         )}
       </div>
