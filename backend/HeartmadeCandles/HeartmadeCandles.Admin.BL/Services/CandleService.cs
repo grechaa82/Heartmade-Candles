@@ -32,7 +32,7 @@ public class CandleService : ICandleService
         _wickRepository = wickRepository;
     }
 
-    public async Task<Result<Candle[]>> GetAll(string? typeFilter, PaginationSettings pagination)
+    public async Task<(Result<Candle[]>, long)> GetAll(string? typeFilter, PaginationSettings pagination)
     {
         if (!string.IsNullOrWhiteSpace(typeFilter))
         {
@@ -40,28 +40,28 @@ public class CandleService : ICandleService
 
             if (!typeCandleMaybe.HasValue)
             {
-                return Result.Failure<Candle[]>($"This type of candle: '{typeFilter}' does not exist");
+                return (Result.Failure<Candle[]>($"This type of candle: '{typeFilter}' does not exist"), 0);
             }
 
-            var candlesMaybe = await _candleRepository.GetAll(typeCandleMaybe.Value, pagination);
+            var (candlesMaybe, totalCount) = await _candleRepository.GetAll(typeCandleMaybe.Value, pagination);
             
             if (!candlesMaybe.HasValue)
             {
-                return Result.Failure<Candle[]>("Candles not found");
+                return (Result.Failure<Candle[]>("Candles not found"), totalCount);
             }
 
-            return Result.Success(candlesMaybe.Value);
+            return (Result.Success(candlesMaybe.Value), totalCount);
         }
         else
         {
-            var candlesMaybe = await _candleRepository.GetAll(null, pagination);
+            var (candlesMaybe, totalCount) = await _candleRepository.GetAll(null, pagination);
 
             if (!candlesMaybe.HasValue)
             {
-                return Result.Failure<Candle[]>("Candles not found");
+                return (Result.Failure<Candle[]>("Candles not found"), totalCount);
             }
 
-            return Result.Success(candlesMaybe.Value);
+            return (Result.Success(candlesMaybe.Value), totalCount);
         }
     }
 

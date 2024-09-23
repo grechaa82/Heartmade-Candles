@@ -5,7 +5,7 @@ namespace HeartmadeCandles.Admin.Core.Interfaces;
 
 public interface ICandleRepository
 {
-    Task<Maybe<Candle[]>> GetAll(TypeCandle? typeCandle, PaginationSettings pagination);
+    Task<(Maybe<Candle[]>, long)> GetAll(TypeCandle? typeCandle, PaginationSettings pagination);
 
     Task<Maybe<Candle>> GetById(int candleId);
 

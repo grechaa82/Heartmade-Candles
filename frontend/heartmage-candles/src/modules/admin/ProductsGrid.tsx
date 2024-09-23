@@ -22,6 +22,7 @@ export interface ProductsGridProps<T extends BaseProduct> {
   data: T[];
   pageUrl?: string;
   popUpComponent?: ReactNode;
+  filterComponent?: ReactNode;
   filters?: optionData[];
   selectedFilter?: optionData;
   onFiltersSelect?: (filter: optionData) => void;
@@ -36,6 +37,7 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
   data,
   pageUrl,
   popUpComponent,
+  filterComponent,
   filters,
   selectedFilter,
   onFiltersSelect,
@@ -89,6 +91,7 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
             color="#2E67EA"
           />
         )}
+        {filterComponent}
         {filters && onFiltersSelect && (
           <ButtonDropdown
             text={'Тип свечей'}

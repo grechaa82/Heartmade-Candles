@@ -14,6 +14,9 @@ import { NumberOfLayerRequest } from '../../types/Requests/NumberOfLayerRequest'
 import { TypeCandleRequest } from '../../types/Requests/TypeCandleRequest';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import { PaginationSettings } from '../../typesV2/shared/PaginationSettings';
+import ButtonDropdown, {
+  optionData,
+} from '../../components/shared/ButtonDropdown';
 
 import { CandlesApi } from '../../services/CandlesApi';
 import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
@@ -21,7 +24,6 @@ import { TypeCandlesApi } from '../../services/TypeCandlesApi';
 import { ImagesApi } from '../../services/ImagesApi';
 
 import Style from './AllCandlePage.module.css';
-import { optionData } from '../../components/shared/ButtonDropdown';
 
 export interface AllCandlePageProps {}
 
@@ -207,7 +209,15 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
 
   useEffect(() => {
     async function fetchData() {
+      console.log(
+        typeFilter,
+        !loading,
+        hasMore,
+        '!loading && hasMore',
+        !loading && hasMore,
+      );
       if (!loading && hasMore) {
+        console.log(1);
         setLoading(true);
         const candlesResponse = await CandlesApi.getAll(typeFilter, pagination);
         if (candlesResponse.data && !candlesResponse.error) {
@@ -231,7 +241,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     }
 
     fetchData();
-  }, [loading, typeFilter, setTypeFilter]);
+  }, [loading]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -302,6 +312,17 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     optionDataCandleFilters.push(optionDataFilter);
   });
 
+  const handleOnChangeFilter = (selectedFilter: optionData) => {
+    console.log('fass');
+    if (selectedFilter.title === 'Все') {
+      setTypeFilter(null);
+    } else {
+      setTypeFilter(selectedFilter.title);
+    }
+    setLoading(false);
+    setHasMore(true);
+  };
+
   return (
     <>
       <TagsGrid
@@ -345,9 +366,17 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         }
         deleteProduct={handleDeleteCandle}
         updateIsActiveProduct={handleUpdateIsActiveCandle}
-        filters={optionDataCandleFilters}
-        selectedFilter={{ id: typeFilter, title: typeFilter }}
-        onFiltersSelect={(filter) => setTypeFilter(filter.title)}
+        filterComponent={
+          <ButtonDropdown
+            text={'Тип свечей'}
+            options={optionDataCandleFilters}
+            selected={{
+              id: typeFilter ? typeFilter : 'Все',
+              title: typeFilter ? typeFilter : 'Все',
+            }}
+            onChange={handleOnChangeFilter}
+          />
+        }
       />
       <ListErrorPopUp messages={errorMessage} />
     </>

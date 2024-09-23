@@ -28,7 +28,7 @@ public class CandleController : Controller
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] CandleParametersRequest candleParametersRequest)
     {
-        var candlesResult = await _candleService.GetAll(
+        var (candlesResult, totalCount) = await _candleService.GetAll(
             candleParametersRequest.TypeFilter,
             pagination: new PaginationSettings
             {
@@ -40,6 +40,8 @@ public class CandleController : Controller
         {
             return BadRequest(candlesResult.Error);
         }
+
+        Response.Headers.Add("X-Total-Count", totalCount.ToString());
 
         return Ok(candlesResult.Value);
     }

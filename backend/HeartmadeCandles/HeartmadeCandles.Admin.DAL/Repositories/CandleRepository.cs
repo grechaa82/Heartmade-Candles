@@ -16,7 +16,7 @@ public class CandleRepository : ICandleRepository
         _context = context;
     }
 
-    public async Task<Maybe<Candle[]>> GetAll(TypeCandle? typeCandle, PaginationSettings pagination)
+    public async Task<(Maybe<Candle[]>, long)> GetAll(TypeCandle? typeCandle, PaginationSettings pagination)
     {
         IQueryable<CandleEntity> query = _context.Candle.AsNoTracking().Include(c => c.TypeCandle);
 
@@ -24,6 +24,8 @@ public class CandleRepository : ICandleRepository
         {
             query = query.Where(item => item.TypeCandleId == typeCandle.Id);
         }
+
+        long totalCount = await query.LongCountAsync();
 
         var items = await query
             .OrderBy(item => item.Id)
@@ -33,7 +35,7 @@ public class CandleRepository : ICandleRepository
 
         if (!items.Any())
         {
-            return Maybe<Candle[]>.None;
+            return (Maybe<Candle[]>.None, totalCount);
         }
 
         var result = items.Select(item =>
@@ -42,7 +44,7 @@ public class CandleRepository : ICandleRepository
             return CandleMapping.MapToCandle(item, mappedTypeCandle);
         }).ToArray();
 
-        return result;
+        return (result, totalCount);
     }
 
     public async Task<Maybe<Candle>> GetById(int candleId)
