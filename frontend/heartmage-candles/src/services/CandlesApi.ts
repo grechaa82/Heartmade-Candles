@@ -3,22 +3,16 @@ import { CandleDetail } from '../types/CandleDetail';
 import { CandleRequest } from '../types/Requests/CandleRequest';
 import { ApiResponse } from './ApiResponse';
 import { AuthHelper } from '../helpers/AuthHelper';
+import { PaginationSettings } from '../typesV2/shared/PaginationSettings';
 
 import { apiUrl } from '../config';
-import { PaginationSettings } from '../typesV2/shared/PaginationSettings';
 
 export const CandlesApi = {
   getAll: async (
     typeFilter?: string,
     pagination: PaginationSettings = { pageSize: 20, pageIndex: 0 },
-  ): Promise<ApiResponse<Candle[]>> => {
+  ): Promise<Candle[]> => {
     try {
-      console.log(
-        'Делаю запрос на сервер с такими данными: ',
-        typeFilter,
-        pagination,
-      );
-
       const authorizationString = AuthHelper.getAuthorizationString();
       const queryParams = new URLSearchParams();
 
@@ -45,11 +39,12 @@ export const CandlesApi = {
         },
       );
 
-      if (response.ok) {
-        return { data: await response.json(), error: null };
-      } else {
-        return { data: null, error: await response.text() };
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`Ошибка ${response.status}: ${errorBody}`);
       }
+
+      return response.json();
     } catch (error) {
       throw new Error(error as string);
     }
@@ -76,9 +71,10 @@ export const CandlesApi = {
     }
   },
 
-  create: async (candle: CandleRequest): Promise<ApiResponse<void>> => {
+  create: async (candle: CandleRequest): Promise<Candle> => {
     try {
       const authorizationString = AuthHelper.getAuthorizationString();
+
       const response = await fetch(`${apiUrl}/admin/candles`, {
         method: 'POST',
         headers: {
@@ -88,20 +84,19 @@ export const CandlesApi = {
         body: JSON.stringify(candle),
       });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`Ошибка ${response.status}: ${errorBody}`);
       }
+
+      return;
     } catch (error) {
-      throw new Error(error as string);
+      console.error('Ошибка при создании свечи:', error);
+      throw new Error(error.message || 'Неизвестная ошибка');
     }
   },
 
-  update: async (
-    id: string,
-    candle: CandleRequest,
-  ): Promise<ApiResponse<void>> => {
+  update: async (id: string, candle: CandleRequest): Promise<Candle> => {
     try {
       const authorizationString = AuthHelper.getAuthorizationString();
       const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
@@ -113,19 +108,21 @@ export const CandlesApi = {
         body: JSON.stringify(candle),
       });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`Ошибка ${response.status}: ${errorBody}`);
       }
+
+      return;
     } catch (error) {
       throw new Error(error as string);
     }
   },
 
-  delete: async (id: string): Promise<ApiResponse<void>> => {
+  delete: async (id: string): Promise<void> => {
     try {
       const authorizationString = AuthHelper.getAuthorizationString();
+
       const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
         method: 'DELETE',
         headers: {
@@ -134,13 +131,13 @@ export const CandlesApi = {
         },
       });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
+      if (!response.ok) {
+        throw new Error(`Ошибка удаления: ${response.statusText}`);
       }
+
+      return;
     } catch (error) {
-      throw new Error(error as string);
+      throw new Error(error instanceof Error ? error.message : String(error));
     }
   },
 
