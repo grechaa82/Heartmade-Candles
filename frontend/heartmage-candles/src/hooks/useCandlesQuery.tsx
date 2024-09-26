@@ -7,12 +7,10 @@ import { CandlesApi } from '../services/CandlesApi';
 
 const useCandlesQuery = (typeFilter: string, pageSize: number = 6) => {
   const handleGetCandles = async (type: string, { pageIndex = 0 }) => {
-    const response = await CandlesApi.getAll(type, {
+    return await CandlesApi.getAll(type, {
       pageSize: pageSize,
       pageIndex: pageIndex,
     });
-
-    return response;
   };
 
   const handleCreateCandle = async (newCandle: Candle) => {
@@ -26,15 +24,11 @@ const useCandlesQuery = (typeFilter: string, pageSize: number = 6) => {
       isActive: newCandle.isActive,
     };
 
-    const response = await CandlesApi.create(candleRequest);
-
-    return response;
+    return await CandlesApi.create(candleRequest);
   };
 
   const handleDeleteCandle = async (candleId: string) => {
-    const response = await CandlesApi.delete(candleId);
-
-    return response;
+    return await CandlesApi.delete(candleId);
   };
 
   const handleUpdateIsActiveCandle = async (candleId: string) => {
@@ -56,12 +50,7 @@ const useCandlesQuery = (typeFilter: string, pageSize: number = 6) => {
       isActive: !candle.isActive,
     };
 
-    const response = await CandlesApi.update(
-      candle.id.toString(),
-      newCandleRequest,
-    );
-
-    return response;
+    return await CandlesApi.update(candle.id.toString(), newCandleRequest);
   };
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
@@ -76,6 +65,7 @@ const useCandlesQuery = (typeFilter: string, pageSize: number = 6) => {
     });
 
   const { mutate: createCandle } = useMutation({
+    mutationKey: ['createCandle'],
     mutationFn: handleCreateCandle,
     onSuccess: () => {
       refetch();
@@ -83,16 +73,16 @@ const useCandlesQuery = (typeFilter: string, pageSize: number = 6) => {
   });
 
   const { mutate: deleteCandle } = useMutation({
-    mutationFn: handleDeleteCandle,
     mutationKey: ['deleteCandle'],
+    mutationFn: handleDeleteCandle,
     onSuccess: () => {
       refetch();
     },
   });
 
   const { mutate: updateIsActiveCandle } = useMutation({
-    mutationFn: handleUpdateIsActiveCandle,
     mutationKey: ['updateIsActiveCandle'],
+    mutationFn: handleUpdateIsActiveCandle,
     onSuccess: () => {
       refetch();
     },

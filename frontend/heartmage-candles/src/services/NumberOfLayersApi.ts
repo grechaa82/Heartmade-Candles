@@ -6,67 +6,54 @@ import { AuthHelper } from '../helpers/AuthHelper';
 import { apiUrl } from '../config';
 
 export const NumberOfLayersApi = {
-  getAll: async (): Promise<ApiResponse<NumberOfLayer[]>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/numberOfLayers`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
-        },
-      });
+  getAll: async (): Promise<NumberOfLayer[]> => {
+    const response = await fetch(`${apiUrl}/admin/numberOfLayers`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+    });
 
-      if (response.ok) {
-        return { data: await response.json(), error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return response.json();
   },
-  create: async (
-    numberOfLayer: NumberOfLayerRequest,
-  ): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/numberOfLayers`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
-        },
-        body: JSON.stringify(numberOfLayer),
-      });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+  create: async (numberOfLayer: NumberOfLayerRequest): Promise<void> => {
+    const response = await fetch(`${apiUrl}/admin/numberOfLayers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+      body: JSON.stringify(numberOfLayer),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return;
   },
   delete: async (id: string): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/numberOfLayers/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
-        },
-      });
+    const response = await fetch(`${apiUrl}/admin/numberOfLayers/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+    });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return;
   },
 };

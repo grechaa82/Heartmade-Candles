@@ -115,14 +115,14 @@ const AllDecorPage: React.FC<AllDecorPageProps> = () => {
         data={decorsData}
         title="Декоры"
         pageUrl="decors"
-        popUpComponent={
+        renderPopUpComponent={(onClose) => (
           <CreateDecorPopUp
-            onClose={() => console.log('Popup closed')}
+            onClose={onClose}
             title="Создать декор"
             onSave={handleCreateDecor}
             uploadImages={handleUploadImages}
           />
-        }
+        )}
         deleteProduct={handleDeleteDecor}
         updateIsActiveProduct={handleUpdateIsActiveDecor}
       />
