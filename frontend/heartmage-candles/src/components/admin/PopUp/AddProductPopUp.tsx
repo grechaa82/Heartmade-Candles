@@ -24,18 +24,19 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
   onSave,
 }) => {
   const [allData, setAllData] = useState<BaseProduct[]>([]);
+  const [newSelectedData, setNewSelectedData] = useState<BaseProduct[]>([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [isModified, setIsModified] = useState(false);
 
   const handleAddProduct = (product: BaseProduct) => {
     const newSelectedData = [...selectedData, product];
-    setSelectedData(newSelectedData);
+    setNewSelectedData(newSelectedData);
     setIsModified(true);
   };
 
   const handleRemoveProduct = (product: BaseProduct) => {
     const newSelectedData = selectedData.filter((p) => p.id !== product.id);
-    setSelectedData(newSelectedData);
+    setNewSelectedData(newSelectedData);
     setIsModified(true);
   };
 
@@ -50,8 +51,9 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
       }
     };
 
+    setNewSelectedData(selectedData);
     fetchData();
-  }, [fetchAllData]);
+  }, []);
 
   return (
     <PopUp onClose={onClose}>
@@ -63,12 +65,12 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
               <button
                 key={item.id}
                 className={`${Style.productButton} ${
-                  selectedData.some((p) => p.id === item.id)
+                  newSelectedData.some((p) => p.id === item.id)
                     ? Style.selectedButton
                     : ''
                 }`}
                 onClick={() =>
-                  selectedData.some((p) => p.id === item.id)
+                  newSelectedData.some((p) => p.id === item.id)
                     ? handleRemoveProduct(item)
                     : handleAddProduct(item)
                 }
@@ -87,7 +89,7 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
               isModified && Style.activeSaveButton
             }`}
             onClick={() => {
-              onSave(selectedData);
+              onSave(newSelectedData);
               onClose();
             }}
           >

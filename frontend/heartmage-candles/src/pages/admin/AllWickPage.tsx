@@ -112,14 +112,14 @@ const AllWickPage: React.FC<AllWickPageProps> = () => {
         data={wicksData}
         title="Фитили"
         pageUrl="wicks"
-        popUpComponent={
+        renderPopUpComponent={(onClose) => (
           <CreateWickPopUp
-            onClose={() => console.log('Popup closed')}
+            onClose={onClose}
             title="Создать фитиль"
             onSave={handleCreateWick}
             uploadImages={handleUploadImages}
           />
-        }
+        )}
         deleteProduct={handleDeleteWick}
         updateIsActiveProduct={handleUpdateIsActiveWick}
       />

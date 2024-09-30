@@ -124,14 +124,14 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
         data={layerColorData}
         title="Слои"
         pageUrl="layerColors"
-        popUpComponent={
+        renderPopUpComponent={(onClose) => (
           <CreateLayerColorPopUp
-            onClose={() => console.log('Popup closed')}
+            onClose={onClose}
             title="Создать слой"
             onSave={handleCreateLayerColor}
             uploadImages={handleUploadImages}
           />
-        }
+        )}
         deleteProduct={handleDeleteLayerColor}
         updateIsActiveProduct={handleUpdateIsActiveLayerColor}
       />

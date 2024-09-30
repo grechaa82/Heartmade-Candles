@@ -103,13 +103,13 @@ const AllSmellPage: React.FC<AllSmellPageProps> = () => {
         data={smellsData}
         title="Запахи"
         pageUrl="smells"
-        popUpComponent={
+        renderPopUpComponent={(onClose) => (
           <CreateSmellPopUp
-            onClose={() => console.log('Popup closed')}
+            onClose={onClose}
             title="Создать запах"
             onSave={handleCreateSmell}
           />
-        }
+        )}
         deleteProduct={handleDeleteSmell}
         updateIsActiveProduct={handleUpdateIsActiveSmell}
       />
