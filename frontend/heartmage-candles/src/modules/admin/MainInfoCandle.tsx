@@ -10,29 +10,16 @@ import Style from './MainInfoCandle.module.css';
 
 export interface MainInfoCandleProps {
   data: Candle;
-  fetchTypeCandles: FetchTypeCandle;
-  onChangesCandle: (candle: Candle) => void;
+  allTypeCandle: TypeCandle[];
   onSave?: (saveCandle: Candle) => void;
 }
 
-export type FetchTypeCandle = () => Promise<TypeCandle[]>;
-
 const MainInfoCandle: FC<MainInfoCandleProps> = ({
   data,
-  fetchTypeCandles: fetchTypeCandle,
-  onChangesCandle,
+  allTypeCandle,
   onSave,
 }) => {
   const [candle, setCandle] = useState<Candle>(data);
-  const [typesCandle, setTypesCandle] = useState<TypeCandle[]>([]);
-
-  useEffect(() => {
-    async function getTypeCandles() {
-      const data = await fetchTypeCandle();
-      setTypesCandle(data);
-    }
-    getTypeCandles();
-  }, [fetchTypeCandle]);
 
   const handleOnSubmit = (data: Candle) => {
     const newCandle: Candle = {
@@ -55,7 +42,6 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
       images: [...candle.images, ...images],
     };
     setCandle(newCandle);
-    onChangesCandle(newCandle);
     if (onSave) {
       onSave(newCandle);
     }
@@ -64,7 +50,6 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
   const handleSetNewImages = (images: Image[]) => {
     const newCandle: Candle = { ...candle, images: images };
     setCandle(newCandle);
-    onChangesCandle(newCandle);
     if (onSave) {
       onSave(newCandle);
     }
@@ -77,9 +62,9 @@ const MainInfoCandle: FC<MainInfoCandleProps> = ({
         updateImages={handleSetNewImages}
         addImages={handleChangeImages}
       />
-      {typesCandle.length > 0 && (
+      {allTypeCandle.length > 0 && (
         <CandleForm
-          typeCandlesArray={typesCandle}
+          typeCandlesArray={allTypeCandle}
           defaultValues={candle}
           onSubmit={handleOnSubmit}
         />

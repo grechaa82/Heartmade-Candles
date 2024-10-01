@@ -1,8 +1,11 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 
 import { Candle } from '../types/Candle';
-import { Decor } from '../types/Decor';
 import { NumberOfLayer } from '../types/NumberOfLayer';
+import { Decor } from '../types/Decor';
+import { LayerColor } from '../types/LayerColor';
+import { Smell } from '../types/Smell';
+import { Wick } from '../types/Wick';
 
 import { CandlesApi } from '../services/CandlesApi';
 
@@ -41,6 +44,27 @@ const useCandleByIdQuery = (id: string) => {
     );
   };
 
+  const handleUpdateCandleLayerColors = async (layerColors: LayerColor[]) => {
+    return await CandlesApi.updateLayerColor(
+      id,
+      layerColors.map((layerColor) => layerColor.id),
+    );
+  };
+
+  const handleUpdateCandleSmells = async (smells: Smell[]) => {
+    return await CandlesApi.updateSmell(
+      id,
+      smells.map((smell) => smell.id),
+    );
+  };
+
+  const handleUpdateCandleWicks = async (wicks: Wick[]) => {
+    return await CandlesApi.updateWick(
+      id,
+      wicks.map((wick) => wick.id),
+    );
+  };
+
   const { data, isLoading, isSuccess, error, refetch } = useQuery({
     queryKey: ['candle', id],
     queryFn: () => handleGetCandleById(id),
@@ -70,6 +94,30 @@ const useCandleByIdQuery = (id: string) => {
     },
   });
 
+  const { mutate: updateCandleLayerColors } = useMutation({
+    mutationKey: ['updateCandleLayerColors'],
+    mutationFn: handleUpdateCandleLayerColors,
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const { mutate: updateCandleSmells } = useMutation({
+    mutationKey: ['updateCandleSmells'],
+    mutationFn: handleUpdateCandleSmells,
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
+  const { mutate: updateCandleWicks } = useMutation({
+    mutationKey: ['updateCandleWicks'],
+    mutationFn: handleUpdateCandleWicks,
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
   return {
     data,
     isLoading,
@@ -78,6 +126,9 @@ const useCandleByIdQuery = (id: string) => {
     updateCandle,
     updateCandleNumberOfLayers,
     updateCandleDecors,
+    updateCandleLayerColors,
+    updateCandleSmells,
+    updateCandleWicks,
   };
 };
 

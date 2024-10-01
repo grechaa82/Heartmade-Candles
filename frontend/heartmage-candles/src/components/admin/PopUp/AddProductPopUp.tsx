@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 import { BaseProduct } from '../../../types/BaseProduct';
 import ProductBlock from '../ProductBlock';
@@ -10,8 +10,7 @@ export interface AddProductPopUpProps<T extends BaseProduct>
   extends PopUpProps {
   title: string;
   selectedData: T[];
-  setSelectedData: (data: T[]) => void;
-  fetchAllData?: () => Promise<T[]>;
+  allData: T[];
   onSave: (product: BaseProduct[]) => void;
 }
 
@@ -19,58 +18,48 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
   onClose,
   title,
   selectedData,
-  setSelectedData,
-  fetchAllData,
+  allData,
   onSave,
 }) => {
-  const [allData, setAllData] = useState<BaseProduct[]>([]);
-  const [newSelectedData, setNewSelectedData] = useState<BaseProduct[]>([]);
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [tempSelectedData, setTempSelectedData] =
+    useState<BaseProduct[]>(selectedData);
   const [isModified, setIsModified] = useState(false);
 
   const handleAddProduct = (product: BaseProduct) => {
-    const newSelectedData = [...selectedData, product];
-    setNewSelectedData(newSelectedData);
+    const newTempSelectedData = [...tempSelectedData, product];
+    setTempSelectedData(newTempSelectedData);
     setIsModified(true);
   };
 
   const handleRemoveProduct = (product: BaseProduct) => {
-    const newSelectedData = selectedData.filter((p) => p.id !== product.id);
-    setNewSelectedData(newSelectedData);
+    const newTempSelectedData = tempSelectedData.filter(
+      (p) => p.id !== product.id,
+    );
+    setTempSelectedData(newTempSelectedData);
     setIsModified(true);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const newData = await fetchAllData?.();
-        setAllData(newData || []);
-        setIsDataLoaded(true);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    setNewSelectedData(selectedData);
-    fetchData();
-  }, []);
+  const handleSave = () => {
+    onSave(tempSelectedData);
+    onClose();
+  };
 
   return (
     <PopUp onClose={onClose}>
       <div className={Style.container}>
         <p className={Style.title}>{title}</p>
-        {isDataLoaded ? (
+        {allData.length > 0 ? (
           <div className={Style.popUpGrid}>
             {allData.map((item: BaseProduct) => (
               <button
                 key={item.id}
                 className={`${Style.productButton} ${
-                  newSelectedData.some((p) => p.id === item.id)
+                  tempSelectedData.some((p) => p.id === item.id)
                     ? Style.selectedButton
                     : ''
                 }`}
                 onClick={() =>
-                  newSelectedData.some((p) => p.id === item.id)
+                  tempSelectedData.some((p) => p.id === item.id)
                     ? handleRemoveProduct(item)
                     : handleAddProduct(item)
                 }
@@ -82,20 +71,15 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
         ) : (
           <div>Loading...</div>
         )}
-        {onSave && (
-          <button
-            type="button"
-            className={`${Style.saveButton} ${
-              isModified && Style.activeSaveButton
-            }`}
-            onClick={() => {
-              onSave(newSelectedData);
-              onClose();
-            }}
-          >
-            Сохранить
-          </button>
-        )}
+        <button
+          type="button"
+          className={`${Style.saveButton} ${
+            isModified && Style.activeSaveButton
+          }`}
+          onClick={handleSave}
+        >
+          Сохранить
+        </button>
       </div>
     </PopUp>
   );

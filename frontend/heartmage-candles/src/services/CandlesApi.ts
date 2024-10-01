@@ -11,7 +11,6 @@ export const CandlesApi = {
     typeFilter?: string,
     pagination: PaginationSettings = { pageSize: 20, pageIndex: 0 },
   ): Promise<Candle[]> => {
-    const authorizationString = AuthHelper.getAuthorizationString();
     const queryParams = new URLSearchParams();
 
     if (typeFilter) {
@@ -32,7 +31,7 @@ export const CandlesApi = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: authorizationString,
+          Authorization: AuthHelper.getAuthorizationString(),
         },
       },
     );
