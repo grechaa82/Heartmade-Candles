@@ -9,15 +9,10 @@ import Style from './MainInfoWick.module.css';
 
 export interface MainInfoWickProps {
   data: Wick;
-  onChangesWick: (wick: Wick) => void;
   onSave?: (saveWick: Wick) => void;
 }
 
-const MainInfoWick: FC<MainInfoWickProps> = ({
-  data,
-  onChangesWick,
-  onSave,
-}) => {
+const MainInfoWick: FC<MainInfoWickProps> = ({ data, onSave }) => {
   const [wick, setWick] = useState<Wick>(data);
 
   const handleOnSubmit = (data: Wick) => {
@@ -35,19 +30,13 @@ const MainInfoWick: FC<MainInfoWickProps> = ({
   const handleChangeImages = (images: Image[]) => {
     const newWick: Wick = { ...wick, images: [...wick.images, ...images] };
     setWick(newWick);
-    onChangesWick(newWick);
-    if (onSave) {
-      onSave(newWick);
-    }
+    onSave(newWick);
   };
 
   const handleSetNewImages = (images: Image[]) => {
     const newWick: Wick = { ...wick, images: images };
     setWick(newWick);
-    onChangesWick(newWick);
-    if (onSave) {
-      onSave(newWick);
-    }
+    onSave(newWick);
   };
 
   return (

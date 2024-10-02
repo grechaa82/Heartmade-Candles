@@ -12,7 +12,7 @@ import useCandleByIdQuery from '../../hooks/useCandleByIdQuery';
 import useNumberOfLayersQuery from '../../hooks/useNumberOfLayersQuery';
 import useTypeCandlesQuery from '../../hooks/useTypeCandlesQuery';
 import useSmellsQuery from '../../hooks/useSmellsQuery';
-import useDecorQuery from '../../hooks/useDecorQuery';
+import useDecorsQuery from '../../hooks/useDecorsQuery';
 import useLayerColorsQuery from '../../hooks/useLayerColorsQuery';
 import useWicksQuery from '../../hooks/useWicksQuery';
 
@@ -38,7 +38,7 @@ const CandleDetailsPage: FC = () => {
   } = useCandleByIdQuery(id);
   const { data: typeCandleData } = useTypeCandlesQuery();
   const { data: numberOfLayersData } = useNumberOfLayersQuery();
-  const { data: decorsData } = useDecorQuery();
+  const { data: decorsData } = useDecorsQuery();
   const { data: layerColorsData } = useLayerColorsQuery();
   const { data: smellsData } = useSmellsQuery();
   const { data: wicksData } = useWicksQuery();

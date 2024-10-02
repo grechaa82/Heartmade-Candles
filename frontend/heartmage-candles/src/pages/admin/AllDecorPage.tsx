@@ -3,7 +3,7 @@ import { FC, useState } from 'react';
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import CreateDecorPopUp from '../../modules/admin/PopUp/Decor/CreateDecorPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import useDecorQuery from '../../hooks/useDecorQuery';
+import useDecorsQuery from '../../hooks/useDecorsQuery';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -13,7 +13,7 @@ export interface AllDecorPageProps {}
 
 const AllDecorPage: FC<AllDecorPageProps> = () => {
   const { data, isLoading, createDecor, deleteDecor, updateIsActiveDecor } =
-    useDecorQuery();
+    useDecorsQuery();
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleUploadImages = async (files: File[]) => {

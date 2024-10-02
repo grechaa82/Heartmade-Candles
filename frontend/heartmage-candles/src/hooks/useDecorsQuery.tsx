@@ -5,7 +5,7 @@ import { Decor } from '../types/Decor';
 
 import { DecorsApi } from '../services/DecorsApi';
 
-const useDecorQuery = () => {
+const useDecorsQuery = () => {
   const handleGetDecors = async () => {
     return await DecorsApi.getAll();
   };
@@ -86,4 +86,4 @@ const useDecorQuery = () => {
   };
 };
 
-export default useDecorQuery;
+export default useDecorsQuery;

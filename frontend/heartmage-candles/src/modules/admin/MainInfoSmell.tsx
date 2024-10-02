@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 
 import { Smell } from '../../types/Smell';
 import SmellForm from '../../components/admin/Form/Smell/SmellForm';
@@ -7,32 +7,25 @@ import Style from './MainInfoSmell.module.css';
 
 export interface MainInfoSmellProps {
   data: Smell;
-  handleChangesSmell: (smell: Smell) => void;
   onSave?: (saveSmell: Smell) => void;
 }
 
-const MainInfoSmell: FC<MainInfoSmellProps> = ({
-  data,
-  handleChangesSmell,
-  onSave,
-}) => {
-  const [smell, setSmell] = useState<Smell>(data);
-
-  const handleOnSubmit = (data: Smell) => {
+const MainInfoSmell: FC<MainInfoSmellProps> = ({ data, onSave }) => {
+  const handleOnSubmit = (smell: Smell) => {
     const newSmell: Smell = {
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      images: smell.images,
-      isActive: data.isActive,
-      price: data.price,
+      id: smell.id,
+      title: smell.title,
+      description: smell.description,
+      images: data.images,
+      isActive: smell.isActive,
+      price: smell.price,
     };
     onSave(newSmell);
   };
 
   return (
     <div className={Style.smellInfo}>
-      <SmellForm defaultValues={smell} onSubmit={handleOnSubmit} />
+      <SmellForm defaultValues={data} onSubmit={handleOnSubmit} />
     </div>
   );
 };
