@@ -23,11 +23,22 @@ public class SmellController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] PaginationSettingsRequest pagination)
     {
-        var smellsMaybe = await _smellService.GetAll();
+        var (smellsResult, totalCount) = await _smellService.GetAll(new PaginationSettings
+        {
+            PageSize = pagination.Limit,
+            PageIndex = pagination.Index
+        });
 
-        return Ok(smellsMaybe.HasValue ? smellsMaybe.Value : Array.Empty<Smell>());
+        if (smellsResult.IsFailure)
+        {
+            return BadRequest(smellsResult.Error);
+        }
+
+        Response.Headers.Add("X-Total-Count", totalCount.ToString());
+
+        return Ok(smellsResult.Value);
     }
 
     [HttpGet("{id:int}")]

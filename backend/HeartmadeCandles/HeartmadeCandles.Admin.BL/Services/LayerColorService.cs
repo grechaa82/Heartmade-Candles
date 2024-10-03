@@ -13,9 +13,16 @@ public class LayerColorService : ILayerColorService
         _layerColorRepository = layerColorRepository;
     }
 
-    public async Task<Maybe<LayerColor[]>> GetAll()
+    public async Task<(Result<LayerColor[]>, long)> GetAll(PaginationSettings pagination)
     {
-        return await _layerColorRepository.GetAll();
+        var (layerColorsMaybe, totalCount) = await _layerColorRepository.GetAll(pagination);
+
+        if (!layerColorsMaybe.HasValue)
+        {
+            return (Result.Failure<LayerColor[]>("LayerColors not found"), totalCount);
+        }
+
+        return (Result.Success(layerColorsMaybe.Value), totalCount);
     }
 
     public async Task<Maybe<LayerColor>> Get(int layerColorId)

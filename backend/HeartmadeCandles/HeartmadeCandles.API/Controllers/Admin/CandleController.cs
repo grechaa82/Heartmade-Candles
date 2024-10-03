@@ -26,14 +26,14 @@ public class CandleController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] CandleParametersRequest candleParametersRequest)
+    public async Task<IActionResult> GetAll([FromQuery] string? typeFilter, [FromQuery] PaginationSettingsRequest paginationSettings)
     {
         var (candlesResult, totalCount) = await _candleService.GetAll(
-            candleParametersRequest.TypeFilter,
+            typeFilter,
             pagination: new PaginationSettings
             {
-                PageSize = candleParametersRequest.PaginationSettings.PageSize,
-                PageIndex = candleParametersRequest.PaginationSettings.PageIndex
+                PageSize = paginationSettings.Limit,
+                PageIndex = paginationSettings.Index
             });
 
         if (candlesResult.IsFailure)

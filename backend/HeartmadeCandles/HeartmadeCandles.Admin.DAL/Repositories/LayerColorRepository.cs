@@ -16,22 +16,26 @@ public class LayerColorRepository : ILayerColorRepository
         _context = context;
     }
 
-    public async Task<Maybe<LayerColor[]>> GetAll()
+    public async Task<(Maybe<LayerColor[]>, long)> GetAll(PaginationSettings pagination)
     {
+        long totalCount = await _context.LayerColor.CountAsync();
+
         var items = await _context.LayerColor
             .AsNoTracking()
+            .Skip(pagination.PageSize * pagination.PageIndex)
+            .Take(pagination.PageSize)
             .ToArrayAsync();
 
         if (!items.Any())
         {
-            return Maybe<LayerColor[]>.None;
+            return (Maybe<LayerColor[]>.None, totalCount);
         }
 
         var result = items
             .Select(LayerColorMapping.MapToLayerColor)
             .ToArray();
 
-        return result;
+        return (result, totalCount);
     }
 
     public async Task<Maybe<LayerColor>> Get(int layerColorId)

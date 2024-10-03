@@ -16,22 +16,26 @@ public class WickRepository : IWickRepository
         _context = context;
     }
 
-    public async Task<Maybe<Wick[]>> GetAll()
+    public async Task<(Maybe<Wick[]>, long)> GetAll(PaginationSettings pagination)
     {
+        long totalCount = await _context.Wick.CountAsync();
+
         var items = await _context.Wick
             .AsNoTracking()
+            .Skip(pagination.PageSize * pagination.PageIndex)
+            .Take(pagination.PageSize)
             .ToArrayAsync();
 
         if (!items.Any())
         {
-            return Maybe<Wick[]>.None;
+            return (Maybe<Wick[]>.None, totalCount);
         }
 
         var result = items
             .Select(WickMapping.MapToWick)
             .ToArray();
 
-        return result;
+        return (result, totalCount);
     }
 
     public async Task<Maybe<Wick>> Get(int wickId)
