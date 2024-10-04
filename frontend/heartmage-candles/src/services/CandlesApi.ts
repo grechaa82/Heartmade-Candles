@@ -16,14 +16,8 @@ export const CandlesApi = {
     if (typeFilter) {
       queryParams.append('TypeFilter', typeFilter);
     }
-    queryParams.append(
-      'PaginationSettings.PageSize',
-      pagination.pageSize.toString(),
-    );
-    queryParams.append(
-      'PaginationSettings.PageIndex',
-      pagination.pageIndex.toString(),
-    );
+    queryParams.append('Limit', pagination.pageSize.toString());
+    queryParams.append('Index', pagination.pageIndex.toString());
 
     const response = await fetch(
       `${apiUrl}/admin/candles?${queryParams.toString()}`,

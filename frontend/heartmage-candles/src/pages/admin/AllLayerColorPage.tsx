@@ -1,4 +1,5 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import CreateLayerColorPopUp from '../../modules/admin/PopUp/LayerColor/CreateLayerColorPopUp';
@@ -15,11 +16,23 @@ const AllLayerColorPage: FC<AllLayerColorPageProps> = () => {
   const {
     data,
     isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     createLayerColor,
     deleteLayerColor,
     updateIsActiveLayerColor,
   } = useLayerColorsQuery();
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
+  const { ref, inView, entry } = useInView({
+    threshold: 0,
+  });
+
+  useEffect(() => {
+    if (entry && inView) {
+      fetchNextPage();
+    }
+  }, [entry]);
 
   const handleUploadImages = async (files: File[]) => {
     const imagesResponse = await ImagesApi.uploadImages(files);
@@ -37,7 +50,7 @@ const AllLayerColorPage: FC<AllLayerColorPageProps> = () => {
   return (
     <>
       <ProductsGrid
-        data={data}
+        data={data?.pages.flat() || []}
         title="Слои"
         pageUrl="layerColors"
         renderPopUpComponent={(onClose) => (
@@ -51,6 +64,11 @@ const AllLayerColorPage: FC<AllLayerColorPageProps> = () => {
         deleteProduct={deleteLayerColor}
         updateIsActiveProduct={updateIsActiveLayerColor}
       />
+      {isFetchingNextPage ? (
+        <span>...Loading</span>
+      ) : (
+        hasNextPage && <div ref={ref}></div>
+      )}
       <ListErrorPopUp messages={errorMessage} />
     </>
   );

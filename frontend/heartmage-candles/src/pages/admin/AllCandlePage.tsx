@@ -163,7 +163,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         )}
       />
       {isFetchingNextPage ? (
-        <span>loading...</span>
+        <span>...Loading</span>
       ) : (
         hasNextPage && <div ref={ref}></div>
       )}

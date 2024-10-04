@@ -1,18 +1,29 @@
 import { Wick } from '../types/Wick';
 import { WickRequest } from '../types/Requests/WickRequest';
 import { AuthHelper } from '../helpers/AuthHelper';
+import { PaginationSettings } from '../typesV2/shared/PaginationSettings';
 
 import { apiUrl } from '../config';
 
 export const WicksApi = {
-  getAll: async (): Promise<Wick[]> => {
-    const response = await fetch(`${apiUrl}/admin/wicks`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: AuthHelper.getAuthorizationString(),
+  getAll: async (
+    pagination: PaginationSettings = { pageSize: 20, pageIndex: 0 },
+  ): Promise<Wick[]> => {
+    const queryParams = new URLSearchParams();
+
+    queryParams.append('Limit', pagination.pageSize.toString());
+    queryParams.append('Index', pagination.pageIndex.toString());
+
+    const response = await fetch(
+      `${apiUrl}/admin/wicks?${queryParams.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: AuthHelper.getAuthorizationString(),
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       const errorBody = await response.text();

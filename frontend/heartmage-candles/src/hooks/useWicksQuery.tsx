@@ -1,13 +1,16 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 
 import { WickRequest } from '../types/Requests/WickRequest';
 import { Wick } from '../types/Wick';
 
 import { WicksApi } from '../services/WicksApi';
 
-const useWicksQuery = () => {
-  const handleGetWicks = async () => {
-    return await WicksApi.getAll();
+const useWicksQuery = (pageSize: number = 21) => {
+  const handleGetWicks = async ({ pageIndex = 0 }) => {
+    return await WicksApi.getAll({
+      pageSize: pageSize,
+      pageIndex: pageIndex,
+    });
   };
 
   const handleCreateWick = async (wick: Wick) => {
@@ -26,13 +29,13 @@ const useWicksQuery = () => {
     return await WicksApi.delete(wickId);
   };
 
-  const handleUpdateIsActiveCandle = async (wickId: string) => {
-    const wick = data
+  const handleUpdateIsActiveWick = async (wickId: string) => {
+    const wick = data?.pages
       .flatMap((page) => page)
       .find((wick) => wick.id === parseInt(wickId));
 
     if (!wick) {
-      throw new Error(`Candle with id ${wickId} not found`);
+      throw new Error(`Wick with id ${wickId} not found`);
     }
 
     const newWickRequest: WickRequest = {
@@ -46,9 +49,22 @@ const useWicksQuery = () => {
     return await WicksApi.update(wick.id.toString(), newWickRequest);
   };
 
-  const { data, isLoading, isSuccess, error, refetch } = useQuery({
+  const {
+    data,
+    error,
+    isLoading,
+    isSuccess,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery({
     queryKey: ['wicks'],
-    queryFn: handleGetWicks,
+    queryFn: ({ pageParam }) => handleGetWicks({ pageIndex: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage.length < pageSize ? undefined : lastPageParam + 1;
+    },
   });
 
   const { mutate: createWick } = useMutation({
@@ -69,7 +85,7 @@ const useWicksQuery = () => {
 
   const { mutate: updateIsActiveWick } = useMutation({
     mutationKey: ['updateIsActiveWick'],
-    mutationFn: handleUpdateIsActiveCandle,
+    mutationFn: handleUpdateIsActiveWick,
     onSuccess: () => {
       refetch();
     },
@@ -80,6 +96,9 @@ const useWicksQuery = () => {
     isLoading,
     isSuccess,
     error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     createWick,
     deleteWick,
     updateIsActiveWick,

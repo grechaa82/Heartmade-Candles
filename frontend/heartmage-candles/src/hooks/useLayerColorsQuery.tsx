@@ -1,13 +1,16 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 
 import { LayerColorRequest } from '../types/Requests/LayerColorRequest';
 import { LayerColor } from '../types/LayerColor';
 
 import { LayerColorsApi } from '../services/LayerColorsApi';
 
-const useLayerColorsQuery = () => {
-  const handleGetLayerColors = async () => {
-    return await LayerColorsApi.getAll();
+const useLayerColorsQuery = (pageSize: number = 21) => {
+  const handleGetLayerColors = async ({ pageIndex = 0 }) => {
+    return await LayerColorsApi.getAll({
+      pageSize: pageSize,
+      pageIndex: pageIndex,
+    });
   };
 
   const handleCreateLayerColor = async (layerColor: LayerColor) => {
@@ -26,12 +29,12 @@ const useLayerColorsQuery = () => {
     return await LayerColorsApi.delete(layerColorId);
   };
 
-  const handleUpdateIsActiveCandle = async (layerColorId: string) => {
+  const handleUpdateIsActiveLayerColor = async (layerColorId: string) => {
     if (!data) {
       throw new Error(`LayerColors data is not available.`);
     }
 
-    const layerColor = data
+    const layerColor = data?.pages
       .flatMap((page) => page)
       .find((layerColor) => layerColor.id === parseInt(layerColorId));
 
@@ -53,9 +56,22 @@ const useLayerColorsQuery = () => {
     );
   };
 
-  const { data, isLoading, isSuccess, error, refetch } = useQuery({
+  const {
+    data,
+    error,
+    isLoading,
+    isSuccess,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery({
     queryKey: ['layerColors'],
-    queryFn: handleGetLayerColors,
+    queryFn: ({ pageParam }) => handleGetLayerColors({ pageIndex: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage.length < pageSize ? undefined : lastPageParam + 1;
+    },
   });
 
   const { mutate: createLayerColor } = useMutation({
@@ -76,7 +92,7 @@ const useLayerColorsQuery = () => {
 
   const { mutate: updateIsActiveLayerColor } = useMutation({
     mutationKey: ['updateIsActiveLayerColor'],
-    mutationFn: handleUpdateIsActiveCandle,
+    mutationFn: handleUpdateIsActiveLayerColor,
     onSuccess: () => {
       refetch();
     },
@@ -87,6 +103,9 @@ const useLayerColorsQuery = () => {
     isLoading,
     isSuccess,
     error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     createLayerColor,
     deleteLayerColor,
     updateIsActiveLayerColor,

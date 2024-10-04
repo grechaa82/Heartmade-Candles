@@ -1,4 +1,5 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import CreateWickPopUp from '../../modules/admin/PopUp/Wick/CreateWickPopUp';
@@ -12,9 +13,26 @@ import Style from './AllWickPage.module.css';
 export interface AllWickPageProps {}
 
 const AllWickPage: FC<AllWickPageProps> = () => {
-  const { data, isLoading, createWick, deleteWick, updateIsActiveWick } =
-    useWicksQuery();
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    createWick,
+    deleteWick,
+    updateIsActiveWick,
+  } = useWicksQuery();
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
+  const { ref, inView, entry } = useInView({
+    threshold: 0,
+  });
+
+  useEffect(() => {
+    if (entry && inView) {
+      fetchNextPage();
+    }
+  }, [entry]);
 
   const handleUploadImages = async (files: File[]) => {
     const imagesResponse = await ImagesApi.uploadImages(files);
@@ -32,7 +50,7 @@ const AllWickPage: FC<AllWickPageProps> = () => {
   return (
     <>
       <ProductsGrid
-        data={data}
+        data={data?.pages.flat() || []}
         title="Фитили"
         pageUrl="wicks"
         renderPopUpComponent={(onClose) => (
@@ -46,6 +64,11 @@ const AllWickPage: FC<AllWickPageProps> = () => {
         deleteProduct={deleteWick}
         updateIsActiveProduct={updateIsActiveWick}
       />
+      {isFetchingNextPage ? (
+        <span>...Loading</span>
+      ) : (
+        hasNextPage && <div ref={ref}></div>
+      )}
       <ListErrorPopUp messages={errorMessage} />
     </>
   );

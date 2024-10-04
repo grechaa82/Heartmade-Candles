@@ -1,13 +1,16 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 
 import { SmellRequest } from '../types/Requests/SmellRequest';
 import { Smell } from '../types/Smell';
 
 import { SmellsApi } from '../services/SmellsApi';
 
-const useSmellsQuery = () => {
-  const handleGetSmells = async () => {
-    return await SmellsApi.getAll();
+const useSmellsQuery = (pageSize: number = 21) => {
+  const handleGetSmells = async ({ pageIndex = 0 }) => {
+    return await SmellsApi.getAll({
+      pageSize: pageSize,
+      pageIndex: pageIndex,
+    });
   };
 
   const handleCreateSmell = async (smell: Smell) => {
@@ -25,13 +28,13 @@ const useSmellsQuery = () => {
     return await SmellsApi.delete(smellId);
   };
 
-  const handleUpdateIsActiveCandle = async (smellId: string) => {
-    const smell = data
+  const handleUpdateIsActiveSmell = async (smellId: string) => {
+    const smell = data?.pages
       .flatMap((page) => page)
       .find((smell) => smell.id === parseInt(smellId));
 
     if (!smell) {
-      throw new Error(`Candle with id ${smellId} not found`);
+      throw new Error(`Smell with id ${smellId} not found`);
     }
 
     const newSmellRequest: SmellRequest = {
@@ -44,9 +47,22 @@ const useSmellsQuery = () => {
     return await SmellsApi.update(smell.id.toString(), newSmellRequest);
   };
 
-  const { data, isLoading, isSuccess, error, refetch } = useQuery({
+  const {
+    data,
+    error,
+    isLoading,
+    isSuccess,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery({
     queryKey: ['smells'],
-    queryFn: handleGetSmells,
+    queryFn: ({ pageParam }) => handleGetSmells({ pageIndex: pageParam }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage.length < pageSize ? undefined : lastPageParam + 1;
+    },
   });
 
   const { mutate: createSmell } = useMutation({
@@ -67,7 +83,7 @@ const useSmellsQuery = () => {
 
   const { mutate: updateIsActiveSmell } = useMutation({
     mutationKey: ['updateIsActiveSmell'],
-    mutationFn: handleUpdateIsActiveCandle,
+    mutationFn: handleUpdateIsActiveSmell,
     onSuccess: () => {
       refetch();
     },
@@ -78,6 +94,9 @@ const useSmellsQuery = () => {
     isLoading,
     isSuccess,
     error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
     createSmell,
     deleteSmell,
     updateIsActiveSmell,

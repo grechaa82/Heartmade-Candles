@@ -1,4 +1,5 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import CreateSmellPopUp from '../../modules/admin/PopUp/Smell/CreateSmellPopUp';
@@ -10,10 +11,26 @@ import Style from './AllSmellPage.module.css';
 export interface AllSmellPageProps {}
 
 const AllSmellPage: FC<AllSmellPageProps> = () => {
-  const { data, isLoading, createSmell, deleteSmell, updateIsActiveSmell } =
-    useSmellsQuery();
-
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    createSmell,
+    deleteSmell,
+    updateIsActiveSmell,
+  } = useSmellsQuery();
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
+  const { ref, inView, entry } = useInView({
+    threshold: 0,
+  });
+
+  useEffect(() => {
+    if (entry && inView) {
+      fetchNextPage();
+    }
+  }, [entry]);
 
   if (isLoading) {
     return <div>...Loading</div>;
@@ -23,7 +40,7 @@ const AllSmellPage: FC<AllSmellPageProps> = () => {
     <>
       {isLoading}
       <ProductsGrid
-        data={data}
+        data={data?.pages.flat() || []}
         title="Запахи"
         pageUrl="smells"
         renderPopUpComponent={(onClose) => (
@@ -36,6 +53,11 @@ const AllSmellPage: FC<AllSmellPageProps> = () => {
         deleteProduct={deleteSmell}
         updateIsActiveProduct={updateIsActiveSmell}
       />
+      {isFetchingNextPage ? (
+        <span>...Loading</span>
+      ) : (
+        hasNextPage && <div ref={ref}></div>
+      )}
       <ListErrorPopUp messages={errorMessage} />
     </>
   );
