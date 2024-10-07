@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 
 import { SmellRequest } from '../types/Requests/SmellRequest';
@@ -6,11 +7,19 @@ import { Smell } from '../types/Smell';
 import { SmellsApi } from '../services/SmellsApi';
 
 const useSmellsQuery = (pageSize: number = 21) => {
+  const [totalCount, setTotalCount] = useState(0);
+
   const handleGetSmells = async ({ pageIndex = 0 }) => {
-    return await SmellsApi.getAll({
+    const [smellsResponse, totalCountResponse] = await SmellsApi.getAll({
       pageSize: pageSize,
       pageIndex: pageIndex,
     });
+
+    if (totalCountResponse) {
+      setTotalCount(totalCountResponse);
+    }
+
+    return smellsResponse;
   };
 
   const handleCreateSmell = async (smell: Smell) => {
@@ -60,8 +69,17 @@ const useSmellsQuery = (pageSize: number = 21) => {
     queryKey: ['smells'],
     queryFn: ({ pageParam }) => handleGetSmells({ pageIndex: pageParam }),
     initialPageParam: 0,
-    getNextPageParam: (lastPage, _, lastPageParam) => {
-      return lastPage.length < pageSize ? undefined : lastPageParam + 1;
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      const currentPageSize = lastPage.length;
+
+      if (totalCount) {
+        if (currentPageSize < pageSize || allPages.length >= totalCount) {
+          return undefined;
+        }
+        return lastPageParam + 1;
+      }
+
+      return currentPageSize < pageSize ? undefined : lastPageParam + 1;
     },
   });
 

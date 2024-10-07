@@ -10,7 +10,7 @@ export const CandlesApi = {
   getAll: async (
     typeFilter?: string,
     pagination: PaginationSettings = { pageSize: 20, pageIndex: 0 },
-  ): Promise<Candle[]> => {
+  ): Promise<[Candle[], number | null]> => {
     const queryParams = new URLSearchParams();
 
     if (typeFilter) {
@@ -35,7 +35,11 @@ export const CandlesApi = {
       throw new Error(`Error ${response.status}: ${errorBody}`);
     }
 
-    return response.json();
+    const data: Candle[] = await response.json();
+    const totalCountHeader = response.headers.get('X-Total-Count');
+    const totalCount = totalCountHeader ? parseInt(totalCountHeader, 10) : null;
+
+    return [data, totalCount];
   },
 
   getById: async (id: string): Promise<CandleDetail> => {

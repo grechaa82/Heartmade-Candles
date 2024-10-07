@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 
 import { Candle } from '../types/Candle';
@@ -6,11 +7,22 @@ import { CandleRequest } from '../types/Requests/CandleRequest';
 import { CandlesApi } from '../services/CandlesApi';
 
 const useCandlesQuery = (typeFilter: string, pageSize: number = 6) => {
+  const [totalCount, setTotalCount] = useState(0);
+
   const handleGetCandles = async (type: string, { pageIndex = 0 }) => {
-    return await CandlesApi.getAll(type, {
-      pageSize: pageSize,
-      pageIndex: pageIndex,
-    });
+    const [candlesResponse, totalCountResponse] = await CandlesApi.getAll(
+      type,
+      {
+        pageSize: pageSize,
+        pageIndex: pageIndex,
+      },
+    );
+
+    if (totalCountResponse) {
+      setTotalCount(totalCountResponse);
+    }
+
+    return candlesResponse;
   };
 
   const handleCreateCandle = async (newCandle: Candle) => {
@@ -59,8 +71,17 @@ const useCandlesQuery = (typeFilter: string, pageSize: number = 6) => {
       queryFn: ({ pageParam }) =>
         handleGetCandles(typeFilter, { pageIndex: pageParam }),
       initialPageParam: 0,
-      getNextPageParam: (lastPage, _, lastPageParam) => {
-        return lastPage.length < pageSize ? undefined : lastPageParam + 1;
+      getNextPageParam: (lastPage, allPages, lastPageParam) => {
+        const currentPageSize = lastPage.length;
+
+        if (totalCount) {
+          if (currentPageSize < pageSize || allPages.length >= totalCount) {
+            return undefined;
+          }
+          return lastPageParam + 1;
+        }
+
+        return currentPageSize < pageSize ? undefined : lastPageParam + 1;
       },
     });
 

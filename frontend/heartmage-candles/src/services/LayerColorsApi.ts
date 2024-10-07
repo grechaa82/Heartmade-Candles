@@ -8,7 +8,7 @@ import { apiUrl } from '../config';
 export const LayerColorsApi = {
   getAll: async (
     pagination: PaginationSettings = { pageSize: 20, pageIndex: 0 },
-  ): Promise<LayerColor[]> => {
+  ): Promise<[LayerColor[], number | null]> => {
     const queryParams = new URLSearchParams();
 
     queryParams.append('Limit', pagination.pageSize.toString());
@@ -30,7 +30,11 @@ export const LayerColorsApi = {
       throw new Error(`Error ${response.status}: ${errorBody}`);
     }
 
-    return response.json();
+    const data: LayerColor[] = await response.json();
+    const totalCountHeader = response.headers.get('X-Total-Count');
+    const totalCount = totalCountHeader ? parseInt(totalCountHeader, 10) : null;
+
+    return [data, totalCount];
   },
 
   getById: async (id: string): Promise<LayerColor> => {

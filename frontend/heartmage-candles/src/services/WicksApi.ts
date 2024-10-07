@@ -8,7 +8,7 @@ import { apiUrl } from '../config';
 export const WicksApi = {
   getAll: async (
     pagination: PaginationSettings = { pageSize: 20, pageIndex: 0 },
-  ): Promise<Wick[]> => {
+  ): Promise<[Wick[], number | null]> => {
     const queryParams = new URLSearchParams();
 
     queryParams.append('Limit', pagination.pageSize.toString());
@@ -30,7 +30,11 @@ export const WicksApi = {
       throw new Error(`Error ${response.status}: ${errorBody}`);
     }
 
-    return response.json();
+    const data: Wick[] = await response.json();
+    const totalCountHeader = response.headers.get('X-Total-Count');
+    const totalCount = totalCountHeader ? parseInt(totalCountHeader, 10) : null;
+
+    return [data, totalCount];
   },
 
   getById: async (id: string): Promise<Wick> => {

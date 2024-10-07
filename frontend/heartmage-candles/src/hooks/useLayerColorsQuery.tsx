@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 
 import { LayerColorRequest } from '../types/Requests/LayerColorRequest';
@@ -6,11 +7,20 @@ import { LayerColor } from '../types/LayerColor';
 import { LayerColorsApi } from '../services/LayerColorsApi';
 
 const useLayerColorsQuery = (pageSize: number = 21) => {
+  const [totalCount, setTotalCount] = useState(0);
+
   const handleGetLayerColors = async ({ pageIndex = 0 }) => {
-    return await LayerColorsApi.getAll({
-      pageSize: pageSize,
-      pageIndex: pageIndex,
-    });
+    const [layerColorsResponse, totalCountResponse] =
+      await LayerColorsApi.getAll({
+        pageSize: pageSize,
+        pageIndex: pageIndex,
+      });
+
+    if (totalCountResponse) {
+      setTotalCount(totalCountResponse);
+    }
+
+    return layerColorsResponse;
   };
 
   const handleCreateLayerColor = async (layerColor: LayerColor) => {
@@ -69,8 +79,17 @@ const useLayerColorsQuery = (pageSize: number = 21) => {
     queryKey: ['layerColors'],
     queryFn: ({ pageParam }) => handleGetLayerColors({ pageIndex: pageParam }),
     initialPageParam: 0,
-    getNextPageParam: (lastPage, _, lastPageParam) => {
-      return lastPage.length < pageSize ? undefined : lastPageParam + 1;
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      const currentPageSize = lastPage.length;
+
+      if (totalCount) {
+        if (currentPageSize < pageSize || allPages.length >= totalCount) {
+          return undefined;
+        }
+        return lastPageParam + 1;
+      }
+
+      return currentPageSize < pageSize ? undefined : lastPageParam + 1;
     },
   });
 
