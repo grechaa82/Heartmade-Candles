@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import MainInfoCandle from '../../modules/admin/MainInfoCandle';
@@ -15,8 +15,6 @@ import useSmellsQuery from '../../hooks/useSmellsQuery';
 import useDecorsQuery from '../../hooks/useDecorsQuery';
 import useLayerColorsQuery from '../../hooks/useLayerColorsQuery';
 import useWicksQuery from '../../hooks/useWicksQuery';
-
-import { TypeCandlesApi } from '../../services/TypeCandlesApi';
 
 import Style from './CandleDetailsPage.module.css';
 
@@ -38,10 +36,26 @@ const CandleDetailsPage: FC = () => {
   } = useCandleByIdQuery(id);
   const { data: typeCandleData } = useTypeCandlesQuery();
   const { data: numberOfLayersData } = useNumberOfLayersQuery();
-  const { data: decorsData } = useDecorsQuery();
-  const { data: layerColorsData } = useLayerColorsQuery();
-  const { data: smellsData } = useSmellsQuery();
-  const { data: wicksData } = useWicksQuery();
+  const {
+    data: decorsData,
+    fetchNextPage: decorsFetchNextPage,
+    hasNextPage: decorsHasNextPage,
+  } = useDecorsQuery();
+  const {
+    data: layerColorsData,
+    fetchNextPage: layerColorsFetchNextPage,
+    hasNextPage: layerColorsHasNextPage,
+  } = useLayerColorsQuery();
+  const {
+    data: smellsData,
+    fetchNextPage: smellsFetchNextPage,
+    hasNextPage: smellsHasNextPage,
+  } = useSmellsQuery();
+  const {
+    data: wicksData,
+    fetchNextPage: wicksFetchNextPage,
+    hasNextPage: wicksHasNextPage,
+  } = useWicksQuery();
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleOnSaveNumberOfLayers = (
@@ -89,8 +103,12 @@ const CandleDetailsPage: FC = () => {
               onClose={onClose}
               title="Свеча и декоры"
               selectedData={candleDetailData.decors}
-              allData={decorsData}
+              allData={decorsData?.pages.flatMap((page) => page)}
               onSave={updateCandleDecors}
+              fetchQuery={{
+                fetchNextPage: decorsFetchNextPage,
+                hasNextPage: decorsHasNextPage,
+              }}
             />
           )}
         />
@@ -104,8 +122,12 @@ const CandleDetailsPage: FC = () => {
               onClose={onClose}
               title="Свеча и слои"
               selectedData={candleDetailData.layerColors}
-              allData={layerColorsData}
+              allData={layerColorsData?.pages.flatMap((page) => page)}
               onSave={updateCandleLayerColors}
+              fetchQuery={{
+                fetchNextPage: layerColorsFetchNextPage,
+                hasNextPage: layerColorsHasNextPage,
+              }}
             />
           )}
         />
@@ -119,8 +141,12 @@ const CandleDetailsPage: FC = () => {
               onClose={onClose}
               title="Свеча и запахи"
               selectedData={candleDetailData.smells}
-              allData={smellsData}
+              allData={smellsData?.pages.flatMap((page) => page)}
               onSave={updateCandleSmells}
+              fetchQuery={{
+                fetchNextPage: smellsFetchNextPage,
+                hasNextPage: smellsHasNextPage,
+              }}
             />
           )}
         />
@@ -134,8 +160,12 @@ const CandleDetailsPage: FC = () => {
               onClose={onClose}
               title="Свеча и фитили"
               selectedData={candleDetailData.wicks}
-              allData={wicksData}
+              allData={wicksData?.pages.flatMap((page) => page)}
               onSave={updateCandleWicks}
+              fetchQuery={{
+                fetchNextPage: wicksFetchNextPage,
+                hasNextPage: wicksHasNextPage,
+              }}
             />
           )}
         />

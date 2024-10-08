@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { BaseProduct } from '../../../types/BaseProduct';
 import ProductBlock from '../ProductBlock';
@@ -12,6 +12,10 @@ export interface AddProductPopUpProps<T extends BaseProduct>
   selectedData: T[];
   allData: T[];
   onSave: (product: BaseProduct[]) => void;
+  fetchQuery?: {
+    fetchNextPage: () => void;
+    hasNextPage: boolean;
+  };
 }
 
 const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
@@ -20,6 +24,7 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
   selectedData,
   allData,
   onSave,
+  fetchQuery,
 }) => {
   const [tempSelectedData, setTempSelectedData] =
     useState<BaseProduct[]>(selectedData);
@@ -43,6 +48,16 @@ const AddProductPopUp: FC<AddProductPopUpProps<BaseProduct>> = ({
     onSave(tempSelectedData);
     onClose();
   };
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      if (fetchQuery.hasNextPage) {
+        fetchQuery.fetchNextPage();
+      }
+    };
+
+    fetchAllData();
+  }, [fetchQuery]);
 
   return (
     <PopUp onClose={onClose}>

@@ -22,7 +22,7 @@ const AllLayerColorPage: FC<AllLayerColorPageProps> = () => {
     createLayerColor,
     deleteLayerColor,
     updateIsActiveLayerColor,
-  } = useLayerColorsQuery();
+  } = useLayerColorsQuery(21);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
   const { ref, inView, entry } = useInView({
     threshold: 0,
