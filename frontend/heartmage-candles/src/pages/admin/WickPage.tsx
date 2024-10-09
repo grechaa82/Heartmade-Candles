@@ -1,9 +1,10 @@
-import { FC, useState } from 'react';
+import { FC, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import MainInfoWick from '../../modules/admin/MainInfoWick';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import useWickByIdQuery from '../../hooks/useWickByIdQuery';
+import useWickByIdQuery from '../../hooks/admin/useWickByIdQuery';
+import { AuthContext } from '../../contexts/AuthContext';
 
 import Style from './WickPage.module.css';
 
@@ -13,7 +14,8 @@ type WickParams = {
 
 const WickPage: FC = () => {
   const { id } = useParams<WickParams>();
-  const { data, isLoading, updateWick } = useWickByIdQuery(id);
+  const { isAuth } = useContext(AuthContext);
+  const { data, isLoading, updateWick } = useWickByIdQuery(id, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   if (isLoading) {

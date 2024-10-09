@@ -1,10 +1,11 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useContext } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import CreateLayerColorPopUp from '../../modules/admin/PopUp/LayerColor/CreateLayerColorPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import useLayerColorsQuery from '../../hooks/useLayerColorsQuery';
+import useLayerColorsQuery from '../../hooks/admin/useLayerColorsQuery';
+import { AuthContext } from '../../contexts/AuthContext';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -13,6 +14,7 @@ import Style from './AllLayerColorPage.module.css';
 export interface AllLayerColorPageProps {}
 
 const AllLayerColorPage: FC<AllLayerColorPageProps> = () => {
+  const { isAuth } = useContext(AuthContext);
   const {
     data,
     isLoading,
@@ -22,7 +24,7 @@ const AllLayerColorPage: FC<AllLayerColorPageProps> = () => {
     createLayerColor,
     deleteLayerColor,
     updateIsActiveLayerColor,
-  } = useLayerColorsQuery(21);
+  } = useLayerColorsQuery(21, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
   const { ref, inView, entry } = useInView({
     threshold: 0,

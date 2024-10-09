@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useContext } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
@@ -13,9 +13,10 @@ import { PaginationSettings } from '../../typesV2/shared/PaginationSettings';
 import ButtonDropdown, {
   optionData,
 } from '../../components/shared/ButtonDropdown';
-import useCandlesQuery from '../../hooks/useCandlesQuery';
-import useNumberOfLayersQuery from '../../hooks/useNumberOfLayersQuery';
-import useTypeCandlesQuery from '../../hooks/useTypeCandlesQuery';
+import useCandlesQuery from '../../hooks/admin/useCandlesQuery';
+import useNumberOfLayersQuery from '../../hooks/admin/useNumberOfLayersQuery';
+import useTypeCandlesQuery from '../../hooks/admin/useTypeCandlesQuery';
+import { AuthContext } from '../../contexts/AuthContext';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -24,6 +25,7 @@ import Style from './AllCandlePage.module.css';
 export interface AllCandlePageProps {}
 
 const AllCandlePage: FC<AllCandlePageProps> = () => {
+  const { isAuth } = useContext(AuthContext);
   const [typeFilter, setTypeFilter] = useState<string>(null);
   const [pagination] = useState<PaginationSettings>({
     pageSize: 21,
@@ -37,19 +39,19 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     createCandle,
     deleteCandle,
     updateIsActiveCandle,
-  } = useCandlesQuery(typeFilter, pagination.pageSize);
+  } = useCandlesQuery(typeFilter, pagination.pageSize, isAuth);
   const {
     data: numberOfLayersData,
     isLoading: isLoadingNumberOfLayers,
     createNumberOfLayer,
     deleteNumberOfLayer,
-  } = useNumberOfLayersQuery();
+  } = useNumberOfLayersQuery(isAuth);
   const {
     data: typeCandlesData,
     isLoading: isLoadingTypeCandle,
     createTypeCandle,
     deleteTypeCandle,
-  } = useTypeCandlesQuery();
+  } = useTypeCandlesQuery(isAuth);
   const [errorMessage] = useState<string[]>([]);
   const { ref, inView, entry } = useInView({
     threshold: 0,
@@ -92,24 +94,13 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     }
   };
 
-  const optionDataCandleFilters: optionData[] = [{ id: 'Все', title: 'Все' }];
-  if (!isLoadingTypeCandle) {
-    typeCandlesData.flatMap((item) => {
-      const optionDataFilter: optionData = {
-        id: item.id.toString(),
-        title: item.title,
-      };
-      optionDataCandleFilters.push(optionDataFilter);
-    });
-  }
-
   return (
     <>
       {!isLoadingTypeCandle && (
         <TagsGrid
           title="Типы свечей"
           withInput={false}
-          tags={convertCandlesToTagData(typeCandlesData.flat() || [])}
+          tags={convertCandlesToTagData(typeCandlesData ?? [])}
           popUpComponent={
             <CreateTagPopUp
               onClose={() => console.log('Popup closed')}
@@ -124,7 +115,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         <TagsGrid
           title="Количество слоев"
           withInput={false}
-          tags={convertToTagData(numberOfLayersData.flat() || [])}
+          tags={convertToTagData(numberOfLayersData ?? [])}
           popUpComponent={
             <CreateTagPopUp
               onClose={() => console.log('Popup closed')}
@@ -153,7 +144,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         renderFilterComponent={() => (
           <ButtonDropdown
             text={'Тип свечей'}
-            options={optionDataCandleFilters}
+            options={convertCandlesToOptionData(typeCandlesData ?? [])}
             selected={{
               id: typeFilter ? typeFilter : 'Все',
               title: typeFilter ? typeFilter : 'Все',
@@ -179,4 +170,20 @@ export function convertCandlesToTagData(candles: TypeCandle[]): TagData[] {
     id: candle.id,
     text: candle.title,
   }));
+}
+
+export function convertCandlesToOptionData(
+  typeCandles: TypeCandle[],
+): optionData[] {
+  const optionDataCandleFilters: optionData[] = [{ id: 'Все', title: 'Все' }];
+  if (typeCandles.length > 0) {
+    typeCandles.flatMap((item) => {
+      const optionDataFilter: optionData = {
+        id: item.id.toString(),
+        title: item.title,
+      };
+      optionDataCandleFilters.push(optionDataFilter);
+    });
+  }
+  return optionDataCandleFilters;
 }

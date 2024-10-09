@@ -1,11 +1,11 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { Wick } from '../types/Wick';
-import { WickRequest } from '../types/Requests/WickRequest';
+import { Wick } from '../../types/Wick';
+import { WickRequest } from '../../types/Requests/WickRequest';
 
-import { WicksApi } from '../services/WicksApi';
+import { WicksApi } from '../../services/WicksApi';
 
-const useWickByIdQuery = (id: string) => {
+const useWickByIdQuery = (id: string, isEnabled: boolean = false) => {
   const handleGetWickById = async (wickId: string) => {
     return await WicksApi.getById(wickId.toString());
   };
@@ -25,6 +25,7 @@ const useWickByIdQuery = (id: string) => {
   const { data, isLoading, isSuccess, error, refetch } = useQuery({
     queryKey: ['wick', id],
     queryFn: () => handleGetWickById(id),
+    enabled: isEnabled,
   });
 
   const { mutate: updateWick } = useMutation({

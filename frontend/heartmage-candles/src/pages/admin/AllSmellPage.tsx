@@ -1,16 +1,18 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useContext } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import CreateSmellPopUp from '../../modules/admin/PopUp/Smell/CreateSmellPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import useSmellsQuery from '../../hooks/useSmellsQuery';
+import useSmellsQuery from '../../hooks/admin/useSmellsQuery';
+import { AuthContext } from '../../contexts/AuthContext';
 
 import Style from './AllSmellPage.module.css';
 
 export interface AllSmellPageProps {}
 
 const AllSmellPage: FC<AllSmellPageProps> = () => {
+  const { isAuth } = useContext(AuthContext);
   const {
     data,
     isLoading,
@@ -20,7 +22,7 @@ const AllSmellPage: FC<AllSmellPageProps> = () => {
     createSmell,
     deleteSmell,
     updateIsActiveSmell,
-  } = useSmellsQuery();
+  } = useSmellsQuery(21, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
   const { ref, inView, entry } = useInView({
     threshold: 0,

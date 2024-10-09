@@ -1,9 +1,10 @@
-import { FC, useState } from 'react';
+import { FC, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import MainInfoLayerColor from '../../modules/admin/MainInfoLayerColor';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import useLayerColorByIdQuery from '../../hooks/useLayerColorByIdQuery';
+import useLayerColorByIdQuery from '../../hooks/admin/useLayerColorByIdQuery';
+import { AuthContext } from '../../contexts/AuthContext';
 
 import Style from './LayerColorPage.module.css';
 
@@ -13,7 +14,11 @@ type LayerColorParams = {
 
 const LayerColorPage: FC = () => {
   const { id } = useParams<LayerColorParams>();
-  const { data, isLoading, updateLayerColor } = useLayerColorByIdQuery(id);
+  const { isAuth } = useContext(AuthContext);
+  const { data, isLoading, updateLayerColor } = useLayerColorByIdQuery(
+    id,
+    isAuth,
+  );
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   if (isLoading) {

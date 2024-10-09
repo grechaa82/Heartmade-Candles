@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 
-import { Candle } from '../types/Candle';
-import { CandleRequest } from '../types/Requests/CandleRequest';
+import { Candle } from '../../types/Candle';
+import { CandleRequest } from '../../types/Requests/CandleRequest';
 
-import { CandlesApi } from '../services/CandlesApi';
+import { CandlesApi } from '../../services/CandlesApi';
 
-const useCandlesQuery = (typeFilter: string, pageSize: number = 6) => {
+const useCandlesQuery = (
+  typeFilter: string,
+  pageSize: number = 6,
+  isEnabled: boolean = false,
+) => {
   const [totalCount, setTotalCount] = useState(0);
 
   const handleGetCandles = async (type: string, { pageIndex = 0 }) => {
@@ -71,6 +75,7 @@ const useCandlesQuery = (typeFilter: string, pageSize: number = 6) => {
       queryFn: ({ pageParam }) =>
         handleGetCandles(typeFilter, { pageIndex: pageParam }),
       initialPageParam: 0,
+      enabled: isEnabled,
       getNextPageParam: (lastPage, allPages, lastPageParam) => {
         const currentPageSize = lastPage.length;
 

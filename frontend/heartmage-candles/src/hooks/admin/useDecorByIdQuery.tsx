@@ -1,11 +1,11 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { Decor } from '../types/Decor';
-import { DecorRequest } from '../types/Requests/DecorRequest';
+import { Decor } from '../../types/Decor';
+import { DecorRequest } from '../../types/Requests/DecorRequest';
 
-import { DecorsApi } from '../services/DecorsApi';
+import { DecorsApi } from '../../services/DecorsApi';
 
-const useDecorByIdQuery = (id: string) => {
+const useDecorByIdQuery = (id: string, isEnabled: boolean = false) => {
   const handleGetDecorById = async (decorId: string) => {
     return await DecorsApi.getById(decorId.toString());
   };
@@ -25,6 +25,7 @@ const useDecorByIdQuery = (id: string) => {
   const { data, isLoading, isSuccess, error, refetch } = useQuery({
     queryKey: ['decor', id],
     queryFn: () => handleGetDecorById(id),
+    enabled: isEnabled,
   });
 
   const { mutate: updateDecor } = useMutation({

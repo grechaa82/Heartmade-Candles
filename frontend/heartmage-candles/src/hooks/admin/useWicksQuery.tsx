@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 
-import { WickRequest } from '../types/Requests/WickRequest';
-import { Wick } from '../types/Wick';
+import { WickRequest } from '../../types/Requests/WickRequest';
+import { Wick } from '../../types/Wick';
 
-import { WicksApi } from '../services/WicksApi';
+import { WicksApi } from '../../services/WicksApi';
 
-const useWicksQuery = (pageSize: number = 21) => {
+const useWicksQuery = (pageSize: number = 21, isEnabled: boolean = false) => {
   const [totalCount, setTotalCount] = useState(0);
 
   const handleGetWicks = async ({ pageIndex = 0 }) => {
@@ -71,6 +71,7 @@ const useWicksQuery = (pageSize: number = 21) => {
     queryKey: ['wicks'],
     queryFn: ({ pageParam }) => handleGetWicks({ pageIndex: pageParam }),
     initialPageParam: 0,
+    enabled: isEnabled,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       const currentPageSize = lastPage.length;
 

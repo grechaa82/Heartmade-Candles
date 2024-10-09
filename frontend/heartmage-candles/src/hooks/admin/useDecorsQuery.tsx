@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 
-import { DecorRequest } from '../types/Requests/DecorRequest';
-import { Decor } from '../types/Decor';
+import { DecorRequest } from '../../types/Requests/DecorRequest';
+import { Decor } from '../../types/Decor';
 
-import { DecorsApi } from '../services/DecorsApi';
+import { DecorsApi } from '../../services/DecorsApi';
 
-const useDecorsQuery = (pageSize: number = 21) => {
+const useDecorsQuery = (pageSize: number = 21, isEnabled: boolean = false) => {
   const [totalCount, setTotalCount] = useState(0);
 
   const handleGetDecors = async ({ pageIndex = 0 }) => {
@@ -71,6 +71,7 @@ const useDecorsQuery = (pageSize: number = 21) => {
     queryKey: ['decors'],
     queryFn: ({ pageParam }) => handleGetDecors({ pageIndex: pageParam }),
     initialPageParam: 0,
+    enabled: isEnabled,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       const currentPageSize = lastPage.length;
 

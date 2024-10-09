@@ -1,11 +1,11 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { Smell } from '../types/Smell';
-import { SmellRequest } from '../types/Requests/SmellRequest';
+import { Smell } from '../../types/Smell';
+import { SmellRequest } from '../../types/Requests/SmellRequest';
 
-import { SmellsApi } from '../services/SmellsApi';
+import { SmellsApi } from '../../services/SmellsApi';
 
-const useSmellByIdQuery = (id: string) => {
+const useSmellByIdQuery = (id: string, isEnabled: boolean = false) => {
   const handleGetSmellById = async (smellId: string) => {
     return await SmellsApi.getById(smellId.toString());
   };
@@ -24,6 +24,7 @@ const useSmellByIdQuery = (id: string) => {
   const { data, isLoading, isSuccess, error, refetch } = useQuery({
     queryKey: ['smell', id],
     queryFn: () => handleGetSmellById(id),
+    enabled: isEnabled,
   });
 
   const { mutate: updateSmell } = useMutation({

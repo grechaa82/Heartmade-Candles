@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 
-import { SmellRequest } from '../types/Requests/SmellRequest';
-import { Smell } from '../types/Smell';
+import { SmellRequest } from '../../types/Requests/SmellRequest';
+import { Smell } from '../../types/Smell';
 
-import { SmellsApi } from '../services/SmellsApi';
+import { SmellsApi } from '../../services/SmellsApi';
 
-const useSmellsQuery = (pageSize: number = 21) => {
+const useSmellsQuery = (pageSize: number = 21, isEnabled: boolean = false) => {
   const [totalCount, setTotalCount] = useState(0);
 
   const handleGetSmells = async ({ pageIndex = 0 }) => {
@@ -69,6 +69,7 @@ const useSmellsQuery = (pageSize: number = 21) => {
     queryKey: ['smells'],
     queryFn: ({ pageParam }) => handleGetSmells({ pageIndex: pageParam }),
     initialPageParam: 0,
+    enabled: isEnabled,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       const currentPageSize = lastPage.length;
 

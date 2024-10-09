@@ -1,10 +1,11 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useContext } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import CreateWickPopUp from '../../modules/admin/PopUp/Wick/CreateWickPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import useWicksQuery from '../../hooks/useWicksQuery';
+import useWicksQuery from '../../hooks/admin/useWicksQuery';
+import { AuthContext } from '../../contexts/AuthContext';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -13,6 +14,7 @@ import Style from './AllWickPage.module.css';
 export interface AllWickPageProps {}
 
 const AllWickPage: FC<AllWickPageProps> = () => {
+  const { isAuth } = useContext(AuthContext);
   const {
     data,
     isLoading,
@@ -22,7 +24,7 @@ const AllWickPage: FC<AllWickPageProps> = () => {
     createWick,
     deleteWick,
     updateIsActiveWick,
-  } = useWicksQuery();
+  } = useWicksQuery(21, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
   const { ref, inView, entry } = useInView({
     threshold: 0,

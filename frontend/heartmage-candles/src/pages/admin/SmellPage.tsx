@@ -1,9 +1,10 @@
-import { FC, useState } from 'react';
+import { FC, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import MainInfoSmell from '../../modules/admin/MainInfoSmell';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import useSmellByIdQuery from '../../hooks/useSmellByIdQuery';
+import useSmellByIdQuery from '../../hooks/admin/useSmellByIdQuery';
+import { AuthContext } from '../../contexts/AuthContext';
 
 import Style from './SmellPage.module.css';
 
@@ -13,7 +14,8 @@ type SmellParams = {
 
 const SmellPage: FC = () => {
   const { id } = useParams<SmellParams>();
-  const { data, isLoading, updateSmell } = useSmellByIdQuery(id);
+  const { isAuth } = useContext(AuthContext);
+  const { data, isLoading, updateSmell } = useSmellByIdQuery(id, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   if (isLoading) {

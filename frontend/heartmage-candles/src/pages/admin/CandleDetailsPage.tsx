@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import MainInfoCandle from '../../modules/admin/MainInfoCandle';
@@ -8,13 +8,14 @@ import { NumberOfLayer } from '../../types/NumberOfLayer';
 import { TagData } from '../../components/shared/Tag';
 import AddProductPopUp from '../../components/admin/PopUp/AddProductPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import useCandleByIdQuery from '../../hooks/useCandleByIdQuery';
-import useNumberOfLayersQuery from '../../hooks/useNumberOfLayersQuery';
-import useTypeCandlesQuery from '../../hooks/useTypeCandlesQuery';
-import useSmellsQuery from '../../hooks/useSmellsQuery';
-import useDecorsQuery from '../../hooks/useDecorsQuery';
-import useLayerColorsQuery from '../../hooks/useLayerColorsQuery';
-import useWicksQuery from '../../hooks/useWicksQuery';
+import useCandleByIdQuery from '../../hooks/admin/useCandleByIdQuery';
+import useNumberOfLayersQuery from '../../hooks/admin/useNumberOfLayersQuery';
+import useTypeCandlesQuery from '../../hooks/admin/useTypeCandlesQuery';
+import useSmellsQuery from '../../hooks/admin/useSmellsQuery';
+import useDecorsQuery from '../../hooks/admin/useDecorsQuery';
+import useLayerColorsQuery from '../../hooks/admin/useLayerColorsQuery';
+import useWicksQuery from '../../hooks/admin/useWicksQuery';
+import { AuthContext } from '../../contexts/AuthContext';
 
 import Style from './CandleDetailsPage.module.css';
 
@@ -24,6 +25,7 @@ type CandleDetailsParams = {
 
 const CandleDetailsPage: FC = () => {
   const { id } = useParams<CandleDetailsParams>();
+  const { isAuth } = useContext(AuthContext);
   const {
     data: candleDetailData,
     isLoading,
@@ -33,29 +35,29 @@ const CandleDetailsPage: FC = () => {
     updateCandleLayerColors,
     updateCandleSmells,
     updateCandleWicks,
-  } = useCandleByIdQuery(id);
-  const { data: typeCandleData } = useTypeCandlesQuery();
-  const { data: numberOfLayersData } = useNumberOfLayersQuery();
+  } = useCandleByIdQuery(id, isAuth);
+  const { data: typeCandleData } = useTypeCandlesQuery(isAuth);
+  const { data: numberOfLayersData } = useNumberOfLayersQuery(isAuth);
   const {
     data: decorsData,
     fetchNextPage: decorsFetchNextPage,
     hasNextPage: decorsHasNextPage,
-  } = useDecorsQuery();
+  } = useDecorsQuery(21, isAuth);
   const {
     data: layerColorsData,
     fetchNextPage: layerColorsFetchNextPage,
     hasNextPage: layerColorsHasNextPage,
-  } = useLayerColorsQuery();
+  } = useLayerColorsQuery(21, isAuth);
   const {
     data: smellsData,
     fetchNextPage: smellsFetchNextPage,
     hasNextPage: smellsHasNextPage,
-  } = useSmellsQuery();
+  } = useSmellsQuery(21, isAuth);
   const {
     data: wicksData,
     fetchNextPage: wicksFetchNextPage,
     hasNextPage: wicksHasNextPage,
-  } = useWicksQuery();
+  } = useWicksQuery(21, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   const handleOnSaveNumberOfLayers = (

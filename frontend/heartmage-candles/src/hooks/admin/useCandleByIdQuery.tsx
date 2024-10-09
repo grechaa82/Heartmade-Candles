@@ -1,15 +1,15 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { Candle } from '../types/Candle';
-import { NumberOfLayer } from '../types/NumberOfLayer';
-import { Decor } from '../types/Decor';
-import { LayerColor } from '../types/LayerColor';
-import { Smell } from '../types/Smell';
-import { Wick } from '../types/Wick';
+import { Candle } from '../../types/Candle';
+import { NumberOfLayer } from '../../types/NumberOfLayer';
+import { Decor } from '../../types/Decor';
+import { LayerColor } from '../../types/LayerColor';
+import { Smell } from '../../types/Smell';
+import { Wick } from '../../types/Wick';
 
-import { CandlesApi } from '../services/CandlesApi';
+import { CandlesApi } from '../../services/CandlesApi';
 
-const useCandleByIdQuery = (id: string) => {
+const useCandleByIdQuery = (id: string, isEnabled: boolean = false) => {
   const handleGetCandleById = async (candleId: string) => {
     return await CandlesApi.getById(candleId.toString());
   };
@@ -68,6 +68,7 @@ const useCandleByIdQuery = (id: string) => {
   const { data, isLoading, isSuccess, error, refetch } = useQuery({
     queryKey: ['candle', id],
     queryFn: () => handleGetCandleById(id),
+    enabled: isEnabled,
   });
 
   const { mutate: updateCandle } = useMutation({

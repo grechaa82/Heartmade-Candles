@@ -1,11 +1,11 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { NumberOfLayer } from '../types/NumberOfLayer';
-import { NumberOfLayerRequest } from '../types/Requests/NumberOfLayerRequest';
+import { NumberOfLayer } from '../../types/NumberOfLayer';
+import { NumberOfLayerRequest } from '../../types/Requests/NumberOfLayerRequest';
 
-import { NumberOfLayersApi } from '../services/NumberOfLayersApi';
+import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
 
-const useNumberOfLayersQuery = () => {
+const useNumberOfLayersQuery = (isEnabled: boolean = false) => {
   const handleGetNumberOfLayers = async () => {
     return await NumberOfLayersApi.getAll();
   };
@@ -24,6 +24,7 @@ const useNumberOfLayersQuery = () => {
   const { data, isLoading, isSuccess, error, refetch } = useQuery({
     queryKey: ['numberOfLayers'],
     queryFn: handleGetNumberOfLayers,
+    enabled: isEnabled,
   });
 
   const { mutate: createNumberOfLayer } = useMutation({

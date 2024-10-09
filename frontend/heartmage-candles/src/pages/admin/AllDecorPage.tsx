@@ -1,10 +1,11 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useContext } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
 import CreateDecorPopUp from '../../modules/admin/PopUp/Decor/CreateDecorPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import useDecorsQuery from '../../hooks/useDecorsQuery';
+import useDecorsQuery from '../../hooks/admin/useDecorsQuery';
+import { AuthContext } from '../../contexts/AuthContext';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -13,6 +14,7 @@ import Style from './AllDecorPage.module.css';
 export interface AllDecorPageProps {}
 
 const AllDecorPage: FC<AllDecorPageProps> = () => {
+  const { isAuth } = useContext(AuthContext);
   const {
     data,
     isLoading,
@@ -22,7 +24,7 @@ const AllDecorPage: FC<AllDecorPageProps> = () => {
     createDecor,
     deleteDecor,
     updateIsActiveDecor,
-  } = useDecorsQuery();
+  } = useDecorsQuery(21, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
   const { ref, inView, entry } = useInView({
     threshold: 0,

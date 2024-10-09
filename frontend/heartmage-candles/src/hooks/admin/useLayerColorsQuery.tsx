@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { useMutation, useInfiniteQuery } from '@tanstack/react-query';
 
-import { LayerColorRequest } from '../types/Requests/LayerColorRequest';
-import { LayerColor } from '../types/LayerColor';
+import { LayerColorRequest } from '../../types/Requests/LayerColorRequest';
+import { LayerColor } from '../../types/LayerColor';
 
-import { LayerColorsApi } from '../services/LayerColorsApi';
+import { LayerColorsApi } from '../../services/LayerColorsApi';
 
-const useLayerColorsQuery = (pageSize: number = 21) => {
+const useLayerColorsQuery = (
+  pageSize: number = 21,
+  isEnabled: boolean = false,
+) => {
   const [totalCount, setTotalCount] = useState(0);
 
   const handleGetLayerColors = async ({ pageIndex = 0 }) => {
@@ -79,6 +82,7 @@ const useLayerColorsQuery = (pageSize: number = 21) => {
     queryKey: ['layerColors'],
     queryFn: ({ pageParam }) => handleGetLayerColors({ pageIndex: pageParam }),
     initialPageParam: 0,
+    enabled: isEnabled,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       const currentPageSize = lastPage.length;
 

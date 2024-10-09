@@ -1,11 +1,11 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { TypeCandle } from '../types/TypeCandle';
-import { TypeCandleRequest } from '../types/Requests/TypeCandleRequest';
+import { TypeCandle } from '../../types/TypeCandle';
+import { TypeCandleRequest } from '../../types/Requests/TypeCandleRequest';
 
-import { TypeCandlesApi } from '../services/TypeCandlesApi';
+import { TypeCandlesApi } from '../../services/TypeCandlesApi';
 
-const useTypeCandlesQuery = () => {
+const useTypeCandlesQuery = (isEnabled: boolean = false) => {
   const handleGetTypeCandles = async () => {
     return await TypeCandlesApi.getAll();
   };
@@ -24,6 +24,7 @@ const useTypeCandlesQuery = () => {
   const { data, isLoading, isSuccess, error, refetch } = useQuery({
     queryKey: ['typeCandles'],
     queryFn: handleGetTypeCandles,
+    enabled: isEnabled,
   });
 
   const { mutate: createTypeCandle } = useMutation({
