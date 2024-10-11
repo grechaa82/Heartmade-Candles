@@ -1,13 +1,11 @@
-import { FC, useState, useEffect, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { FC, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
-import { AuthContext } from '../../contexts/AuthContext';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-
-import { AuthApi } from '../../services/AuthApi';
+import { useLoginQuery } from '../../hooks/userAndAuth/useAuthQueries';
 
 import Style from './AuthPage.module.css';
 
@@ -30,8 +28,6 @@ const loginSchema = yup
 type ButtonState = 'default' | 'invalid' | 'valid';
 
 const AuthPage: FC = () => {
-  const { setIsAuth } = useContext(AuthContext);
-
   const [buttonState, setButtonState] = useState<ButtonState>('default');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
@@ -42,25 +38,12 @@ const AuthPage: FC = () => {
     mode: 'onChange',
     resolver: yupResolver(loginSchema),
   });
-  const navigate = useNavigate();
-
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
+  const { login } = useLoginQuery();
 
   const onSubmit: SubmitHandler<LoginType> = (data) => {
     async function fetchData() {
-      setIsLoading(true);
-      const tokenResponse = await AuthApi.login(data.email, data.password);
-      if (tokenResponse.data && !tokenResponse.error) {
-        const token = tokenResponse.data;
-        const tokenJsonData = JSON.stringify(token);
-        localStorage.setItem('session', tokenJsonData);
-        setIsAuth(true);
-        setIsLoading(false);
-        navigate('/auth/success');
-      } else {
-        setIsLoading(false);
-        setErrorMessage([...errorMessage, tokenResponse.error as string]);
-      }
+      login({ email: data.email, password: data.password });
     }
 
     fetchData();

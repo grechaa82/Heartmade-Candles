@@ -1,9 +1,8 @@
 import { FC, useContext, useEffect, useState } from 'react';
 import { NavLink, useMatch, useNavigate } from 'react-router-dom';
 
-import { AuthHelper } from '../../helpers/AuthHelper';
 import { AuthContext } from '../../contexts/AuthContext';
-import { AuthApi } from '../../services/AuthApi';
+import { useLogoutQuery } from '../../hooks/userAndAuth/useAuthQueries';
 
 import Style from './Navbar.module.css';
 
@@ -19,6 +18,7 @@ const Navbar: FC = () => {
 
   const [position, setPosition] = useState(window.pageYOffset);
   const [visible, setVisible] = useState(true);
+  const { logout } = useLogoutQuery();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,11 +35,8 @@ const Navbar: FC = () => {
 
   const onSubmit = () => {
     async function fetchData() {
-      const tokenResponse = await AuthApi.logout();
-      if (tokenResponse.data === null && !tokenResponse.error) {
-        AuthHelper.removeToken();
-        navigate('/');
-      }
+      logout();
+      navigate('/');
     }
 
     fetchData();
