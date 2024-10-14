@@ -39,14 +39,10 @@ const AuthPage: FC = () => {
     resolver: yupResolver(loginSchema),
   });
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
-  const { login } = useLoginQuery();
+  const { login, isSuccess, isError, error } = useLoginQuery();
 
-  const onSubmit: SubmitHandler<LoginType> = (data) => {
-    async function fetchData() {
-      login({ email: data.email, password: data.password });
-    }
-
-    fetchData();
+  const onSubmit: SubmitHandler<LoginType> = async (data) => {
+    await login({ email: data.email, password: data.password });
   };
 
   useEffect(() => {
@@ -56,6 +52,14 @@ const AuthPage: FC = () => {
       setButtonState('valid');
     }
   }, [isValid, errors]);
+
+  useEffect(() => {
+    if (isError) {
+      setErrorMessage([]);
+      const errorMsg = error.message || 'Произошла ошибка';
+      setErrorMessage((prev) => [...prev, errorMsg]);
+    }
+  }, [isSuccess, isError]);
 
   return (
     <>

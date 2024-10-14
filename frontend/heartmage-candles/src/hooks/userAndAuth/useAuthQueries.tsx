@@ -30,6 +30,7 @@ export const useLoginQuery = () => {
   const {
     mutate: login,
     isSuccess,
+    isError,
     error,
   } = useMutation<Token, Error, { email: string; password: string }>({
     mutationKey: ['login'],
@@ -50,7 +51,7 @@ export const useLoginQuery = () => {
     },
   });
 
-  return { login, isSuccess, error };
+  return { login, isSuccess, isError, error };
 };
 
 export const useLogoutQuery = () => {
