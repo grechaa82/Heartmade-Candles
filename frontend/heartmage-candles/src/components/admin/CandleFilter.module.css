@@ -1,0 +1,27 @@
+.filterBlock {
+    margin-bottom: 0.5rem;
+}
+
+.filterBtn {
+    font-family: 'Inter', sans-serif;
+    border: 2px solid var(--color-fff);
+    box-sizing: border-box;
+    background-color: var(--color-fff);
+    padding: 0.5rem 0.75rem 0.625rem 0.75rem;
+    border-radius: 50px;
+    font-style: normal;
+    font-weight: var(--font-weight-400);
+    font-size: var(--font-size-m);
+    line-height: var(--line-height-standard);
+    color: var(--color-aaa);
+}
+
+.filterBtn:last-child {
+    margin-right: 0;
+}
+
+.selected {
+    border: 2px solid var(--color-f7f7f7);
+    background-color: var(--color-f7f7f7);
+    color: var(--color-222);
+}

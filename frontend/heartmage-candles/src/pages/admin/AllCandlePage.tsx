@@ -10,13 +10,11 @@ import CreateCandlePopUp from '../../modules/admin/PopUp/Candle/CreateCandlePopU
 import CreateTagPopUp from '../../modules/admin/PopUp/Tag/CreateTagPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import { PaginationSettings } from '../../typesV2/shared/PaginationSettings';
-import ButtonDropdown, {
-  optionData,
-} from '../../components/shared/ButtonDropdown';
 import useCandlesQuery from '../../hooks/admin/useCandlesQuery';
 import useNumberOfLayersQuery from '../../hooks/admin/useNumberOfLayersQuery';
 import useTypeCandlesQuery from '../../hooks/admin/useTypeCandlesQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import CandleFilter from '../../components/admin/CandleFilter';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -26,7 +24,8 @@ export interface AllCandlePageProps {}
 
 const AllCandlePage: FC<AllCandlePageProps> = () => {
   const { isAuth } = useContext(AuthContext);
-  const [typeFilter, setTypeFilter] = useState<string>(null);
+  const [selectedTypeFilter, setSelectedTypeFilter] =
+    useState<TypeCandle>(null);
   const [pagination] = useState<PaginationSettings>({
     pageSize: 21,
     pageIndex: 0,
@@ -39,7 +38,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     createCandle,
     deleteCandle,
     updateIsActiveCandle,
-  } = useCandlesQuery(typeFilter, pagination.pageSize, isAuth);
+  } = useCandlesQuery(selectedTypeFilter?.title, pagination.pageSize, isAuth);
   const {
     data: numberOfLayersData,
     isLoading: isLoadingNumberOfLayers,
@@ -86,11 +85,11 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     }
   };
 
-  const handleOnChangeFilter = (selectedFilter: optionData) => {
-    if (selectedFilter.title === 'Все') {
-      setTypeFilter(null);
+  const handleOnChangeFilter = (typeCandle: TypeCandle) => {
+    if (typeCandle.title === 'Все') {
+      setSelectedTypeFilter(null);
     } else {
-      setTypeFilter(selectedFilter.title);
+      setSelectedTypeFilter(typeCandle);
     }
   };
 
@@ -142,12 +141,11 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
         deleteProduct={deleteCandle}
         updateIsActiveProduct={updateIsActiveCandle}
         renderFilterComponent={() => (
-          <ButtonDropdown
-            text={'Тип свечей'}
-            options={convertCandlesToOptionData(typeCandlesData ?? [])}
-            selected={{
-              id: typeFilter ? typeFilter : 'Все',
-              title: typeFilter ? typeFilter : 'Все',
+          <CandleFilter
+            typeCandles={[{ id: 0, title: 'Все' }, ...(typeCandlesData ?? [])]}
+            selectedTypeCandle={{
+              id: selectedTypeFilter ? selectedTypeFilter.id : 0,
+              title: selectedTypeFilter ? selectedTypeFilter.title : 'Все',
             }}
             onChange={handleOnChangeFilter}
           />
@@ -170,20 +168,4 @@ export function convertCandlesToTagData(candles: TypeCandle[]): TagData[] {
     id: candle.id,
     text: candle.title,
   }));
-}
-
-export function convertCandlesToOptionData(
-  typeCandles: TypeCandle[],
-): optionData[] {
-  const optionDataCandleFilters: optionData[] = [{ id: 'Все', title: 'Все' }];
-  if (typeCandles.length > 0) {
-    typeCandles.flatMap((item) => {
-      const optionDataFilter: optionData = {
-        id: item.id.toString(),
-        title: item.title,
-      };
-      optionDataCandleFilters.push(optionDataFilter);
-    });
-  }
-  return optionDataCandleFilters;
 }

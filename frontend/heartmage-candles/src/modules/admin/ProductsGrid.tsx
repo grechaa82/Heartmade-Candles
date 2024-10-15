@@ -9,8 +9,7 @@ import {
 
 import { BaseProduct } from '../../types/BaseProduct';
 import ProductBlock from '../../components/admin/ProductBlock';
-import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
-import IconPlusLarge from '../../UI/IconPlusLarge';
+import Button from '../../components/shared/Button';
 
 import Style from './ProductsGrid.module.css';
 
@@ -35,6 +34,11 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
 }) => {
   const [products, setProducts] = useState<BaseProduct[]>(data);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggleOpen = () => {
+    setIsOpen((prev) => !prev);
+  };
 
   const handlePopUpOpen = () => setIsPopUpOpen(true);
   const handlePopUpClose = () => setIsPopUpOpen(false);
@@ -61,35 +65,52 @@ const ProductsGrid: FC<ProductsGridProps<BaseProduct>> = ({
   };
 
   return (
-    <div className={Style.candlesGrid}>
-      <div className={Style.titleBlock}>
-        <h2>{title}</h2>
-        {renderPopUpComponent && (
-          <ButtonWithIcon
-            icon={IconPlusLarge}
-            text="Добавить"
-            onClick={handlePopUpOpen}
-            color="#2E67EA"
-          />
+    <>
+      <div className={Style.candlesGrid}>
+        <div className={Style.titleBlock}>
+          <div className={Style.sectionHeader}>
+            <h2 onClick={toggleOpen}>{title}</h2>
+            {renderPopUpComponent && !isOpen && (
+              <Button
+                text="Добавить"
+                onClick={handlePopUpOpen}
+                color="#2E67EA"
+              />
+            )}
+          </div>
+          <button className={Style.toggleButton} onClick={toggleOpen}>
+            {isOpen ? '–' : '+'}
+          </button>
+        </div>
+        {isOpen && (
+          <>
+            {renderFilterComponent && renderFilterComponent()}
+            <div className={Style.grid}>
+              {products.map((item: BaseProduct) => (
+                <ProductBlock
+                  key={item.id}
+                  product={item}
+                  pageUrl={pageUrl}
+                  actions={getActions(item)}
+                />
+              ))}
+              {renderPopUpComponent && (
+                <Button
+                  text="Добавить"
+                  onClick={handlePopUpOpen}
+                  color="#2E67EA"
+                />
+              )}
+            </div>
+          </>
         )}
-        {renderFilterComponent && renderFilterComponent()}
-      </div>
-      <div className={Style.grid}>
-        {products.map((item: BaseProduct) => (
-          <ProductBlock
-            key={item.id}
-            product={item}
-            pageUrl={pageUrl}
-            actions={getActions(item)}
-          />
-        ))}
       </div>
       {isPopUpOpen &&
         renderPopUpComponent &&
         cloneElement(renderPopUpComponent(handlePopUpClose) as ReactElement, {
           onClose: handlePopUpClose,
         })}
-    </div>
+    </>
   );
 };
 
