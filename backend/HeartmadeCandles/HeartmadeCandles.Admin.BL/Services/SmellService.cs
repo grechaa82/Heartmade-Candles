@@ -13,9 +13,16 @@ public class SmellService : ISmellService
         _smellRepository = smellRepository;
     }
 
-    public async Task<Maybe<Smell[]>> GetAll()
+    public async Task<(Result<Smell[]>, long)> GetAll(PaginationSettings pagination)
     {
-        return await _smellRepository.GetAll();
+        var (smellsMaybe, totalCount) = await _smellRepository.GetAll(pagination);
+
+        if (!smellsMaybe.HasValue)
+        {
+            return (Result.Failure<Smell[]>("Smells not found"), totalCount);
+        }
+
+        return (Result.Success(smellsMaybe.Value), totalCount);
     }
 
     public async Task<Maybe<Smell>> Get(int smellId)

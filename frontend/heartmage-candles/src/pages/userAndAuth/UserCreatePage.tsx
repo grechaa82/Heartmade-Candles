@@ -5,8 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-import { UserApi } from '../../services/UserApi';
-import { CreateUserRequest } from '../../typesV2/userAndAuth/CreateUserRequest';
+import useUserQuery from '../../hooks/userAndAuth/useUserQuery';
 
 import Style from './UserCreatePage.module.css';
 
@@ -34,9 +33,7 @@ const userCreateSchema = yup
 type ButtonState = 'default' | 'invalid' | 'valid';
 
 const UserCreatePage: FC = () => {
-  const [buttonState, setButtonState] = useState<ButtonState>('default');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const { createUser, isSuccess, isPending, isError, error } = useUserQuery();
   const {
     register,
     handleSubmit,
@@ -45,31 +42,29 @@ const UserCreatePage: FC = () => {
     mode: 'onChange',
     resolver: yupResolver(userCreateSchema),
   });
+  const [buttonState, setButtonState] = useState<ButtonState>('default');
+  const [errorMessage, setErrorMessage] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  const [errorMessage, setErrorMessage] = useState<string[]>([]);
+  const onSubmit: SubmitHandler<CreateUserType> = async (data) => {
+    await createUser({
+      email: data.email,
+      password: data.password,
+      confirmPassword: data.confirmPassword,
+    });
+  };
 
-  const onSubmit: SubmitHandler<CreateUserType> = (data) => {
-    async function fetchData() {
-      setIsLoading(true);
-      const createUserRequest: CreateUserRequest = {
-        email: data.email,
-        password: data.password,
-        confirmPassword: data.confirmPassword,
-      };
-
-      const candlesResponse = await UserApi.create(createUserRequest);
-      if (candlesResponse.data === null && !candlesResponse.error) {
-        setIsLoading(false);
-        navigate('/auth');
-      } else {
-        setIsLoading(false);
-        setErrorMessage([...errorMessage, candlesResponse.error as string]);
-      }
+  useEffect(() => {
+    if (isError) {
+      setErrorMessage([]);
+      const errorMsg = error.message || 'Произошла ошибка';
+      setErrorMessage((prev) => [...prev, errorMsg]);
     }
 
-    fetchData();
-  };
+    if (isSuccess && !isError) {
+      navigate('/auth');
+    }
+  }, [isSuccess, isError]);
 
   useEffect(() => {
     if (
@@ -122,7 +117,7 @@ const UserCreatePage: FC = () => {
                 </p>
               )}
             </div>
-            {isLoading ? (
+            {isPending ? (
               <button className={`${Style.loginBtn} ${Style[buttonState]}`}>
                 <span className={Style.loader}></span>
               </button>
@@ -138,7 +133,7 @@ const UserCreatePage: FC = () => {
           <Link to="/auth">Войти в аккаунт</Link>
         </div>
       </div>
-      <ListErrorPopUp messages={errorMessage} />
+      {errorMessage.length > 0 && <ListErrorPopUp messages={errorMessage} />}
     </>
   );
 };

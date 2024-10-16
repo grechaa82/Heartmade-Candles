@@ -9,15 +9,10 @@ import Style from './MainInfoLayerColor.module.css';
 
 export interface MainInfoLayerColorProps {
   data: LayerColor;
-  onChangesLayerColor: (layerColor: LayerColor) => void;
   onSave?: (saveLayerColor: LayerColor) => void;
 }
 
-const MainInfoLayerColor: FC<MainInfoLayerColorProps> = ({
-  data,
-  onChangesLayerColor,
-  onSave,
-}) => {
+const MainInfoLayerColor: FC<MainInfoLayerColorProps> = ({ data, onSave }) => {
   const [layerColor, setLayerColor] = useState<LayerColor>(data);
 
   const handleOnSubmit = (data: LayerColor) => {
@@ -38,19 +33,13 @@ const MainInfoLayerColor: FC<MainInfoLayerColorProps> = ({
       images: [...layerColor.images, ...images],
     };
     setLayerColor(newLayerColor);
-    onChangesLayerColor(newLayerColor);
-    if (onSave) {
-      onSave(newLayerColor);
-    }
+    onSave(newLayerColor);
   };
 
   const handleSetNewImages = (images: Image[]) => {
     const newLayerColor: LayerColor = { ...layerColor, images: images };
     setLayerColor(newLayerColor);
-    onChangesLayerColor(newLayerColor);
-    if (onSave) {
-      onSave(newLayerColor);
-    }
+    onSave(newLayerColor);
   };
 
   return (

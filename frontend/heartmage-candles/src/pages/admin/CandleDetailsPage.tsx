@@ -1,30 +1,24 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
-import MainInfoCandle, {
-  FetchTypeCandle,
-} from '../../modules/admin/MainInfoCandle';
-import { CandleDetail } from '../../types/CandleDetail';
-import ProductsGrid, { FetchProducts } from '../../modules/admin/ProductsGrid';
+import MainInfoCandle from '../../modules/admin/MainInfoCandle';
+import ProductsGrid from '../../modules/admin/ProductsGrid';
 import TagsGrid from '../../modules/admin/TagsGrid';
-import { Candle } from '../../types/Candle';
-import { Decor } from '../../types/Decor';
 import { NumberOfLayer } from '../../types/NumberOfLayer';
-import { LayerColor } from '../../types/LayerColor';
-import { Smell } from '../../types/Smell';
-import { Wick } from '../../types/Wick';
-import { BaseProduct } from '../../types/BaseProduct';
 import { TagData } from '../../components/shared/Tag';
 import AddProductPopUp from '../../components/admin/PopUp/AddProductPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-
-import { CandlesApi } from '../../services/CandlesApi';
-import { DecorsApi } from '../../services/DecorsApi';
-import { LayerColorsApi } from '../../services/LayerColorsApi';
-import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
-import { SmellsApi } from '../../services/SmellsApi';
-import { TypeCandlesApi } from '../../services/TypeCandlesApi';
-import { WicksApi } from '../../services/WicksApi';
+import useCandleByIdQuery from '../../hooks/admin/useCandleByIdQuery';
+import useNumberOfLayersQuery from '../../hooks/admin/useNumberOfLayersQuery';
+import useTypeCandlesQuery from '../../hooks/admin/useTypeCandlesQuery';
+import useSmellsQuery from '../../hooks/admin/useSmellsQuery';
+import useDecorsQuery from '../../hooks/admin/useDecorsQuery';
+import useLayerColorsQuery from '../../hooks/admin/useLayerColorsQuery';
+import useWicksQuery from '../../hooks/admin/useWicksQuery';
+import { AuthContext } from '../../contexts/AuthContext';
+import MainInfoSkeleton from '../../modules/admin/MainInfoSkeleton';
+import TagsGridSkeleton from '../../modules/admin/TagsGridSkeleton';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
 
 import Style from './CandleDetailsPage.module.css';
 
@@ -34,107 +28,42 @@ type CandleDetailsParams = {
 
 const CandleDetailsPage: FC = () => {
   const { id } = useParams<CandleDetailsParams>();
-  const [candleDetailData, setCandleDetailData] = useState<CandleDetail>();
-  const [numberOfLayerTagData, setNumberOfLayerTagData] = useState<TagData[]>();
-
+  const { isAuth } = useContext(AuthContext);
+  const {
+    data: candleDetailData,
+    isLoading,
+    updateCandle,
+    updateCandleNumberOfLayers,
+    updateCandleDecors,
+    updateCandleLayerColors,
+    updateCandleSmells,
+    updateCandleWicks,
+  } = useCandleByIdQuery(id, isAuth);
+  const { data: typeCandleData } = useTypeCandlesQuery(isAuth);
+  const { data: numberOfLayersData } = useNumberOfLayersQuery(isAuth);
+  const {
+    data: decorsData,
+    fetchNextPage: decorsFetchNextPage,
+    hasNextPage: decorsHasNextPage,
+  } = useDecorsQuery(21, isAuth);
+  const {
+    data: layerColorsData,
+    fetchNextPage: layerColorsFetchNextPage,
+    hasNextPage: layerColorsHasNextPage,
+  } = useLayerColorsQuery(21, isAuth);
+  const {
+    data: smellsData,
+    fetchNextPage: smellsFetchNextPage,
+    hasNextPage: smellsHasNextPage,
+  } = useSmellsQuery(21, isAuth);
+  const {
+    data: wicksData,
+    fetchNextPage: wicksFetchNextPage,
+    hasNextPage: wicksHasNextPage,
+  } = useWicksQuery(21, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
-  const fetchTypeCandles: FetchTypeCandle = async () => {
-    const typeCandlesResponse = await TypeCandlesApi.getAll();
-    if (typeCandlesResponse.data && !typeCandlesResponse.error) {
-      return typeCandlesResponse.data;
-    } else {
-      setErrorMessage([...errorMessage, typeCandlesResponse.error as string]);
-      return [];
-    }
-  };
-
-  const fetchDecors: FetchProducts<Decor> = async () => {
-    const decorsResponse = await DecorsApi.getAll();
-    if (decorsResponse.data && !decorsResponse.error) {
-      return decorsResponse.data;
-    } else {
-      setErrorMessage([...errorMessage, decorsResponse.error as string]);
-      return [];
-    }
-  };
-
-  const fetchLayerColors: FetchProducts<LayerColor> = async () => {
-    const layerColorsResponse = await LayerColorsApi.getAll();
-    if (layerColorsResponse.data && !layerColorsResponse.error) {
-      return layerColorsResponse.data;
-    } else {
-      setErrorMessage([...errorMessage, layerColorsResponse.error as string]);
-      return [];
-    }
-  };
-
-  const fetchNumberOfLayer = async (): Promise<NumberOfLayer[]> => {
-    const numberOfLayersResponse = await NumberOfLayersApi.getAll();
-    if (numberOfLayersResponse.data && !numberOfLayersResponse.error) {
-      return numberOfLayersResponse.data;
-    } else {
-      setErrorMessage([
-        ...errorMessage,
-        numberOfLayersResponse.error as string,
-      ]);
-      return [];
-    }
-  };
-
-  const fetchSmells: FetchProducts<Smell> = async () => {
-    const smellsResponse = await SmellsApi.getAll();
-    if (smellsResponse.data && !smellsResponse.error) {
-      return smellsResponse.data;
-    } else {
-      setErrorMessage([...errorMessage, smellsResponse.error as string]);
-      return [];
-    }
-  };
-
-  const fetchWicks: FetchProducts<Wick> = async () => {
-    const wicksResponse = await WicksApi.getAll();
-    if (wicksResponse.data && !wicksResponse.error) {
-      return wicksResponse.data;
-    } else {
-      setErrorMessage([...errorMessage, wicksResponse.error as string]);
-      return [];
-    }
-  };
-
-  const handleChangesCandle = (updatedcandle: Candle) => {
-    const newCandleDetailData: CandleDetail = {
-      ...candleDetailData,
-      candle: {
-        ...candleDetailData?.candle,
-        ...updatedcandle,
-      },
-    };
-
-    setCandleDetailData(newCandleDetailData);
-  };
-
-  const handleChangesDecors = (updatedItems: BaseProduct[]) => {
-    const updatedDecors = updatedItems as Decor[];
-    const newCandleDetailData: CandleDetail = {
-      ...candleDetailData!,
-      decors: updatedDecors,
-    };
-
-    setCandleDetailData(newCandleDetailData);
-  };
-
-  const handleChangesLayerColors = (updatedItems: BaseProduct[]) => {
-    const updatedLayerColors = updatedItems as LayerColor[];
-    const newCandleDetailData: CandleDetail = {
-      ...candleDetailData!,
-      layerColors: updatedLayerColors,
-    };
-
-    setCandleDetailData(newCandleDetailData);
-  };
-
-  const handleChangesNumberOfLayers = (
+  const handleOnSaveNumberOfLayers = (
     updatedNumberOfLayers: TagData[],
   ): void => {
     const numberOfLayers: NumberOfLayer[] = updatedNumberOfLayers.map(
@@ -144,147 +73,18 @@ const CandleDetailsPage: FC = () => {
       }),
     );
 
-    const newCandleDetailData: CandleDetail = {
-      ...candleDetailData!,
-      numberOfLayers: numberOfLayers,
-    };
-
-    setCandleDetailData(newCandleDetailData);
+    updateCandleNumberOfLayers(numberOfLayers);
   };
 
-  const handleChangesSmells = (updatedItems: BaseProduct[]) => {
-    const updatedSmells = updatedItems as Smell[];
-    const newCandleDetailData: CandleDetail = {
-      ...candleDetailData!,
-      smells: updatedSmells,
-    };
-
-    setCandleDetailData(newCandleDetailData);
-  };
-
-  const handleChangesWicks = (updatedItems: BaseProduct[]) => {
-    const updatedWicks = updatedItems as Wick[];
-    const newCandleDetailData: CandleDetail = {
-      ...candleDetailData!,
-      wicks: updatedWicks,
-    };
-
-    setCandleDetailData(newCandleDetailData);
-  };
-
-  const updateCandle = async (updatedItem: Candle) => {
-    if (id) {
-      const candleRequest = {
-        title: updatedItem.title,
-        description: updatedItem.description,
-        price: updatedItem.price,
-        weightGrams: updatedItem.weightGrams,
-        images: updatedItem.images,
-        typeCandle: updatedItem.typeCandle,
-        isActive: updatedItem.isActive,
-      };
-      await CandlesApi.update(id, candleRequest);
-    }
-  };
-
-  const updateCandleDecors = async (updatedItems: BaseProduct[]) => {
-    if (id) {
-      const updatedDecors = updatedItems as Decor[];
-      const ids = updatedDecors.map((d) => d.id);
-
-      const candleDecorsResponse = await CandlesApi.updateDecor(id, ids);
-      if (candleDecorsResponse.error) {
-        setErrorMessage([
-          ...errorMessage,
-          candleDecorsResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const updateCandleLayerColors = async (updatedItems: BaseProduct[]) => {
-    if (id) {
-      const updatedLayerColors = updatedItems as LayerColor[];
-      const ids = updatedLayerColors.map((l) => l.id);
-
-      const candleLayerColorsResponse = await CandlesApi.updateLayerColor(
-        id,
-        ids,
-      );
-      if (candleLayerColorsResponse.error) {
-        setErrorMessage([
-          ...errorMessage,
-          candleLayerColorsResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const updateCandleNumberOfLayers = async (updatedItems: TagData[]) => {
-    if (id) {
-      const ids = updatedItems.map((n) => n.id);
-
-      const candleNumberOfLayersResponse = await CandlesApi.updateNumberOfLayer(
-        id,
-        ids,
-      );
-      if (candleNumberOfLayersResponse.error) {
-        setErrorMessage([
-          ...errorMessage,
-          candleNumberOfLayersResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const updateCandleSmells = async (updatedItems: BaseProduct[]) => {
-    if (id) {
-      const updatedSmells = updatedItems as Smell[];
-      const ids = updatedSmells.map((s) => s.id);
-
-      const candleSmellsResponse = await CandlesApi.updateSmell(id, ids);
-      if (candleSmellsResponse.error) {
-        setErrorMessage([
-          ...errorMessage,
-          candleSmellsResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const updateCandleWicks = async (updatedItems: BaseProduct[]) => {
-    if (id) {
-      const updatedWicks = updatedItems as Wick[];
-      const ids = updatedWicks.map((w) => w.id);
-
-      const candleWicksResponse = await CandlesApi.updateWick(id, ids);
-      if (candleWicksResponse.error) {
-        setErrorMessage([...errorMessage, candleWicksResponse.error as string]);
-      }
-    }
-  };
-
-  useEffect(() => {
-    async function fetchCandle() {
-      if (id) {
-        const candleResponse = await CandlesApi.getById(id);
-        if (candleResponse.data && !candleResponse.error) {
-          setCandleDetailData(candleResponse.data);
-        } else {
-          setErrorMessage([...errorMessage, candleResponse.error as string]);
-        }
-      }
-    }
-
-    async function fetchNumberOfLayers() {
-      const data = await fetchNumberOfLayer();
-      const tagData = convertToTagData(data);
-      setNumberOfLayerTagData(tagData);
-    }
-
-    fetchCandle();
-    fetchNumberOfLayers();
-  }, [id]);
+  if (isLoading) {
+    return (
+      <>
+        <MainInfoSkeleton />
+        <TagsGridSkeleton />
+        <ProductsGridSkeleton />
+      </>
+    );
+  }
 
   return (
     <>
@@ -292,8 +92,7 @@ const CandleDetailsPage: FC = () => {
         {candleDetailData && (
           <MainInfoCandle
             data={candleDetailData.candle}
-            fetchTypeCandles={fetchTypeCandles}
-            onChangesCandle={handleChangesCandle}
+            allTypeCandle={typeCandleData}
             onSave={updateCandle}
           />
         )}
@@ -302,73 +101,84 @@ const CandleDetailsPage: FC = () => {
         <TagsGrid
           title="Количество слоев"
           tags={convertToTagData(candleDetailData.numberOfLayers)}
-          allTags={numberOfLayerTagData || []}
-          onSave={updateCandleNumberOfLayers}
-          onChanges={handleChangesNumberOfLayers}
+          allTags={convertToTagData(numberOfLayersData)}
+          onSave={handleOnSaveNumberOfLayers}
         />
       )}
       {candleDetailData?.decors && (
         <ProductsGrid
           title="Декоры"
           data={candleDetailData.decors}
-          popUpComponent={
+          renderPopUpComponent={(onClose) => (
             <AddProductPopUp
-              onClose={() => console.log('Popup closed')}
+              onClose={onClose}
               title="Свеча и декоры"
               selectedData={candleDetailData.decors}
-              setSelectedData={handleChangesDecors}
-              fetchAllData={fetchDecors}
+              allData={decorsData?.pages.flatMap((page) => page)}
               onSave={updateCandleDecors}
+              fetchQuery={{
+                fetchNextPage: decorsFetchNextPage,
+                hasNextPage: decorsHasNextPage,
+              }}
             />
-          }
+          )}
         />
       )}
       {candleDetailData?.layerColors && (
         <ProductsGrid
           title="Слои"
           data={candleDetailData.layerColors}
-          popUpComponent={
+          renderPopUpComponent={(onClose) => (
             <AddProductPopUp
-              onClose={() => console.log('Popup closed')}
+              onClose={onClose}
               title="Свеча и слои"
               selectedData={candleDetailData.layerColors}
-              setSelectedData={handleChangesLayerColors}
-              fetchAllData={fetchLayerColors}
+              allData={layerColorsData?.pages.flatMap((page) => page)}
               onSave={updateCandleLayerColors}
+              fetchQuery={{
+                fetchNextPage: layerColorsFetchNextPage,
+                hasNextPage: layerColorsHasNextPage,
+              }}
             />
-          }
+          )}
         />
       )}
       {candleDetailData?.smells && (
         <ProductsGrid
           title="Запахи"
           data={candleDetailData.smells}
-          popUpComponent={
+          renderPopUpComponent={(onClose) => (
             <AddProductPopUp
-              onClose={() => console.log('Popup closed')}
+              onClose={onClose}
               title="Свеча и запахи"
               selectedData={candleDetailData.smells}
-              setSelectedData={handleChangesSmells}
-              fetchAllData={fetchSmells}
+              allData={smellsData?.pages.flatMap((page) => page)}
               onSave={updateCandleSmells}
+              fetchQuery={{
+                fetchNextPage: smellsFetchNextPage,
+                hasNextPage: smellsHasNextPage,
+              }}
             />
-          }
+          )}
         />
       )}
       {candleDetailData?.wicks && (
         <ProductsGrid
           title="Фитили"
           data={candleDetailData.wicks}
-          popUpComponent={
+          renderPopUpComponent={(onClose) => (
             <AddProductPopUp
-              onClose={() => console.log('Popup closed')}
+              onClose={onClose}
               title="Свеча и фитили"
               selectedData={candleDetailData.wicks}
-              setSelectedData={handleChangesWicks}
-              fetchAllData={fetchWicks}
+              allData={wicksData?.pages.flatMap((page) => page)}
               onSave={updateCandleWicks}
+              fetchQuery={{
+                fetchNextPage: wicksFetchNextPage,
+                hasNextPage: wicksHasNextPage,
+              }}
             />
-          }
+          )}
         />
       )}
       <ListErrorPopUp messages={errorMessage} />

@@ -24,11 +24,22 @@ public class WickController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] PaginationSettingsRequest pagination)
     {
-        var wicksMaybe = await _wickService.GetAll();
+        var (wicksResult, totalCount) = await _wickService.GetAll(new PaginationSettings
+        {
+            PageSize = pagination.Limit,
+            PageIndex = pagination.Index
+        });
 
-        return Ok(wicksMaybe.HasValue ? wicksMaybe.Value : Array.Empty<Decor>());
+        if (wicksResult.IsFailure)
+        {
+            return BadRequest(wicksResult.Error);
+        }
+
+        Response.Headers.Add("X-Total-Count", totalCount.ToString());
+
+        return Ok(wicksResult.Value);
     }
 
     [HttpGet("{id:int}")]

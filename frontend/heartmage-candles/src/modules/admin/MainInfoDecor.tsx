@@ -9,15 +9,10 @@ import Style from './MainInfoDecor.module.css';
 
 export interface MainInfoDecorProps {
   data: Decor;
-  onChangesDecor: (decor: Decor) => void;
-  onSave?: (saveDecor: Decor) => void;
+  onSave: (saveDecor: Decor) => void;
 }
 
-const MainInfoDecor: FC<MainInfoDecorProps> = ({
-  data,
-  onChangesDecor,
-  onSave,
-}) => {
+const MainInfoDecor: FC<MainInfoDecorProps> = ({ data, onSave }) => {
   const [decor, setDecor] = useState<Decor>(data);
 
   const handleOnSubmit = (data: Decor) => {
@@ -35,19 +30,13 @@ const MainInfoDecor: FC<MainInfoDecorProps> = ({
   const handleChangeImages = (images: Image[]) => {
     const newDecor: Decor = { ...decor, images: [...decor.images, ...images] };
     setDecor(newDecor);
-    onChangesDecor(newDecor);
-    if (onSave) {
-      onSave(newDecor);
-    }
+    onSave(newDecor);
   };
 
   const handleSetNewImages = (images: Image[]) => {
     const newDecor: Decor = { ...decor, images: images };
     setDecor(newDecor);
-    onChangesDecor(newDecor);
-    if (onSave) {
-      onSave(newDecor);
-    }
+    onSave(newDecor);
   };
 
   return (

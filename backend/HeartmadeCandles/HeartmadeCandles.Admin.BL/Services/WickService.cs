@@ -13,9 +13,16 @@ public class WickService : IWickService
         _wickRepository = wickRepository;
     }
 
-    public async Task<Maybe<Wick[]>> GetAll()
+    public async Task<(Result<Wick[]>, long)> GetAll(PaginationSettings pagination)
     {
-        return await _wickRepository.GetAll();
+        var (wicksMaybe, totalCount) = await _wickRepository.GetAll(pagination);
+
+        if (!wicksMaybe.HasValue)
+        {
+            return (Result.Failure<Wick[]>("Wicks not found"), totalCount);
+        }
+
+        return (Result.Success(wicksMaybe.Value), totalCount);
     }
 
     public async Task<Maybe<Wick>> Get(int wickId)

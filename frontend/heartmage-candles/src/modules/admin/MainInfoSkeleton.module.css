@@ -1,0 +1,40 @@
+.contentSkeleton {
+    align-items: start;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+}
+
+.imageSliderSkeleton {
+    max-width: 60rem;
+    min-width: 18rem;
+    aspect-ratio: 1 / 1;
+    flex: 1;
+}
+
+.formSkeleton {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 16px;
+    flex: 1;
+}
+
+.itemTitleSkeleton,
+.itemPriceSkeleton,
+.itemActiveSkeleton {
+    height: 5.25rem;
+}
+
+.itemDescriptionSkeleton {
+    height: 7.5rem;
+}
+
+
+.itemTitleSkeleton,
+.itemDescriptionSkeleton {
+    grid-column: span 4;
+}
+
+.itemPriceSkeleton {
+    grid-column: span 3;
+}

@@ -14,8 +14,26 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: var(--color-fff);
-  width: clamp(700px, 60%, 1400px);
+  width: clamp(700px, 80%, 1400px);
   z-index: 101;
+  border-radius: var(--border-radius-primary);
+  max-height: 80%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.popUp::-webkit-scrollbar {
+  width: 0.75rem;
+}
+
+.popUp::-webkit-scrollbar-track {
+  margin: 24px 0;
+}
+
+.popUp::-webkit-scrollbar-thumb {
+  border-radius: var(--border-radius-secondary);
+  background: var(--color-eee);
+  border: 2px solid var(--color-fff);
   border-radius: var(--border-radius-primary);
 }
 
@@ -42,7 +60,7 @@
     border-radius: var(--border-radius-primary);
     width: 100%;
     margin: auto;
-    height: 100%;
+    min-height: 100%;
     min-width: auto;
   }
 }

@@ -1,12 +1,11 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import MainInfoWick from '../../modules/admin/MainInfoWick';
-import { Wick } from '../../types/Wick';
-import { WickRequest } from '../../types/Requests/WickRequest';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-
-import { WicksApi } from '../../services/WicksApi';
+import useWickByIdQuery from '../../hooks/admin/useWickByIdQuery';
+import { AuthContext } from '../../contexts/AuthContext';
+import MainInfoSkeleton from '../../modules/admin/MainInfoSkeleton';
 
 import Style from './WickPage.module.css';
 
@@ -16,59 +15,18 @@ type WickParams = {
 
 const WickPage: FC = () => {
   const { id } = useParams<WickParams>();
-  const [wickData, setWickData] = useState<Wick>();
-
+  const { isAuth } = useContext(AuthContext);
+  const { data, isLoading, updateWick } = useWickByIdQuery(id, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
-  const handleChangesWick = (updatedWick: Wick) => {
-    setWickData((prevWickData) => ({
-      ...prevWickData,
-      ...updatedWick,
-    }));
-  };
-
-  const updateWick = async (updatedItem: Wick) => {
-    if (id) {
-      const wickRequest: WickRequest = {
-        title: updatedItem.title,
-        description: updatedItem.description,
-        price: updatedItem.price,
-        images: updatedItem.images,
-        isActive: updatedItem.isActive,
-      };
-
-      const updatedWickResponse = await WicksApi.update(id, wickRequest);
-      if (updatedWickResponse.error) {
-        setErrorMessage([...errorMessage, updatedWickResponse.error as string]);
-      }
-    }
-  };
-
-  useEffect(() => {
-    async function fetchWick() {
-      if (id) {
-        const wickResponse = await WicksApi.getById(id);
-        if (wickResponse.data && !wickResponse.error) {
-          setWickData(wickResponse.data);
-        } else {
-          setErrorMessage([...errorMessage, wickResponse.error as string]);
-        }
-      }
-    }
-
-    fetchWick();
-  }, [id]);
+  if (isLoading) {
+    return <MainInfoSkeleton />;
+  }
 
   return (
     <>
       <div className="wicks">
-        {wickData && (
-          <MainInfoWick
-            data={wickData}
-            onChangesWick={handleChangesWick}
-            onSave={updateWick}
-          />
-        )}
+        {data && <MainInfoWick data={data} onSave={updateWick} />}
       </div>
       <ListErrorPopUp messages={errorMessage} />
     </>

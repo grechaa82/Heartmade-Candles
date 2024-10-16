@@ -1,118 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import { FC, useEffect, useState, useContext } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
-import { Smell } from '../../types/Smell';
-import { SmellRequest } from '../../types/Requests/SmellRequest';
 import CreateSmellPopUp from '../../modules/admin/PopUp/Smell/CreateSmellPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
-
-import { SmellsApi } from '../../services/SmellsApi';
+import useSmellsQuery from '../../hooks/admin/useSmellsQuery';
+import { AuthContext } from '../../contexts/AuthContext';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
 
 import Style from './AllSmellPage.module.css';
 
 export interface AllSmellPageProps {}
 
-const AllSmellPage: React.FC<AllSmellPageProps> = () => {
-  const [smellsData, setSmellsData] = useState<Smell[]>([]);
-
+const AllSmellPage: FC<AllSmellPageProps> = () => {
+  const { isAuth } = useContext(AuthContext);
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    createSmell,
+    deleteSmell,
+    updateIsActiveSmell,
+  } = useSmellsQuery(21, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
-
-  const handleCreateSmell = async (createdItem: Smell) => {
-    const smellRequest: SmellRequest = {
-      title: createdItem.title,
-      description: createdItem.description,
-      price: createdItem.price,
-      isActive: createdItem.isActive,
-    };
-    const response = await SmellsApi.create(smellRequest);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedSmellsResponse = await SmellsApi.getAll();
-      if (updatedSmellsResponse.data && !updatedSmellsResponse.error) {
-        setSmellsData(updatedSmellsResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedSmellsResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const handleDeleteSmell = async (id: string) => {
-    const response = await SmellsApi.delete(id);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedSmellsResponse = await SmellsApi.getAll();
-      if (updatedSmellsResponse.data && !updatedSmellsResponse.error) {
-        setSmellsData(updatedSmellsResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedSmellsResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const handleUpdateIsActiveSmell = async (id: string) => {
-    const smell = smellsData.find((x) => x.id === parseInt(id));
-    const newSmellRequest: SmellRequest = {
-      title: smell.title,
-      description: smell.description,
-      price: smell.price,
-      isActive: !smell.isActive,
-    };
-
-    const response = await SmellsApi.update(
-      smell.id.toString(),
-      newSmellRequest,
-    );
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedSmellsResponse = await SmellsApi.getAll();
-      if (updatedSmellsResponse.data && !updatedSmellsResponse.error) {
-        setSmellsData(updatedSmellsResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedSmellsResponse.error as string,
-        ]);
-      }
-    }
-  };
+  const { ref, inView, entry } = useInView({
+    threshold: 0,
+  });
 
   useEffect(() => {
-    async function fetchSmells() {
-      const smellsResponse = await SmellsApi.getAll();
-      if (smellsResponse.data && !smellsResponse.error) {
-        setSmellsData(smellsResponse.data);
-      } else {
-        setErrorMessage([...errorMessage, smellsResponse.error as string]);
-      }
+    if (entry && inView) {
+      fetchNextPage();
     }
-    fetchSmells();
-  }, []);
+  }, [entry]);
+
+  if (isLoading) {
+    return <ProductsGridSkeleton />;
+  }
 
   return (
     <>
+      {isLoading}
       <ProductsGrid
-        data={smellsData}
+        data={data?.pages.flat() || []}
         title="Запахи"
         pageUrl="smells"
-        popUpComponent={
+        renderPopUpComponent={(onClose) => (
           <CreateSmellPopUp
-            onClose={() => console.log('Popup closed')}
+            onClose={onClose}
             title="Создать запах"
-            onSave={handleCreateSmell}
+            onSave={createSmell}
           />
-        }
-        deleteProduct={handleDeleteSmell}
-        updateIsActiveProduct={handleUpdateIsActiveSmell}
+        )}
+        deleteProduct={deleteSmell}
+        updateIsActiveProduct={updateIsActiveSmell}
       />
+      {isFetchingNextPage ? (
+        <span>...Loading</span>
+      ) : (
+        hasNextPage && <div ref={ref}></div>
+      )}
       <ListErrorPopUp messages={errorMessage} />
     </>
   );

@@ -16,22 +16,26 @@ public class DecorRepository : IDecorRepository
         _context = context;
     }
 
-    public async Task<Maybe<Decor[]>> GetAll()
+    public async Task<(Maybe<Decor[]>, long)> GetAll(PaginationSettings pagination)
     {
+        long totalCount = await _context.Decor.CountAsync();
+
         var items = await _context.Decor
             .AsNoTracking()
+            .Skip(pagination.PageSize * pagination.PageIndex)
+            .Take(pagination.PageSize)
             .ToArrayAsync();
 
         if (!items.Any())
         {
-            return Maybe<Decor[]>.None;
+            return (Maybe<Decor[]>.None, totalCount);
         }
 
         var result = items
             .Select(DecorMapping.MapToDecor)
             .ToArray();
 
-        return result;
+        return (result, totalCount);
     }
 
     public async Task<Maybe<Decor>> Get(int decorId)

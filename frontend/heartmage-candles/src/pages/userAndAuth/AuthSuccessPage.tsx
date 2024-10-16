@@ -1,12 +1,12 @@
 import { FC, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
-import { AuthHelper } from '../../helpers/AuthHelper';
-import { AuthApi } from '../../services/AuthApi';
+import { useLogoutQuery } from '../../hooks/userAndAuth/useAuthQueries';
 
 import Style from './AuthSuccessPage.module.css';
 
 const AuthSuccessPage: FC = () => {
+  const { logout } = useLogoutQuery();
   const [timeLeft, setTimeLeft] = useState(5);
 
   const navigate = useNavigate();
@@ -28,11 +28,7 @@ const AuthSuccessPage: FC = () => {
 
   const onSubmit = () => {
     async function fetchData() {
-      const tokenResponse = await AuthApi.logout();
-      if (tokenResponse.data === null && !tokenResponse.error) {
-        AuthHelper.removeToken();
-        navigate('/');
-      }
+      logout();
     }
 
     fetchData();

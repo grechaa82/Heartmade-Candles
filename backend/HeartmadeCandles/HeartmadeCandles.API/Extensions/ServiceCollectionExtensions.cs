@@ -66,7 +66,8 @@ public static class ServiceCollectionExtensions
                         policy.WithOrigins(originParams)
                             .AllowAnyHeader()
                             .AllowAnyMethod()
-                            .AllowCredentials();
+                            .AllowCredentials()
+                            .WithExposedHeaders("X-Total-Count");
                     });
             });
     }

@@ -49,6 +49,22 @@ public class TypeCandleRepository : ITypeCandleRepository
         return typeCandle;
     }
 
+    public async Task<Maybe<TypeCandle>> Get(string typeCandleTitle)
+    {
+        var item = await _context.TypeCandle
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Title == typeCandleTitle);
+
+        if (item == null)
+        {
+            return Maybe<TypeCandle>.None;
+        }
+
+        var typeCandle = TypeCandleMapping.MapToCandleType(item);
+
+        return typeCandle;
+    }
+
     public async Task<Result> Create(TypeCandle typeCandle)
     {
         var item = TypeCandleMapping.MapToTypeCandleEntity(typeCandle);

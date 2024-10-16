@@ -24,11 +24,22 @@ public class DecorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] PaginationSettingsRequest pagination)
     {
-        var decorsMaybe = await _decorService.GetAll();
+        var (decorsResult, totalCount) = await _decorService.GetAll(new PaginationSettings
+        {
+            PageSize = pagination.Limit,
+            PageIndex = pagination.Index
+        });
 
-        return Ok(decorsMaybe.HasValue ? decorsMaybe.Value : Array.Empty<Decor>());
+        if (decorsResult.IsFailure)
+        {
+            return BadRequest(decorsResult.Error);
+        }
+
+        Response.Headers.Add("X-Total-Count", totalCount.ToString());
+
+        return Ok(decorsResult.Value);
     }
 
     [HttpGet("{id:int}")]

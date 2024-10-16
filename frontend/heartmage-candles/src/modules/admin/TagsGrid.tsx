@@ -9,8 +9,7 @@ import {
 
 import InputTag from '../../components/admin/InputTag';
 import { TagData } from '../../components/shared/Tag';
-import ButtonWithIcon from '../../components/shared/ButtonWithIcon';
-import IconPlusLarge from '../../UI/IconPlusLarge';
+import Button from '../../components/shared/Button';
 
 import Style from './TagsGrid.module.css';
 
@@ -20,7 +19,6 @@ export interface TagsGridProps {
   allTags?: TagData[];
   popUpComponent?: ReactNode;
   withInput?: boolean;
-  onChanges?: (updatedTags: TagData[]) => void;
   onSave?: (saveProduct: TagData[]) => void;
   onDelete?: (id: string) => void;
 }
@@ -31,13 +29,17 @@ const TagsGrid: FC<TagsGridProps> = ({
   allTags,
   popUpComponent,
   withInput = true,
-  onChanges,
   onSave,
   onDelete,
 }) => {
   const [selectedTags, setSelectedTags] = useState<TagData[]>([]);
   const [isModified, setIsModified] = useState(false);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
+
+  const toggleOpen = () => {
+    setIsOpen((prev) => !prev);
+  };
 
   const handlePopUpOpen = () => {
     setIsPopUpOpen(true);
@@ -49,18 +51,12 @@ const TagsGrid: FC<TagsGridProps> = ({
 
   const handleChangesTags = (tags: TagData[]) => {
     setSelectedTags(tags);
-    if (onChanges) {
-      onChanges(tags);
-    }
     setIsModified(true);
   };
 
   const handleOnSave = () => {
     if (onSave) {
       onSave(selectedTags);
-      if (onChanges) {
-        onChanges(selectedTags);
-      }
       setIsModified(false);
     }
   };
@@ -70,41 +66,49 @@ const TagsGrid: FC<TagsGridProps> = ({
   }, [tags]);
 
   return (
-    <div className={Style.tabsInput}>
-      <div className={Style.titleBlock}>
-        <h2>{title}</h2>
-        {popUpComponent && (
-          <ButtonWithIcon
-            icon={IconPlusLarge}
-            text="Добавить"
-            onClick={handlePopUpOpen}
-            color="#2E67EA"
-          />
-        )}
-      </div>
-      <div className={Style.content}>
-        <InputTag
-          tags={selectedTags}
-          allTags={allTags}
-          onChange={handleChangesTags}
-          onDelete={onDelete}
-          withInput={withInput}
-        />
-        {onSave && isModified && !popUpComponent && (
-          <button
-            type="button"
-            className={Style.saveButton}
-            onClick={handleOnSave}
-          >
-            Сохранить
+    <>
+      <div className={Style.tabsInput}>
+        <div className={Style.titleBlock}>
+          <div className={Style.sectionHeader}>
+            <h2 onClick={toggleOpen}>{title}</h2>
+            {popUpComponent && (
+              <Button
+                text="Добавить"
+                onClick={handlePopUpOpen}
+                color="#2E67EA"
+              />
+            )}
+          </div>
+          <button className={Style.toggleButton} onClick={toggleOpen}>
+            {isOpen ? '–' : '+'}
           </button>
+        </div>
+        {isOpen && (
+          <div className={Style.content}>
+            <InputTag
+              tags={selectedTags}
+              allTags={allTags}
+              onChange={handleChangesTags}
+              onDelete={onDelete}
+              withInput={withInput}
+            />
+            {onSave && isModified && !popUpComponent && (
+              <button
+                type="button"
+                className={Style.saveButton}
+                onClick={handleOnSave}
+              >
+                Сохранить
+              </button>
+            )}
+          </div>
         )}
-        {isPopUpOpen &&
-          cloneElement(popUpComponent as ReactElement, {
-            onClose: handlePopUpClose,
-          })}
       </div>
-    </div>
+      {isPopUpOpen &&
+        cloneElement(popUpComponent as ReactElement, {
+          onClose: handlePopUpClose,
+        })}
+    </>
   );
 };
 

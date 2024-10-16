@@ -16,22 +16,26 @@ public class SmellRepository : ISmellRepository
         _context = context;
     }
 
-    public async Task<Maybe<Smell[]>> GetAll()
+    public async Task<(Maybe<Smell[]>, long)> GetAll(PaginationSettings pagination)
     {
+        long totalCount = await _context.Decor.CountAsync();
+
         var items = await _context.Smell
             .AsNoTracking()
+            .Skip(pagination.PageSize * pagination.PageIndex)
+            .Take(pagination.PageSize)
             .ToArrayAsync();
 
         if (!items.Any())
         {
-            return Maybe<Smell[]>.None;
+            return (Maybe<Smell[]>.None, totalCount);
         }
 
         var result = items
             .Select(SmellMapping.MapToSmell)
             .ToArray();
 
-        return result;
+        return (result, totalCount);
     }
 
     public async Task<Maybe<Smell>> Get(int smellId)

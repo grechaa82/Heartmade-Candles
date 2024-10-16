@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import Skeleton from '../../components/shared/skeleton';
+import Skeleton from '../../components/shared/Skeleton';
 import Button from '../../components/shared/Button';
 
 import Style from './ListProductsCartSkeleton.module.css';

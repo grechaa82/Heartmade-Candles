@@ -1,22 +1,23 @@
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useContext } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
-import { Candle } from '../../types/Candle';
-import { NumberOfLayer } from '../../types/NumberOfLayer';
 import { TypeCandle } from '../../types/TypeCandle';
 import TagsGrid from '../../modules/admin/TagsGrid';
 import { convertToTagData } from './CandleDetailsPage';
 import { TagData } from '../../components/shared/Tag';
 import CreateCandlePopUp from '../../modules/admin/PopUp/Candle/CreateCandlePopUp';
-import { CandleRequest } from '../../types/Requests/CandleRequest';
 import CreateTagPopUp from '../../modules/admin/PopUp/Tag/CreateTagPopUp';
-import { NumberOfLayerRequest } from '../../types/Requests/NumberOfLayerRequest';
-import { TypeCandleRequest } from '../../types/Requests/TypeCandleRequest';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
+import { PaginationSettings } from '../../typesV2/shared/PaginationSettings';
+import useCandlesQuery from '../../hooks/admin/useCandlesQuery';
+import useNumberOfLayersQuery from '../../hooks/admin/useNumberOfLayersQuery';
+import useTypeCandlesQuery from '../../hooks/admin/useTypeCandlesQuery';
+import { AuthContext } from '../../contexts/AuthContext';
+import CandleFilter from '../../components/admin/CandleFilter';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
+import TagsGridSkeleton from '../../modules/admin/TagsGridSkeleton';
 
-import { CandlesApi } from '../../services/CandlesApi';
-import { NumberOfLayersApi } from '../../services/NumberOfLayersApi';
-import { TypeCandlesApi } from '../../services/TypeCandlesApi';
 import { ImagesApi } from '../../services/ImagesApi';
 
 import Style from './AllCandlePage.module.css';
@@ -24,206 +25,59 @@ import Style from './AllCandlePage.module.css';
 export interface AllCandlePageProps {}
 
 const AllCandlePage: FC<AllCandlePageProps> = () => {
-  const [typeCandlesData, setTypeCandlesData] = useState<TypeCandle[]>([]);
-  const [numberOfLayersData, setNumberOfLayersData] = useState<NumberOfLayer[]>(
-    [],
-  );
-  const [candlesData, setCandlesData] = useState<Candle[]>([]);
+  const { isAuth } = useContext(AuthContext);
+  const [selectedTypeFilter, setSelectedTypeFilter] =
+    useState<TypeCandle>(null);
+  const [pagination] = useState<PaginationSettings>({
+    pageSize: 21,
+    pageIndex: 0,
+  });
+  const {
+    data: candlesData,
+    fetchNextPage,
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    createCandle,
+    deleteCandle,
+    updateIsActiveCandle,
+  } = useCandlesQuery(selectedTypeFilter?.title, pagination.pageSize, isAuth);
+  const {
+    data: numberOfLayersData,
+    isLoading: isLoadingNumberOfLayers,
+    createNumberOfLayer,
+    deleteNumberOfLayer,
+  } = useNumberOfLayersQuery(isAuth);
+  const {
+    data: typeCandlesData,
+    isLoading: isLoadingTypeCandle,
+    createTypeCandle,
+    deleteTypeCandle,
+  } = useTypeCandlesQuery(isAuth);
+  const [errorMessage] = useState<string[]>([]);
+  const { ref, inView, entry } = useInView({
+    threshold: 0,
+  });
 
-  const [errorMessage, setErrorMessage] = useState<string[]>([]);
-
-  const handleCreateCandle = async (createdItem: Candle) => {
-    const candleRequest: CandleRequest = {
-      title: createdItem.title,
-      description: createdItem.description,
-      price: createdItem.price,
-      weightGrams: createdItem.weightGrams,
-      images: createdItem.images,
-      typeCandle: createdItem.typeCandle,
-      isActive: createdItem.isActive,
-    };
-
-    const response = await CandlesApi.create(candleRequest);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedCandlesResponse = await CandlesApi.getAll();
-      if (updatedCandlesResponse.data && !updatedCandlesResponse.error) {
-        setCandlesData(updatedCandlesResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedCandlesResponse.error as string,
-        ]);
-      }
+  useEffect(() => {
+    if (entry && inView) {
+      fetchNextPage();
     }
-  };
-
-  const handleDeleteCandle = async (id: string) => {
-    const response = await CandlesApi.delete(id);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedCandlesResponse = await CandlesApi.getAll();
-      if (updatedCandlesResponse.data && !updatedCandlesResponse.error) {
-        setCandlesData(updatedCandlesResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedCandlesResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const handleUpdateIsActiveCandle = async (id: string) => {
-    const candle = candlesData.find((x) => x.id === parseInt(id));
-    const newCandleRequest: CandleRequest = {
-      title: candle.title,
-      description: candle.description,
-      price: candle.price,
-      weightGrams: candle.weightGrams,
-      images: candle.images,
-      typeCandle: candle.typeCandle,
-      isActive: !candle.isActive,
-    };
-
-    const response = await CandlesApi.update(
-      candle.id.toString(),
-      newCandleRequest,
-    );
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedCandlesResponse = await CandlesApi.getAll();
-      if (updatedCandlesResponse.data && !updatedCandlesResponse.error) {
-        setCandlesData(updatedCandlesResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedCandlesResponse.error as string,
-        ]);
-      }
-    }
-  };
+  }, [entry]);
 
   const handleCreateNumberOfLayer = async (tag: TagData) => {
-    const numberOfLayerRequest: NumberOfLayerRequest = {
+    createNumberOfLayer({
+      id: 0,
       number: parseInt(tag.text),
-    };
-
-    const response = await NumberOfLayersApi.create(numberOfLayerRequest);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedNumberOfLayersResponse = await NumberOfLayersApi.getAll();
-      if (
-        updatedNumberOfLayersResponse.data &&
-        !updatedNumberOfLayersResponse.error
-      ) {
-        setNumberOfLayersData(updatedNumberOfLayersResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedNumberOfLayersResponse.error as string,
-        ]);
-      }
-    }
+    });
   };
 
   const handleCreateTypeCandle = async (tag: TagData) => {
-    const typeCandleRequest: TypeCandleRequest = {
+    createTypeCandle({
+      id: 0,
       title: tag.text,
-    };
-
-    const response = await TypeCandlesApi.create(typeCandleRequest);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedTypeCandlesResponse = await TypeCandlesApi.getAll();
-      if (
-        updatedTypeCandlesResponse.data &&
-        !updatedTypeCandlesResponse.error
-      ) {
-        setTypeCandlesData(updatedTypeCandlesResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedTypeCandlesResponse.error as string,
-        ]);
-      }
-    }
+    });
   };
-
-  const handleDeleteNumberOfLayer = async (id: string) => {
-    const response = await NumberOfLayersApi.delete(id);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedNumberOfLayersResponse = await NumberOfLayersApi.getAll();
-      if (
-        updatedNumberOfLayersResponse.data &&
-        !updatedNumberOfLayersResponse.error
-      ) {
-        setNumberOfLayersData(updatedNumberOfLayersResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedNumberOfLayersResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const handleDeleteTypeCandle = async (id: string) => {
-    const response = await TypeCandlesApi.delete(id);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedTypeCandlesResponse = await TypeCandlesApi.getAll();
-      if (
-        updatedTypeCandlesResponse.data &&
-        !updatedTypeCandlesResponse.error
-      ) {
-        setTypeCandlesData(updatedTypeCandlesResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedTypeCandlesResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  useEffect(() => {
-    async function fetchData() {
-      const candlesResponse = await CandlesApi.getAll();
-      if (candlesResponse.data && !candlesResponse.error) {
-        setCandlesData(candlesResponse.data);
-      } else {
-        setErrorMessage([...errorMessage, candlesResponse.error as string]);
-      }
-
-      const typeCandlesResponse = await TypeCandlesApi.getAll();
-      if (typeCandlesResponse.data && !typeCandlesResponse.error) {
-        setTypeCandlesData(typeCandlesResponse.data);
-      } else {
-        setErrorMessage([...errorMessage, typeCandlesResponse.error as string]);
-      }
-
-      const numberOfLayersResponse = await NumberOfLayersApi.getAll();
-      if (numberOfLayersResponse.data && !numberOfLayersResponse.error) {
-        setNumberOfLayersData(numberOfLayersResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          numberOfLayersResponse.error as string,
-        ]);
-      }
-    }
-
-    fetchData();
-  }, []);
 
   const handleUploadImages = async (files: File[]) => {
     const imagesResponse = await ImagesApi.uploadImages(files);
@@ -234,50 +88,89 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
     }
   };
 
+  const handleOnChangeFilter = (typeCandle: TypeCandle) => {
+    if (typeCandle.title === 'Все') {
+      setSelectedTypeFilter(null);
+    } else {
+      setSelectedTypeFilter(typeCandle);
+    }
+  };
+
   return (
     <>
-      <TagsGrid
-        title="Типы свечей"
-        withInput={false}
-        tags={convertCandlesToTagData(typeCandlesData)}
-        popUpComponent={
-          <CreateTagPopUp
-            onClose={() => console.log('Popup closed')}
-            title="Сознать тип свечи"
-            onSave={handleCreateTypeCandle}
-          />
-        }
-        onDelete={handleDeleteTypeCandle}
-      />
-      <TagsGrid
-        title="Количество слоев"
-        withInput={false}
-        tags={convertToTagData(numberOfLayersData)}
-        popUpComponent={
-          <CreateTagPopUp
-            onClose={() => console.log('Popup closed')}
-            title="Сознать количество слоев"
-            onSave={handleCreateNumberOfLayer}
-          />
-        }
-        onDelete={handleDeleteNumberOfLayer}
-      />
-      <ProductsGrid
-        data={candlesData}
-        title="Свечи"
-        pageUrl="candles"
-        popUpComponent={
-          <CreateCandlePopUp
-            onClose={() => console.log('Popup closed')}
-            title="Создать свечу"
-            typeCandlesArray={typeCandlesData}
-            onSave={handleCreateCandle}
-            uploadImages={handleUploadImages}
-          />
-        }
-        deleteProduct={handleDeleteCandle}
-        updateIsActiveProduct={handleUpdateIsActiveCandle}
-      />
+      {!isLoadingTypeCandle ? (
+        <TagsGrid
+          title="Типы свечей"
+          withInput={false}
+          tags={convertCandlesToTagData(typeCandlesData ?? [])}
+          popUpComponent={
+            <CreateTagPopUp
+              onClose={() => console.log('Popup closed')}
+              title="Сознать тип свечи"
+              onSave={handleCreateTypeCandle}
+            />
+          }
+          onDelete={deleteTypeCandle}
+        />
+      ) : (
+        <TagsGridSkeleton />
+      )}
+      {!isLoadingNumberOfLayers ? (
+        <TagsGrid
+          title="Количество слоев"
+          withInput={false}
+          tags={convertToTagData(numberOfLayersData ?? [])}
+          popUpComponent={
+            <CreateTagPopUp
+              onClose={() => console.log('Popup closed')}
+              title="Сознать количество слоев"
+              onSave={handleCreateNumberOfLayer}
+            />
+          }
+          onDelete={deleteNumberOfLayer}
+        />
+      ) : (
+        <TagsGridSkeleton />
+      )}
+      {!isLoading ? (
+        <ProductsGrid
+          data={candlesData?.pages.flat() || []}
+          title="Свечи"
+          pageUrl="candles"
+          renderPopUpComponent={(onClose) => (
+            <CreateCandlePopUp
+              onClose={onClose}
+              title="Создать свечу"
+              typeCandlesArray={typeCandlesData}
+              onSave={createCandle}
+              uploadImages={handleUploadImages}
+            />
+          )}
+          deleteProduct={deleteCandle}
+          updateIsActiveProduct={updateIsActiveCandle}
+          renderFilterComponent={() => (
+            <CandleFilter
+              typeCandles={[
+                { id: 0, title: 'Все' },
+                ...(typeCandlesData ?? []),
+              ]}
+              selectedTypeCandle={{
+                id: selectedTypeFilter ? selectedTypeFilter.id : 0,
+                title: selectedTypeFilter ? selectedTypeFilter.title : 'Все',
+              }}
+              onChange={handleOnChangeFilter}
+            />
+          )}
+        />
+      ) : (
+        <ProductsGridSkeleton />
+      )}
+
+      {isFetchingNextPage ? (
+        <span>Loading</span>
+      ) : (
+        hasNextPage && <div ref={ref}></div>
+      )}
       <ListErrorPopUp messages={errorMessage} />
     </>
   );

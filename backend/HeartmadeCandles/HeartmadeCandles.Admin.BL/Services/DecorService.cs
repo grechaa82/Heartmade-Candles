@@ -13,9 +13,16 @@ public class DecorService : IDecorService
         _decorRepository = decorRepository;
     }
 
-    public async Task<Maybe<Decor[]>> GetAll()
+    public async Task<(Result<Decor[]>, long)> GetAll(PaginationSettings pagination)
     {
-        return await _decorRepository.GetAll();
+        var (decorsMaybe, totalCount) = await _decorRepository.GetAll(pagination);
+
+        if (!decorsMaybe.HasValue)
+        {
+            return (Result.Failure<Decor[]>("Decors not found"), totalCount);
+        }
+
+        return (Result.Success(decorsMaybe.Value), totalCount);
     }
 
     public async Task<Maybe<Decor>> Get(int decorId)

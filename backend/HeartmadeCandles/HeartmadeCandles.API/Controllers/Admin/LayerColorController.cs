@@ -24,11 +24,22 @@ public class LayerColorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] PaginationSettingsRequest pagination)
     {
-        var layerColorsMaybe = await _layerColorService.GetAll();
+        var (layerColorsResult, totalCount) = await _layerColorService.GetAll(new PaginationSettings
+        {
+            PageSize = pagination.Limit,
+            PageIndex = pagination.Index
+        });
 
-        return Ok(layerColorsMaybe.HasValue ? layerColorsMaybe.Value : Array.Empty<LayerColor>());
+        if (layerColorsResult.IsFailure)
+        {
+            return BadRequest(layerColorsResult.Error);
+        }
+
+        Response.Headers.Add("X-Total-Count", totalCount.ToString());
+
+        return Ok(layerColorsResult.Value);
     }
 
     [HttpGet("{id:int}")]

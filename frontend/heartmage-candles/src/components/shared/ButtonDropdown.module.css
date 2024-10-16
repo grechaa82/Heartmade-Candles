@@ -30,7 +30,7 @@
   background: var(--color-fff);
   border: 2px solid var(--color-eee);
   border-radius: var(--border-radius-primary);
-  z-index: 5;
+  z-index: 11;
   box-sizing: border-box;
 }
 

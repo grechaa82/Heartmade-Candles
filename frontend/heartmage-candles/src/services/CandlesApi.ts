@@ -1,250 +1,213 @@
 import { Candle } from '../types/Candle';
 import { CandleDetail } from '../types/CandleDetail';
 import { CandleRequest } from '../types/Requests/CandleRequest';
-import { ApiResponse } from './ApiResponse';
 import { AuthHelper } from '../helpers/AuthHelper';
+import { PaginationSettings } from '../typesV2/shared/PaginationSettings';
 
 import { apiUrl } from '../config';
 
 export const CandlesApi = {
-  getAll: async (): Promise<ApiResponse<Candle[]>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/candles`, {
+  getAll: async (
+    typeFilter?: string,
+    pagination: PaginationSettings = { pageSize: 20, pageIndex: 0 },
+  ): Promise<[Candle[], number | null]> => {
+    const queryParams = new URLSearchParams();
+
+    if (typeFilter) {
+      queryParams.append('TypeFilter', typeFilter);
+    }
+    queryParams.append('Limit', pagination.pageSize.toString());
+    queryParams.append('Index', pagination.pageIndex.toString());
+
+    const response = await fetch(
+      `${apiUrl}/admin/candles?${queryParams.toString()}`,
+      {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: authorizationString,
+          Authorization: AuthHelper.getAuthorizationString(),
         },
-      });
+      },
+    );
 
-      if (response.ok) {
-        return { data: await response.json(), error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    const data: Candle[] = await response.json();
+    const totalCountHeader = response.headers.get('X-Total-Count');
+    const totalCount = totalCountHeader ? parseInt(totalCountHeader, 10) : null;
+
+    return [data, totalCount];
   },
 
-  getById: async (id: string): Promise<ApiResponse<CandleDetail>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
-        },
-      });
+  getById: async (id: string): Promise<CandleDetail> => {
+    const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+    });
 
-      if (response.ok) {
-        return { data: await response.json(), error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return response.json();
   },
 
-  create: async (candle: CandleRequest): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/candles`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
-        },
-        body: JSON.stringify(candle),
-      });
+  create: async (candle: CandleRequest): Promise<Candle> => {
+    const response = await fetch(`${apiUrl}/admin/candles`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+      body: JSON.stringify(candle),
+    });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return;
   },
 
-  update: async (
-    id: string,
-    candle: CandleRequest,
-  ): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
-        },
-        body: JSON.stringify(candle),
-      });
+  update: async (id: string, candle: CandleRequest): Promise<Candle> => {
+    const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+      body: JSON.stringify(candle),
+    });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return;
   },
 
-  delete: async (id: string): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
-        },
-      });
+  delete: async (id: string): Promise<void> => {
+    const response = await fetch(`${apiUrl}/admin/candles/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+    });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return;
   },
 
-  updateDecor: async (
-    id: string,
-    decorIds: number[],
-  ): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/candles/${id}/decors`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
-        },
-        body: JSON.stringify(decorIds),
-      });
+  updateDecor: async (id: string, decorIds: number[]): Promise<void> => {
+    const response = await fetch(`${apiUrl}/admin/candles/${id}/decors`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+      body: JSON.stringify(decorIds),
+    });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return;
   },
 
   updateLayerColor: async (
     id: string,
     layerColorIds: number[],
-  ): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(
-        `${apiUrl}/admin/candles/${id}/layerColors`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: authorizationString,
-          },
-          body: JSON.stringify(layerColorIds),
-        },
-      );
+  ): Promise<void> => {
+    const response = await fetch(`${apiUrl}/admin/candles/${id}/layerColors`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+      body: JSON.stringify(layerColorIds),
+    });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return;
   },
 
   updateNumberOfLayer: async (
     id: string,
     numberOfLayerIds: number[],
-  ): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(
-        `${apiUrl}/admin/candles/${id}/numberOfLayers`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: authorizationString,
-          },
-          body: JSON.stringify(numberOfLayerIds),
-        },
-      );
-
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
-    }
-  },
-
-  updateSmell: async (
-    id: string,
-    smellIds: number[],
-  ): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/candles/${id}/smells`, {
+  ): Promise<void> => {
+    const response = await fetch(
+      `${apiUrl}/admin/candles/${id}/numberOfLayers`,
+      {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: authorizationString,
+          Authorization: AuthHelper.getAuthorizationString(),
         },
-        body: JSON.stringify(smellIds),
-      });
+        body: JSON.stringify(numberOfLayerIds),
+      },
+    );
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return;
   },
 
-  updateWick: async (
-    id: string,
-    wickIds: number[],
-  ): Promise<ApiResponse<void>> => {
-    try {
-      const authorizationString = AuthHelper.getAuthorizationString();
-      const response = await fetch(`${apiUrl}/admin/candles/${id}/wicks`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authorizationString,
-        },
-        body: JSON.stringify(wickIds),
-      });
+  updateSmell: async (id: string, smellIds: number[]): Promise<void> => {
+    const response = await fetch(`${apiUrl}/admin/candles/${id}/smells`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+      body: JSON.stringify(smellIds),
+    });
 
-      if (response.ok) {
-        return { data: null, error: null };
-      } else {
-        return { data: null, error: await response.text() };
-      }
-    } catch (error) {
-      throw new Error(error as string);
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
     }
+
+    return;
+  },
+
+  updateWick: async (id: string, wickIds: number[]): Promise<void> => {
+    const response = await fetch(`${apiUrl}/admin/candles/${id}/wicks`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthHelper.getAuthorizationString(),
+      },
+      body: JSON.stringify(wickIds),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Error ${response.status}: ${errorBody}`);
+    }
+
+    return;
   },
 };

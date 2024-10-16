@@ -4,23 +4,47 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 0.5rem;
 }
+
 .titleBlock {
   display: flex;
-  margin-bottom: 1.5rem;
-  gap: 2rem;
-  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
 }
-.titleBlock > h2 {
+
+.sectionHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.sectionHeader>h2 {
   font-weight: var(--font-weight-400);
-  font-size: var(--font-size-heading-2);
+  font-size: var(--font-size-l);
   line-height: var(--line-height-standard);
   margin: 0;
-  color: var(--color-aaa);
+  color: var(--color-222);
 }
-.titleBlock > button {
+
+.sectionHeader>button {
   border: none;
-  padding: 0.5rem 0;
+  padding: 0;
 }
+
+.sectionHeader>button>p {
+  font-size: var(--font-size-l);
+  font-weight: var(--font-weight-400);
+}
+
+.toggleButton {
+  all: unset;
+  font-size: var(--font-size-l);
+  font-weight: var(--font-weight-400);
+  line-height: var(--line-height-standard);
+  color: var(--color-222);
+  margin: 0;
+}
+
 @media screen and (max-width: 1320px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
@@ -30,11 +54,5 @@
 @media screen and (max-width: 768px) {
   .grid {
     grid-template-columns: 1fr;
-  }
-  .titleBlock {
-    align-items: start;
-  }
-  .titleBlock > h2 {
-    font-size: var(--font-size-xl);
   }
 }

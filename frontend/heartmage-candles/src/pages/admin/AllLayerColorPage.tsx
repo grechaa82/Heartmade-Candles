@@ -1,113 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import { FC, useEffect, useState, useContext } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import ProductsGrid from '../../modules/admin/ProductsGrid';
-import { LayerColor } from '../../types/LayerColor';
-import { LayerColorRequest } from '../../types/Requests/LayerColorRequest';
 import CreateLayerColorPopUp from '../../modules/admin/PopUp/LayerColor/CreateLayerColorPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
+import useLayerColorsQuery from '../../hooks/admin/useLayerColorsQuery';
+import { AuthContext } from '../../contexts/AuthContext';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
 
-import { LayerColorsApi } from '../../services/LayerColorsApi';
 import { ImagesApi } from '../../services/ImagesApi';
 
 import Style from './AllLayerColorPage.module.css';
 
 export interface AllLayerColorPageProps {}
 
-const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
-  const [layerColorData, setLayerColorData] = useState<LayerColor[]>([]);
-
+const AllLayerColorPage: FC<AllLayerColorPageProps> = () => {
+  const { isAuth } = useContext(AuthContext);
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    createLayerColor,
+    deleteLayerColor,
+    updateIsActiveLayerColor,
+  } = useLayerColorsQuery(21, isAuth);
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
-
-  const handleCreateLayerColor = async (createdItem: LayerColor) => {
-    const layerColorRequest: LayerColorRequest = {
-      title: createdItem.title,
-      description: createdItem.description,
-      pricePerGram: createdItem.pricePerGram,
-      images: createdItem.images,
-      isActive: createdItem.isActive,
-    };
-    const response = await LayerColorsApi.create(layerColorRequest);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedLayerColorsResponse = await LayerColorsApi.getAll();
-      if (
-        updatedLayerColorsResponse.data &&
-        !updatedLayerColorsResponse.error
-      ) {
-        setLayerColorData(updatedLayerColorsResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedLayerColorsResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const handleDeleteLayerColor = async (id: string) => {
-    const response = await LayerColorsApi.delete(id);
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedLayerColorsResponse = await LayerColorsApi.getAll();
-      if (
-        updatedLayerColorsResponse.data &&
-        !updatedLayerColorsResponse.error
-      ) {
-        setLayerColorData(updatedLayerColorsResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedLayerColorsResponse.error as string,
-        ]);
-      }
-    }
-  };
-
-  const handleUpdateIsActiveLayerColor = async (id: string) => {
-    const layerColor = layerColorData.find((x) => x.id === parseInt(id));
-    const newLayerColorRequest: LayerColorRequest = {
-      title: layerColor.title,
-      description: layerColor.description,
-      pricePerGram: layerColor.pricePerGram,
-      images: layerColor.images,
-      isActive: !layerColor.isActive,
-    };
-
-    const response = await LayerColorsApi.update(
-      layerColor.id.toString(),
-      newLayerColorRequest,
-    );
-    if (response.error) {
-      setErrorMessage([...errorMessage, response.error as string]);
-    } else {
-      const updatedLayerColorsResponse = await LayerColorsApi.getAll();
-      if (
-        updatedLayerColorsResponse.data &&
-        !updatedLayerColorsResponse.error
-      ) {
-        setLayerColorData(updatedLayerColorsResponse.data);
-      } else {
-        setErrorMessage([
-          ...errorMessage,
-          updatedLayerColorsResponse.error as string,
-        ]);
-      }
-    }
-  };
+  const { ref, inView, entry } = useInView({
+    threshold: 0,
+  });
 
   useEffect(() => {
-    async function fetchLayerColors() {
-      const layerColorsResponse = await LayerColorsApi.getAll();
-      if (layerColorsResponse.data && !layerColorsResponse.error) {
-        setLayerColorData(layerColorsResponse.data);
-      } else {
-        setErrorMessage([...errorMessage, layerColorsResponse.error as string]);
-      }
+    if (entry && inView) {
+      fetchNextPage();
     }
-    fetchLayerColors();
-  }, []);
+  }, [entry]);
 
   const handleUploadImages = async (files: File[]) => {
     const imagesResponse = await ImagesApi.uploadImages(files);
@@ -118,23 +46,32 @@ const AllLayerColorPage: React.FC<AllLayerColorPageProps> = () => {
     }
   };
 
+  if (isLoading) {
+    return <ProductsGridSkeleton />;
+  }
+
   return (
     <>
       <ProductsGrid
-        data={layerColorData}
+        data={data?.pages.flat() || []}
         title="Слои"
         pageUrl="layerColors"
-        popUpComponent={
+        renderPopUpComponent={(onClose) => (
           <CreateLayerColorPopUp
-            onClose={() => console.log('Popup closed')}
+            onClose={onClose}
             title="Создать слой"
-            onSave={handleCreateLayerColor}
+            onSave={createLayerColor}
             uploadImages={handleUploadImages}
           />
-        }
-        deleteProduct={handleDeleteLayerColor}
-        updateIsActiveProduct={handleUpdateIsActiveLayerColor}
+        )}
+        deleteProduct={deleteLayerColor}
+        updateIsActiveProduct={updateIsActiveLayerColor}
       />
+      {isFetchingNextPage ? (
+        <span>...Loading</span>
+      ) : (
+        hasNextPage && <div ref={ref}></div>
+      )}
       <ListErrorPopUp messages={errorMessage} />
     </>
   );

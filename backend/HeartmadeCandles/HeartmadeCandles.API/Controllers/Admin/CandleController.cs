@@ -1,5 +1,6 @@
 ﻿using HeartmadeCandles.Admin.Core.Interfaces;
 using HeartmadeCandles.Admin.Core.Models;
+using HeartmadeCandles.API.Contracts.Order.Requests;
 using HeartmadeCandles.API.Contracts.Requests;
 using HeartmadeCandles.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -25,16 +26,24 @@ public class CandleController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] string? typeFilter, [FromQuery] PaginationSettingsRequest paginationSettings)
     {
-        var candlesMaybe = await _candleService.GetAll();
+        var (candlesResult, totalCount) = await _candleService.GetAll(
+            typeFilter,
+            pagination: new PaginationSettings
+            {
+                PageSize = paginationSettings.Limit,
+                PageIndex = paginationSettings.Index
+            });
 
-        if (!candlesMaybe.HasValue)
+        if (candlesResult.IsFailure)
         {
-            return Ok(Array.Empty<Candle>());
+            return BadRequest(candlesResult.Error);
         }
 
-        return Ok(candlesMaybe.Value);
+        Response.Headers.Add("X-Total-Count", totalCount.ToString());
+
+        return Ok(candlesResult.Value);
     }
 
     [HttpGet("{id:int}")]
