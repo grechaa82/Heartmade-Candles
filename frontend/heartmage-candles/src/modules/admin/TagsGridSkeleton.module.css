@@ -1,0 +1,31 @@
+.titleSkeleton {
+  width: 10rem;
+  height: 1.625rem;
+  margin-bottom: 0.5rem;
+}
+
+.inputSkeleton {
+  background-color: var(--color-eee);
+  border: 2px solid var(--color-eee);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border-radius: var(--border-radius-primary);
+  box-sizing: border-box;
+  width: 100%;
+  animation: skeleton 1s ease infinite alternate;
+}
+
+.tagSkeleton {
+  width: 4.375rem;
+  height: 3.125rem;
+}
+
+@keyframes skeleton {
+  to {
+    opacity: 0.5;
+  }
+}

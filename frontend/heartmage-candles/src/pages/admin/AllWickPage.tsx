@@ -6,6 +6,7 @@ import CreateWickPopUp from '../../modules/admin/PopUp/Wick/CreateWickPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import useWicksQuery from '../../hooks/admin/useWicksQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -46,7 +47,7 @@ const AllWickPage: FC<AllWickPageProps> = () => {
   };
 
   if (isLoading) {
-    return <div>...Loading</div>;
+    return <ProductsGridSkeleton />;
   }
 
   return (

@@ -5,6 +5,7 @@ import MainInfoDecor from '../../modules/admin/MainInfoDecor';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import useDecorByIdQuery from '../../hooks/admin/useDecorByIdQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import MainInfoSkeleton from '../../modules/admin/MainInfoSkeleton';
 
 import Style from './DecorPage.module.css';
 
@@ -19,7 +20,7 @@ const DecorPage: FC = () => {
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   if (isLoading) {
-    return <div>...Loading</div>;
+    return <MainInfoSkeleton />;
   }
 
   return (

@@ -15,6 +15,8 @@ import useNumberOfLayersQuery from '../../hooks/admin/useNumberOfLayersQuery';
 import useTypeCandlesQuery from '../../hooks/admin/useTypeCandlesQuery';
 import { AuthContext } from '../../contexts/AuthContext';
 import CandleFilter from '../../components/admin/CandleFilter';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
+import TagsGridSkeleton from '../../modules/admin/TagsGridSkeleton';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -33,6 +35,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
   const {
     data: candlesData,
     fetchNextPage,
+    isLoading,
     hasNextPage,
     isFetchingNextPage,
     createCandle,
@@ -95,7 +98,7 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
 
   return (
     <>
-      {!isLoadingTypeCandle && (
+      {!isLoadingTypeCandle ? (
         <TagsGrid
           title="Типы свечей"
           withInput={false}
@@ -109,8 +112,10 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
           }
           onDelete={deleteTypeCandle}
         />
+      ) : (
+        <TagsGridSkeleton />
       )}
-      {!isLoadingNumberOfLayers && (
+      {!isLoadingNumberOfLayers ? (
         <TagsGrid
           title="Количество слоев"
           withInput={false}
@@ -124,35 +129,45 @@ const AllCandlePage: FC<AllCandlePageProps> = () => {
           }
           onDelete={deleteNumberOfLayer}
         />
+      ) : (
+        <TagsGridSkeleton />
       )}
-      <ProductsGrid
-        data={candlesData?.pages.flat() || []}
-        title="Свечи"
-        pageUrl="candles"
-        renderPopUpComponent={(onClose) => (
-          <CreateCandlePopUp
-            onClose={onClose}
-            title="Создать свечу"
-            typeCandlesArray={typeCandlesData}
-            onSave={createCandle}
-            uploadImages={handleUploadImages}
-          />
-        )}
-        deleteProduct={deleteCandle}
-        updateIsActiveProduct={updateIsActiveCandle}
-        renderFilterComponent={() => (
-          <CandleFilter
-            typeCandles={[{ id: 0, title: 'Все' }, ...(typeCandlesData ?? [])]}
-            selectedTypeCandle={{
-              id: selectedTypeFilter ? selectedTypeFilter.id : 0,
-              title: selectedTypeFilter ? selectedTypeFilter.title : 'Все',
-            }}
-            onChange={handleOnChangeFilter}
-          />
-        )}
-      />
+      {!isLoading ? (
+        <ProductsGrid
+          data={candlesData?.pages.flat() || []}
+          title="Свечи"
+          pageUrl="candles"
+          renderPopUpComponent={(onClose) => (
+            <CreateCandlePopUp
+              onClose={onClose}
+              title="Создать свечу"
+              typeCandlesArray={typeCandlesData}
+              onSave={createCandle}
+              uploadImages={handleUploadImages}
+            />
+          )}
+          deleteProduct={deleteCandle}
+          updateIsActiveProduct={updateIsActiveCandle}
+          renderFilterComponent={() => (
+            <CandleFilter
+              typeCandles={[
+                { id: 0, title: 'Все' },
+                ...(typeCandlesData ?? []),
+              ]}
+              selectedTypeCandle={{
+                id: selectedTypeFilter ? selectedTypeFilter.id : 0,
+                title: selectedTypeFilter ? selectedTypeFilter.title : 'Все',
+              }}
+              onChange={handleOnChangeFilter}
+            />
+          )}
+        />
+      ) : (
+        <ProductsGridSkeleton />
+      )}
+
       {isFetchingNextPage ? (
-        <span>...Loading</span>
+        <span>Loading</span>
       ) : (
         hasNextPage && <div ref={ref}></div>
       )}

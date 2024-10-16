@@ -16,6 +16,9 @@ import useDecorsQuery from '../../hooks/admin/useDecorsQuery';
 import useLayerColorsQuery from '../../hooks/admin/useLayerColorsQuery';
 import useWicksQuery from '../../hooks/admin/useWicksQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import MainInfoSkeleton from '../../modules/admin/MainInfoSkeleton';
+import TagsGridSkeleton from '../../modules/admin/TagsGridSkeleton';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
 
 import Style from './CandleDetailsPage.module.css';
 
@@ -74,7 +77,13 @@ const CandleDetailsPage: FC = () => {
   };
 
   if (isLoading) {
-    return <div>...Loading</div>;
+    return (
+      <>
+        <MainInfoSkeleton />
+        <TagsGridSkeleton />
+        <ProductsGridSkeleton />
+      </>
+    );
   }
 
   return (

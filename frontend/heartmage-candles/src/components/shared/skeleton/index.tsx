@@ -16,7 +16,7 @@ const Skeleton: FC<SkeletonProps> = ({ color = 'light' }) => {
   } else if (color === 'dark') {
     backgroundColor = '#777';
   } else if (color === 'light-grey') {
-    backgroundColor = '#aaa';
+    backgroundColor = '#d9d9d9';
   }
 
   const skeletonStyle = {

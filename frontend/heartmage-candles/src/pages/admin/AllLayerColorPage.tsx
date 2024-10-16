@@ -6,6 +6,7 @@ import CreateLayerColorPopUp from '../../modules/admin/PopUp/LayerColor/CreateLa
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import useLayerColorsQuery from '../../hooks/admin/useLayerColorsQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -46,7 +47,7 @@ const AllLayerColorPage: FC<AllLayerColorPageProps> = () => {
   };
 
   if (isLoading) {
-    return <div>...Loading</div>;
+    return <ProductsGridSkeleton />;
   }
 
   return (

@@ -5,6 +5,7 @@ import MainInfoWick from '../../modules/admin/MainInfoWick';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import useWickByIdQuery from '../../hooks/admin/useWickByIdQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import MainInfoSkeleton from '../../modules/admin/MainInfoSkeleton';
 
 import Style from './WickPage.module.css';
 
@@ -19,7 +20,7 @@ const WickPage: FC = () => {
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   if (isLoading) {
-    return <div>...Loading</div>;
+    return <MainInfoSkeleton />;
   }
 
   return (

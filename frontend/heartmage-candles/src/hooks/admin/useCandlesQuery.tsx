@@ -69,26 +69,32 @@ const useCandlesQuery = (
     return await CandlesApi.update(candle.id.toString(), newCandleRequest);
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
-    useInfiniteQuery({
-      queryKey: ['candles', typeFilter],
-      queryFn: ({ pageParam }) =>
-        handleGetCandles(typeFilter, { pageIndex: pageParam }),
-      initialPageParam: 0,
-      enabled: isEnabled,
-      getNextPageParam: (lastPage, allPages, lastPageParam) => {
-        const currentPageSize = lastPage.length;
+  const {
+    data,
+    fetchNextPage,
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ['candles', typeFilter],
+    queryFn: ({ pageParam }) =>
+      handleGetCandles(typeFilter, { pageIndex: pageParam }),
+    initialPageParam: 0,
+    enabled: isEnabled,
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      const currentPageSize = lastPage.length;
 
-        if (totalCount) {
-          if (currentPageSize < pageSize || allPages.length >= totalCount) {
-            return undefined;
-          }
-          return lastPageParam + 1;
+      if (totalCount) {
+        if (currentPageSize < pageSize || allPages.length >= totalCount) {
+          return undefined;
         }
+        return lastPageParam + 1;
+      }
 
-        return currentPageSize < pageSize ? undefined : lastPageParam + 1;
-      },
-    });
+      return currentPageSize < pageSize ? undefined : lastPageParam + 1;
+    },
+  });
 
   const { mutate: createCandle } = useMutation({
     mutationKey: ['createCandle'],
@@ -117,6 +123,7 @@ const useCandlesQuery = (
   return {
     data,
     fetchNextPage,
+    isLoading,
     hasNextPage,
     isFetchingNextPage,
     createCandle,

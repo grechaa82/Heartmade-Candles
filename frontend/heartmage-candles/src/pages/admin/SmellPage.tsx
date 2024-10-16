@@ -5,6 +5,7 @@ import MainInfoSmell from '../../modules/admin/MainInfoSmell';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import useSmellByIdQuery from '../../hooks/admin/useSmellByIdQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import MainInfoSkeleton from '../../modules/admin/MainInfoSkeleton';
 
 import Style from './SmellPage.module.css';
 
@@ -19,7 +20,7 @@ const SmellPage: FC = () => {
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   if (isLoading) {
-    return <div>...Loading</div>;
+    return <MainInfoSkeleton />;
   }
 
   return (

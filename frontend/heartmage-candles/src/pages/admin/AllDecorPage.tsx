@@ -6,6 +6,7 @@ import CreateDecorPopUp from '../../modules/admin/PopUp/Decor/CreateDecorPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import useDecorsQuery from '../../hooks/admin/useDecorsQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
 
 import { ImagesApi } from '../../services/ImagesApi';
 
@@ -46,7 +47,7 @@ const AllDecorPage: FC<AllDecorPageProps> = () => {
   };
 
   if (isLoading) {
-    return <div>...Loading</div>;
+    return <ProductsGridSkeleton />;
   }
 
   return (

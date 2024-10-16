@@ -5,6 +5,7 @@ import MainInfoLayerColor from '../../modules/admin/MainInfoLayerColor';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import useLayerColorByIdQuery from '../../hooks/admin/useLayerColorByIdQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import MainInfoSkeleton from '../../modules/admin/MainInfoSkeleton';
 
 import Style from './LayerColorPage.module.css';
 
@@ -22,7 +23,7 @@ const LayerColorPage: FC = () => {
   const [errorMessage, setErrorMessage] = useState<string[]>([]);
 
   if (isLoading) {
-    return <div>...Loading</div>;
+    return <MainInfoSkeleton />;
   }
 
   return (

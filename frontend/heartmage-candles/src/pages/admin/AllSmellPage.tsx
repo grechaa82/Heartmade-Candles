@@ -6,6 +6,7 @@ import CreateSmellPopUp from '../../modules/admin/PopUp/Smell/CreateSmellPopUp';
 import ListErrorPopUp from '../../modules/shared/ListErrorPopUp';
 import useSmellsQuery from '../../hooks/admin/useSmellsQuery';
 import { AuthContext } from '../../contexts/AuthContext';
+import ProductsGridSkeleton from '../../modules/admin/ProductsGridSkeleton';
 
 import Style from './AllSmellPage.module.css';
 
@@ -35,7 +36,7 @@ const AllSmellPage: FC<AllSmellPageProps> = () => {
   }, [entry]);
 
   if (isLoading) {
-    return <div>...Loading</div>;
+    return <ProductsGridSkeleton />;
   }
 
   return (
