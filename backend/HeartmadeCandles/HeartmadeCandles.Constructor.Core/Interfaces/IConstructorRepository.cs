@@ -7,9 +7,11 @@ public interface IConstructorRepository
 {
     Task<Maybe<CandleDetail>> GetCandleById(int candleId);
 
-    Task<Result<Candle[]>> GetCandlesByType(string typeCandle, int pageSize, int pageIndex);
+    Task<(Maybe<Candle[]>, long)> GetCandlesByType(TypeCandle typeCandle, int pageSize, int pageIndex);
 
     Task<Result<CandleTypeWithCandles[]>> GetCandles();
 
     Task<Result<CandleDetail>> GetCandleByFilter(CandleDetailFilter candleDetailFilter);
+
+    Task<Maybe<TypeCandle>> GetTypeCandleByTitle(string typeCandle);
 }

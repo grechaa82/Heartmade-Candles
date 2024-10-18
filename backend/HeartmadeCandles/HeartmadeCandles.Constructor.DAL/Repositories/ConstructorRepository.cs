@@ -38,32 +38,30 @@ public class ConstructorRepository : IConstructorRepository
     }
 
 
-    public async Task<Result<Candle[]>> GetCandlesByType(string typeCandle, int pageSize, int pageIndex)
+    public async Task<(Maybe<Candle[]>, long)> GetCandlesByType(TypeCandle typeCandle, int pageSize, int pageIndex)
     {
-        var typeCandleExists = await _context.TypeCandle
-            .AnyAsync(t => t.Title == typeCandle);
-
-        if (!typeCandleExists)
-        {
-            return Result.Failure<Candle[]>($"TypeCandle: {typeCandle} not found");
-        }
-
-        var items = await _context.Candle
+        var candlesQuery = _context.Candle
             .AsNoTracking()
-            .Where(c => c.IsActive && c.TypeCandle.Title == typeCandle)
+            .Where(c => c.IsActive && c.TypeCandle.Id == typeCandle.Id);
+        
+        var totalCount = await candlesQuery.LongCountAsync();
+
+        var items = await candlesQuery
             .OrderBy(c => c.Id)
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
             .ToArrayAsync();
 
-        if (items.Length == 0)
+        if (!items.Any())
         {
-            return Result.Failure<Candle[]>("There are no available items");
+            return (Maybe<Candle[]>.None, totalCount);
         }
 
-        var result = items.Select(MapToCandle).ToArray();
-
-        return Result.Success(result);
+        var result = items
+            .Select(MapToCandle)
+            .ToArray();
+        
+        return (result, totalCount);
     }
 
     public async Task<Maybe<CandleDetail>> GetCandleById(int candleId)
@@ -195,6 +193,22 @@ public class ConstructorRepository : IConstructorRepository
         };
     }
 
+    public async Task<Maybe<TypeCandle>> GetTypeCandleByTitle(string typeCandle)
+    {
+        var item = await _context.TypeCandle
+           .AsNoTracking()
+           .FirstOrDefaultAsync(c => c.Title == typeCandle);
+
+        if (item == null)
+        {
+            return Maybe<TypeCandle>.None;
+        }
+
+        var result = MapToTypeCandle(item);
+
+        return result;
+    }
+
     private Candle MapToCandle(CandleEntity candleEntity)
     {
         return new Candle
@@ -205,6 +219,15 @@ public class ConstructorRepository : IConstructorRepository
             Price = candleEntity.Price,
             WeightGrams = candleEntity.WeightGrams,
             Images = MapToImage(candleEntity.Images)
+        };
+    }
+
+    private TypeCandle MapToTypeCandle(TypeCandleEntity typeCandleEntity)
+    {
+        return new TypeCandle
+        {
+            Id = typeCandleEntity.Id,
+            Title = typeCandleEntity.Title
         };
     }
 
