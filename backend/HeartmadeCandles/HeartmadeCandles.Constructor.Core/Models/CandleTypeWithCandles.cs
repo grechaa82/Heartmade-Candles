@@ -2,6 +2,9 @@
 
 public class CandleTypeWithCandles
 {
-    public string Type { get; init; }
-    public Candle[] Candles { get; init; }
+    public required string Type { get; init; }
+
+    public required Candle[] Candles { get; init; }
+    
+    public long TotalCount { get; init; }
 }

@@ -30,7 +30,8 @@ public class ConstructorRepository : IConstructorRepository
                     Candles = c.OrderBy(candle => candle.Id)
                         .Select(candle => MapToCandle(candle))
                         .Take(15)
-                        .ToArray()
+                        .ToArray(),
+                    TotalCount = c.LongCount()
                 })
             .ToArray();
 
