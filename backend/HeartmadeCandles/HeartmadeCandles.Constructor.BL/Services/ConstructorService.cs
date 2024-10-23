@@ -18,9 +18,23 @@ public class ConstructorService : IConstructorService
         return await _constructorRepository.GetCandles();
     }
 
-    public async Task<Result<Candle[]>> GetCandlesByType(string typeCandle, int pageSize, int pageIndex)
+    public async Task<(Result<Candle[]>, long)> GetCandlesByType(string typeCandle, int pageSize, int pageIndex)
     {
-        return await _constructorRepository.GetCandlesByType(typeCandle, pageSize, pageIndex);
+        var typeCandleMaybe = await _constructorRepository.GetTypeCandleByTitle(typeCandle);
+
+        if (!typeCandleMaybe.HasValue) 
+        {
+            return (Result.Failure<Candle[]>($"This type of candle: '{typeCandle}' does not exist"), 0);
+        }
+
+        var (candleMaybe, totalCount) = await _constructorRepository.GetCandlesByType(typeCandleMaybe.Value, pageSize, pageIndex);
+
+        if (!candleMaybe.HasValue)
+        {
+            return (Result.Failure<Candle[]>("Candles not found"), totalCount);
+        }
+
+        return (Result.Success(candleMaybe.Value), totalCount);
     }
 
     public async Task<Result<CandleDetail>> GetCandleDetailById(int candleId)

@@ -39,7 +39,7 @@ public class ConstructorController : Controller
     [HttpGet("candles/type")]
     public async Task<IActionResult> GetCandlesByType(string typeCandle, int pageSize = 15, int pageIndex = 0)
     {
-        var result = await _constructorService.GetCandlesByType(typeCandle, pageSize, pageIndex);
+        var (result, totalCount) = await _constructorService.GetCandlesByType(typeCandle, pageSize, pageIndex);
 
         if (result.IsFailure)
         {
@@ -50,6 +50,8 @@ public class ConstructorController : Controller
             return BadRequest(
                 $"Error: Failed in process {nameof(_constructorService.GetCandlesByType)}, error message: {result.Error}");
         }
+
+        Response.Headers.Add("X-Total-Count", totalCount.ToString());
 
         return Ok(result.Value);
     }

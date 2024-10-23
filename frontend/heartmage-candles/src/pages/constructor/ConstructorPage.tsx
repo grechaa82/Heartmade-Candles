@@ -21,11 +21,11 @@ import {
 import { CandleDetailFilterBasketRequest } from '../../typesV2/order/CandleDetailFilterBasketRequest';
 import { CandleDetailFilterRequest } from '../../typesV2/order/CandleDetailFilterRequest';
 import { CustomCandleBuilder } from '../../typesV2/constructor/CustomCandleBuilder';
-import { ConstructorApi } from '../../services/ConstructorApi';
 import { CandleDetail } from '../../typesV2/constructor/CandleDetail';
 import LoadCandlePopUp from '../../modules/constructor/PopUp/LoadCandlePopUp';
 import { ImageProduct } from '../../typesV2/shared/BaseProduct';
 
+import { ConstructorApi } from '../../services/ConstructorApi';
 import { BasketApi } from '../../services/BasketApi';
 
 import Style from './ConstructorPage.module.css';

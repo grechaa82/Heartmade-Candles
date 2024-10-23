@@ -1,8 +1,8 @@
 import { CandleDetail } from '../typesV2/constructor/CandleDetail';
 import { CandleDetailResponse } from '../typesV2/constructor/CandleDetailResponse';
 import { CandlesByType } from '../typesV2/constructor/CandlesByType';
-import { ApiResponse } from './ApiResponse';
 import { Candle } from '../typesV2/shared/BaseProduct';
+import { ApiResponse } from './ApiResponse';
 
 import { apiUrl } from '../config';
 
@@ -14,6 +14,7 @@ export const ConstructorApi = {
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
       });
+
       if (response.ok) {
         return {
           data: (await response.json()) as CandlesByType[],
@@ -30,7 +31,7 @@ export const ConstructorApi = {
     typeCandle: string,
     pageSize: number = 15,
     pageIndex: number = 0,
-  ): Promise<ApiResponse<Candle[]>> => {
+  ): Promise<[ApiResponse<Candle[]>, number | null]> => {
     try {
       const response = await fetch(
         `${apiUrl}/constructor/candles/type?typeCandle=${encodeURIComponent(
@@ -43,12 +44,27 @@ export const ConstructorApi = {
       );
 
       if (response.ok) {
-        return {
-          data: (await response.json()) as Candle[],
-          error: null,
-        };
+        const data: Candle[] = await response.json();
+        const totalCountHeader = response.headers.get('X-Total-Count');
+        const totalCount = totalCountHeader
+          ? parseInt(totalCountHeader, 10)
+          : null;
+
+        return [
+          {
+            data: data,
+            error: null,
+          },
+          totalCount,
+        ];
       } else {
-        return { data: null, error: await response.text() };
+        return [
+          {
+            data: null,
+            error: await response.text(),
+          },
+          null,
+        ];
       }
     } catch (error) {
       throw new Error(error as string);
@@ -65,6 +81,7 @@ export const ConstructorApi = {
           headers: { 'Content-Type': 'application/json' },
         },
       );
+
       if (response.ok) {
         const responseData = (await response.json()) as CandleDetailResponse;
 

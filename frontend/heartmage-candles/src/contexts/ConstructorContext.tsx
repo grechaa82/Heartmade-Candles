@@ -7,12 +7,12 @@ import {
   createContext,
   ReactNode,
 } from 'react';
+
 import { CandlesByType } from '../typesV2/constructor/CandlesByType';
-import { ConstructorApi } from '../services/ConstructorApi';
 import { calculateCustomCandlePrice } from '../helpers/CalculatePrice';
 import { CustomCandle } from '../typesV2/constructor/CustomCandle';
-import { CandleDetail } from '../typesV2/constructor/CandleDetail';
-import { CustomCandleBuilder } from '../typesV2/constructor/CustomCandleBuilder';
+
+import { ConstructorApi } from '../services/ConstructorApi';
 
 export interface ConstructorProviderProps {
   children?: ReactNode;
@@ -82,11 +82,8 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
     pageSize: number,
     pageIndex: number,
   ) => {
-    const candleDetailResponse = await ConstructorApi.getCandlesByType(
-      typeCandle,
-      pageSize,
-      pageIndex,
-    );
+    const [candleDetailResponse, totalCountResponse] =
+      await ConstructorApi.getCandlesByType(typeCandle, pageSize, pageIndex);
 
     if (candleDetailResponse.data && !candleDetailResponse.error) {
       setCandlesByType((prevCandlesByType) => {
@@ -107,7 +104,11 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
         } else {
           return [
             ...prevCandlesByType,
-            { type: typeCandle, candles: candleDetailResponse.data },
+            {
+              type: typeCandle,
+              candles: candleDetailResponse.data,
+              totalCount: totalCountResponse,
+            },
           ];
         }
       });
@@ -120,7 +121,7 @@ export const ConstructorProvider: FC<ConstructorProviderProps> = ({
       if (candlesResponse.data && !candlesResponse.error) {
         const updatedCandlesByType = candlesResponse.data.map((candles) => ({
           ...candles,
-          pageSize: candles.candles.length,
+          pageSize: 15,
           pageIndex: 0,
         }));
         setCandlesByType(updatedCandlesByType);
