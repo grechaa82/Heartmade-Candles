@@ -4,4 +4,6 @@ export interface CandlesByType {
   type: string;
   candles: Candle[];
   totalCount: number;
+  pageSize?: number;
+  pageIndex?: number;
 }

@@ -26,17 +26,23 @@ const CandleSelectionPanel: FC<CandleSelectionPanelProps> = ({
             data={item.candles}
             onSelectProduct={onSelectProduct}
           >
-            <Button
-              className={Style.loadMoreBtn}
-              text={item.pageSize ? `+ ${item.pageSize}` : 'Добавить'}
-              onClick={() =>
-                loadMoreCandlesByType(
-                  item.type,
-                  item.pageSize,
-                  item.pageIndex + 1,
-                )
-              }
-            />
+            {item.candles.length < item.totalCount && (
+              <Button
+                className={Style.loadMoreBtn}
+                text={
+                  item.totalCount - item.candles.length < item.pageSize
+                    ? `+ ${item.totalCount - item.candles.length}`
+                    : `+ ${item.pageSize}`
+                }
+                onClick={() =>
+                  loadMoreCandlesByType(
+                    item.type,
+                    item.pageSize,
+                    item.pageIndex + 1,
+                  )
+                }
+              />
+            )}
           </ProductsGridSelector>
         ))}
     </div>

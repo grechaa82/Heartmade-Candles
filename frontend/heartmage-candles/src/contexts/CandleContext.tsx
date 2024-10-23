@@ -6,9 +6,11 @@ import {
   createContext,
   ReactNode,
 } from 'react';
+
 import { CandleDetail } from '../typesV2/constructor/CandleDetail';
-import { ConstructorApi } from '../services/ConstructorApi';
 import { CustomCandleBuilder } from '../typesV2/constructor/CustomCandleBuilder';
+
+import { ConstructorApi } from '../services/ConstructorApi';
 
 export interface CandleProviderProps {
   children?: ReactNode;
