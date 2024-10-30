@@ -13,6 +13,7 @@ using HeartmadeCandles.UserAndAuth.DAL;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.FileProviders;
 using MongoDB.Driver;
+using Npgsql;
 using Serilog;
 using Serilog.Enrichers.Span;
 
@@ -65,15 +66,24 @@ try
 
     builder.Services.AddApiAuthentication(builder.Configuration);
 
+   var npgsqlBuilder = new NpgsqlDataSourceBuilder(builder.Configuration.GetConnectionString("DefaultConnection"))
+            .EnableDynamicJson()
+            .Build();
+
+    var loggerFactory = LoggerFactory.Create(builder =>
+    {
+        builder.AddSerilog(logger, true);
+    });
+
     builder.Services
         .AddAdminServices(Path.Combine(Directory.GetCurrentDirectory(), staticFilesImagesPath))
         .AddAdminRepositories()
-        .AddAdminDbContext(builder.Configuration);
+        .AddAdminDbContext(builder.Configuration, npgsqlBuilder, loggerFactory);
 
     builder.Services
         .AddConstructorServices()
         .AddConstructorRepositories()
-        .AddConstructorDbContext(builder.Configuration);
+        .AddConstructorDbContext(builder.Configuration, npgsqlBuilder, loggerFactory);
 
     builder.Services
         .AddOrderServices()
@@ -86,7 +96,7 @@ try
     builder.Services
         .AddUserAndAuthServices(builder.Configuration)
         .AddUserAndAuthRepositories()
-        .AddUserAndAuthDbContext(builder.Configuration);
+        .AddUserAndAuthDbContext(builder.Configuration, npgsqlBuilder, loggerFactory);
 
     builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
     builder.Services.AddSingleton(options =>

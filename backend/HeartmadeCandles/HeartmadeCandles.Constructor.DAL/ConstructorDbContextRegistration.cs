@@ -1,22 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace HeartmadeCandles.Constructor.DAL;
 
 public static class ConstructorDbContextRegistration
 {
     public static IServiceCollection AddConstructorDbContext(this IServiceCollection services,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        NpgsqlDataSource builder,
+        ILoggerFactory loggerFactory)
     {
-        services.AddDbContext<ConstructorDbContext>(
-            options =>
+        return services.AddDbContext<ConstructorDbContext>(options =>
+        {
+            options
+            .UseNpgsql(builder, options =>
             {
-                options.UseNpgsql(
-                    configuration.GetConnectionString("DefaultConnection"),
-                    builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
-            });
-
-        return services;
+                options.MigrationsAssembly("HeartmadeCandles.Migrations");
+            })
+            .UseLoggerFactory(loggerFactory);
+        });
     }
 }

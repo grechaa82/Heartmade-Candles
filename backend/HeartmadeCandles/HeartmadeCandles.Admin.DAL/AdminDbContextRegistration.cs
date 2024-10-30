@@ -1,21 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace HeartmadeCandles.Admin.DAL;
 
 public static class AdminDbContextRegistration
 {
-    public static IServiceCollection AddAdminDbContext(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAdminDbContext(this IServiceCollection services, 
+        IConfiguration configuration,
+        NpgsqlDataSource builder,
+        ILoggerFactory loggerFactory)
     {
-        services.AddDbContext<AdminDbContext>(
-            options =>
+        return services.AddDbContext<AdminDbContext>(options =>
+        {
+            options
+            .UseNpgsql(builder, options =>
             {
-                options.UseNpgsql(
-                    configuration.GetConnectionString("DefaultConnection"),
-                    builder => builder.MigrationsAssembly("HeartmadeCandles.Migrations"));
-            });
-
-        return services;
+                options.MigrationsAssembly("HeartmadeCandles.Migrations");
+            })
+            .UseLoggerFactory(loggerFactory);
+        });
     }
 }

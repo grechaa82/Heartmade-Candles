@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using OpenTelemetry.Exporter;
-using OpenTelemetry.ResourceDetectors.Container;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
@@ -15,13 +15,13 @@ public static class ServiceCollectionExtensions
 {
     public static void AddOpenTelemetryMetrics(this IServiceCollection services)
     {
-        void AppResourceBuilder(ResourceBuilder resource)
-        {
-            resource.AddDetector(new ContainerResourceDetector());
-        }
+        // void AppResourceBuilder(ResourceBuilder resource)
+        // {
+        //     resource.AddDetector(new ContainerResourceDetector());
+        // }
 
         services.AddOpenTelemetry()
-            .ConfigureResource(AppResourceBuilder)
+            // .ConfigureResource(AppResourceBuilder)
             .WithTracing(
                 tracerBuilder =>
                     tracerBuilder
@@ -122,4 +122,8 @@ public static class ServiceCollectionExtensions
                     }).RejectionStatusCode = 429;
             });
     }
+
+    public static NpgsqlDataSourceBuilder CreateNpgsqlBuilder(IConfiguration configuration) => 
+        new NpgsqlDataSourceBuilder(configuration.GetConnectionString("DefaultConnection"))
+            .EnableDynamicJson();
 }

@@ -105,7 +105,12 @@ public class ImageService : IImageService
     {
         try
         {
-            MagickGeometry size = new MagickGeometry(width);
+            if (width < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(width), "Width must be a non-negative value.");
+            }
+
+            MagickGeometry size = new MagickGeometry((uint)width);
             imageMagick.Resize(size);
 
             var fileName = Path.GetFileNameWithoutExtension(originalName);
