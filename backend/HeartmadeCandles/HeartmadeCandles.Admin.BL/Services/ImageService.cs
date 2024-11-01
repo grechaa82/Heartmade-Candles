@@ -25,28 +25,34 @@ public class ImageService : IImageService
 
     public async Task<Result<string[]>> UploadImages(List<(Stream, string)> imageFiles)
     {
-        var fileNames = new List<string>();
+        var fileNames = new List<Result<string>>();
 
         foreach (var (originalStream, fileName) in imageFiles)
         {
-            using (var clonedStream = new MemoryStream())
-            {
-                await originalStream.CopyToAsync(clonedStream);
+            using var clonedStream = new MemoryStream();
 
-                clonedStream.Position = 0;
+            var newFileName = await CloneStream(originalStream, clonedStream)
+                .Bind(() => SaveImage(clonedStream, fileName))
+                .Bind(newFileName => ResizeImage(clonedStream, newFileName).Map(() => newFileName));
 
-                var imageResult = await SaveImage(clonedStream, fileName);
-
-                if (imageResult.IsSuccess)
-                {
-                    fileNames.Add(imageResult.Value);
-                    clonedStream.Position = 0;
-                    await ResizeImage(clonedStream, imageResult.Value);
-                }
-            }
+            fileNames.Add(newFileName);
         }
 
-        return Result.Success(fileNames.ToArray());
+        return Result.Combine(fileNames).Map(() => fileNames.Select(fn => fn.Value).ToArray());
+    }
+
+    private async Task<Result> CloneStream(Stream sourceStream, Stream destinationStream)
+    {
+        try
+        {
+            await sourceStream.CopyToAsync(destinationStream);
+            destinationStream.Position = 0;
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure($"Error copying stream: {ex.Message}");
+        }
     }
 
     private async Task<Result<string>> SaveImage(Stream stream, string fileName)
@@ -54,18 +60,22 @@ public class ImageService : IImageService
         using (MagickImage imageMagick = new MagickImage(stream))
         {
             var newFileName = GenerateNewFileName(fileName);
+            var folderName = Path.GetFileNameWithoutExtension(newFileName);
+            var directoryPath = Path.Combine(_staticFilesPath, folderName);
 
-            var originalImagePath = Path.Combine(_staticFilesPath, newFileName);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
 
+            var originalImagePath = Path.Combine(directoryPath, newFileName);
             await Task.Run(() => imageMagick.Write(originalImagePath));
 
             var webpFileName = Path.ChangeExtension(newFileName, MagickFormat.WebP.ToString().ToLower());
-            var webpImagePath = Path.Combine(_staticFilesPath, webpFileName);
-
+            var webpImagePath = Path.Combine(directoryPath, webpFileName);
             await Task.Run(() => imageMagick.Write(webpImagePath, MagickFormat.WebP));
 
             stream.Position = 0;
-
             return Result.Success(newFileName);
         }
     }
@@ -85,18 +95,18 @@ public class ImageService : IImageService
             {
                 result = Result.Combine(
                     result,
-                    await ResizeAndSaveImage(image, fileName, width, label));
+                    await SaveResizedImage(image, fileName, width, label));
 
                 result = Result.Combine(
                     result,
-                    await ResizeAndSaveImage(image, fileName, width, label, MagickFormat.WebP));
+                    await SaveResizedImage(image, fileName, width, label, MagickFormat.WebP));
             }
         }
 
         return result;
     }
 
-    private async Task<Result> ResizeAndSaveImage(
+    private async Task<Result> SaveResizedImage(
         MagickImage imageMagick,
         string originalName,
         int width,
@@ -115,8 +125,17 @@ public class ImageService : IImageService
 
             var fileName = Path.GetFileNameWithoutExtension(originalName);
             var fileExtension = Path.GetExtension(originalName);
+
+            var folderName = fileName;
+            var directoryPath = Path.Combine(_staticFilesPath, folderName);
+
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
             var modifiedFileName = $"{fileName}-{nameSuffix}{(format.HasValue ? $".{format.Value.ToString().ToLower()}" : fileExtension)}";
-            var outputImagePath = Path.Combine(_staticFilesPath, modifiedFileName ?? string.Empty);
+            var outputImagePath = Path.Combine(directoryPath, modifiedFileName ?? string.Empty);
 
             await Task.Run(() => imageMagick.Write(outputImagePath, format ?? MagickFormat.Unknown));
 
@@ -128,37 +147,31 @@ public class ImageService : IImageService
         }
     }
 
+
     public async Task<Result> DeleteImages(string[] fileNames)
     {
         var result = Result.Success();
 
-        var directory = new DirectoryInfo(_staticFilesPath);
-
         foreach (var fileName in fileNames)
         {
-            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            var files = directory.GetFiles(fileNameWithoutExtension + "*.*");
+            var folderName = Path.GetFileNameWithoutExtension(fileName);
+            var directoryPath = Path.Combine(_staticFilesPath, folderName);
 
-            if (files.Length == 0)
+            if (!Directory.Exists(directoryPath))
             {
-                _logger.LogWarning($"No files found matching: {fileNameWithoutExtension}");
+                _logger.LogWarning($"Directory not found: {directoryPath}");
                 continue;
             }
 
-            foreach (FileInfo file in files)
+            try
             {
-                try
-                {
-                    await Task.Run(file.Delete);
-                }
-                catch (Exception ex)
-                {
-                    result = Result.Combine(
-                        result, 
-                        Result.Failure($"Error deleting file {file.Name}: {ex.Message}"));
-
-                    _logger.LogError($"Error deleting file {file.Name}: {ex.Message}");
-                }
+                await Task.Run(() => Directory.Delete(directoryPath, true));
+                _logger.LogInformation($"Successfully deleted directory: {directoryPath}");
+            }
+            catch (Exception ex)
+            {
+                result = Result.Combine(result, Result.Failure($"Error deleting directory {directoryPath}: {ex.Message}"));
+                _logger.LogError($"Error deleting directory {directoryPath}: {ex.Message}");
             }
         }
 

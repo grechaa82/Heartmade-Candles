@@ -42,12 +42,12 @@ const Picture: FC<PictureProps> = ({
     ? src
     : url
     ? `${url}/${name}`
-    : `${apiUrlToImage}/${name}`;
+    : `${apiUrlToImage}/${name}/${name}`;
 
-  const pathToImage = url ? url : apiUrlToImage;
   const splitName = name.split('.');
   const fileName = splitName[0];
   const fileExtension = splitName[1];
+  const pathToImage = url ? url : apiUrlToImage + '/' + fileName;
 
   const getSrc = (
     size: sizeType = 'default',
