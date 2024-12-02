@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import Skeleton from '../../components/shared/Skeleton';
+import Skeleton from '../../components/shared/skeleton';
 
 import Style from './TagsGridSkeleton.module.css';
 
